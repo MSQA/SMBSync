@@ -1,0 +1,388 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE string>
+<resources>
+    <string name="msgs_about_dlg_func_btn">Show function</string>
+    <string name="msgs_about_dlg_change_btn">Show change history</string>
+    <string name="msgs_dlg_title_about_change_desc" formatted="false">
+&lt;body bgcolor=black text=white link=yellow &gt;
+&lt;Font size=+2 color=""#44ffff""&gt;Change history&lt;/Font&gt;
+&lt;br&gt;
+2014-02-10 Ver1.78
+&lt;br&gt;
+-Message is displayed when returning from the background is set to be at the bottom.
+&lt;br&gt;
+&lt;br&gt;
+2014-01-06 Ver1.77
+&lt;br&gt;
+-Add processed file selection in Wizard.
+&lt;br&gt;
+&lt;br&gt;
+2013-12-24 Ver1.76
+&lt;br&gt;
+-Added an option that does not screen off during synchronization.(Settings->Sync->Screen state during synchronization)
+&lt;br&gt;
+&lt;br&gt;
+2013-12-13 Ver1.75
+&lt;br&gt;
+-Fixed a bug where some they may have to copy the files that do not need to be copied in the case of Local-toRemote.
+&lt;br&gt;
+&lt;br&gt;
+2013-12-01 Ver1.74
+&lt;br&gt;
+-to be able to select an item in the import profile.
+&lt;br&gt;
+-Fixed a bug that crash when you try to start the settings on Android 2.3.
+&lt;br&gt;
+&lt;br&gt;
+2013-11-27 Ver1.73
+&lt;br&gt;
+-Add synchronization to the local from the local.
+&lt;br&gt;
+&lt;br&gt;
+2013-11-04 Ver1.72
+&lt;br&gt;
+-Was an error when a valid profile is not in the file to include in the acquisition Profile.
+&lt;br&gt;
+-Corresponding to not perform synchronization when not connected to WIFI AP in Android4.1 later.
+&lt;br&gt;
+-Fixed a bug that killed Android4.4 KitKat.
+&lt;br&gt;
+&lt;br&gt;
+2013-09-16 Ver1.71
+&lt;br&gt;
+-(Such as Nexus10)optimize the display on a large screen tablet.
+&lt;br&gt;
+&lt;br&gt;
+2013-08-03 Ver1.70
+&lt;br&gt;
+-Fix Serializable error
+&lt;br&gt;
+-Fixed a bug that may JCIFS option can not be set
+&lt;br&gt;
+&lt;br&gt;
+2013-07-29 Ver1.69
+&lt;br&gt;
+-Add profile creation wizard
+&lt;br&gt;
+-Detection of the mount point mixed with a valid local profile
+&lt;br&gt;
+&lt;br&gt;
+2013-07-05 Ver1.68
+&lt;br&gt;
+-Change to CANCEL/OK sequence of OK/CANCEL dialog in Android4.0 or more.(matched to platform)
+&lt;br&gt;
+-Fixed a bug that can not be entered "." to the IP address input
+&lt;br&gt;
+&lt;br&gt;
+2013-06-08 Ver1.59-1.67
+&lt;br&gt;
+-To be able to specify the hostname on the remote host
+&lt;br&gt;
+-Bug fixes the synchronization history will no longer be updated
+&lt;br&gt;
+-Bug fixes that some files are recopied
+&lt;br&gt;
+-To the tablet corresponding setting screen. (Android 3.0 or higher)
+&lt;br&gt;
+-Bug fixes that there is the case that is to kill at startup
+&lt;br&gt;
+-Bug fixes that can not be log display the options menu
+&lt;br&gt;
+-Added log management function
+&lt;br&gt;
+&lt;br&gt;
+2013-05-07 Ver1.58
+&lt;br&gt;
+-Was to display the log from the Notification Icon after automatic termination.
+However, only if the file exists logging is enabled.
+(Selection screen of text file display application is displayed.)
+&lt;br&gt;
+-added the option to stop the automatic scrolling to the message tab.
+(However, messages that exceed the 5000 line will be deleted) 
+&lt;br&gt;
+&lt;br&gt;
+2013-02-15 Ver1.56
+&lt;br&gt;
+-To enable to specify options in the Extra data when you try to start other applications.
+&lt;br&gt;
+・KEY=AutoStart boolean value=false/true（Enable/Disable AutoStart)
+&lt;br&gt;
+・KEY=AutoTerm boolean value=false/true（Enable/Disable AutoTerm)
+&lt;br&gt;
+Valid when the ""AutoStart=true"
+&lt;br&gt;
+・KEY=AutoStart String[] value=Sync-Profile-Name
+&lt;br&gt;
+Effective when the ""AutoStart=true"
+&lt;br&gt; 
+If not specified, or if the profile is not selected, the synchronization profiles to synchronize all valid.
+&lt;br&gt;
+&lt;br&gt;
+2012-12-25 Ver1.55
+&lt;br&gt;
+-Fixed a bug that the progress dialog does not appear when synchronization is started in the background, and then transitions to the foreground.
+&lt;br&gt;
+&lt;br&gt;
+2012-12-24 Ver1.54
+&lt;br&gt;
+-Fixed a bug that Notification messages are not displayed when you exit automatically.
+&lt;br&gt;
+&lt;br&gt;
+2012-12-18 Ver1.53
+&lt;br&gt;
+-Fixed a bug that start synchronization from the menu rarely double.
+&lt;br&gt;
+&lt;br&gt;
+2012-11-18 Ver1.51-1.52
+&lt;br&gt;
+-Changed to "MONOSPACE" the font of the message list.
+&lt;br&gt;
+&lt;br&gt;
+2012-11-17 Ver1.50
+&lt;br&gt;
+-To support　Android 4.2
+&lt;br&gt;
+&lt;br&gt;
+2012-11-06 Ver1.49
+&lt;br&gt;
+- Added mount point list have permission to READ /Removable/SD, /Removable/MicroSD, /Removable/USBdisk1/Drive1, /Removable/USBdisk2/Drive1
+(I was unconfirmed because there is no Asus TF series machine.)
+&lt;br&gt;
+&lt;br&gt;
+2012-10-19 Ver1.48
+&lt;br&gt;
+- To prevent files from being copied when you synchronize multiple local synchronization profiles the same profile, change every synchronization profiles for each mount point from the list in order to maintain the last update time.
+(For a model in last-modified date of a file on the internal SD can not be set)
+&lt;br&gt;
+-Improve UI.
+&lt;br&gt;
+&lt;br&gt;
+2012-10-11 Ver1.46-1.47
+&lt;br&gt;
+- Was to perform an integrity check of the list held last update time. (For a model in last-modified date of a file on the internal SD can not be set)
+If integrity has been impaired displays the maintenance menu, please do the initialization or reset.
+&lt;br&gt;
+&lt;br&gt;
+2012-10-09 Ver1.45
+&lt;br&gt;
+-Corresponding to the model was last modified date can not be set for a file on the internal SD, such as ASUS TF101 and Google Nexusu7.
+&lt;br&gt;
+&lt;br&gt;
+2012-10-05 Ver1.44
+&lt;br&gt;
+-Fixed a bug that does not appear in the confirmation dialog before overwriting the remote file.
+&lt;br&gt;
+&lt;br&gt;
+2012-10-04 Ver1.43
+&lt;br&gt;
+-Made ​​it possible to display a confirmation dialog before deleting/overwriting the file. 
+If you want to display a confirmation dialog, please check the "Confirm" in the synchronization profile.
+&lt;br&gt;
+-Fixed a bug that can not be selected in the dialog to select the file or directory.
+&lt;br&gt;
+&lt;br&gt;
+2012-09-28 Ver1.42
+&lt;br&gt;
+-Fixed the problem that the cancellation is not listed in the overwrite confirmation dialog when saving profiles.
+&lt;br&gt;
+&lt;br&gt;
+2012-09-28 Ver1.41
+&lt;br&gt;
+-Fixed a bug that the application can not be terminated when you transition to the background　synchronization is finished.
+&lt;br&gt;
+&lt;br&gt;
+2012-09-20 Ver1.40
+&lt;br&gt;
+-Android 4.1(JB)Fixed a bug with crash when first installed.
+&lt;br&gt;
+&lt;br&gt;
+2012-09-18 Ver1.39
+&lt;br&gt;
+-Improved UI Android 3.0 or higher
+&lt;br&gt;
+&lt;br&gt;
+2012-09-17 Ver1.38
+&lt;br&gt;
+-Fixed a bug that may menu key is not available in Android4.1(JB)
+&lt;br&gt;
+&lt;br&gt;
+2012-08-10 Ver1.37
+&lt;br&gt;
+-(Android4.0)Fixed a bug &#8220;when not connected to Wifi but does not run the sync&#8220; will run as a synchronous enable.
+&lt;br&gt;
+-To hide the Options menu item can not be executed, depending on your environment.
+&lt;br&gt;
+&lt;br&gt;
+2012-07-17 Ver1.36
+&lt;br&gt;
+-Fixed a bug synchronization is initiated when you return from the settings screen to enable the automatic synchronization option in the Settings screen.
+&lt;br&gt;
+-If Sync task auto start option are enabled , to force the log is append.
+&lt;br&gt;
+&lt;br&gt;
+2012-07-10 Ver1.34
+&lt;br&gt;
+-Fixed a bug that may be terminated at the end of synchronization uncommonly.
+&lt;br&gt;
+&lt;br&gt;
+2012-07-03 Ver1.33
+&lt;br&gt;
+-Fixed a bug that would change the orientation of the screen when the application terminates.
+&lt;br&gt;
+-Added option to set the SMB performance.
+&lt;br&gt;&lt;br&gt;
+2012-06-16 Ver1.31, 11.32
+&lt;br&gt;
+-Has to be able to use the local profile, such as a /mnt/extsd.
+(However, the only available mount point of authority over READ.)
+&lt;br&gt;&lt;br&gt;
+2012-06-08 Ver1.30
+&lt;br&gt;
+-Android 2.3(GB): Corresponds to the Symptom that contains the last update time in milliseconds when you register a new directory to store media.
+&lt;br&gt;&lt;br&gt;
+2012-06-04 Ver1.27
+&lt;br&gt;
+-Add debug message.
+&lt;br&gt;&lt;br&gt;
+2012-06-03 Ver1.26
+&lt;br&gt;
+-Were to optimize the size of large screen display characters such as a tablet.
+&lt;br&gt;
+-Solve a bug that rarely crashes while processing MediaStore.Files.
+&lt;br&gt;&lt;br&gt;
+2012-05-29 Ver1.25
+&lt;br&gt;
+Corresponding to the MediaStore Files.
+&lt;br&gt;&lt;br&gt;
+2012-05-22 Ver1.24
+&lt;br&gt;
+-To restore a message after the forced restart the application.
+&lt;br&gt;
+-Removed from the media may also be registered to delete the local file store.
+&lt;br&gt;&lt;br&gt;
+2012-05-08 Ver1.23
+&lt;br&gt;
+-UI improvement of export/import of profiles
+&lt;br&gt;
+-Add the sample profile during the first boot after installation
+&lt;br&gt;
+-Specify a directory that enables multiple levels of filters in the directory (such as abc/a1)
+&lt;br&gt;
+-SAMBA conducted to determine the host when the IP scan(Remote profile)
+&lt;br&gt;
+-Improve the display of the notification message
+&lt;br&gt;&lt;br&gt;
+2012-04-12 Ver1.22
+&lt;br&gt;
+-Improve the performance of If you have a large number of sub-directory.
+&lt;br&gt;
+-（Bug fix)File is deleted after copying the files to a directory of local hidden, when you restart the terminal.
+&lt;br&gt;&lt;br&gt;
+2012-04-08 Ver1.21
+&lt;br&gt;
+-Fixed bug(Can not use /, when add/edit remote profile directory).
+&lt;br&gt;&lt;br&gt;
+2012-04-08 Ver1.20
+&lt;br&gt;
+-Directory Selection UI improvement.
+&lt;br&gt;&lt;br&gt;
+2012-04-06 Ver1.19
+&lt;br&gt;
+-Resolve a bug with user and password can not log in to if you do not need on the NAS.
+&lt;br&gt;&lt;br&gt;
+2012-04-04 Ver1.18
+&lt;br&gt;
+- Solve a bug that in the opposite direction when prompted for the tablet.
+&lt;br&gt;&lt;br&gt;
+2012-04-01 Ver1.17
+&lt;br&gt;
+-Made it possible to use special characters &#8220;[&#8220;, &#8220;]&#8220;.
+&lt;br&gt;&lt;br&gt;
+2012-03-29 Ver1.16
+&lt;br&gt;
+-Change SMB login method(url -> NtlmPasswordAuthentication).
+&lt;br&gt;
+-Was an invalid character &#8220;[&#8220;, &#8220;]&#8220;.
+&lt;br&gt;&lt;br&gt;
+2012-03-29 Ver1.15
+&lt;br&gt;
+-Delete debug code.
+&lt;br&gt;&lt;br&gt;
+2012-03-29 Ver1.14
+&lt;br&gt;
+-Fixed bug: Can not log on until you restart when you enter the user ID / password correct the wrong user ID / password.
+&lt;br&gt;&lt;br&gt;
+2012-03-28 Ver1.13
+&lt;br&gt;
+-Screen orientation bug fix(Xlarge screen)
+&lt;br&gt;&lt;br&gt;
+2012-03-27 Ver1.12
+&lt;br&gt;
+-Improve UI
+&lt;br&gt;
+-Android4.0 Fixed a bug is abort.
+&lt;br&gt;&lt;br&gt;
+2012-03-22 Ver1.11
+&lt;br&gt;
+-Add IP Address scan for Add/Edit remote profile
+&lt;br&gt;&lt;br&gt;
+2012-03-19 Ver1.10
+&lt;br&gt;
+-Bug fix(Correct auto termination message)
+&lt;br&gt;&lt;br&gt;
+2012-03-18 Ver1.09
+&lt;br&gt;
+-Bug fix(Incorrect restore for some settings parameters)
+&lt;br&gt;&lt;br&gt;
+2012-03-18 Ver1.08
+&lt;br&gt;
+-Bug fix(Add/Edit Sync profile) 
+&lt;br&gt;
+-Change default IP Address(Blank to current IP Address)
+&lt;br&gt;&lt;br&gt;
+2012-02-27 Ver1.07
+&lt;br&gt; 
+-Bug fixes after the restart when killed.
+&lt;br&gt;&lt;br&gt;
+2012-02-23 Ver1.05
+&lt;br&gt; 
+-Added warning message when you ignore the last modification time for the media stores library files
+&lt;br&gt;
+-Add a condition to determine the difference in the configuration file
+(Please try the &#8220;time zone&#8220; and &#8220;Last Modified&#8220; if the file\'s last modification time of the media file store folder by restarting the terminal is to be copied each time overwritten.)
+&lt;br&gt;
+-Add a log file in the menu display
+&lt;br&gt;
+-Was to be able to specify the time of last update.
+&lt;br&gt;
+-From 2 to 3 seconds to change the time difference between the default time to consider the accuracy of FAT.
+&lt;br&gt;
+-Written to the debug information to the log file only.
+&lt;br&gt;&lt;br&gt;
+2012-02-18 Ver1.04
+&lt;br&gt; 
+-Change UI
+&lt;br&gt;
+-Add Directory filter
+&lt;br&gt;
+-About the file (such as Music folder or DCIM), to determine whether or not to 
+include conditions is difference file last modification time file media store.
+(Avoid having to copy the media file store folder in the total amount of the restart of the terminal.)
+&lt;br&gt;&lt;br&gt;
+2012-02-13 Ver1.03
+&lt;br&gt; 
+Bug fixed(Add remote profile)
+&lt;br&gt;&lt;br&gt;
+2012-02-13 Ver1.02
+&lt;br&gt; 
+Apply JCIFS option when retrieve remote file list. Allow no user name for add remote profile.
+&lt;br&gt;&lt;br&gt;  
+2012-02-09 Ver1.01 
+&lt;br&gt;
+Bug fixed(Add profile)
+&lt;br&gt;&lt;br&gt;  
+2012-02-08 Ver1.00 
+&lt;br&gt;
+Initial release
+</string>
+</resources>

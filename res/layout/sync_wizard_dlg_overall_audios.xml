@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    tools:ignore="HardcodedText" >
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:text="@string/msgs_sync_wizard_sync_audio_files"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <CheckBox
+            android:id="@+id/sync_wizard_dlg_overall_audios_cb_mp3"
+            style="@style/check_box_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="mp3 "
+            android:typeface="monospace" />
+
+        <CheckBox
+            android:id="@+id/sync_wizard_dlg_overall_audios_cb_m4a"
+            style="@style/check_box_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="m4a "
+            android:typeface="monospace" />
+
+        <CheckBox
+            android:id="@+id/sync_wizard_dlg_overall_audios_cb_wav"
+            style="@style/check_box_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="wav " 
+            android:typeface="monospace" />
+
+        <CheckBox
+            android:id="@+id/sync_wizard_dlg_overall_audios_cb_wma"
+            style="@style/check_box_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="wma " 
+            android:typeface="monospace" />
+    </LinearLayout>
+
+</LinearLayout>

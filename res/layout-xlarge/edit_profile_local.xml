@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE layout>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+    <TextView
+        android:id="@+id/local_profile_dlg_title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:gravity="center"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+    
+     <include layout="@layout/divider_line1_turquoise" />
+    
+	    <ScrollView 
+	        android:layout_width="fill_parent"
+	        android:layout_height="0dp"
+	        android:layout_weight="1"
+	        android:fadeScrollbars="false"
+	        android:layout_marginLeft="5dp"
+	        android:layout_marginRight="5dp" >
+	
+		    <LinearLayout
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginLeft="5dp"
+		        android:orientation="vertical" >
+	    
+			 	<TextView
+			 	    android:id="@+id/local_profile_dlg_msg"
+				    android:layout_width="fill_parent"
+				    android:layout_height="wrap_content"
+				    android:textColor="#ffff0000"
+				    android:textAppearance="?android:attr/textAppearanceLarge"
+				    android:text="" />
+		
+			    <LinearLayout
+			        android:layout_width="fill_parent"
+			        android:layout_height="wrap_content"
+			        android:layout_marginLeft="5dp"
+			        android:orientation="horizontal" >
+			        <CheckBox
+			            style="@style/check_box_style"
+			            android:id="@+id/local_profile_active"
+			            android:layout_width="110dp"
+			            android:layout_height="wrap_content"
+			            android:textAppearance="?android:attr/textAppearanceLarge"
+			            android:text="@string/msgs_local_profile_dlg_active"/>
+	
+			        <EditText
+			            android:id="@+id/local_profile_name"
+			            android:layout_width="0dp"
+			            android:layout_height="wrap_content"
+			            android:layout_weight="3.36"
+			            android:inputType="text"
+			            android:layout_marginRight="5dp"
+			            android:textAppearance="?android:attr/textAppearanceLarge"
+			            android:hint="@string/msgs_local_profile_dlg_profile" />
+			
+			    </LinearLayout>
+
+			    <LinearLayout
+			        android:layout_width="fill_parent"
+			        android:layout_height="wrap_content"
+			        android:layout_marginLeft="5dp"
+			        android:orientation="horizontal" >
+
+			        <TextView
+			            android:layout_width="200dp"
+			            android:layout_height="wrap_content"
+			            android:layout_gravity="center_vertical"
+			            android:layout_marginTop="1dp"
+			            android:layout_marginLeft="5dp"
+				        android:textAppearance="?android:attr/textAppearanceLarge"
+			            android:text="@string/msgs_local_profile_dlg_local_mount_point" />
+			        <TextView
+			            android:layout_width="25dp"
+			            android:layout_height="wrap_content"/>
+				    <Spinner
+						style="@android:style/Widget.Spinner"
+				        android:id="@+id/local_profile_lmp_btn"
+						android:background="@drawable/spinner_color_background"	
+						android:minHeight="50dp"		        
+				        android:layout_width="0dp"
+				        android:layout_height="wrap_content"
+				        android:layout_marginRight="5dp"
+				        android:layout_marginTop="1dp"
+				        android:layout_weight="1"
+				        android:textAppearance="?android:attr/textAppearanceLarge" />
+	
+				</LinearLayout>
+			    			    				    
+			    <LinearLayout
+			        android:layout_width="fill_parent"
+			        android:layout_height="wrap_content"
+			        android:layout_marginLeft="5dp"
+			        android:layout_marginTop="5dp"
+			        android:orientation="horizontal" >
+				    <Button
+				        android:id="@+id/local_profile_get_btn1"
+				        android:layout_width="200dp"
+				        android:layout_marginTop="1dp"
+				        android:text="@string/msgs_local_profile_dlg_dirlist"
+				        android:layout_height="wrap_content"
+    	    			android:textAppearance="?android:attr/textAppearanceLarge"/>
+	
+				    <EditText
+				        android:id="@+id/local_profile_dir"
+				        android:layout_width="0dp"
+				        android:layout_height="wrap_content"
+				        android:layout_weight="2.54"
+				        android:inputType="text"
+				        android:layout_marginRight="5dp"
+				        android:textAppearance="?android:attr/textAppearanceLarge"
+				        android:hint="@string/msgs_local_profile_dlg_directory" />
+				    
+				</LinearLayout>
+        </LinearLayout>
+     </ScrollView>	    
+     
+     <include layout="@layout/edit_profile_local_ok_cancel"/>
+     
+</LinearLayout>

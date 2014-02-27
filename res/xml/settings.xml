@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+	xmlns:android="http://schemas.android.com/apk/res/android">
+	<PreferenceCategory android:title="@string/settings_sync_title">
+   	    <ListPreference
+			android:key="settings_network_wifi_option"
+			android:title="@string/settings_network_wifi_option_title"
+			android:summary="@string/settings_network_wifi_option_summary_connected_any_ap"
+			android:dialogTitle="@string/settings_network_wifi_option_dialog_title"
+			android:entries="@array/settings_network_wifi_option_list_entries"
+			android:entryValues="@array/settings_network_wifi_option_list_values"/>
+	    	    	    
+	    <CheckBoxPreference
+			android:key="@string/settings_auto_start"
+			android:title="@string/settings_auto_start_title"
+			android:summary="@string/settings_auto_start_summary_dis" 
+			android:dependency="settings_network_wifi_option"/>
+	    
+	    <CheckBoxPreference
+			android:key="@string/settings_auto_term"
+			android:title="@string/settings_auto_term_title"
+			android:summary="@string/settings_auto_term_summary_dis" 
+			android:dependency="settings_auto_start"/>
+	
+	    <CheckBoxPreference
+			android:key="@string/settings_backgroound_execution"
+			android:title="@string/settings_backgroound_execution_title"
+			android:summary="@string/settings_backgroound_execution_summary_dis" 
+			android:dependency="settings_auto_start"/>
+	  	    	    	    
+	    <CheckBoxPreference
+			android:key="@string/settings_error_option"
+			android:title="@string/settings_error_option_title"
+			android:summary="@string/settings_error_option_summary_dis" />
+	    
+	    <CheckBoxPreference
+			android:key="@string/settings_ui_keep_screen_on"
+			android:title="@string/settings_ui_keep_screen_on_title"
+			android:summary="@string/settings_ui_keep_screen_on_summary_dis" />
+	    	    
+	</PreferenceCategory>	    
+	<PreferenceCategory android:title="@string/settings_ui_title">
+	    <CheckBoxPreference
+			android:key="@string/settings_ui_alternate_ui"
+			android:title="@string/settings_ui_alternate_ui_title"
+			android:summary="@string/settings_ui_alternate_ui_summary_dis" />
+        <CheckBoxPreference
+			android:key="@string/settings_debug_msg_diplay"
+			android:title="@string/settings_debug_msg_diplay_title"
+			android:summary="@string/settings_debug_msg_diplay_summary_dis" />
+	    <CheckBoxPreference
+			android:key="@string/settings_suppress_warning_mixed_mp"
+			android:title="@string/settings_suppress_warning_mixed_mp_title"
+			android:summary="@string/settings_suppress_warning_mixed_mp_summary_dis" />
+  	    <ListPreference
+			android:key="@string/settings_background_termination_notification"
+			android:title="@string/settings_background_termination_notification_title"
+			android:summary="@string/settings_background_termination_notification_summary_no" 
+			android:dialogTitle="@string/settings_background_termination_notification_dialog_title"
+			android:entries="@array/settings_background_termination_notification_list_entries"
+			android:entryValues="@array/settings_background_termination_notification_list_values" />
+	    	    	    
+	</PreferenceCategory>	    
+	<PreferenceCategory android:title="@string/settings_log_preference_screen_title">
+        <ListPreference
+			android:key="@string/settings_log_option"
+			android:title="@string/settings_log_option_title"
+			android:summary="@string/settings_log_option_summary_no" 
+			android:dialogTitle="@string/settings_log_option_dialog_title"
+			android:entries="@array/settings_log_option_list_entries"
+			android:entryValues="@array/settings_log_option_list_values" />
+        <ListPreference
+			android:key="@string/settings_log_generation"
+			android:title="@string/settings_log_generation_title"
+			android:summary="@string/settings_log_generation_summary" 
+			android:dialogTitle="@string/settings_log_generation_dialog_title"
+			android:entries="@array/settings_log_generation_list_entries"
+			android:entryValues="@array/settings_log_generation_list_values" />
+        <ListPreference
+			android:key="@string/settings_log_level"
+			android:title="@string/settings_log_title"
+			android:summary="@string/settings_log_level_summary"
+			android:dialogTitle="@string/settings_log_level_dialog_title"
+			android:entries="@array/settings_log_level_list_entries"
+			android:entryValues="@array/settings_log_level_list_values"/>
+  	    <com.sentaroh.android.Utilities.Preference.DirectorySelectPreference
+			android:key="@string/settings_log_dir"
+			android:title="@string/settings_log_dir_title"
+			android:summary="@string/settings_log_dir_summary"
+			android:inputType="text"/>
+    </PreferenceCategory>
+	<PreferenceCategory android:title="@string/settings_media_scanner_option_title">
+	    <CheckBoxPreference
+            android:key="@string/settings_media_scanner_non_media_files_scan"
+			android:title="@string/settings_media_scanner_non_media_files_scan_title"
+			android:summary="@string/settings_media_scanner_non_media_files_scan_summary_dis" />
+        <CheckBoxPreference
+			android:key="@string/settings_media_scanner_scan_extstg"
+			android:title="@string/settings_media_scanner_scan_extstg_title"
+			android:summary="@string/settings_media_scanner_scan_extstg_summary_dis" />
+    </PreferenceCategory>
+	<PreferenceCategory android:title="@string/settings_file_diff_condition_title">
+        <ListPreference
+			android:key="@string/settings_file_diff_time_seconds"
+			android:title="@string/settings_file_diff_time_title"
+			android:summary="@string/settings_file_diff_time_summary" 
+			android:dialogTitle="@string/settings_file_diff_time_dialog_title"
+			android:entries="@array/settings_file_diff_time_list_entries"
+			android:entryValues="@array/settings_file_diff_time_list_values" />
+  	        
+        <ListPreference
+			android:key="@string/settings_media_store_last_mod_time"
+			android:title="@string/settings_media_store_last_mod_time_title"
+			android:summary="@string/settings_media_store_last_mod_time_summary" 
+			android:dialogTitle="@string/settings_media_store_last_mod_time_dialog_title"
+			android:entries="@array/settings_media_store_last_mod_time_list_entries"
+			android:entryValues="@array/settings_media_store_last_mod_time_list_values" />
+   	</PreferenceCategory>
+	<PreferenceCategory android:title="@string/settings_default_smb_title">
+	    <ListPreference
+			android:key="settings_smb_lm_compatibility"
+			android:title="@string/settings_smb_lm_compatibility_title"
+			android:summary="@string/settings_smb_lm_compatibility_summary" 
+			android:dialogTitle="@string/settings_smb_lm_compatibility_dialog_title"
+			android:entries="@array/settings_smb_lm_compatibility_list_entries"
+			android:entryValues="@array/settings_smb_lm_compatibility_list_values" />
+	    <CheckBoxPreference
+			android:key="@string/settings_smb_use_extended_security"
+			android:title="@string/settings_smb_use_extended_security_title"
+			android:summary="@string/settings_smb_use_extended_security_summary_dis" />
+	    	    
+		<EditTextPreference
+			android:key="@string/settings_default_user"
+			android:title="@string/settings_default_user_title"
+			android:summary="@string/settings_default_user_summary"
+			android:inputType="text"/>
+		<EditTextPreference
+			android:key="@string/settings_default_pass"
+			android:title="@string/settings_default_pass_title"
+			android:summary="@string/settings_default_pass_summary"
+			android:inputType="textPassword"/>
+		<EditTextPreference
+			android:key="@string/settings_default_addr"
+			android:title="@string/settings_default_addr_title"
+			android:summary="@string/settings_default_addr_summary"
+			android:inputType="text"/>
+	    <ListPreference
+			android:key="@string/settings_smb_perform_class"
+			android:title="@string/settings_smb_perform_class_title"
+			android:summary="@string/settings_smb_perform_class_summary" 
+			android:dialogTitle="@string/settings_smb_perform_class_dialog_title"
+			android:entries="@array/settings_smb_perform_class_list_entries"
+			android:entryValues="@array/settings_smb_perform_class_list_values" />
+		<PreferenceScreen 
+		    android:key="@string/settings_smb_tuning"
+		    android:title="@string/settings_smb_tuning_title"
+		    android:summary="@string/settings_smb_tuning_summary"	    >
+			<PreferenceCategory android:title="@string/settings_smb_tuning_title">
+			    <EditTextPreference
+					android:key="@string/settings_smb_log_level"
+					android:title="@string/settings_smb_log_level_title"
+					android:summary="@string/settings_smb_log_level_summary"
+					android:inputType="number"/>
+			    
+				<EditTextPreference
+					android:key="@string/settings_smb_rcv_buf_size"
+					android:title="@string/settings_smb_rcv_buf_size_title"
+					android:summary="@string/settings_smb_rcv_buf_size_summary"
+					android:inputType="number"/>
+				<EditTextPreference
+					android:key="@string/settings_smb_snd_buf_size"
+					android:title="@string/settings_smb_snd_buf_size_title"
+					android:summary="@string/settings_smb_snd_buf_size_summary"
+					android:inputType="number"/>
+				<EditTextPreference
+					android:key="@string/settings_smb_listSize"
+					android:title="@string/settings_smb_listSize_title"
+					android:summary="@string/settings_smb_listSize_summary"
+					android:inputType="number"/>
+				<EditTextPreference
+					android:key="@string/settings_smb_maxBuffers"
+					android:title="@string/settings_smb_maxBuffers_title"
+					android:summary="@string/settings_smb_maxBuffers_summary"
+					android:inputType="number"/>
+		   	    <ListPreference
+					android:key="settings_smb_tcp_nodelay"
+					android:title="@string/settings_smb_tcp_nodelay_title"
+					android:summary="@string/settings_smb_tcp_nodelay_summary_false" 
+					android:dialogTitle="@string/settings_smb_tcp_nodelay_dialog_title"
+					android:entries="@array/settings_smb_tcp_nodelay_list_entries"
+					android:entryValues="@array/settings_smb_tcp_nodelay_list_values" />
+				
+				<EditTextPreference
+					android:key="@string/settings_io_buffers"
+					android:title="@string/settings_io_buffers_title"
+					android:summary="@string/settings_io_buffers_summary"
+					android:inputType="number"/>
+			</PreferenceCategory>
+		</PreferenceScreen>				
+	</PreferenceCategory>
+	<PreferenceCategory android:title="@string/settings_other_title">
+		<CheckBoxPreference
+			android:key="@string/settings_exit_clean"
+			android:title="@string/settings_exit_clean_title"
+			android:summary="@string/settings_exit_clean_summary_ena" />
+	</PreferenceCategory>	    
+
+</PreferenceScreen>

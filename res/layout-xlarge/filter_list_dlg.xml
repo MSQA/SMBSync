@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    tools:ignore="SpUsage" >
+
+    <TextView
+        android:id="@+id/filter_select_edit_title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:gravity="center_horizontal"
+        android:paddingTop="10dp"
+        android:text="@string/msgs_filter_list_dlg_file_filter"
+        android:textSize="30dp" />
+
+    <include layout="@layout/divider_line1_turquoise" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_weight="1"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/filter_select_edit_msg"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#ffff0000" />
+
+        <ListView
+            android:id="@+id/filter_select_edit_listview"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:fadeScrollbars="false" >
+        </ListView>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/filter_select_edit_dir_btn"
+        android:layout_width="fill_parent"
+        android:layout_height="60dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:text="@string/msgs_filter_list_dlg_dir_list"
+        android:textSize="25dp" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/filter_select_edit_add_btn"
+            android:layout_width="100dp"
+            android:layout_height="60dp"
+            android:text="@string/msgs_filter_list_dlg_add"
+            android:textSize="25dp" />
+
+        <EditText
+            android:id="@+id/filter_select_edit_new_filter"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_weight="1"
+            android:hint="@string/msgs_filter_list_dlg_filter_hint"
+            android:inputType="text"
+            android:textSize="25dp" />
+    </LinearLayout>
+
+    <include layout="@layout/filter_list_dlg_ok_cancel" />
+
+</LinearLayout>

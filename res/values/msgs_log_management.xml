@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="msgs_log_management_title">Log management</string>
+	
+	<string name="msgs_log_management_menu_browse">Browse log file</string>
+	<string name="msgs_log_management_menu_delete">Delete log file</string>
+	<string name="msgs_log_management_menu_send">Send log file</string>
+	
+	<string name="msgs_log_management_delete_confirm_msg">Delete the following log files.</string>
+	
+	<string name="msgs_log_management_dlg_close">Close</string>
+	
+	<string name="msgs_log_management_dlg_send_zip_file_creating">Creating the zip file</string>
+	<string name="msgs_log_management_dlg_send_zip_file_cancelled">Zip file creation has been canceled</string>
+	
+</resources>

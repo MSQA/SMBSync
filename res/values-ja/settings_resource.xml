@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_main_title">設定</string>
+    
+    <string name="settings_sync_title">同期</string>
+    
+	<string name="settings_network_wifi_option_title">無線LANオプション</string>
+	<string name="settings_network_wifi_option_summary_adapter_off">無線LANがオフでも同期を実行する</string>
+	<string name="settings_network_wifi_option_summary_adapter_on">無線LANがオンでアクセスポイントに接続していなくても同期を実行する</string>
+	<string name="settings_network_wifi_option_summary_connected_any_ap">無線LANがオンでアクセスポイントに接続しているときに同期を実行する</string>
+	<string name="settings_network_wifi_option_summary_connected_spec_ap">無線LANがオンで特定のアクセスポイントに接続しているときに同期を実行する</string>
+	<string name="settings_network_wifi_option_dialog_title">無線LANオプション</string>
+	<string name="settings_network_wifi_option">settings_network_wifi_option</string>
+	<string-array name="settings_network_wifi_option_list_entries">
+	    <item>無線LANがオフでも同期を実行する</item>
+	    <item>無線LANがオンでアクセスポイントに接続していなくても同期を実行する</item>
+	    <item>無線LANがオンでアクセスポイントに接続しているときに同期を実行する</item>
+<!--         
+	    <item>無線LANがオンで特定のアクセスポイントに接続しているときに同期を実行する</item>
+ -->        
+    </string-array>
+	
+    <string name="settings_auto_start_title">自動同期起動</string>
+    <string name="settings_auto_start_summary_dis">自動同期起動は使用しない</string>
+    <string name="settings_auto_start_summary_ena">アプリケーション起動後に同期を実行</string>
+	
+    <string name="settings_auto_term_title">自動停止</string>
+	<string name="settings_auto_term_summary_dis">自動停止は使用しない</string>
+	<string name="settings_auto_term_summary_ena">自動同期終了後に終了する</string>
+	
+    <string name="settings_backgroound_execution_title">バックグラウンド実行</string>
+	<string name="settings_backgroound_execution_summary_dis">SMBSyncをフォアグランドで実行</string>
+	<string name="settings_backgroound_execution_summary_ena">SMBSyncをバックグランドで実行(アプリケーションが起動後にホームスクリーンが表示されます)</string>
+
+	<string name="settings_ui_title">表示</string>
+	
+    <string name="settings_ui_keep_screen_on_title">同期中の画面オン</string>
+    <string name="settings_ui_keep_screen_on_summary_dis">同期中でも画面がオフになることを許容する</string>
+    <string name="settings_ui_keep_screen_on_summary_ena">同期中に画面がオフにならないようにする</string>
+		
+    <string name="settings_ui_alternate_ui_title">代替UI</string>
+    <string name="settings_ui_alternate_ui_summary_dis">項目をクリックしたら選択</string>
+    <string name="settings_ui_alternate_ui_summary_ena">他の項目が選択されていないときにクリックしたら編集、他の項目が選択されているときは項目を選択。</string>
+			
+    <string name="settings_debug_msg_diplay_title">デバッグメッセージの表示</string>
+	<string name="settings_debug_msg_diplay_summary_dis">メッセージタブに表示しない</string>
+	<string name="settings_debug_msg_diplay_summary_ena">メッセージタブに表示する</string>
+
+	<string name="settings_suppress_warning_mixed_mp_title">警告メッセージ抑止</string>
+    <string name="settings_suppress_warning_mixed_mp_summary_dis">ローカルマウントポイント混在を抑止する</string>
+    <string name="settings_suppress_warning_mixed_mp_summary_ena">ローカルマウントポイント混在を表示する</string>
+			
+    <string name="settings_error_option_title">エラー時のオプション</string>
+	<string name="settings_error_option_summary_dis">エラーが発生した場合には同期を終了</string>
+	<string name="settings_error_option_summary_ena">エラーを無視して次の同期を実行</string>
+
+	<string name="settings_log_title">ログ</string>
+	<string name="settings_log_preference_screen_title">メッセージ/ログ オプション</string>
+
+	<string name="settings_background_termination_notification_title">バックグラウンド終了の通知</string>
+	<string name="settings_background_termination_notification_summary_always">常に表示</string>
+	<string name="settings_background_termination_notification_summary_error">エラー時のみ表示</string>
+	<string name="settings_background_termination_notification_summary_no">表示しない</string>
+	<string name="settings_background_termination_notification_dialog_title">バックグラウンドでのアプリケーション終了後の通知</string>
+	<string-array name="settings_background_termination_notification_list_entries">
+        <item>常に表示</item>
+        <item>エラー時のみ</item>
+        <item>表示しない</item>
+    </string-array>
+			
+	<string name="settings_log_option_title">ログ記録</string>
+	<string name="settings_log_option_summary_no">ログファイルは作成しない</string>
+	<string name="settings_log_option_summary_date_time">ログファイル名に起動日付(yyyy-mm-dd)を付けて追記</string>
+	<string name="settings_log_option_dialog_title">ログ記録のオプション</string>
+	<string-array name="settings_log_option_list_entries">
+        <item>作成しない</item>
+        <item>ログファイル名に起動日付を付けて追記</item>
+    </string-array>
+    
+	<string name="settings_log_generation_title">ログファイルの保存世代</string>
+	<string name="settings_log_generation_summary">%s 世代を保存</string>
+	<string name="settings_log_generation_dialog_title">保存世代の選択</string>
+	<string-array name="settings_log_generation_list_entries">
+        <item>1世代</item>
+        <item>2世代</item>
+        <item>3世代</item>
+        <item>5世代</item>
+        <item>7世代</item>
+        <item>10世代</item>
+        <item>15世代</item>
+        <item>20世代</item>
+        <item>30世代</item>
+        <item>50世代</item>
+        </string-array>
+		
+	    
+	<string name="settings_log_dir_title">ログファイル ディレクトリ</string>        
+    <string name="settings_log_dir_summary">無指定=</string>        
+        
+	<string name="settings_log_level_title">デバッグ情報レベル</string>
+	<string name="settings_log_level_summary">現設定=0</string>
+	<string name="settings_log_level_dialog_title">デバッグ情報レベル</string>
+	<string-array name="settings_log_level_list_entries">
+        <item>0:デバッグ情報無し</item>
+        <item>1:デバッグ情報</item>
+        <item>2:詳細デバッグ情報</item>
+        <item>3:ファイル比較情報</item>
+        <item>9:全デバッグ情報</item>
+    </string-array>
+    
+    <string name="settings_default_current_setting">現設定=</string>
+    
+    <string name="settings_media_scanner_option_title">MediaScannerオプション</string>
+
+	<string name="settings_media_scanner_non_media_files_scan_title">非メディアファイル</string>
+	<string name="settings_media_scanner_non_media_files_scan_summary_dis">スキャンしない</string>
+	<string name="settings_media_scanner_non_media_files_scan_summary_ena">text,PDF等をスキャンする</string>
+	<string name="settings_media_scanner_non_media_files_scan">settings_media_scanner_non_media_files_scan</string>
+	
+	<string name="settings_media_scanner_scan_extstg_title">外部ストレージ</string>
+	<string name="settings_media_scanner_scan_extstg_summary_dis">スキャンしない</string>
+	<string name="settings_media_scanner_scan_extstg_summary_ena">/mnt/extsd等をスキャンする</string>
+    
+    
+    <string name="settings_file_diff_condition_title">差分ファイル判定</string>
+	<string name="settings_file_diff_time_title">最終更新時刻の差</string>
+	
+	<string name="settings_file_diff_time_summary">現設定=%s 秒</string>
+	<string name="settings_file_diff_time_dialog_title">最終更新時刻差の選択</string>
+	<string-array name="settings_file_diff_time_list_entries">
+        <item>2 秒</item>
+        <item>3 秒</item>
+        <item>4 秒</item>
+        <item>5 秒</item>
+    </string-array>
+	
+	<!-- <string name="settings_media_store_title">メディア・ストア・ライブラリ・ファイルの処理</string> -->
+	<string name="settings_media_store_last_mod_time_title">メディアストアファイルの最終更新時刻</string>
+	<string name="settings_media_store_last_mod_time_summary">メディアストアファイルの最終更新時刻の取り扱い</string>
+	<string name="settings_media_store_last_mod_time_dialog_title">条件の選択</string>
+	<string name="settings_media_store_last_mod_time_0">差分判定に最終更新時刻を含める</string>
+	<string name="settings_media_store_last_mod_time_1">差分判定に最終更新時刻とタイムゾーンを含める</string>
+	<string name="settings_media_store_last_mod_time_2">差分判定に最終更新時刻とタイムゾーンを使用しない</string>
+	<string-array name="settings_media_store_last_mod_time_list_entries">
+        <item>差分判定に最終更新時刻を含める</item>
+        <item>差分判定に最終更新時刻とタイムゾーンを含める</item>
+        <item>差分判定に最終更新時刻とタイムゾーンを使用しない</item>
+    </string-array>
+    
+	<string name="settings_smb_title">SMB設定</string>
+	
+    <string name="settings_default_smb_title">SMB省略時値</string>
+    
+	<string name="settings_default_user_title">SMBユーザー名</string>        
+    <string name="settings_default_user_summary">無指定=</string>
+    
+	<string name="settings_default_pass_title">SMBパスワード</string>        
+    <string name="settings_default_pass_summary">無指定</string>
+    
+	<string name="settings_default_addr_title">SMB IPアドレス</string>        
+    <string name="settings_default_addr_summary">無指定</string>
+    
+    <string name="settings_other_title">その他</string>
+    
+    <string name="settings_exit_clean_title">終了時の処理</string>
+    <string name="settings_exit_clean_summary_dis">アプリケーション終了時にプロセスを終了しない</string>
+    <string name="settings_exit_clean_summary_ena">アプリケーション終了時にプロセスを終了する</string>
+
+	<string name="settings_smb_perform_class_title">SMBパフォーマンス</string>
+	<string name="settings_smb_perform_class_summary">SMBパフォーマンスクラスの設定</string>
+	<string name="settings_smb_perform_class_dialog_title">パフォーマンスクラスの選択</string>
+	<string name="settings_smb_perform_class_0">低(携帯電話など)</string>
+	<string name="settings_smb_perform_class_1">中(タブレットなど)</string>
+	<string name="settings_smb_perform_class_2">大(より大きなＣＰＵとメモリーが必要)</string>
+	<string name="settings_smb_perform_class_3">SMB Tunning parametersを使用</string>
+	<string-array name="settings_smb_perform_class_list_entries">
+	    <item>低(携帯電話など)</item>
+	    <item>中(タブレットなど)</item>
+        <item>大(より大きなＣＰＵとメモリーが必要)</item>
+        <item>SMB Tunning parametersを使用</item>
+    </string-array>
+    
+	<string name="settings_misc_title">その他</string>
+    
+</resources>

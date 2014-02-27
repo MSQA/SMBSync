@@ -1,0 +1,2023 @@
+<html>
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+<meta name=Generator content="Microsoft Word 11 (filtered)">
+<title>SMBSync Description</title>
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:Wingdings;
+	panose-1:5 0 0 0 0 0 0 0 0 0;}
+@font-face
+	{font-family:"ＭＳ 明朝";
+	panose-1:2 2 6 9 4 2 5 8 3 4;}
+@font-face
+	{font-family:"ＭＳ ゴシック";
+	panose-1:2 11 6 9 7 2 5 8 2 4;}
+@font-face
+	{font-family:Century;
+	panose-1:2 4 6 4 5 5 5 2 3 4;}
+@font-face
+	{font-family:"\@ＭＳ 明朝";
+	panose-1:2 2 6 9 4 2 5 8 3 4;}
+@font-face
+	{font-family:"\@ＭＳ ゴシック";
+	panose-1:2 11 6 9 7 2 5 8 2 4;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0pt;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	text-justify:inter-ideograph;
+	font-size:12.0pt;
+	font-family:Century;}
+h1
+	{margin-top:18.0pt;
+	margin-right:0pt;
+	margin-bottom:0pt;
+	margin-left:21.25pt;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	text-justify:inter-ideograph;
+	text-indent:-21.25pt;
+	page-break-before:always;
+	page-break-after:avoid;
+	word-break:break-all;
+	font-size:16.0pt;
+	font-family:Arial;
+	font-weight:normal;}
+h2
+	{margin:0pt;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	text-justify:inter-ideograph;
+	page-break-after:avoid;
+	font-size:14.0pt;
+	font-family:Arial;
+	font-weight:normal;}
+h3
+	{margin:0pt;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	text-justify:inter-ideograph;
+	page-break-after:avoid;
+	font-size:14.0pt;
+	font-family:Arial;
+	font-weight:normal;}
+h4
+	{margin:0pt;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	text-justify:inter-ideograph;
+	page-break-after:avoid;
+	font-size:12.0pt;
+	font-family:Century;}
+h5
+	{margin:0pt;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	text-justify:inter-ideograph;
+	page-break-after:avoid;
+	font-size:12.0pt;
+	font-family:Arial;
+	font-weight:normal;}
+h6
+	{margin:0pt;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	text-justify:inter-ideograph;
+	page-break-after:avoid;
+	font-size:12.0pt;
+	font-family:Century;}
+p.MsoHeading7, li.MsoHeading7, div.MsoHeading7
+	{margin:0pt;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	text-justify:inter-ideograph;
+	page-break-after:avoid;
+	font-size:12.0pt;
+	font-family:Century;}
+p.MsoHeading8, li.MsoHeading8, div.MsoHeading8
+	{margin:0pt;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	text-justify:inter-ideograph;
+	page-break-after:avoid;
+	font-size:12.0pt;
+	font-family:Century;}
+p.MsoHeading9, li.MsoHeading9, div.MsoHeading9
+	{margin:0pt;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	text-justify:inter-ideograph;
+	page-break-after:avoid;
+	font-size:12.0pt;
+	font-family:Century;}
+p.MsoToc1, li.MsoToc1, div.MsoToc1
+	{margin:0pt;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	text-justify:inter-ideograph;
+	font-size:12.0pt;
+	font-family:Century;}
+p.MsoToc2, li.MsoToc2, div.MsoToc2
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:0pt;
+	margin-left:10.5pt;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	text-justify:inter-ideograph;
+	font-size:12.0pt;
+	font-family:Century;}
+p.MsoToc3, li.MsoToc3, div.MsoToc3
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:0pt;
+	margin-left:21.0pt;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	text-justify:inter-ideograph;
+	font-size:12.0pt;
+	font-family:Century;}
+p.MsoHeader, li.MsoHeader, div.MsoHeader
+	{margin:0pt;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	text-justify:inter-ideograph;
+	layout-grid-mode:char;
+	font-size:12.0pt;
+	font-family:Century;}
+p.MsoFooter, li.MsoFooter, div.MsoFooter
+	{margin:0pt;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	text-justify:inter-ideograph;
+	layout-grid-mode:char;
+	font-size:12.0pt;
+	font-family:Century;}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+p.148mm, li.148mm, div.148mm
+	{margin-top:0pt;
+	margin-right:0pt;
+	margin-bottom:0pt;
+	margin-left:42.0pt;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	text-justify:inter-ideograph;
+	font-size:12.0pt;
+	font-family:Century;}
+p.2Century, li.2Century, div.2Century
+	{margin:0pt;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	text-justify:inter-ideograph;
+	page-break-after:avoid;
+	font-size:14.0pt;
+	font-family:Century;}
+span.2
+	{font-family:Arial;}
+span.2Century0
+	{font-family:Century;}
+ /* Page Definitions */
+ @page Section1
+	{size:595.3pt 841.9pt;
+	margin:99.25pt 85.05pt 85.05pt 85.05pt;
+	layout-grid:18.0pt;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+ ol
+	{margin-bottom:0pt;}
+ul
+	{margin-bottom:0pt;}
+-->
+</style>
+
+</head>
+
+<body lang=JA link=blue vlink=purple style='text-justify-trim:punctuation'>
+
+<div class=Section1 style='layout-grid:18.0pt'>
+
+<p class=MsoToc1><a name="_top"></a><span
+lang=EN-US><a name="_1.機能"></a><span class=MsoHyperlink><a href="#_Toc376257494">1.<span
+style='font-size:10.5pt;color:windowtext;text-decoration:none'>    </span><span
+lang=EN-US style='font-family:"ＭＳ 明朝"'><span lang=EN-US>機能</span></span><span
+style='color:windowtext;display:none;text-decoration:none'>... </span><span
+style='color:windowtext;display:none;text-decoration:none'>2</span></a></span></span></p>
+
+<p class=MsoToc1><span class=MsoHyperlink><span lang=EN-US><a
+href="#_Toc376257495">2.<span style='font-size:10.5pt;color:windowtext;
+text-decoration:none'>    </span><span lang=EN-US style='font-family:"ＭＳ 明朝"'><span
+lang=EN-US>使用方法</span></span><span style='color:windowtext;display:none;
+text-decoration:none'>... </span><span
+style='color:windowtext;display:none;text-decoration:none'>3</span></a></span></span></p>
+
+<p class=MsoToc2 style='margin-left:12.0pt'><span class=MsoHyperlink><span
+lang=EN-US><a href="#_Toc376257496">2.1<span lang=EN-US style='font-family:
+"ＭＳ 明朝"'><span lang=EN-US>プロファイルの作成方法</span></span><span style='color:windowtext;
+display:none;text-decoration:none'>... </span><span
+style='color:windowtext;display:none;text-decoration:none'>5</span></a></span></span></p>
+
+<p class=MsoToc2 style='margin-left:12.0pt'><span class=MsoHyperlink><span
+lang=EN-US><a href="#_Toc376257497">2.2 SMB<span lang=EN-US style='font-family:
+"ＭＳ 明朝"'><span lang=EN-US>情報の設定</span></span><span style='color:windowtext;
+display:none;text-decoration:none'>... </span><span
+style='color:windowtext;display:none;text-decoration:none'>5</span></a></span></span></p>
+
+<p class=MsoToc2 style='margin-left:12.0pt'><span class=MsoHyperlink><span
+lang=EN-US><a href="#_Toc376257498">2.3 <span lang=EN-US style='font-family:
+"ＭＳ 明朝"'><span lang=EN-US>個別にプロファイルを作成</span></span><span style='color:windowtext;
+display:none;text-decoration:none'>... </span><span
+style='color:windowtext;display:none;text-decoration:none'>6</span></a></span></span></p>
+
+<p class=MsoToc3 style='margin-left:24.0pt'><span class=MsoHyperlink><span
+lang=EN-US><a href="#_Toc376257499">2.3.1 <span lang=EN-US style='font-family:
+"ＭＳ 明朝"'><span lang=EN-US>ローカルプロファイルの作成</span></span><span style='color:windowtext;
+display:none;text-decoration:none'>... </span><span
+style='color:windowtext;display:none;text-decoration:none'>6</span></a></span></span></p>
+
+<p class=MsoToc3 style='margin-left:24.0pt'><span class=MsoHyperlink><span
+lang=EN-US><a href="#_Toc376257500">2.3.2 <span lang=EN-US style='font-family:
+"ＭＳ 明朝"'><span lang=EN-US>リモートプロファイルの作成</span></span><span style='color:windowtext;
+display:none;text-decoration:none'>... </span><span
+style='color:windowtext;display:none;text-decoration:none'>8</span></a></span></span></p>
+
+<p class=MsoToc3 style='margin-left:24.0pt'><span class=MsoHyperlink><span
+lang=EN-US><a href="#_Toc376257501">2.3.3 <span lang=EN-US style='font-family:
+"ＭＳ 明朝"'><span lang=EN-US>同期プロファイルの作成</span></span><span style='color:windowtext;
+display:none;text-decoration:none'>... </span><span
+style='color:windowtext;display:none;text-decoration:none'>10</span></a></span></span></p>
+
+<p class=MsoToc2 style='margin-left:12.0pt'><span class=MsoHyperlink><span
+lang=EN-US><a href="#_Toc376257502">2.4 <span lang=EN-US style='font-family:
+"ＭＳ 明朝"'><span lang=EN-US>プロファイル作成ウィザード</span></span><span style='color:windowtext;
+display:none;text-decoration:none'>... </span><span
+style='color:windowtext;display:none;text-decoration:none'>12</span></a></span></span></p>
+
+<p class=MsoToc3 style='margin-left:24.0pt'><span class=MsoHyperlink><span
+lang=EN-US><a href="#_Toc376257503">2.4.1 <span lang=EN-US style='font-family:
+"ＭＳ 明朝"'><span lang=EN-US>全般</span></span><span style='color:windowtext;
+display:none;text-decoration:none'>... </span><span
+style='color:windowtext;display:none;text-decoration:none'>12</span></a></span></span></p>
+
+<p class=MsoToc3 style='margin-left:24.0pt'><span class=MsoHyperlink><span
+lang=EN-US><a href="#_Toc376257504">2.4.2 <span lang=EN-US style='font-family:
+"ＭＳ 明朝"'><span lang=EN-US>マスター側の情報</span></span><span style='color:windowtext;
+display:none;text-decoration:none'>... </span><span
+style='color:windowtext;display:none;text-decoration:none'>13</span></a></span></span></p>
+
+<p class=MsoToc3 style='margin-left:24.0pt'><span class=MsoHyperlink><span
+lang=EN-US><a href="#_Toc376257505">2.4.3 <span lang=EN-US style='font-family:
+"ＭＳ 明朝"'><span lang=EN-US>ターゲット側の情報</span></span><span style='color:windowtext;
+display:none;text-decoration:none'>... </span><span
+style='color:windowtext;display:none;text-decoration:none'>15</span></a></span></span></p>
+
+<p class=MsoToc3 style='margin-left:24.0pt'><span class=MsoHyperlink><span
+lang=EN-US><a href="#_Toc376257506">2.4.4 <span lang=EN-US style='font-family:
+"ＭＳ 明朝"'><span lang=EN-US>同期情報</span></span><span style='color:windowtext;
+display:none;text-decoration:none'>... </span><span
+style='color:windowtext;display:none;text-decoration:none'>17</span></a></span></span></p>
+
+<p class=MsoToc2 style='margin-left:12.0pt'><span class=MsoHyperlink><span
+lang=EN-US><a href="#_Toc376257507">2.5 <span lang=EN-US style='font-family:
+"ＭＳ 明朝"'><span lang=EN-US>ファイル選択フィルター</span></span><span style='color:windowtext;
+display:none;text-decoration:none'>... </span><span
+style='color:windowtext;display:none;text-decoration:none'>19</span></a></span></span></p>
+
+<p class=MsoToc2 style='margin-left:12.0pt'><span class=MsoHyperlink><span
+lang=EN-US><a href="#_Toc376257508">2.6 <span lang=EN-US style='font-family:
+"ＭＳ 明朝"'><span lang=EN-US>ディレクトリー選択フィルター</span></span><span style='color:windowtext;
+display:none;text-decoration:none'>... </span><span
+style='color:windowtext;display:none;text-decoration:none'>21</span></a></span></span></p>
+
+<p class=MsoToc1><span class=MsoHyperlink><span lang=EN-US><a
+href="#_Toc376257509">3.<span style='font-size:10.5pt;color:windowtext;
+text-decoration:none'>    </span><span lang=EN-US style='font-family:"ＭＳ 明朝"'><span
+lang=EN-US>タブの説明</span></span><span style='color:windowtext;display:none;
+text-decoration:none'>... </span><span
+style='color:windowtext;display:none;text-decoration:none'>25</span></a></span></span></p>
+
+<p class=MsoToc2 style='margin-left:12.0pt'><span class=MsoHyperlink><span
+lang=EN-US><a href="#_Toc376257510">3.1 <span lang=EN-US style='font-family:
+"ＭＳ 明朝"'><span lang=EN-US>プロファイルタブ</span></span><span style='color:windowtext;
+display:none;text-decoration:none'>... </span><span
+style='color:windowtext;display:none;text-decoration:none'>25</span></a></span></span></p>
+
+<p class=MsoToc2 style='margin-left:12.0pt'><span class=MsoHyperlink><span
+lang=EN-US><a href="#_Toc376257511">3.2 <span lang=EN-US style='font-family:
+"ＭＳ 明朝"'><span lang=EN-US>メッセージタブ</span></span><span style='color:windowtext;
+display:none;text-decoration:none'>... </span><span
+style='color:windowtext;display:none;text-decoration:none'>26</span></a></span></span></p>
+
+<p class=MsoToc2 style='margin-left:12.0pt'><span class=MsoHyperlink><span
+lang=EN-US><a href="#_Toc376257512">3.3 <span lang=EN-US style='font-family:
+"ＭＳ 明朝"'><span lang=EN-US>履歴タブ</span></span><span style='color:windowtext;
+display:none;text-decoration:none'>... </span><span
+style='color:windowtext;display:none;text-decoration:none'>26</span></a></span></span></p>
+
+<p class=MsoToc1><span class=MsoHyperlink><span lang=EN-US><a
+href="#_Toc376257513">4.<span style='font-size:10.5pt;color:windowtext;
+text-decoration:none'>    </span><span lang=EN-US style='font-family:"ＭＳ 明朝"'><span
+lang=EN-US>メニューの説明</span></span><span style='color:windowtext;display:none;
+text-decoration:none'>... </span><span
+style='color:windowtext;display:none;text-decoration:none'>28</span></a></span></span></p>
+
+<p class=MsoToc2 style='margin-left:12.0pt'><span class=MsoHyperlink><span
+lang=EN-US><a href="#_Toc376257514">4.1 <span lang=EN-US style='font-family:
+"ＭＳ 明朝"'><span lang=EN-US>同期実行</span></span><span style='color:windowtext;
+display:none;text-decoration:none'>... </span><span
+style='color:windowtext;display:none;text-decoration:none'>28</span></a></span></span></p>
+
+<p class=MsoToc2 style='margin-left:12.0pt'><span class=MsoHyperlink><span
+lang=EN-US><a href="#_Toc376257515">4.2<span lang=EN-US style='font-family:
+"ＭＳ 明朝"'><span lang=EN-US>ログファイルの表示</span></span><span style='color:windowtext;
+display:none;text-decoration:none'>... </span><span
+style='color:windowtext;display:none;text-decoration:none'>28</span></a></span></span></p>
+
+<p class=MsoToc2 style='margin-left:12.0pt'><span class=MsoHyperlink><span
+lang=EN-US><a href="#_Toc376257516">4.3 <span lang=EN-US style='font-family:
+"ＭＳ 明朝"'><span lang=EN-US>プロファイルの書き出し</span></span><span style='color:windowtext;
+display:none;text-decoration:none'>... </span><span
+style='color:windowtext;display:none;text-decoration:none'>28</span></a></span></span></p>
+
+<p class=MsoToc2 style='margin-left:12.0pt'><span class=MsoHyperlink><span
+lang=EN-US><a href="#_Toc376257517">4.4<span lang=EN-US style='font-family:
+"ＭＳ 明朝"'><span lang=EN-US>プロファイルの読み込み</span></span><span style='color:windowtext;
+display:none;text-decoration:none'>... </span><span
+style='color:windowtext;display:none;text-decoration:none'>28</span></a></span></span></p>
+
+<p class=MsoToc2 style='margin-left:12.0pt'><span class=MsoHyperlink><span
+lang=EN-US><a href="#_Toc376257518">4.5<span lang=EN-US style='font-family:
+"ＭＳ 明朝"'><span lang=EN-US>設定</span></span><span style='color:windowtext;
+display:none;text-decoration:none'>... </span><span
+style='color:windowtext;display:none;text-decoration:none'>28</span></a></span></span></p>
+
+<p class=MsoToc3 style='margin-left:24.0pt'><span class=MsoHyperlink><span
+lang=EN-US><a href="#_Toc376257519">4.5.1 <span lang=EN-US style='font-family:
+"ＭＳ 明朝"'><span lang=EN-US>同期</span></span><span style='color:windowtext;
+display:none;text-decoration:none'>... </span><span
+style='color:windowtext;display:none;text-decoration:none'>29</span></a></span></span></p>
+
+<p class=MsoToc3 style='margin-left:24.0pt'><span class=MsoHyperlink><span
+lang=EN-US><a href="#_Toc376257520">4.5.2 <span lang=EN-US style='font-family:
+"ＭＳ 明朝"'><span lang=EN-US>表示</span></span><span style='color:windowtext;
+display:none;text-decoration:none'>... </span><span
+style='color:windowtext;display:none;text-decoration:none'>29</span></a></span></span></p>
+
+<p class=MsoToc3 style='margin-left:24.0pt'><span class=MsoHyperlink><span
+lang=EN-US><a href="#_Toc376257521">4.5.3 <span lang=EN-US style='font-family:
+"ＭＳ 明朝"'><span lang=EN-US>メッセージ</span></span>/<span lang=EN-US
+style='font-family:"ＭＳ 明朝"'><span lang=EN-US>ログオプション</span></span><span
+style='color:windowtext;display:none;text-decoration:none'>... </span><span
+style='color:windowtext;display:none;text-decoration:none'>30</span></a></span></span></p>
+
+<p class=MsoToc3 style='margin-left:24.0pt'><span class=MsoHyperlink><span
+lang=EN-US><a href="#_Toc376257522">4.5.4 MediaScanner<span lang=EN-US
+style='font-family:"ＭＳ 明朝"'><span lang=EN-US>オプション</span></span><span
+style='color:windowtext;display:none;text-decoration:none'>... </span><span
+style='color:windowtext;display:none;text-decoration:none'>30</span></a></span></span></p>
+
+<p class=MsoToc3 style='margin-left:24.0pt'><span class=MsoHyperlink><span
+lang=EN-US><a href="#_Toc376257523">4.5.5 <span lang=EN-US style='font-family:
+"ＭＳ 明朝"'><span lang=EN-US>差分ファイル判定</span></span><span style='color:windowtext;
+display:none;text-decoration:none'>... </span><span
+style='color:windowtext;display:none;text-decoration:none'>30</span></a></span></span></p>
+
+<p class=MsoToc3 style='margin-left:24.0pt'><span class=MsoHyperlink><span
+lang=EN-US><a href="#_Toc376257524">4.5.6 SMB<span lang=EN-US style='font-family:
+"ＭＳ 明朝"'><span lang=EN-US>設定</span></span><span style='color:windowtext;
+display:none;text-decoration:none'>... </span><span
+style='color:windowtext;display:none;text-decoration:none'>31</span></a></span></span></p>
+
+<p class=MsoToc3 style='margin-left:24.0pt'><span class=MsoHyperlink><span
+lang=EN-US><a href="#_Toc376257525">4.5.7 <span lang=EN-US style='font-family:
+"ＭＳ 明朝"'><span lang=EN-US>その他</span></span><span style='color:windowtext;
+display:none;text-decoration:none'>... </span><span
+style='color:windowtext;display:none;text-decoration:none'>31</span></a></span></span></p>
+
+<p class=MsoToc1><span class=MsoHyperlink><span lang=EN-US><a
+href="#_Toc376257526">5.<span style='font-size:10.5pt;color:windowtext;
+text-decoration:none'>    </span><span lang=EN-US style='font-family:"ＭＳ 明朝"'><span
+lang=EN-US>使用ライブラリー</span></span><span style='color:windowtext;display:none;
+text-decoration:none'>... </span><span
+style='color:windowtext;display:none;text-decoration:none'>32</span></a></span></span></p>
+
+<h1><span lang=EN-US>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><a name="_Toc376257494"><span style='font-family:"ＭＳ ゴシック"'>機能</span></a></h1>
+
+<p class=MsoNormal><span lang=EN-US>SMBSync</span><span style='font-family:
+"ＭＳ 明朝"'>は</span><span lang=EN-US>Android</span><span style='font-family:"ＭＳ 明朝"'>端末と</span><span
+lang=EN-US>PC</span><span style='font-family:"ＭＳ 明朝"'>や</span><span lang=EN-US>NAS</span><span
+style='font-family:"ＭＳ 明朝"'>との間でファイルの同期を行うためのツールです。同期の方法としてミラー、移動、コピーの３種類が使用できます。</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>ミラー</span></p>
+
+<p class=MsoNormal style='margin-left:26.5pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>マスター側のディレクトリーとファイルをターゲット側に差分コピーし、コピー終了後にマスター側に存在しないターゲット側のファイルとディレクトリーを削除する。</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>移動</span></p>
+
+<p class=MsoNormal style='margin-left:26.5pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>マスター側のディレクトリーとファイルをターゲット側にコピーし、ターゲット側にコピーしたマスター側のファイルを削除する。（ただし、マスターとターゲットに同名でファイルサイズと更新日時が同じファイルはコピーせずマスター側のファイルを削除）</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>コピー</span></p>
+
+<p class=MsoNormal style='margin-left:20.5pt;text-indent:6.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>マスター側のディレクトリーに含まれるファイルをターゲット側に差分コピーする。（ただし、マスターとターゲットに同名でファイルサイズと更新日時が同じ場合はコピーしない）</span></p>
+
+<p class=MsoNormal style='word-break:break-all'><span style='font-family:"ＭＳ 明朝"'>下記の３条件のうちいずれかが成立した場合に差分ファイルと判定。</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>ファイルが存在しない</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>ファイルサイズが違う</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>最終更新日時が</span><span lang=EN-US>3</span><span
+style='font-family:"ＭＳ 明朝"'>秒以上違う</span><span lang=EN-US>(</span><span
+style='font-family:"ＭＳ 明朝"'>秒数はオプションにより変更可能</span><span lang=EN-US>)</span></p>
+
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US><a href="#_top"><span
+lang=EN-US style='font-family:"ＭＳ 明朝"'><span lang=EN-US>目次に戻る</span></span></a></span></p>
+
+<h1><a name="_Toc376257495"><span lang=EN-US>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ ゴシック"'>使用方法</span></a></h1>
+
+<p class=MsoNormal style='word-break:break-all'><b><u><span style='font-family:
+"ＭＳ 明朝";color:red'>ミラーと移動はファイルが削除されます、コピーはファイルを上書きしますので、テストディレクトリーを作成してテストしてからご使用ください。</span></u></b></p>
+
+<p class=MsoNormal style='word-break:break-all'><span style='font-family:"ＭＳ 明朝"'>同期を行うにはローカル、リモート、同期のプロファイルを作成することが必要です。ローカルからローカルへの同期（内部ストレージから</span><span
+lang=EN-US>USB</span><span style='font-family:"ＭＳ 明朝"'>ストレージなど）ではリモートプロファイルは不要です。</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>ローカルプロファイルはローカル側（</span><span
+lang=EN-US>Android</span><span style='font-family:"ＭＳ 明朝"'>側）のディレクトリーを指定します。</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>リモートプロファイルはリモート側（</span><span
+lang=EN-US>NAS</span><span style='font-family:"ＭＳ 明朝"'>や</span><span
+lang=EN-US>PC</span><span style='font-family:"ＭＳ 明朝"'>などの</span><span
+lang=EN-US>SMB</span><span style='font-family:"ＭＳ 明朝"'>サーバー）のディレクトリーを指定します。</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>同期プロファイルはローカルまたはリモートのプロファイルをマスターまたはターゲットとして指定し、同期タイプを指定します。</span></p>
+
+<p class=MsoNormal style='word-break:break-all'><span style='font-family:"ＭＳ 明朝"'>同期は同期プロファイル毎に行います。</span></p>
+
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US>&nbsp;</span></p>
+
+<span lang=EN-US style='font-size:12.0pt;font-family:Century'><br clear=all
+style='page-break-before:always'>
+</span>
+
+<p class=MsoNormal style='word-break:break-all'><span style='font-family:"ＭＳ 明朝"'>プロファイルの作成例</span></p>
+
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US><img border=0
+width=413 height=472 src="SMBSync_Desc_JA.files/image004.png"></span></p>
+
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal style='word-break:break-all'><span style='font-family:"ＭＳ 明朝"'>上記の例では</span><span
+lang=EN-US>WiFi</span><span style='font-family:"ＭＳ 明朝"'>で接続された</span><span
+lang=EN-US>Android</span><span style='font-family:"ＭＳ 明朝"'>端末に</span><span
+lang=EN-US>PC</span><span style='font-family:"ＭＳ 明朝"'>と</span><span lang=EN-US>NAS</span><span
+style='font-family:"ＭＳ 明朝"'>のフォルダーからファイルを同期するプロファイルを示している。</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span lang=EN-US>SYNC1</span><span style='font-family:"ＭＳ 明朝"'>は</span><span
+lang=EN-US>PC</span><span style='font-family:"ＭＳ 明朝"'>のフォルダーから</span><span
+lang=EN-US>Local</span><span style='font-family:"ＭＳ 明朝"'>の</span><span
+lang=EN-US>/mnt/sdcard/DCIM/DIR-PC</span><span style='font-family:"ＭＳ 明朝"'>に</span><span
+lang=EN-US>jpg</span><span style='font-family:"ＭＳ 明朝"'>ファイルをミラーで同期をおこないます。</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span lang=EN-US>SYNC2</span><span style='font-family:"ＭＳ 明朝"'>は</span><span
+lang=EN-US>NAS</span><span style='font-family:"ＭＳ 明朝"'>のフォルダーから</span><span
+lang=EN-US>Local</span><span style='font-family:"ＭＳ 明朝"'>の</span><span
+lang=EN-US>/mnt/sdcard/DCIM/DIR-NAS</span><span style='font-family:"ＭＳ 明朝"'>に</span><span
+lang=EN-US>jpg</span><span style='font-family:"ＭＳ 明朝"'>ファイルをミラーで同期をおこないます。</span></p>
+
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US><a href="#_top"><span
+lang=EN-US style='font-family:"ＭＳ 明朝"'><span lang=EN-US>目次に戻る</span></span></a></span></p>
+
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US>&nbsp;</span></p>
+
+<span lang=EN-US style='font-size:12.0pt;font-family:Century'><br clear=all
+style='page-break-before:always'>
+</span>
+
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US>&nbsp;</span></p>
+
+<h2><a name="_Toc376257496"><span lang=EN-US>2.1</span></a><span
+style='font-family:"ＭＳ ゴシック"'>プロファイルの作成方法</span></h2>
+
+<p class=MsoNormal style='word-break:break-all'><span style='font-family:"ＭＳ 明朝"'>プロファイルは個別に作成するか、または、ウィザードを起動して作成する方法があります。</span></p>
+
+<h2><a name="_Toc376257497"><span lang=EN-US>2.2 SMB</span></a><span
+style='font-family:"ＭＳ ゴシック"'>情報の設定</span></h2>
+
+<p class=MsoNormal style='word-break:break-all'><span style='font-family:"ＭＳ 明朝"'>リモートプロファイルの作成時に表示する</span><span
+lang=EN-US>IP</span><span style='font-family:"ＭＳ 明朝"'>アドレス、ユーザー名、パスワードを登録する。ここで登録すると複数のリモートプロファイルを登録するときにキーボード入力を省略することができます。（登録しなくてもリモートプロファイルの追加で個別に指定することができます。）</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>メニューボタンを押し設定を選択</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span lang=EN-US>SMB</span><span style='font-family:"ＭＳ 明朝"'>設定をクリック（</span><span
+lang=EN-US>Android 3.0</span><span style='font-family:"ＭＳ 明朝"'>以上のみ）</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span lang=EN-US>SMB</span><span style='font-family:"ＭＳ 明朝"'>ユーザー名、</span><span
+lang=EN-US>SMB</span><span style='font-family:"ＭＳ 明朝"'>パスワードおよび</span><span
+lang=EN-US>SMB IP</span><span style='font-family:"ＭＳ 明朝"'>アドレスをクリックし入力する。</span></p>
+
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US><a href="#_top"><span
+lang=EN-US style='font-family:"ＭＳ 明朝"'><span lang=EN-US>目次に戻る</span></span></a></span></p>
+
+<span lang=EN-US style='font-size:12.0pt;font-family:Century'><br clear=all
+style='page-break-before:always'>
+</span>
+
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US>&nbsp;</span></p>
+
+<h2><a name="_Toc376257498"><span lang=EN-US>2.3 </span></a><span
+style='font-family:"ＭＳ ゴシック"'>個別にプロファイルを作成</span></h2>
+
+<h3><a name="_Toc376257499"><span lang=EN-US>2.3.1 </span></a><span
+style='font-family:"ＭＳ ゴシック"'>ローカルプロファイルの作成</span></h3>
+
+<p class=MsoNormal style='word-break:break-all'><span style='font-family:"ＭＳ 明朝"'>プロファイルタブで一行目をロングクリックすると、コンテキストメニューが表示されますので、ローカルプロファイルの追加をクリック。</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;word-break:break-all'><span
+lang=EN-US><img border=0 width=288 height=515
+src="SMBSync_Desc_JA.files/image005.jpg"></span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>有効</span></p>
+
+<p class=MsoNormal style='text-indent:42.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>プロファイルを有効にする</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>プロファイル名</span></p>
+
+<p class=MsoNormal style='text-indent:42.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>プロファイルの名前を指定する</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>マウントポイント</span></p>
+
+<p class=MsoNormal style='text-indent:42.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>ローカルのマウントポイントを選択</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>一覧</span></p>
+
+<p class=MsoNormal style='text-indent:42.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>ローカルのディレクトリー一覧を表示</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>（一覧ボタンを押すと選択可能なディレクトリーが表示されますので、ディレクトリーをクリックし、了解を押す）</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>ディレクトリー名</span></p>
+
+<p class=MsoNormal style='text-indent:42.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>ローカルのディレクトリーを指定する</span></p>
+
+<p class=MsoNormal style='word-break:break-all'><b><u><span style='font-family:
+"ＭＳ 明朝"'>プロファイル名はローカル、リモート、同期でユニークであること（重複できません）。</span></u></b></p>
+
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US><a href="#_top"><span
+lang=EN-US style='font-family:"ＭＳ 明朝"'><span lang=EN-US>目次に戻る</span></span></a></span></p>
+
+<span lang=EN-US style='font-size:12.0pt;font-family:Century'><br clear=all
+style='page-break-before:always'>
+</span>
+
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US>&nbsp;</span></p>
+
+<h3><a name="_Toc376257500"><span lang=EN-US>2.3.2 </span></a><span
+style='font-family:"ＭＳ ゴシック"'>リモートプロファイルの作成</span></h3>
+
+<p class=MsoNormal style='word-break:break-all'><span style='font-family:"ＭＳ 明朝"'>コンテキストメニューからリモートプロファイルの追加をクリック。</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;word-break:break-all'><span
+lang=EN-US><img border=0 width=295 height=530
+src="SMBSync_Desc_JA.files/image006.jpg"></span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>有効</span></p>
+
+<p class=MsoNormal style='text-indent:42.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>プロファイルを有効にする</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>プロファイル名</span></p>
+
+<p class=MsoNormal style='text-indent:42.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>プロファイルの名前を指定する</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>コンピューター名を使用する</span></p>
+
+<p class=MsoNormal style='text-indent:42.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>リモートのホストを名前または</span><span lang=EN-US>IP</span><span
+style='font-family:"ＭＳ 明朝"'>アドレスで指定するかを選択する</span></p>
+
+<p class=MsoNormal style='text-indent:42.0pt;word-break:break-all'><span
+lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>ネットワークスキャン</span></p>
+
+<p class=MsoNormal style='text-indent:42.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>リモートのホストを決めるためにネットワークをスキャンする</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>アドレス</span><span lang=EN-US>/</span><span
+style='font-family:"ＭＳ 明朝"'>名前</span></p>
+
+<p class=MsoNormal style='text-indent:42.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>リモートのホストを名前または</span><span lang=EN-US>IP</span><span
+style='font-family:"ＭＳ 明朝"'>アドレスで指定する</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>ユーザー</span><span lang=EN-US>ID/</span><span
+style='font-family:"ＭＳ 明朝"'>パスワードを使用する</span></p>
+
+<p class=MsoNormal style='text-indent:42.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>ユーザー</span><span lang=EN-US>ID/</span><span
+style='font-family:"ＭＳ 明朝"'>パスワードを使用するかどうかを指定する</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>ユーザー名</span></p>
+
+<p class=MsoNormal style='text-indent:42.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>リモートで設定したユーザー名を指定する</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>パスワード</span></p>
+
+<p class=MsoNormal style='text-indent:42.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>リモートで設定したパスワードを指定する</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>一覧（共有名）</span></p>
+
+<p class=MsoNormal style='text-indent:42.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>共有名の一覧を表示する</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>（一覧ボタンを押すと選択可能な共有名が表示されますので、共有名をクリックし、了解を押す）</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>共有名</span></p>
+
+<p class=MsoNormal style='text-indent:42.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>共有名を指定する</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>一覧（ディレクトリー）</span></p>
+
+<p class=MsoNormal style='text-indent:42.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>リモートのディレクトリー一覧を表示する</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>（一覧ボタンを押すと選択可能なディレクトリーが表示されますので、ディレクトリーをクリックし、了解を押す）</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>ディレクトリー</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>リモートのディレクトリーを指定する</span></p>
+
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US><a href="#_top"><span
+lang=EN-US style='font-family:"ＭＳ 明朝"'><span lang=EN-US>目次に戻る</span></span></a></span></p>
+
+<span lang=EN-US style='font-size:12.0pt;font-family:Century'><br clear=all
+style='page-break-before:always'>
+</span>
+
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US>&nbsp;</span></p>
+
+<h3><a name="_Toc376257501"><span lang=EN-US>2.3.3 </span></a><span
+style='font-family:"ＭＳ ゴシック"'>同期プロファイルの作成</span></h3>
+
+<p class=MsoNormal style='word-break:break-all'><span style='font-family:"ＭＳ 明朝"'>コンテキストメニューから同期プロファイルの追加をクリック。</span></p>
+
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US><img border=0
+width=321 height=571 src="SMBSync_Desc_JA.files/image007.jpg"></span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>有効</span></p>
+
+<p class=MsoNormal style='text-indent:42.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>プロファイルを有効にする</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>プロファイル名</span></p>
+
+<p class=MsoNormal style='text-indent:42.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>プロファイルの名前を指定する</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>マスタープロファイル</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>同期の元となるプロファイルを指定する。（手で入力もできますが、一覧ボタンを押すと選択可能なプロファイルが表示されます。）</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>ターゲットプロファイル</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>同期先となるプロファイルを指定する。（手で入力もできますが、一覧ボタンを押すと選択可能なプロファイルが表示されます。）</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>マスターとターゲットプロファイルはリモートとローカルまたはローカルとローカルの組み合わせにすることが必要です。たとえばマスターがリモートならばターゲットはローカルという組み合わせにしてください。</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>同期方式</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>ミラー、コピーと移動の方式を選択</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>フィルター（ファイル）</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:21.0pt;word-break:
+break-all'><span lang=EN-US><a href="#_2.5_ファイル選択フィルター"><span lang=EN-US
+style='font-family:"ＭＳ 明朝"'><span lang=EN-US>ファイル選択フィルターを参照</span></span></a></span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>フィルター（ディレクトリー）</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:21.0pt;word-break:
+break-all'><span lang=EN-US><a href="#_2.6_ディレクトリー選択フィルター"><span lang=EN-US
+style='font-family:"ＭＳ 明朝"'><span lang=EN-US>ディレクトリー選択フィルターを参照</span></span></a></span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>マスターディレクトリーのファイルとディレクトリーを処理</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>チェックした場合はマスタープロファイルで指定されたディレクトリーに存在するファイルとディレクトリーを処理します。（省略時値はチェック有りです）</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>チェックしていない場合はマスタープロファイルで指定されたディレクトリーに存在ディレクトリーだけを処理します。</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>確認</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>チェックした場合はファイルの削除と上書きするときに確認ダイアログを表示します。</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>システムによる最終更新日時の取得</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:21.0pt;word-break:
+break-all'><span style='font-family:"ＭＳ 明朝"'>通常はチェック無しで使用してください。</span></p>
+
+<span lang=EN-US style='font-size:14.0pt;font-family:Arial'><br clear=all
+style='page-break-before:always'>
+</span>
+
+<h2><a name="_Toc376257502"><span lang=EN-US>2.4 </span></a><span
+style='font-family:"ＭＳ ゴシック"'>プロファイル作成ウィザード</span></h2>
+
+<p class=MsoNormal style='word-break:break-all'><span style='font-family:"ＭＳ 明朝"'>コンテキストメニューからプロファイル作成ウィザードをクリックする。</span></p>
+
+<h3><a name="_Toc376257503"><span lang=EN-US>2.4.1 </span></a><span
+style='font-family:"ＭＳ ゴシック"'>全般</span></h3>
+
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US><img border=0
+width=312 height=557 src="SMBSync_Desc_JA.files/image008.jpg"></span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>同期方向</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>リモート</span><span lang=EN-US>-</span><span
+style='font-family:"ＭＳ 明朝"'>ローカル、ローカル</span><span lang=EN-US>-</span><span
+style='font-family:"ＭＳ 明朝"'>リモートまたはローカル</span><span lang=EN-US>-</span><span
+style='font-family:"ＭＳ 明朝"'>ローカルのうちから選択する。</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>プロファイル名</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt'><span style='font-family:"ＭＳ 明朝"'>作成するプロファイルの名前の基本を指定する。各プロファイルは</span><span
+lang=EN-US>AG</span><span style='font-family:"ＭＳ 明朝"'>から始まる接頭子が付けられるが、変更は可能。</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>全てのファイルを処理対象にする</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>チェックした場合は全てのファイルを処理対象にする。チェックしない場合は、下記でチェックしたファイル形式のみ処理対象とする。</span></p>
+
+<p class=MsoNormal style='margin-left:63.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image003.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>イメージファイル</span></p>
+
+<p class=MsoNormal style='margin-left:63.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image003.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>オーディオファイル</span></p>
+
+<p class=MsoNormal style='margin-left:63.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image003.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>ビデオファイル</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt'><span lang=EN-US>&nbsp;</span></p>
+
+<span lang=EN-US style='font-size:14.0pt;font-family:Arial'><br clear=all
+style='page-break-before:always'>
+</span>
+
+<h3><a name="_Toc376257504"><span lang=EN-US>2.4.2 </span></a><span
+style='font-family:"ＭＳ ゴシック"'>マスター側の情報</span></h3>
+
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US><img border=0
+width=324 height=577 src="SMBSync_Desc_JA.files/image009.jpg"></span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>プロファイルの名前</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>マスター側のプロファイル名。</span><span lang=EN-US>AGM-L-</span><span
+style='font-family:"ＭＳ 明朝"'>または</span><span lang=EN-US>AGM-R-</span><span
+style='font-family:"ＭＳ 明朝"'>は自動的に付けられた物で編集することは可能です、ただし、重複する名前は使用できません。</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>マウントポイント</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:21.0pt;word-break:
+break-all'><span style='font-family:"ＭＳ 明朝"'>ローカルのマウントポイントを選択する。</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>一覧</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:21.0pt;word-break:
+break-all'><span style='font-family:"ＭＳ 明朝"'>ディレクトリー一覧を表示する。</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>ディレクトリー</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:21.0pt;word-break:
+break-all'><span style='font-family:"ＭＳ 明朝"'>対象のディレクトリーを指定する。</span></p>
+
+<span lang=EN-US style='font-size:14.0pt;font-family:Arial'><br clear=all
+style='page-break-before:always'>
+</span>
+
+<h3><a name="_Toc376257505"><span lang=EN-US>2.4.3 </span></a><span
+style='font-family:"ＭＳ ゴシック"'>ターゲット側の情報</span></h3>
+
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US><img border=0
+width=320 height=568 src="SMBSync_Desc_JA.files/image010.jpg"></span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>プロファイルの名前</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>ターゲット側のプロファイル名。</span><span lang=EN-US>AGT-L-</span><span
+style='font-family:"ＭＳ 明朝"'>または</span><span lang=EN-US>AGT-R-</span><span
+style='font-family:"ＭＳ 明朝"'>は自動的に付けられた物で編集することは可能です、ただし、重複する名前は使用できません。</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>コンピューター名を使用する</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:21.0pt;word-break:
+break-all'><span style='font-family:"ＭＳ 明朝"'>ホストの指定に名前を使用する。</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>ネットワークスキャン</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:21.0pt;word-break:
+break-all'><span style='font-family:"ＭＳ 明朝"'>ネットワークをスキャンして使用可能なホスト一覧を表示する。</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>サーバー名</span></p>
+
+<p class=MsoNormal style='text-indent:42.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>ホストの名前。</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>ユーザー</span><span lang=EN-US>ID/</span><span
+style='font-family:"ＭＳ 明朝"'>パスワードを使用する</span></p>
+
+<p class=MsoNormal style='text-indent:42.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>ホストで設定されたユーザー</span><span lang=EN-US>ID/</span><span
+style='font-family:"ＭＳ 明朝"'>パスワードを使用する</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>ユーザー名</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:21.0pt;word-break:
+break-all'><span style='font-family:"ＭＳ 明朝"'>ホストで設定されたユーザー</span><span
+lang=EN-US>ID</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>パスワード</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:21.0pt;word-break:
+break-all'><span style='font-family:"ＭＳ 明朝"'>ホストで設定されたパスワード</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>一覧（共有）</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>使用可能な共有一覧を表示する</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>共有名</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>共有を指定する</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>一覧（ディレクトリー）</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>使用可能なディレクトリー一覧を表示する</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>ディレクトリー</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>ディレクトリーを指定する</span></p>
+
+<span lang=EN-US style='font-size:14.0pt;font-family:Arial'><br clear=all
+style='page-break-before:always'>
+</span>
+
+<h3><a name="_Toc376257506"><span lang=EN-US>2.4.4 </span></a><span
+style='font-family:"ＭＳ ゴシック"'>同期情報</span></h3>
+
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US><img border=0
+width=327 height=580 src="SMBSync_Desc_JA.files/image011.jpg"></span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>プロファイルの名前</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>同期プロファイル名。</span><span lang=EN-US>AG-S-</span><span
+style='font-family:"ＭＳ 明朝"'>は自動的に付けられた物で編集することは可能です、ただし、重複する名前は使用できません。</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>同期方式</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:21.0pt;word-break:
+break-all'><span style='font-family:"ＭＳ 明朝"'>ミラー、コピーまたは移動を選択する。</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>フィルター（ファイル）</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:21.0pt;word-break:
+break-all'><span lang=EN-US><a href="#_2.5_ファイル選択フィルター"><span lang=EN-US
+style='font-family:"ＭＳ 明朝"'><span lang=EN-US>ファイル選択フィルターを参照</span></span></a></span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>フィルター（ディレクトリー）</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:21.0pt;word-break:
+break-all'><span lang=EN-US><a href="#_2.6_ディレクトリー選択フィルター"><span lang=EN-US
+style='font-family:"ＭＳ 明朝"'><span lang=EN-US>ディレクトリー選択フィルターを参照</span></span></a></span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>マスターディレクトリーのファイルとディレクトリーを処理</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>チェックした場合はマスタープロファイルで指定されたディレクトリーに存在するファイルとディレクトリーを処理します。（省略時値はチェック有りです）</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>チェックしていない場合はマスタープロファイルで指定されたディレクトリーに存在ディレクトリーだけを処理します。</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>確認</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>チェックした場合はファイルの削除と上書きするときに確認ダイアログを表示します。</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>システムによる最終更新日時の取得</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:21.0pt;word-break:
+break-all'><span style='font-family:"ＭＳ 明朝"'>通常はチェック無しで使用してください。</span></p>
+
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US>&nbsp;</span></p>
+
+<span lang=EN-US style='font-size:14.0pt;font-family:Arial'><br clear=all
+style='page-break-before:always'>
+</span>
+
+<h2><a name="_2.5_ファイル選択フィルター"></a><a name="_Toc376257507"><span lang=EN-US>2.5
+</span></a><span style='font-family:"ＭＳ ゴシック"'>ファイル選択フィルター</span></h2>
+
+<p class=MsoNormal style='margin-left:21.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>ファイル選択フィルターは同期するファイルを選択するための物です。</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>２つ以上フィルターに入力した場合はＯＲ条件となります。</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;word-break:break-all'><span
+lang=EN-US><img border=0 width=246 height=439
+src="SMBSync_Desc_JA.files/image012.jpg"></span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>削除</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>ファイルフィルターを削除します</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>選択</span><span lang=EN-US>/</span><span
+style='font-family:"ＭＳ 明朝"'>除外</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>選択フィルターまたは除外フィルターの指定</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>追加</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>フィルター欄に入力された内容をフィルターとして追加</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>フィルター</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>フィルター値です。</span><span lang=EN-US>DSC*.JPG</span><span
+style='font-family:"ＭＳ 明朝"'>などと入力してください。</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>ファイル選択フィルターは<b><u><span style='color:red'>正規表現で入力しないでください</span></u><span
+style='color:red'>。</span></b></span></p>
+
+<span lang=EN-US style='font-size:12.0pt;font-family:Century'><br clear=all
+style='page-break-before:always'>
+</span>
+
+<p class=MsoNormal style='margin-left:21.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>ファイルフィルターの指定例</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;word-break:break-all'><span
+lang=EN-US><img border=0 width=505 height=314
+src="SMBSync_Desc_JA.files/image013.png"></span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;word-break:break-all'><span
+lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>選択フィルターとして「</span><span lang=EN-US>FILE*.*</span><span
+style='font-family:"ＭＳ 明朝"'>」、除外フィルターとして「</span><span lang=EN-US>FILE*.JPG</span><span
+style='font-family:"ＭＳ 明朝"'>」の二つを指定した場合に処理するファイルは</span><span lang=EN-US>FIILE01.TXT</span><span
+style='font-family:"ＭＳ 明朝"'>、</span><span lang=EN-US>FIILE02.TXT</span><span
+style='font-family:"ＭＳ 明朝"'>と</span><span lang=EN-US>FIIL-2.mpg</span><span
+style='font-family:"ＭＳ 明朝"'>になります。</span></p>
+
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US><a href="#_top"><span
+lang=EN-US style='font-family:"ＭＳ 明朝"'><span lang=EN-US>目次に戻る</span></span></a></span></p>
+
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US>&nbsp;</span></p>
+
+<span lang=EN-US style='font-size:14.0pt;font-family:Arial'><br clear=all
+style='page-break-before:always'>
+</span>
+
+<h2><a name="_2.6_ディレクトリー選択フィルター"></a><a name="_Toc376257508"><span lang=EN-US>2.6
+</span></a><span style='font-family:"ＭＳ ゴシック"'>ディレクトリー選択フィルター</span></h2>
+
+<p class=MsoNormal style='text-indent:21.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>ディレクトリー選択フィルターはディレクトリーを選択するための物です。</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>（フィルターは選択と除外を選ぶことができます。選択と除外の両方を入力した場合は除外が優先されます。）</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>２つ以上フィルターに入力した場合はＯＲ条件となります。</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;word-break:break-all'><span
+lang=EN-US><img border=0 width=212 height=376
+src="SMBSync_Desc_JA.files/image014.jpg"></span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>削除</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>ファイルフィルターを削除します</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>選択</span><span lang=EN-US>/</span><span
+style='font-family:"ＭＳ 明朝"'>除外</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>選択フィルターまたは除外フィルターの指定</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>ディレクトリー一覧</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>ディレクトリー一覧の表示</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>追加</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>フィルター欄に入力された内容をフィルターとして追加</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>フィルター</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>フィルター値です。</span><span lang=EN-US>DIR*</span><span
+style='font-family:"ＭＳ 明朝"'>や</span><span lang=EN-US>DIR-A</span><span
+style='font-family:"ＭＳ 明朝"'>などと入力してください。</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>ファイル選択フィルターは<b><u><span style='color:red'>正規表現で入力しないでください</span></u><span
+style='color:red'>。</span></b></span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;word-break:break-all'><span
+lang=EN-US>&nbsp;</span></p>
+
+<span lang=EN-US style='font-size:12.0pt;font-family:Century'><br clear=all
+style='page-break-before:always'>
+</span>
+
+<p class=MsoNormal style='margin-left:21.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>ディレクトリー一覧</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;word-break:break-all'><span
+lang=EN-US><img border=0 width=232 height=412
+src="SMBSync_Desc_JA.files/image015.jpg"></span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>左側のチェックボックスにチェックし、追加ボタンを押すことによりフィルターを追加します。</span></p>
+
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US>&nbsp;</span></p>
+
+<span lang=EN-US style='font-size:12.0pt;font-family:Century'><br clear=all
+style='page-break-before:always'>
+</span>
+
+<p class=MsoNormal style='word-break:break-all'><span style='font-family:"ＭＳ 明朝"'>ディレクトリーフィルターの指定例その１</span></p>
+
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US><img border=0
+width=505 height=307 src="SMBSync_Desc_JA.files/image016.png"></span></p>
+
+<p class=MsoNormal style='word-break:break-all'><span style='font-family:"ＭＳ 明朝"'>上記は「マスターディレクトリーのファイルとディレクトリーを処理」をチェック無しの場合で</span><span
+lang=EN-US>DIR</span><span style='font-family:"ＭＳ 明朝"'>フィルターを指定すると￥</span><span
+lang=EN-US>DIR-A</span><span style='font-family:"ＭＳ 明朝"'>に含まれるディレクトリーおよびファイルがどのように選択されるかを表した物です。</span></p>
+
+<p class=MsoNormal style='word-break:break-all'><span style='font-family:"ＭＳ 明朝"'>結果は</span><span
+lang=EN-US>DIR-AB</span><span style='font-family:"ＭＳ 明朝"'>、</span><span
+lang=EN-US>DIR-AC</span><span style='font-family:"ＭＳ 明朝"'>だけが選択され処理されます。</span></p>
+
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US><a href="#_top"><span
+lang=EN-US style='font-family:"ＭＳ 明朝"'><span lang=EN-US>目次に戻る</span></span></a></span></p>
+
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US>&nbsp;</span></p>
+
+<span lang=EN-US style='font-size:12.0pt;font-family:Century'><br clear=all
+style='page-break-before:always'>
+</span>
+
+<p class=MsoNormal style='word-break:break-all'><span style='font-family:"ＭＳ 明朝"'>ディレクトリーフィルターの指定例その２</span></p>
+
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US><img border=0
+width=505 height=294 src="SMBSync_Desc_JA.files/image017.png"></span></p>
+
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal style='word-break:break-all'><span style='font-family:"ＭＳ 明朝"'>上記は「マスターディレクトリーのファイルとディレクトリーを処理」をチェック有りの場合で</span><span
+lang=EN-US>DIR</span><span style='font-family:"ＭＳ 明朝"'>フィルターを指定すると￥</span><span
+lang=EN-US>DIR-A</span><span style='font-family:"ＭＳ 明朝"'>に含まれるディレクトリーおよびファイルがどのように選択されるかを表した物です。</span></p>
+
+<p class=MsoNormal style='word-break:break-all'><span style='font-family:"ＭＳ 明朝"'>結果は</span><span
+lang=EN-US>DIR-AB</span><span style='font-family:"ＭＳ 明朝"'>、</span><span
+lang=EN-US>DIR-AC</span><span style='font-family:"ＭＳ 明朝"'>およびファイル</span><span
+lang=EN-US>FILE-01.TXT</span><span style='font-family:"ＭＳ 明朝"'>だけが選択され処理されます。</span></p>
+
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US><a href="#_top"><span
+lang=EN-US style='font-family:"ＭＳ 明朝"'><span lang=EN-US>目次に戻る</span></span></a></span></p>
+
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US>&nbsp;</span></p>
+
+<h1><a name="_Toc376257509"><span lang=EN-US>3.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ ゴシック"'>タブの説明</span></a></h1>
+
+<h2><a name="_Toc376257510"><span lang=EN-US>3.1 </span></a><span
+style='font-family:"ＭＳ ゴシック"'>プロファイルタブ</span></h2>
+
+<p class=MsoNormal style='word-break:break-all'><span style='font-family:"ＭＳ 明朝"'>同期、リモート、ローカルプロファイルの一覧表示です。コンテキストメニューによりプロファイルの編集、削除、有効化、無効化とプロファイルの追加と有効な同期プロファイルの同期実行を行うことができます。</span></p>
+
+<p class=MsoNormal style='word-break:break-all'><span style='font-family:"ＭＳ 明朝"'>左端のチェックを複数のプロファイルで行うと、コンテキストメニューで同期、削除、有効化、無効化を複数のプロファイルに対して行います。</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>同期実行</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>有効なプロファイル全てを同期する</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>無効</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>プロファイルを無効にする</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>有効</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>プロファイルを有効にする</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>編集</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>プロファイルを編集する</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>削除</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>プロファイルを削除する</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>ローカルプロファイルの追加</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>ローカルプロファイルを追加する</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>リモートプロファイルの追加</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>リモートプロファイルを追加する</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>同期プロファイルの追加</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>同期プロファイルを追加する</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>プロファイルのコピー</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>プロファイルをコピーする</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>プロファイルの名前変更</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>プロファイルの名前を変更する</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>同期作成ウィザードの起動</span></p>
+
+<p class=MsoNormal style='text-indent:21.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>同期作成ウィザードを起動する</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>全プロファイルを選択</span></p>
+
+<p class=MsoNormal style='text-indent:21.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>全てのプロファイルを選択する</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>全ての選択を解除</span></p>
+
+<p class=MsoNormal style='text-indent:21.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>全てのプロファイルを非選択にする</span></p>
+
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US><a href="#_top"><span
+lang=EN-US style='font-family:"ＭＳ 明朝"'><span lang=EN-US>目次に戻る</span></span></a></span></p>
+
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US>&nbsp;</span></p>
+
+<h2><a name="_Toc376257511"><span lang=EN-US>3.2 </span></a><span
+style='font-family:"ＭＳ ゴシック"'>メッセージタブ</span></h2>
+
+<p class=MsoNormal style='word-break:break-all'><span style='font-family:"ＭＳ 明朝"'>同期結果やエラーメッセージを表示します。</span></p>
+
+<p class=MsoNormal style='word-break:break-all'><span style='font-family:"ＭＳ 明朝"'>コンテキストメニューが使えます。</span></p>
+
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>先頭に移動</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>先頭行を表示する</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>最後に移動</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>最後部行を表示する</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>ログメッセージのクリア</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>メッセージを消去する</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;word-break:break-all'><span
+lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US><a href="#_top"><span
+lang=EN-US style='font-family:"ＭＳ 明朝"'><span lang=EN-US>目次に戻る</span></span></a></span></p>
+
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US>&nbsp;</span></p>
+
+<h2><a name="_Toc376257512"><span lang=EN-US>3.3 </span></a><span
+style='font-family:"ＭＳ ゴシック"'>履歴タブ</span></h2>
+
+<p class=MsoNormal><span style='font-family:"ＭＳ 明朝"'>同期結果の履歴を表示します。ログ記録が有効な場合に履歴をタップするとログファイルが保存されている場合にログが表示されます。</span></p>
+
+<p class=MsoNormal><span style='font-family:"ＭＳ 明朝"'>コンテキストメニューが使えます。</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt'><span
+lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>先頭に移動</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt'><span style='font-family:"ＭＳ 明朝"'>先頭行を表示する</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt'><span
+lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>最後に移動</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>最後部行を表示する</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt'><span
+lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>ログの表示</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt'><span style='font-family:"ＭＳ 明朝"'>ログを表示する</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt'><span
+lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>履歴の削除</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt'><span style='font-family:"ＭＳ 明朝"'>履歴を削除する</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt'><span
+lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>全ての選択解除</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt'><span style='font-family:"ＭＳ 明朝"'>全ての履歴を非選択にする</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt'><span
+lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>全て選択</span></p>
+
+<p class=MsoNormal style='text-indent:21.0pt'><span style='font-family:"ＭＳ 明朝"'>全ての履歴を選択する</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt'><span
+lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>クリップボードにコピー</span></p>
+
+<p class=MsoNormal style='text-indent:21.0pt'><span style='font-family:"ＭＳ 明朝"'>履歴をクリップボードにコピーする</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US><a href="#_top"><span
+lang=EN-US style='font-family:"ＭＳ 明朝"'><span lang=EN-US>目次に戻る</span></span></a></span></p>
+
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US>&nbsp;</span></p>
+
+<h1><a name="_Toc376257513"><span lang=EN-US>4.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ ゴシック"'>メニューの説明</span></a></h1>
+
+<h2><a name="_Toc376257514"><span lang=EN-US>4.1 </span></a><span
+style='font-family:"ＭＳ ゴシック"'>同期実行</span></h2>
+
+<p class=MsoNormal style='word-break:break-all'><span style='font-family:"ＭＳ 明朝"'>有効な同期プロファイルを全て実行します。</span></p>
+
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US><a href="#_top"><span
+lang=EN-US style='font-family:"ＭＳ 明朝"'><span lang=EN-US>目次に戻る</span></span></a></span></p>
+
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US>&nbsp;</span></p>
+
+<h2><a name="_Toc376257515"><span lang=EN-US>4.2</span></a><span
+style='font-family:"ＭＳ ゴシック"'>ログファイルの表示</span></h2>
+
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US>SD</span><span
+style='font-family:"ＭＳ 明朝"'>カードのログファイルを表示。</span></p>
+
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US><a href="#_top"><span
+lang=EN-US style='font-family:"ＭＳ 明朝"'><span lang=EN-US>目次に戻る</span></span></a></span></p>
+
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US>&nbsp;</span></p>
+
+<h2><a name="_Toc376257516"><span lang=EN-US>4.3 </span></a><span
+style='font-family:"ＭＳ ゴシック"'>プロファイルの書き出し</span></h2>
+
+<p class=MsoNormal style='word-break:break-all'><span style='font-family:"ＭＳ 明朝"'>プロファイルを</span><span
+lang=EN-US>SD</span><span style='font-family:"ＭＳ 明朝"'>カードに書き出します。</span></p>
+
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US><a href="#_top"><span
+lang=EN-US style='font-family:"ＭＳ 明朝"'><span lang=EN-US>目次に戻る</span></span></a></span></p>
+
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US>&nbsp;</span></p>
+
+<h2><a name="_Toc376257517"><span lang=EN-US>4.4</span></a><span
+style='font-family:"ＭＳ ゴシック"'>プロファイルの読み込み</span></h2>
+
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US>SD</span><span
+style='font-family:"ＭＳ 明朝"'>カードからプロファイルを読み込みます。</span></p>
+
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US><a href="#_top"><span
+lang=EN-US style='font-family:"ＭＳ 明朝"'><span lang=EN-US>目次に戻る</span></span></a></span></p>
+
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US>&nbsp;</span></p>
+
+<h2><a name="_Toc376257518"><span lang=EN-US>4.5</span></a><span
+style='font-family:"ＭＳ ゴシック"'>設定</span></h2>
+
+<p class=MsoNormal style='word-break:break-all'><span style='font-family:"ＭＳ 明朝"'>下記項目を設定します。</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>同期オプション</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>表示</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>メッセージ</span><span lang=EN-US>/</span><span
+style='font-family:"ＭＳ 明朝"'>ログオプション</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span lang=EN-US>MediaScanner</span><span style='font-family:
+"ＭＳ 明朝"'>オプション</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>差分ファイル判定</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span lang=EN-US>SMB</span><span style='font-family:"ＭＳ 明朝"'>設定</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>その他</span></p>
+
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US>&nbsp;</span></p>
+
+<h3><a name="_Toc376257519"><span lang=EN-US>4.5.1 </span></a><span
+style='font-family:"ＭＳ ゴシック"'>同期</span></h3>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>無線</span><span lang=EN-US>LAN</span><span
+style='font-family:"ＭＳ 明朝"'>オプション</span></p>
+
+<p class=MsoNormal style='text-indent:21.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>無線</span><span lang=EN-US>LAN</span><span
+style='font-family:"ＭＳ 明朝"'>の状態で同期を実行する条件を指定します。</span></p>
+
+<p class=MsoNormal style='margin-left:63.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>無線</span><span lang=EN-US>LAN</span><span
+style='font-family:"ＭＳ 明朝"'>がオフでも同期を実行する</span></p>
+
+<p class=MsoNormal style='margin-left:63.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>無線</span><span lang=EN-US>LAN</span><span
+style='font-family:"ＭＳ 明朝"'>がオンでアクセスポイントに接続していなくても同期を実行する</span></p>
+
+<p class=MsoNormal style='margin-left:63.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>無線</span><span lang=EN-US>LAN</span><span
+style='font-family:"ＭＳ 明朝"'>がオンでアクセスポイントに接続しているときに同期を実行する</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>自動同期起動</span></p>
+
+<p class=MsoNormal style='text-indent:21.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>アプリケーション起動後に有効なプロファイル全ての同期を実行します。</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>自動停止</span></p>
+
+<p class=MsoNormal style='text-indent:21.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>同期が終了したら、アプリケーションを終了します。</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>バックグラウンド実行</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>アプリケーション起動時にアプリケーション画面</span><span lang=EN-US>(</span><span
+style='font-family:"ＭＳ 明朝"'>フォアグランド実行</span><span lang=EN-US>)</span><span
+style='font-family:"ＭＳ 明朝"'>を表示するかホームスクリーン</span><span lang=EN-US>(</span><span
+style='font-family:"ＭＳ 明朝"'>バックグランド実行</span><span lang=EN-US>)</span><span
+style='font-family:"ＭＳ 明朝"'>を表示するかを選択します。</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>エラー時のオプション</span></p>
+
+<p class=MsoNormal style='text-indent:21.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>同期実行時にエラーが発生しても無視します。</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>同期中の画面オン</span></p>
+
+<p class=MsoNormal style='text-indent:21.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>同期実行中に画面消灯を許容する</span><span lang=EN-US>/</span><span
+style='font-family:"ＭＳ 明朝"'>しないを選択</span></p>
+
+<h3><a name="_Toc376257520"><span lang=EN-US>4.5.2 </span></a><span
+style='font-family:"ＭＳ ゴシック"'>表示</span></h3>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>代替</span><span lang=EN-US>UI</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>「他の項目が選択されていないときにクリックしたら編集、他の項目が選択されているときは項目を選択」を有効にする</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>警告メッセージ抑止</span></p>
+
+<p class=MsoNormal style='text-indent:21.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>マウントポイント混在の警告メッセージを抑止するかどうかを決めます。</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>デバッグメッセージの表示</span></p>
+
+<p class=MsoNormal style='text-indent:21.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>デバッグメッセージをメッセージタブに表示するかどうかを決めます。</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>バックグラウンド終了の通知</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>バックグラウンド実行状態でアプリケーションが終了した場合（自動終了が有効な場合）の</span><span
+lang=EN-US>Notification</span><span style='font-family:"ＭＳ 明朝"'>での通知方法を選択します。</span></p>
+
+<p class=MsoNormal style='text-indent:21.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>バックグラウンドで実行中は必ず</span><span lang=EN-US>Notification</span><span
+style='font-family:"ＭＳ 明朝"'>に通知され、状態が確認できます。</span></p>
+
+<h3><a name="_Toc376257521"><span lang=EN-US>4.5.3 </span></a><span
+style='font-family:"ＭＳ ゴシック"'>メッセージ</span><span lang=EN-US>/</span><span
+style='font-family:"ＭＳ ゴシック"'>ログオプション</span></h3>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>ログ記録</span></p>
+
+<p class=MsoNormal style='text-indent:21.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>ログメッセージをファイルに保存する方法を決めます。</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>作成しない</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>ファイル名に日付</span><span
+lang=EN-US>(log-yyyy_mm_dd.txt)</span><span style='font-family:"ＭＳ 明朝"'>をつけて、追記（ファイルが存在しない場合は作成します</span><span
+lang=EN-US>)</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>ログファイルの保存世代</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>ログ</span></p>
+
+<p class=MsoNormal style='text-indent:21.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>ログメッセージに書き出す種類を決めます。</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>ログファイルディレクトリ</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>ログメッセージファイルのディレクトリーを決めます。</span><span lang=EN-US>(</span><span
+style='font-family:"ＭＳ 明朝"'>初期設定は</span><span lang=EN-US>/mnt/sdcard/SMBSync)</span></p>
+
+<h3><a name="_Toc376257522"><span lang=EN-US>4.5.4 MediaScanner</span></a><span
+style='font-family:"ＭＳ ゴシック"'>オプション</span></h3>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>非メディアファイル</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>非メディアファイルをコピー終了時に</span><span lang=EN-US>MediaScanner</span><span
+style='font-family:"ＭＳ 明朝"'>でスキャンするかどうかを指定する</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>外部ストレージ</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;word-break:break-all'><span
+lang=EN-US>USB</span><span style='font-family:"ＭＳ 明朝"'>や</span><span
+lang=EN-US>SDCARD</span><span style='font-family:"ＭＳ 明朝"'>等の外部メディアへのコピー終了時に</span><span
+lang=EN-US>MediaScanner</span><span style='font-family:"ＭＳ 明朝"'>でスキャンするかどうかを指定する</span></p>
+
+<h3><a name="_Toc376257523"><span lang=EN-US>4.5.5 </span></a><span
+style='font-family:"ＭＳ ゴシック"'>差分ファイル判定</span></h3>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>最終更新時刻の差</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>差分ファイルとするリモートとローカル</span> <span style='font-family:
+"ＭＳ 明朝"'>ファイルの最終更新時刻の差を秒数で指定します。（初期値は３秒）</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>メディアストアファイルの最終更新時刻</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>メディアストア（</span><span lang=EN-US>DCIM</span><span
+style='font-family:"ＭＳ 明朝"'>や</span><span lang=EN-US>Music</span><span
+style='font-family:"ＭＳ 明朝"'>フォルダー等）のファイルについて、ファイル最終更新時刻の取り扱いを選択します。</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>最終更新時刻だけで差分を判定</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>最終更新時刻と最終更新時刻＋タイムゾーンで差分を判定</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>ファイル最終更新時刻を使用しない</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>端末再起動によるメディアストアフォルダーのファイルの最終更新時間が書き換わりファイルが毎回コピーされる場合は（２）を試してください。</span></p>
+
+<h3><a name="_Toc376257524"><span lang=EN-US>4.5.6 SMB</span></a><span
+style='font-family:"ＭＳ ゴシック"'>設定</span></h3>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span lang=EN-US>SMB</span><span style='font-family:"ＭＳ 明朝"'>省略時値</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span lang=EN-US>jcifs.smb.lmCompatibility</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;word-break:break-all'><span
+lang=EN-US>JCIFS LM</span><span style='font-family:"ＭＳ 明朝"'>コンパティビリティ</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span lang=EN-US>jcifs.smb.client.useExtendedSecurity</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;word-break:break-all'><span
+lang=EN-US>JCIFS</span><span style='font-family:"ＭＳ 明朝"'>拡張セキュリティ</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span lang=EN-US>SMB</span><span style='font-family:"ＭＳ 明朝"'>ユーザー名</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>リモートプロファイル追加時に表示するユーザー名を指定</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span lang=EN-US>SMB</span><span style='font-family:"ＭＳ 明朝"'>パスワード</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>リモートプロファイル追加時に表示するパスワードを指定</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span lang=EN-US>SMB IP</span><span style='font-family:"ＭＳ 明朝"'>アドレス</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>リモートプロファイル追加時に表示する</span><span lang=EN-US>IP</span><span
+style='font-family:"ＭＳ 明朝"'>アドレスを指定</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image002.png" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>ＳＭＢパフォーマンス</span></p>
+
+<p class=MsoNormal style='margin-left:42.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>パフォーマンスパラメーターを指定。詳細を指定するためには</span><span
+lang=EN-US>SMB tuning parameters</span><span style='font-family:"ＭＳ 明朝"'>を選択してください。</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span lang=EN-US>SMB tuning parameters</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>通常は使用しない。指定した後に初期値にする場合は値を削除して空白にしてください。</span></p>
+
+<h3><a name="_Toc376257525"><span lang=EN-US>4.5.7 </span></a><span
+style='font-family:"ＭＳ ゴシック"'>その他</span></h3>
+
+<p class=MsoNormal style='margin-left:21.0pt;text-indent:-21.0pt;word-break:
+break-all'><span lang=EN-US style='font-family:Symbol'><img width=13 height=13
+src="SMBSync_Desc_JA.files/image001.gif" alt="*"><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ 明朝"'>終了時の処理</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;word-break:break-all'><span
+style='font-family:"ＭＳ 明朝"'>現在は指定不可です。</span></p>
+
+<p class=MsoNormal style='margin-left:21.0pt;word-break:break-all'><span
+lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US><a href="#_top"><span
+lang=EN-US style='font-family:"ＭＳ 明朝"'><span lang=EN-US>目次に戻る</span></span></a></span></p>
+
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US>&nbsp;</span></p>
+
+<h1><a name="_Toc376257526"><span lang=EN-US>5.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-family:"ＭＳ ゴシック"'>使用ライブラリー</span></a></h1>
+
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US><a
+href="http://jcifs.samba.org/">-jcifs-1.3.17<span lang=EN-US style='font-family:
+"ＭＳ 明朝"'><span lang=EN-US>　</span></span>Client Library</a></span></p>
+
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US><a href="#_top"><span
+lang=EN-US style='font-family:"ＭＳ 明朝"'><span lang=EN-US>目次に戻る</span></span></a></span></p>
+
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US>&nbsp;</span></p>
+
+</div>
+
+</body>
+
+</html>

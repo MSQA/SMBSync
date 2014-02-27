@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE layout>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+    <TextView
+        android:id="@+id/sync_profile_dlg_title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:gravity="center"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+    
+     <include layout="@layout/divider_line1_turquoise" />
+     
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fadeScrollbars="false"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp" >
+
+    	<LinearLayout
+    	    android:layout_width="fill_parent"
+    	    android:layout_height="wrap_content"
+    	    android:layout_marginRight="5dp"
+    	    android:orientation="vertical" >
+		    <TextView
+		 	    android:id="@+id/sync_profile_dlg_msg"
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content"
+			    android:textColor="#ffff0000"
+			    android:textAppearance="?android:attr/textAppearanceMedium"
+			    android:text="" />
+		    
+		    <LinearLayout
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginLeft="5dp"
+		        android:orientation="horizontal" >
+		        <CheckBox
+		            style="@style/check_box_style"
+		            android:id="@+id/sync_profile_active"
+		            android:layout_width="150dp"
+		            android:layout_height="wrap_content"
+		            android:textAppearance="?android:attr/textAppearanceLarge"
+		            android:text="@string/msgs_sync_profile_dlg_active" />
+
+		        <EditText
+		            android:id="@+id/sync_profile_name"
+		            android:layout_width="0dp"
+		            android:layout_height="wrap_content"
+		            android:layout_marginRight="5dp"
+		            android:layout_weight="1"
+		            android:inputType="text"
+		            android:textAppearance="?android:attr/textAppearanceLarge"
+		            android:hint="@string/msgs_sync_profile_dlg_profile" >
+		
+		            <requestFocus />
+		        </EditText>
+		    </LinearLayout>
+		    <LinearLayout
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginLeft="5dp"
+		        android:layout_marginTop="5dp"
+		        android:orientation="horizontal" >
+		        <Button
+		            android:id="@+id/sync_profile_listbtn1"
+		            android:layout_width="150dp"
+		            android:layout_height="wrap_content"
+		            android:layout_marginTop="1dp"
+		            android:textAppearance="?android:attr/textAppearanceMedium"
+		            android:text="@string/msgs_sync_profile_dlg_mstrlist" />
+			    <ImageView
+			        android:id="@+id/sync_profile_master_icon"
+				    android:layout_width="40dp"
+				    android:layout_height="40dp"
+				    android:layout_gravity="top"
+				    android:layout_marginTop="5dp"
+				    android:src="@drawable/blank"
+				    android:gravity="center"/>
+		        
+		        <EditText
+		            android:id="@+id/sync_profile_master"
+		            android:layout_weight="1.0"
+		            android:layout_width="0dp"
+		            android:layout_height="wrap_content"
+		            android:inputType="text"
+		            android:layout_marginRight="5dp"
+		            android:textAppearance="?android:attr/textAppearanceLarge"
+		            android:hint="@string/msgs_sync_profile_dlg_master" />
+
+		    </LinearLayout>
+		    <LinearLayout
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginLeft="5dp"
+		        android:orientation="horizontal"
+		        android:layout_marginTop="5dp" >
+
+		        <Button
+		            android:id="@+id/sync_profile_listbtn2"
+		            android:layout_width="150dp"
+		            android:layout_height="wrap_content"
+		            android:layout_marginTop="1dp"
+		            android:textAppearance="?android:attr/textAppearanceMedium"
+		            android:text="@string/msgs_sync_profile_dlg_trgtlist" />
+			    <ImageView
+			        android:id="@+id/sync_profile_target_icon"
+				    android:layout_width="40dp"
+				    android:layout_height="40dp"
+				    android:layout_gravity="top"
+				    android:layout_marginTop="5dp"
+				    android:src="@drawable/blank"
+				    android:gravity="center"/>
+		        
+		        <EditText
+		            android:id="@+id/sync_profile_target"
+		            android:layout_weight="1.0"
+		            android:layout_width="0dp"
+		            android:layout_height="wrap_content"
+		            android:inputType="text"
+		            android:layout_marginRight="5dp"
+		            android:textAppearance="?android:attr/textAppearanceLarge"
+		            android:hint="@string/msgs_sync_profile_dlg_target" />
+
+		    </LinearLayout>
+
+		    <LinearLayout
+		        android:id="@+id/linearLayout1"
+		        android:layout_marginTop="5dp"
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content" >
+		        <TextView
+		            android:layout_width="wrap_content"
+		            android:layout_height="32dp"
+		            android:layout_gravity="center_vertical"
+		            android:layout_marginLeft="5dp"
+		            android:gravity="center"
+		            android:textAppearance="?android:attr/textAppearanceLarge"
+		            android:text="@string/msgs_sync_profile_dlg_syncopt"/>
+
+		        <Spinner
+		            android:id="@+id/sync_profile_sync_option"
+		            style="@android:style/Widget.Spinner"
+		            android:layout_width="0dp"
+		            android:layout_height="wrap_content"
+		            android:layout_marginBottom="5dp"
+		            android:layout_marginLeft="5dp"
+		            android:layout_marginRight="5dp"
+		            android:layout_weight="1"
+		            android:background="@drawable/spinner_color_background"
+		            android:minHeight="40dp"
+		            android:paddingLeft="5dp"/>
+
+		    </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginBottom="5dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/msgs_sync_profile_dlg_filter"/>
+            
+		    <LinearLayout
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginLeft="5dp"
+		        android:layout_marginTop="5dp"
+		        android:orientation="horizontal" >
+
+			    <Button
+			        android:id="@+id/sync_profile_file_filter_btn"
+			        android:layout_width="160dp"
+			        android:layout_height="60dp"
+			        android:gravity="center_vertical|left"
+			        android:text="@string/msgs_sync_profile_dlg_filefltr"
+			        android:textAppearance="?android:attr/textAppearanceMedium" />
+				
+		        <TextView 
+		            android:text="@string/msgs_filter_list_dlg_not_specified"
+		            android:id="@+id/sync_profile_file_filter"
+		            android:layout_width="0dp"
+		            android:layout_height="wrap_content"
+		            android:layout_weight="1"
+		            android:layout_gravity="center_vertical"
+		            android:maxLines="2"
+		            android:textAppearance="?android:attr/textAppearanceMedium"
+		            android:ellipsize="end"
+		             />
+	    	</LinearLayout>
+
+		    <LinearLayout
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginLeft="5dp"
+		        android:layout_marginTop="5dp"
+		        android:orientation="horizontal">
+
+		        <Button
+		            android:id="@+id/sync_profile_dir_filter_btn"
+		            android:layout_width="160dp"
+		            android:layout_height="60dp"
+		            android:gravity="center_vertical|left"
+		            android:text="@string/msgs_sync_profile_dlg_dirfltr"
+		            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+		        <TextView
+		            android:id="@+id/sync_profile_dir_filter"
+		            android:layout_width="0dp"
+		            android:layout_height="wrap_content"
+		            android:layout_gravity="center_vertical"
+		            android:layout_weight="1"
+		            android:maxLines="2"
+		            android:text="@string/msgs_filter_list_dlg_not_specified"
+		            android:textAppearance="?android:attr/textAppearanceMedium" 
+		            android:ellipsize="end"/>
+
+		    </LinearLayout>
+
+		    <CheckBox
+		        style="@style/check_box_style"
+		        android:id="@+id/sync_profile_master_dir_cb"
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="3dp"
+		        android:layout_marginBottom="6dp"
+		        android:layout_marginLeft="5dp"
+		        android:text="@string/msgs_sync_profile_master_dir_cb_enable"
+		        android:textAppearance="?android:attr/textAppearanceMedium" />
+	        <CheckBox
+	            style="@style/check_box_style"
+	            android:id="@+id/sync_profile_confirm"
+	            android:layout_width="fill_parent"
+	            android:layout_height="wrap_content"
+		        android:layout_marginBottom="6dp"
+		        android:layout_marginLeft="5dp"
+	            android:text="@string/msgs_sync_profile_confirm_required" 
+		        android:textAppearance="?android:attr/textAppearanceMedium" />	            
+	        <CheckBox
+	            style="@style/check_box_style"
+	            android:id="@+id/sync_profile_last_modified"
+	            android:layout_width="fill_parent"
+	            android:layout_height="wrap_content"
+				android:layout_marginBottom="6dp"
+				android:layout_marginLeft="5dp"
+	            android:text="@string/msgs_sync_profile_last_modified_auto" 
+		        android:textAppearance="?android:attr/textAppearanceMedium" />
+	        		    		    
+	    </LinearLayout>
+
+	</ScrollView>
+
+    <include layout="@layout/edit_profile_sync_ok_cancel"/>
+    </LinearLayout>
