@@ -62,8 +62,6 @@ public class SMBSyncUtil {
 	
 	private final static String DEBUG_TAG = "SMBSync";
 	
-	private boolean activityIsForeground = true; 
-	
 	private SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");
 	private SimpleDateFormat sdfTime = new SimpleDateFormat("HH:mm:ss");
 	
@@ -78,7 +76,7 @@ public class SMBSyncUtil {
 	};
 	
 	public boolean setActivityIsForeground(boolean d) {
-		activityIsForeground=d;
+		glblParms.activityIsForeground=d;
 		return d;
 	};
 
@@ -95,7 +93,7 @@ public class SMBSyncUtil {
         return false;
     };
 	
-	public boolean isActivityForeground() {return activityIsForeground;};
+	public boolean isActivityForeground() {return glblParms.activityIsForeground;};
 	
 	public boolean isRemoteDisable() {
 		boolean ret=false;
@@ -198,6 +196,7 @@ public class SMBSyncUtil {
 	    return result;
 	};
 
+	private StringBuilder mSbForaddMsgToProgDlg = new StringBuilder(256);
 	final public void addMsgToProgDlg(boolean log, String log_cat, String syncProfName, 
 			String fp, String log_msg) {
 		String msgflag="";
@@ -210,29 +209,32 @@ public class SMBSyncUtil {
 			writeLogMsgToFile(glblParms.logWriter,log_cat,syncProfName, fp,log_msg);
 		if (glblParms.debugLevel>0) { 
 			if (glblParms.debugLevel>0 && log) 
-				Log.v(DEBUG_TAG,buildLogCatString(log_cat,mLogId,syncProfName,fp,log_msg));
+				Log.v(DEBUG_TAG,
+					buildLogCatString(mSbForaddMsgToProgDlg,
+							log_cat,mLogId,syncProfName,fp,log_msg));
 		}
 	};
 
+	private StringBuilder mSbForWriteLog = new StringBuilder(256);
 	final private void writeLogMsgToFile(PrintWriter pw, String cat, String prof, 
 			String fp, String msg) {
 		if (pw!=null) { 
 			synchronized(pw) {
 				String dt=DateUtil.convDateTimeTo_YearMonthDayHourMinSec(System.currentTimeMillis());
-				StringBuilder sb = new StringBuilder(256);
-				sb.append(cat).append(" ")
+				mSbForWriteLog.setLength(0);
+				mSbForWriteLog.append(cat).append(" ")
 					.append(dt.substring(0,10)).append(" ")
 					.append(dt.substring(11)).append(" ")
 					.append(mLogId);
 				if (!prof.equals("")) {
-					sb.append(prof).append(" ");
+					mSbForWriteLog.append(prof).append(" ");
 				}
 				if (!fp.equals("")) {
-					sb.append(fp).append(" ");
+					mSbForWriteLog.append(fp).append(" ");
 				}
-				sb.append(msg);
+				mSbForWriteLog.append(msg);
 				try {
-					pw.println(sb);
+					pw.println(mSbForWriteLog);
 				} catch(Exception e) {
 					e.printStackTrace();
 				}
@@ -244,6 +246,7 @@ public class SMBSyncUtil {
 		}
 	};
 	
+	private StringBuilder mSbForsendMsgToActivity=new StringBuilder(256);
 	final public void sendMsgToActivity(final String log_cat, final String msgflag, final String sync_prof,
 			final String date, final String time, final String tag, final String debug_flag, final String fp, final String msg_text) {
 		glblParms.uiHandler.post(new Runnable(){
@@ -263,18 +266,20 @@ public class SMBSyncUtil {
 					}  
 					if (debug_flag.equals("M") || 
 							(debug_flag.equals("D")&&glblParms.settingDebugMsgDisplay)) {
-						StringBuilder sb=new StringBuilder(256);
-						if (!sync_prof.equals("")) sb.append(sync_prof).append(" ");
-						if (!fp.equals("")) sb.append(fp).append(" ");
-						sb.append(msg_text);
+						mSbForsendMsgToActivity.setLength(0);
+						if (!sync_prof.equals("")) mSbForsendMsgToActivity.append(sync_prof).append(" ");
+						if (!fp.equals("")) mSbForsendMsgToActivity.append(fp).append(" ");
+						mSbForsendMsgToActivity.append(msg_text);
 						addMsgToMsglistAdapter(glblParms,
-								new MsgListItem(log_cat,date,time,tag,sb.toString()));
+								new MsgListItem(log_cat,date,time,tag,
+										mSbForsendMsgToActivity.toString()));
 					}
 				}
 			}
 		});
 	};
 
+	private StringBuilder mSbForAddLogMsg=new StringBuilder(256);
 	final public void addLogMsg(String log_cat, String sync_prof, String fp, String log_msg) {
 		String dt=DateUtil.convDateTimeTo_YearMonthDayHourMinSec(System.currentTimeMillis());
 		// flag=1 both, arg2=0 dialog only, arg2=2 msgview only
@@ -282,13 +287,14 @@ public class SMBSyncUtil {
 				mLogId,"M",fp,log_msg);
 		writeLogMsgToFile(glblParms.logWriter,"M "+log_cat, sync_prof, fp, log_msg);
 		if (glblParms.debugLevel>0)
-			Log.v(DEBUG_TAG,buildLogCatString(log_cat,mLogId,sync_prof,fp,log_msg));
+			Log.v(DEBUG_TAG,
+					buildLogCatString(mSbForAddLogMsg, log_cat,mLogId,sync_prof,fp,log_msg));
 	};
 
 	final public void addLogMsg(String cat, String logmsg) {
 		addMsgToMsglistAdapter(glblParms,
 			  		 new MsgListItem(cat,sdfDate.format(System.currentTimeMillis()),
-							sdfTime.format(System.currentTimeMillis()),"MAIN",logmsg));
+					 sdfTime.format(System.currentTimeMillis()),"MAIN",logmsg));
 		if (glblParms.logWriter!=null) {
 			synchronized(glblParms.logWriter) {
 				glblParms.logWriter.println("M "+cat+" "+
@@ -310,7 +316,7 @@ public class SMBSyncUtil {
 				for (int i=0;i<1000;i++) gp.msgListAdapter.remove(0);
 			}
 			gp.msgListAdapter.add(mli);
-			if (!gp.freezeMessageViewScroll) {
+			if (!gp.freezeMessageViewScroll && gp.activityIsForeground) {
 				gp.msgListView.setSelection(gp.msgListView.getCount()-1);
 			}
 //			gp.msgListAdapter.notifyDataSetChanged();
@@ -326,8 +332,10 @@ public class SMBSyncUtil {
 		mLogId=(lid+"                        ").substring(0,13);
 	};
 	
-	final static private String buildLogCatString(String cat, String lid, String prof, String fp, String msg) {
-		StringBuilder sb=new StringBuilder(256);
+	final static private String buildLogCatString(
+			StringBuilder sb,
+			String cat, String lid, String prof, String fp, String msg) {
+		sb.setLength(0);
 		if (!cat.equals("")) {
 			sb.append(cat).append(" ");
 		}
@@ -342,25 +350,33 @@ public class SMBSyncUtil {
 		return sb.toString();
 	};
 
-	final public void addDebugLogMsg(int lvl, String log_cat, String syncProfName, String...log_msg) {
-
+	private StringBuilder mSbForaddDebugLogMsg1=new StringBuilder(256);
+	final public void addDebugLogMsg(
+			int lvl, String log_cat, String syncProfName, String...log_msg) {
 		if (glblParms.debugLevel>=lvl) {
-			StringBuilder sb=new StringBuilder(256);
-			for (int i=0;i<log_msg.length;i++) sb.append(log_msg[i]);
+			mSbForaddDebugLogMsg1.setLength(0);
+			for (int i=0;i<log_msg.length;i++) mSbForaddDebugLogMsg1.append(log_msg[i]);
 			if (glblParms.logWriter!=null || glblParms.settingDebugMsgDisplay) {
 				if (glblParms.settingDebugMsgDisplay) {
 //					// flag=1 both, arg2=0 dialog only, arg2=2 msgview only
 					String dt=DateUtil.convDateTimeTo_YearMonthDayHourMinSec(System.currentTimeMillis());
 					sendMsgToActivity(log_cat,"2",syncProfName,dt.substring(0,10),
-							dt.substring(11),mLogId,"D","", sb.toString());
+							dt.substring(11),mLogId,"D","", 
+							mSbForaddDebugLogMsg1.toString());
 				}
-				writeLogMsgToFile(glblParms.logWriter,"D "+log_cat,syncProfName, "", sb.toString());
+				writeLogMsgToFile(glblParms.logWriter,"D "+log_cat,syncProfName, "", 
+						mSbForaddDebugLogMsg1.toString());
 			}			
-			if (DEBUG_ENABLE) Log.v(DEBUG_TAG,buildLogCatString(log_cat,mLogId,syncProfName,"",sb.toString()));
+			if (DEBUG_ENABLE) 
+				Log.v(DEBUG_TAG,
+					buildLogCatString(mSbForaddDebugLogMsg1,log_cat,mLogId,syncProfName,"",
+							mSbForaddDebugLogMsg1.toString()));
 		}
 	};
 
-	final public void addDebugLogMsg(int lvl, String cat, String logmsg) {
+	private StringBuilder mSbForaddDebugLogMsg2=new StringBuilder(256);
+	final public void addDebugLogMsg(
+			int lvl, String cat, String logmsg) {
 		if (glblParms.debugLevel>=lvl ) {
 //		    Calendar cd = Calendar.getInstance();
 			if (glblParms.settingDebugMsgDisplay) {
@@ -370,10 +386,18 @@ public class SMBSyncUtil {
 			}
 			if (glblParms.logWriter!=null) {
 				synchronized(glblParms.logWriter) {
-					glblParms.logWriter.println("D "+cat+" "+
-						sdfDate.format(System.currentTimeMillis())+" "+
-						sdfTime.format(System.currentTimeMillis())+" "+
-						mLogId+logmsg);
+					String dt=DateUtil.convDateTimeTo_YearMonthDayHourMinSec(System.currentTimeMillis());
+					mSbForaddDebugLogMsg2.setLength(0);
+					mSbForaddDebugLogMsg2.append("D ")
+						.append(cat)
+						.append(" ")
+						.append(dt.substring(0,10))
+						.append(" ")
+						.append(dt.substring(11))
+						.append(" ")
+						.append(mLogId)
+						.append(logmsg);
+					glblParms.logWriter.println(mSbForaddDebugLogMsg2);
 //					glblParms.logWriter.flush();
 				}
 			}

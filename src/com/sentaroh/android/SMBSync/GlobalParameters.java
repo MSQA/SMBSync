@@ -47,6 +47,8 @@ public class GlobalParameters extends Application{
 	public PrintWriter logWriter=null;
 	public String currentLogFilePath="";
 	
+	public boolean activityIsForeground=true;
+	
 	public Handler uiHandler=null;
 	public TextView mainViewProgressProf=null;
 	public TextView mainViewProgressFilepath=null;
