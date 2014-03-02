@@ -7,6 +7,11 @@
 &lt;body bgcolor=black text=white link=yellow &gt;
 &lt;Font size=+2 color=""#44ffff""&gt;Change history&lt;/Font&gt;
 &lt;br&gt;
+2014-03-02 Ver1.79
+&lt;br&gt;
+-Fixed a bug that determination method of the last update date is in error
+&lt;br&gt;
+&lt;br&gt;
 2014-02-10 Ver1.78
 &lt;br&gt;
 -Message is displayed when returning from the background is set to be at the bottom.
