@@ -7,6 +7,11 @@
 &lt;body bgcolor=black text=white link=yellow &gt;
 &lt;Font size=+2 color=""#44ffff""&gt;更新履歴&lt;/Font&gt;
 &lt;br&gt;
+2014-xx-xx Ver1.80
+&lt;br&gt;
+-終了確認を行わないようにした
+&lt;br&gt;
+&lt;br&gt;
 2014-03-02 Ver1.79
 &lt;br&gt;
 -最終更新日時の判定方法がエラーになる事があるバグを修正

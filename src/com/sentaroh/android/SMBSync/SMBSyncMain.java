@@ -977,17 +977,17 @@ public class SMBSyncMain extends FragmentActivity {
 	
 	private void confirmTerminateApplication() {
 		
-		NotifyEventCompletion ntfy=new NotifyEventCompletion(mContext);
-		// set util.commonDialog response 
-		ntfy.setListener(new NotifyEventCompletionListener() {
-			@Override
-			public void positiveResponse(Context c,Object[] o) {
-				terminateApplication();
-			}
-			@Override
-			public void negativeResponse(Context c,Object[] o) {}
-		});
-		commonDlg.showCommonDialog(true,"W",msgs_terminate_application,"",ntfy);
+//		NotifyEventCompletion ntfy=new NotifyEventCompletion(mContext);
+//		ntfy.setListener(new NotifyEventCompletionListener() {
+//			@Override
+//			public void positiveResponse(Context c,Object[] o) {
+//				terminateApplication();
+//			}
+//			@Override
+//			public void negativeResponse(Context c,Object[] o) {}
+//		});
+//		commonDlg.showCommonDialog(true,"W",msgs_terminate_application,"",ntfy);
+		terminateApplication();
 
 		return;
 	};
@@ -2911,7 +2911,7 @@ public class SMBSyncMain extends FragmentActivity {
 	private static String msgs_move_to_bottom	;
 	private static String msgs_move_to_top	;
 	private static String msgs_sync_profile	;
-	private static String msgs_terminate_application	;
+//	private static String msgs_terminate_application	;
 
 	private static String msgs_master_profile_not_found;
 	private static String msgs_target_profile_not_found;
@@ -2985,7 +2985,7 @@ public class SMBSyncMain extends FragmentActivity {
 		msgs_move_to_bottom				=	getString(R.string.msgs_move_to_bottom	);
 		msgs_move_to_top				=	getString(R.string.msgs_move_to_top	);
 		msgs_sync_profile				=	getString(R.string.msgs_sync_profile	);
-		msgs_terminate_application		=	getString(R.string.msgs_terminate_application	);
+//		msgs_terminate_application		=	getString(R.string.msgs_terminate_application	);
 		msgs_master_profile_not_found	=	getString(R.string.msgs_master_profile_not_found);
 		msgs_target_profile_not_found	=	getString(R.string.msgs_target_profile_not_found);
 		msgs_invalid_profile_combination=	getString(R.string.msgs_invalid_profile_combination);
