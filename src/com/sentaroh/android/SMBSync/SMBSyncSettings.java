@@ -316,6 +316,15 @@ public class SMBSyncSettings extends PreferenceActivity{
 				pref_key
 					.setSummary(c.getString(R.string.settings_ui_keep_screen_on_summary_dis));
 			}
+		} else if (key_string.equals(c.getString(R.string.settings_wifi_lock))) {
+			isChecked=true;
+			if (shared_pref.getBoolean(key_string, false)) {
+				pref_key
+					.setSummary(c.getString(R.string.settings_wifi_lock_summary_ena));
+			} else {
+				pref_key
+					.setSummary(c.getString(R.string.settings_wifi_lock_summary_dis));
+			}
     	}
 
     	return isChecked;
@@ -597,6 +606,7 @@ public class SMBSyncSettings extends PreferenceActivity{
     		initSettingValueAfterHc(shared_pref,getString(R.string.settings_backgroound_execution));
     		initSettingValueAfterHc(shared_pref,getString(R.string.settings_error_option));
     		initSettingValueAfterHc(shared_pref,getString(R.string.settings_ui_keep_screen_on));
+    		initSettingValueAfterHc(shared_pref,getString(R.string.settings_wifi_lock));
 
         };
         

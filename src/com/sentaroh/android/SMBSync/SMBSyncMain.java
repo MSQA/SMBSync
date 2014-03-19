@@ -67,6 +67,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.net.Uri;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -148,6 +149,7 @@ public class SMBSyncMain extends FragmentActivity {
 	private ThreadCtrl tcService=null;
     private CommonDialog commonDlg=null;
     private static Handler mUiHandler=new Handler();
+	private WifiManager.WifiLock mWifiLock=null;
 
 	@Override  
 	protected void onSaveInstanceState(Bundle outState) {  
@@ -183,6 +185,10 @@ public class SMBSyncMain extends FragmentActivity {
 	    				| PowerManager.ACQUIRE_CAUSES_WAKEUP
 //	   	    				| PowerManager.ON_AFTER_RELEASE
 	    				, "SMBSync-ScreenOn");
+		
+		WifiManager mWifi = 
+				(WifiManager)mContext.getSystemService(Context.WIFI_SERVICE);
+		mWifiLock=mWifi.createWifiLock(WifiManager.WIFI_MODE_FULL, "SMBSync-wifi");
 
 		if (tcService==null) tcService=new ThreadCtrl();
 //		NotificationUtil.initNotification(glblParms);
@@ -380,6 +386,7 @@ public class SMBSyncMain extends FragmentActivity {
 					"isActivityForeground="+util.isActivityForeground()+
 					", isFinishing="+isFinishing());
 		clearScreenOn();
+		relWifiLock();
 		unsetCallbackListener();
 		deleteTaskData();
 		closeService();
@@ -1140,6 +1147,10 @@ public class SMBSyncMain extends FragmentActivity {
 
 		glblParms.settingScreenOnEnabled=
 				prefs.getBoolean(getString(R.string.settings_ui_keep_screen_on), false);
+		
+		glblParms.settingWifiLockRequired=
+				prefs.getBoolean(getString(R.string.settings_wifi_lock), false);
+		
 		glblParms.settingAltUiEnabled=
 				prefs.getBoolean(getString(R.string.settings_ui_alternate_ui), false);
 
@@ -2089,6 +2100,8 @@ public class SMBSyncMain extends FragmentActivity {
 			e.printStackTrace();
 		}
 		setScreenOn(0);
+		acqWifiLock();
+
 	};
 
 	private WakeLock mScreenOnWakelock=null;
@@ -2130,16 +2143,37 @@ public class SMBSyncMain extends FragmentActivity {
 //		}
 //	};
 
+	private void acqWifiLock() {
+		if (glblParms.settingWifiLockRequired) {
+			if (!mWifiLock.isHeld()) {
+				mWifiLock.acquire();
+				util.addDebugLogMsg(1,"I","WifiLock acquired");
+			} else {
+				util.addDebugLogMsg(1,"I","Wifilock not acquired, because Wifilock already acquired");
+			}
+		}
+	};
+	
+	private void relWifiLock() {
+		if (glblParms.settingWifiLockRequired) {
+			if (mWifiLock.isHeld()) {
+				mWifiLock.release();
+				util.addDebugLogMsg(1,"I","WifiLock released");
+			} else {
+				util.addDebugLogMsg(1,"I","Wifilock not releas, because Wifilock not acquired");
+			}
+		}
+	};
+	
 	private void setScreenOn(int timeout) {
 		if (glblParms.settingScreenOnEnabled) {
 			if (!mScreenOnWakelock.isHeld()) {
-		    	if (DEBUG_ENABLE) 
-					util.addDebugLogMsg(1,"I","setScreenOn Wakelock acquired");
+				util.addDebugLogMsg(1,"I","Wakelock acquired");
 		    	if (timeout==0) mScreenOnWakelock.acquire();
 		    	else mScreenOnWakelock.acquire(timeout);
 			} else {
 				if (DEBUG_ENABLE) 
-					util.addDebugLogMsg(1,"I","setScreenOn Wakelock already acquired");
+					util.addDebugLogMsg(1,"I","Wakelock not acquired, because Wakelock already acquired");
 			}
 		}
 	};
@@ -2147,12 +2181,10 @@ public class SMBSyncMain extends FragmentActivity {
 	private void clearScreenOn() {
 		if (glblParms.settingScreenOnEnabled) {
 			if (mScreenOnWakelock.isHeld()) {
-		    	if (DEBUG_ENABLE) 
-					util.addDebugLogMsg(1,"I","clearScreenOn Wakelock released");
+				util.addDebugLogMsg(1,"I","Wakelock released");
 				mScreenOnWakelock.release();
 			} else {
-		    	if (DEBUG_ENABLE) 
-					util.addDebugLogMsg(1,"I","clearScreenOn Wakelock already released");
+				util.addDebugLogMsg(1,"I","Wakelock not relased, because Wakelock not acquired");
 			}
 		}
 	};
@@ -2208,6 +2240,7 @@ public class SMBSyncMain extends FragmentActivity {
 				public void run() {
 					mirrorTaskEnded(result_code, result_msg);
 					clearScreenOn();
+					relWifiLock();
 					setScreenOn(500);
 				}
 			});

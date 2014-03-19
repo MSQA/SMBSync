@@ -7,6 +7,12 @@
 &lt;body bgcolor=black text=white link=yellow &gt;
 &lt;Font size=+2 color=""#44ffff""&gt;Change history&lt;/Font&gt;
 &lt;br&gt;
+2014-xx-xx Ver1.80
+&lt;br&gt;
+-Modified to not check the exit
+-Was to can be acquired an optional WiFi lock during synchronization (Settings -> Sync)
+&lt;br&gt;
+&lt;br&gt;
 2014-03-02 Ver1.79
 &lt;br&gt;
 -Fixed a bug that determination method of the last update date is in error

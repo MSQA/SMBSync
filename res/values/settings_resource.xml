@@ -50,7 +50,12 @@
     <string name="settings_ui_keep_screen_on_summary_ena">Screen so that does not turn off during synchronization.</string>
 	<string name="settings_ui_keep_screen_on">settings_ui_keep_screen_on</string>	
     
-    <string name="settings_ui_alternate_ui_title">Alternate UI for tab</string>
+    <string name="settings_wifi_lock_title">Wifi lock during synchronization</string>
+    <string name="settings_wifi_lock_summary_dis">Do not acquire Wifi lock during synchronization.</string>
+    <string name="settings_wifi_lock_summary_ena">Acquire Wifi lock during synchronization.</string>
+	<string name="settings_wifi_lock">settings_wifi_lock</string>	
+    
+	<string name="settings_ui_alternate_ui_title">Alternate UI for tab</string>
     <string name="settings_ui_alternate_ui_summary_dis">Click and select an item.</string>
     <string name="settings_ui_alternate_ui_summary_ena">To edit the item if you click when the other items is not selected. To select the item if you click when the other items are selected.</string>
 	<string name="settings_ui_alternate_ui">settings_ui_alternate_ui</string>	

@@ -37,6 +37,11 @@
 			android:key="@string/settings_ui_keep_screen_on"
 			android:title="@string/settings_ui_keep_screen_on_title"
 			android:summary="@string/settings_ui_keep_screen_on_summary_dis" />
+	    
+	    <CheckBoxPreference
+			android:key="@string/settings_wifi_lock"
+			android:title="@string/settings_wifi_lock_title"
+			android:summary="@string/settings_wifi_lock_summary_dis" />
 	    	    
 	</PreferenceCategory>	    
 	<PreferenceCategory android:title="@string/settings_ui_title">

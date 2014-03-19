@@ -90,6 +90,7 @@ public class GlobalParameters extends Application{
 			settingExitClean,
 			settingBackgroundExecution=false;
 	public boolean settingScreenOnEnabled=true;
+	public boolean settingWifiLockRequired=true;
 	public String settingWifiOption=SMBSYNC_SYNC_WIFI_OPTION_CONNECTED_ANY_AP;
 	public boolean settingAltUiEnabled=true;
 	public String settingLogOption="0";

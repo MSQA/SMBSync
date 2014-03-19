@@ -5105,6 +5105,8 @@ public class ProfileMaintenance {
 		saveSettingsParmsToFileBoolean(group, pw, false, mContext.getString(R.string.settings_backgroound_execution));
 		saveSettingsParmsToFileString(group, pw, "0",    mContext.getString(R.string.settings_background_termination_notification));
 		saveSettingsParmsToFileBoolean(group, pw, false, mContext.getString(R.string.settings_error_option));
+		saveSettingsParmsToFileBoolean(group, pw, false, mContext.getString(R.string.settings_ui_keep_screen_on));
+		saveSettingsParmsToFileBoolean(group, pw, false, mContext.getString(R.string.settings_wifi_lock));
 
 		saveSettingsParmsToFileBoolean(group, pw, false, mContext.getString(R.string.settings_ui_keep_screen_on));
 		saveSettingsParmsToFileBoolean(group, pw, false, mContext.getString(R.string.settings_ui_alternate_ui));

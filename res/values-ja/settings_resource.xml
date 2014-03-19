@@ -38,6 +38,11 @@
     <string name="settings_ui_keep_screen_on_summary_dis">同期中でも画面がオフになることを許容する</string>
     <string name="settings_ui_keep_screen_on_summary_ena">同期中に画面がオフにならないようにする</string>
 		
+    <string name="settings_wifi_lock_title">同期中のWifiロック</string>
+    <string name="settings_wifi_lock_summary_dis">Wifiロックは取得しない</string>
+    <string name="settings_wifi_lock_summary_ena">同期中はWifiロックを取得する</string>
+	<string name="settings_wifi_lock">settings_wifi_lock</string>	
+    
     <string name="settings_ui_alternate_ui_title">代替UI</string>
     <string name="settings_ui_alternate_ui_summary_dis">項目をクリックしたら選択</string>
     <string name="settings_ui_alternate_ui_summary_ena">他の項目が選択されていないときにクリックしたら編集、他の項目が選択されているときは項目を選択。</string>

@@ -606,8 +606,9 @@ public class LocalFileLastModified {
 			StringBuffer pl=new StringBuffer(512);
 			String last_fp="";
 	    	String new_fp="";
-		    for (int i=0;i<save_last_modified_list.size();i++) {
-		    	LocalFileLastModifiedEntryItem lfme=save_last_modified_list.get(i);
+//		    for (int i=0;i<save_last_modified_list.size();i++) {
+//	    		LocalFileLastModifiedEntryItem lfme=save_last_modified_list.get(i);
+		    for (LocalFileLastModifiedEntryItem lfme : save_last_modified_list) {
 		    	new_fp=lfme.getFullFilePath();
 		    	if (!last_fp.equals(new_fp)) {
 		    		boolean f_exists=true;
