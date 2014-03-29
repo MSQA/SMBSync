@@ -226,6 +226,17 @@ public class SMBSyncMain extends FragmentActivity {
 			profMaint=new ProfileMaintenance(util,this, profileAdapter, 
 					profileListView, commonDlg,ccMenu, glblParms);
 		
+//		SecretKey sec_key=EncryptUtil.generateKey("aa");
+//		String pl="test data";
+//		String enc_str = 
+//				Base64Compat.encodeToString(
+//					EncryptUtil.encrypt(pl,sec_key), 
+//					Base64Compat.NO_WRAP);
+//		
+//		byte[] enc_array=Base64Compat.decode(enc_str, Base64Compat.NO_WRAP);
+//		String dec=EncryptUtil.decrypt(enc_array, sec_key);
+//		Log.v("","pl="+pl+", enc_str="+enc_str+", dec_str="+dec);
+
 	};
 
 	@Override
@@ -1161,6 +1172,8 @@ public class SMBSyncMain extends FragmentActivity {
 		
 		glblParms.settingExitClean=
 				prefs.getBoolean(getString(R.string.settings_exit_clean), true);
+		glblParms.settingExportedProfileEncryptRequired=
+				prefs.getBoolean(getString(R.string.settings_exported_profile_encryption), true);
 		
 		if (!glblParms.settingAutoStart) glblParms.settingAutoTerm=false;
 		

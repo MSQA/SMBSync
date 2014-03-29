@@ -8,4 +8,14 @@
     <string name="msgs_export_import_profile_confirm_override">下記の項目はプロファイルに存在しています。取り込んだプロファイルで上書きしますか。</string>
     <string name="msgs_export_import_profile_import_success">下記項目を取り込みました。</string>
     <string name="msgs_export_import_profile_reset_current_profile">現在のプロファイルを全て削除して取り込む。</string>
+    
+    <string name="msgs_export_import_pswd_password_title">プロファイル パスワード</string>
+    <string name="msgs_export_import_pswd_specify_password">プロファイルのパスワードを指定してください。</string>
+    <string name="msgs_export_import_pswd_invalid_password">パスワードが間違っています、指定し直してください。</string>
+    
+    <string name="msgs_export_import_pswd_btn_cancel">キャンセル</string>
+    <string name="msgs_export_import_pswd_btn_encrypt_export">暗号化</string>
+    <string name="msgs_export_import_pswd_btn_encrypt_import">了解</string>
+    <string name="msgs_export_import_pswd_btn_noencrypt">暗号化しない</string>
+    <string name="msgs_export_import_pswd_noencrypt_at_all">今後は暗号化をしない。（暗号化する場合は「設定-その他-外部メディアに保存するプロファイル」をチェックしてください）</string>
 </resources>

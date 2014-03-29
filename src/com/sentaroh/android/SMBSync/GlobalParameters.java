@@ -98,5 +98,6 @@ public class GlobalParameters extends Application{
 	public String settingBgTermNotification="0";
 	public String settingLogMsgFilename="SMBSync_log_yyyy-mm-dd.txt";
 	public int settiingLogGeneration=1;
+	public boolean settingExportedProfileEncryptRequired=true;
 	
 }

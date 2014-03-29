@@ -5,4 +5,9 @@
 			android:key="@string/settings_exit_clean"
 			android:title="@string/settings_exit_clean_title"
 			android:summary="@string/settings_exit_clean_summary_ena" />
+		<CheckBoxPreference
+			android:key="@string/settings_exported_profile_encryption"
+			android:title="@string/settings_exported_profile_encryption_title"
+			android:summary="@string/settings_exported_profile_encryption_summary_ena" />
+				
 </PreferenceScreen>

@@ -186,5 +186,10 @@
     </string-array>
     
 	<string name="settings_misc_title">その他</string>
-    
+	
+    <string name="settings_exported_profile_encryption_title">外部メディアに保存するプロファイル</string>
+    <string name="settings_exported_profile_encryption_summary_dis">暗号化しない</string>
+    <string name="settings_exported_profile_encryption_summary_ena">暗号化する</string>
+	<string name="settings_exported_profile_encryption">settings_exported_profile_encryption</string>
+	
 </resources>

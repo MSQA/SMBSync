@@ -1379,7 +1379,7 @@ public class ProfileCreationWizard {
 						syncWizardCreateProfile(profileAdapter);
 						profileAdapter.sort();
 						profileAdapter.notifyDataSetChanged();
-						profMaint.saveProfileToFile(false,"","",profileAdapter);
+						profMaint.saveProfileToFile(false,"","",profileAdapter,false);
 						
 						mCommonDlg.showCommonDialog(false, "I", 
 								mContext.getString(R.string.msgs_sync_wizard_confirm_profile_created), "", null);
