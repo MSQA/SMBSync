@@ -17,5 +17,8 @@
     <string name="msgs_export_import_pswd_btn_encrypt_export">暗号化</string>
     <string name="msgs_export_import_pswd_btn_encrypt_import">了解</string>
     <string name="msgs_export_import_pswd_btn_noencrypt">暗号化しない</string>
+    <string name="msgs_export_import_pswd_hint_password">パスワード</string>
+    <string name="msgs_export_import_pswd_hint_confirm">パスワードの確認</string>
     <string name="msgs_export_import_pswd_noencrypt_at_all">今後は暗号化をしない。（暗号化する場合は「設定-その他-外部メディアに保存するプロファイル」をチェックしてください）</string>
+    <string name="msgs_export_import_pswd_unmatched_confirm_pswd">パスワードと確認パスワードが一致していません</string>
 </resources>

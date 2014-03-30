@@ -37,8 +37,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.sentaroh.android.Utilities.LocalMountPoint;
-import com.sentaroh.android.Utilities.NotifyEventCompletion;
-import com.sentaroh.android.Utilities.NotifyEventCompletion.NotifyEventCompletionListener;
+import com.sentaroh.android.Utilities.NotifyEvent;
+import com.sentaroh.android.Utilities.NotifyEvent.NotifyEventListener;
 import com.sentaroh.android.Utilities.Dialog.CommonDialog;
 import com.sentaroh.android.Utilities.Widget.CustomSpinnerAdapter;
 
@@ -636,9 +636,9 @@ public class ProfileCreationWizard {
 			public void onClick(View v) {
 				String url=(String)spinnerLmp.getSelectedItem();
 				String p_dir=et_local_dir.getText().toString();
-				NotifyEventCompletion ntfy=new NotifyEventCompletion(mContext);
+				NotifyEvent ntfy=new NotifyEvent(mContext);
 				//Listen setRemoteShare response 
-				ntfy.setListener(new NotifyEventCompletionListener() {
+				ntfy.setListener(new NotifyEventListener() {
 					@Override
 					public void positiveResponse(Context arg0, Object[] arg1) {
 						et_local_dir.setText((String)arg1[0]);
@@ -937,9 +937,9 @@ public class ProfileCreationWizard {
 		if (util.isRemoteDisable()) btn_scan_network.setEnabled(false);
 		btn_scan_network.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				NotifyEventCompletion ntfy=new NotifyEventCompletion(mContext);
+				NotifyEvent ntfy=new NotifyEvent(mContext);
 				//Listen setRemoteShare response 
-				ntfy.setListener(new NotifyEventCompletionListener() {
+				ntfy.setListener(new NotifyEventListener() {
 					@Override
 					public void positiveResponse(Context arg0, Object[] arg1) {
 						if (((String)arg1[0]).equals("A")) {
@@ -968,9 +968,9 @@ public class ProfileCreationWizard {
 				if (cb_use_hostname.isChecked()) t_url=et_remote_hostname.getText().toString();
 				else t_url=et_remote_addr.getText().toString();
 				String remurl="smb://"+t_url+"/";
-				NotifyEventCompletion ntfy=new NotifyEventCompletion(mContext);
+				NotifyEvent ntfy=new NotifyEvent(mContext);
 				//Listen setRemoteShare response 
-				ntfy.setListener(new NotifyEventCompletionListener() {
+				ntfy.setListener(new NotifyEventListener() {
 					@Override
 					public void positiveResponse(Context arg0, Object[] arg1) {
 						et_remote_share.setText((String)arg1[0]);
@@ -996,9 +996,9 @@ public class ProfileCreationWizard {
 				else t_url=et_remote_addr.getText().toString();
 				String remurl="smb://"+t_url+"/"+
 						et_remote_share.getText().toString()+"/";
-				NotifyEventCompletion ntfy=new NotifyEventCompletion(mContext);
+				NotifyEvent ntfy=new NotifyEvent(mContext);
 				//Listen setRemoteShare response 
-				ntfy.setListener(new NotifyEventCompletionListener() {
+				ntfy.setListener(new NotifyEventListener() {
 					@Override
 					public void positiveResponse(Context arg0, Object[] arg1) {
 						et_remote_dir.setText((String)arg1[0]);
@@ -1280,9 +1280,9 @@ public class ProfileCreationWizard {
 		// file filterボタンの指定
 		btn_file_filter.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				NotifyEventCompletion ntfy=new NotifyEventCompletion(mContext);
+				NotifyEvent ntfy=new NotifyEvent(mContext);
 				//Listen setRemoteShare response 
-				ntfy.setListener(new NotifyEventCompletionListener() {
+				ntfy.setListener(new NotifyEventListener() {
 					@Override
 					public void positiveResponse(Context arg0, Object[] arg1) {
 						String f_fl="";
@@ -1312,9 +1312,9 @@ public class ProfileCreationWizard {
 				AdapterProfileList t_prof=new AdapterProfileList(mContext, 
 							R.layout.profile_list_item_view, pl, "");
 				syncWizardCreateProfile(t_prof);
-				NotifyEventCompletion ntfy=new NotifyEventCompletion(mContext);
+				NotifyEvent ntfy=new NotifyEvent(mContext);
 				//Listen setRemoteShare response 
-				ntfy.setListener(new NotifyEventCompletionListener() {
+				ntfy.setListener(new NotifyEventListener() {
 					@Override
 					public void positiveResponse(Context arg0, Object[] arg1) {
 						String d_fl="";
@@ -1364,8 +1364,8 @@ public class ProfileCreationWizard {
 		btn_ok.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View arg0) {
-				NotifyEventCompletion ntfy=new NotifyEventCompletion(mContext);
-				ntfy.setListener(new NotifyEventCompletionListener(){
+				NotifyEvent ntfy=new NotifyEvent(mContext);
+				ntfy.setListener(new NotifyEventListener(){
 					@Override
 					public void positiveResponse(Context c, Object[] o) {
 						mWizData.sync_name=et_sync_prof.getText().toString();
@@ -1397,7 +1397,7 @@ public class ProfileCreationWizard {
 		dialog.show();
 	};
 
-	private void confirmProfileCreation(Dialog dialog, NotifyEventCompletion p_ntfy) {
+	private void confirmProfileCreation(Dialog dialog, NotifyEvent p_ntfy) {
 		String sync_prof_name=String.format(mContext.getString(R.string.msgs_sync_wizard_confirm_list_sync_prof_name),mWizData.sync_name);
 		String sd="";
 		if (mWizData.master_type.equals(SMBSYNC_PROF_TYPE_REMOTE) && mWizData.target_type.equals(SMBSYNC_PROF_TYPE_LOCAL)) {

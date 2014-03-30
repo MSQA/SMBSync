@@ -101,8 +101,8 @@ import android.widget.TextView;
 import com.sentaroh.android.Utilities.Base64Compat;
 import com.sentaroh.android.Utilities.EncryptUtil;
 import com.sentaroh.android.Utilities.LocalMountPoint;
-import com.sentaroh.android.Utilities.NotifyEventCompletion;
-import com.sentaroh.android.Utilities.NotifyEventCompletion.NotifyEventCompletionListener;
+import com.sentaroh.android.Utilities.NotifyEvent;
+import com.sentaroh.android.Utilities.NotifyEvent.NotifyEventListener;
 import com.sentaroh.android.Utilities.ThreadCtrl;
 import com.sentaroh.android.Utilities.ContextMenu.CustomContextMenu;
 import com.sentaroh.android.Utilities.ContextMenu.CustomContextMenuItem.CustomContextMenuOnClickListener;
@@ -158,16 +158,16 @@ public class ProfileMaintenance {
 	};
 
 	public void importProfileDlg(final String lurl, final String ldir, 
-			String file_name, final NotifyEventCompletion p_ntfy) {
+			String file_name, final NotifyEvent p_ntfy) {
 		
-		NotifyEventCompletion ntfy=new NotifyEventCompletion(mContext);
-		ntfy.setListener(new NotifyEventCompletionListener() {
+		NotifyEvent ntfy=new NotifyEvent(mContext);
+		ntfy.setListener(new NotifyEventListener() {
 			@Override
 			public void positiveResponse(Context c,Object[] o) {
     			final String fpath=(String)o[0];
     			
-    			NotifyEventCompletion ntfy_pswd=new NotifyEventCompletion(mContext);
-    			ntfy_pswd.setListener(new NotifyEventCompletionListener(){
+    			NotifyEvent ntfy_pswd=new NotifyEvent(mContext);
+    			ntfy_pswd.setListener(new NotifyEventListener(){
 					@Override
 					public void positiveResponse(Context c, Object[] o) {
 						if (o!=null) {
@@ -232,7 +232,7 @@ public class ProfileMaintenance {
 	}
 	
 	public void promptPasswordForImport(final String fpath,  
-			final NotifyEventCompletion ntfy_pswd) {
+			final NotifyEvent ntfy_pswd) {
 		
 		// カスタムダイアログの生成
 		final Dialog dialog = new Dialog(mContext);
@@ -244,6 +244,8 @@ public class ProfileMaintenance {
 		final Button btnNoencrypt = (Button) dialog.findViewById(R.id.password_input_noencrypt_btn);
 		final Button btnCancel = (Button) dialog.findViewById(R.id.password_input_cancel_btn);
 		final EditText etInput=(EditText) dialog.findViewById(R.id.password_input_password);
+		final EditText etInput_confirm=(EditText) dialog.findViewById(R.id.password_input_password_confirm);
+		etInput_confirm.setVisibility(EditText.GONE);
 		btnEncrypt.setText(mContext.getString(R.string.msgs_export_import_pswd_btn_encrypt_import));
 		btnNoencrypt.setVisibility(Button.GONE);
 		cb_noencrypt.setVisibility(CheckBox.GONE);
@@ -321,7 +323,7 @@ public class ProfileMaintenance {
 	};
 
 	public void promptPasswordForExport(final String fpath,  
-			final NotifyEventCompletion ntfy_pswd) {
+			final NotifyEvent ntfy_pswd) {
 		
 		// カスタムダイアログの生成
 		final Dialog dialog = new Dialog(mContext);
@@ -333,6 +335,7 @@ public class ProfileMaintenance {
 		final Button btnNoencrypt = (Button) dialog.findViewById(R.id.password_input_noencrypt_btn);
 		final Button btnCancel = (Button) dialog.findViewById(R.id.password_input_cancel_btn);
 		final EditText etInput=(EditText) dialog.findViewById(R.id.password_input_password);
+		final EditText etInput_confirm=(EditText) dialog.findViewById(R.id.password_input_password_confirm);
 		
 		dlg_msg.setText(mContext.getString(R.string.msgs_export_import_pswd_specify_password));
 		
@@ -342,8 +345,36 @@ public class ProfileMaintenance {
 		etInput.addTextChangedListener(new TextWatcher(){
 			@Override
 			public void afterTextChanged(Editable arg0) {
-				if (arg0.length()>0) btnEncrypt.setEnabled(true);
-				else btnEncrypt.setEnabled(false);
+				if (etInput_confirm.getText().length()>0) {
+					if (arg0.length()>0) {
+						if (!etInput.getText().toString().equals(etInput_confirm.getText().toString())) {
+							btnEncrypt.setEnabled(false);
+							dlg_msg.setText(mContext.getString(R.string.msgs_export_import_pswd_unmatched_confirm_pswd));
+						} else {
+							btnEncrypt.setEnabled(true);
+						}
+					} else btnEncrypt.setEnabled(false);
+				} else btnEncrypt.setEnabled(false);
+			}
+			@Override
+			public void beforeTextChanged(CharSequence arg0, int arg1,int arg2, int arg3) {}
+			@Override
+			public void onTextChanged(CharSequence arg0, int arg1, int arg2,int arg3) {}
+		});
+
+		etInput_confirm.addTextChangedListener(new TextWatcher(){
+			@Override
+			public void afterTextChanged(Editable arg0) {
+				if (etInput.getText().length()>0) {
+					if (!etInput.getText().toString().equals(etInput_confirm.getText().toString())) {
+						//Unmatch
+						btnEncrypt.setEnabled(false);
+						dlg_msg.setText(mContext.getString(R.string.msgs_export_import_pswd_unmatched_confirm_pswd));
+					} else {
+						btnEncrypt.setEnabled(true);
+						dlg_msg.setText("");
+					}
+				} else btnEncrypt.setEnabled(false);
 			}
 			@Override
 			public void beforeTextChanged(CharSequence arg0, int arg1,int arg2, int arg3) {}
@@ -409,7 +440,7 @@ public class ProfileMaintenance {
 
 	};
 	
-	private void selectImportProfileItem(final AdapterProfileList tfl, final NotifyEventCompletion p_ntfy) {
+	private void selectImportProfileItem(final AdapterProfileList tfl, final NotifyEvent p_ntfy) {
 		ArrayList<ExportImportProfileListItem> eipl=new ArrayList<ExportImportProfileListItem>();
 		for (int i=0;i<tfl.getCount();i++) {
 			ProfileListItem pl=tfl.getItem(i);
@@ -520,8 +551,8 @@ public class ProfileMaintenance {
 			}
 		});
 		
-		NotifyEventCompletion ntfy_cb_listener=new NotifyEventCompletion(mContext);
-		ntfy_cb_listener.setListener(new NotifyEventCompletionListener(){
+		NotifyEvent ntfy_cb_listener=new NotifyEvent(mContext);
+		ntfy_cb_listener.setListener(new NotifyEventListener(){
 			@Override
 			public void positiveResponse(Context c, Object[] o) {
 				  if (imp_list_adapt.isItemSelected()) {
@@ -559,7 +590,7 @@ public class ProfileMaintenance {
 	private void importSelectedProfileItem(
 			final AdapterExportImportProfileList imp_list_adapt,
 			final AdapterProfileList tfl,
-			final NotifyEventCompletion p_ntfy) {
+			final NotifyEvent p_ntfy) {
 		String repl_list="";
 		for (int i=0;i<imp_list_adapt.getCount();i++) {
 			ExportImportProfileListItem eipli=imp_list_adapt.getItem(i);
@@ -569,8 +600,8 @@ public class ProfileMaintenance {
 			}
 		}
 		
-		NotifyEventCompletion ntfy=new NotifyEventCompletion(mContext);
-		ntfy.setListener(new NotifyEventCompletionListener(){
+		NotifyEvent ntfy=new NotifyEvent(mContext);
+		ntfy.setListener(new NotifyEventListener(){
 			@Override
 			public void positiveResponse(Context c, Object[] o) {
 				String imp_list="";
@@ -658,13 +689,13 @@ public class ProfileMaintenance {
 
 	public void exportProfileDlg(final String lurl, final String ldir, final String ifn) {
 
-		NotifyEventCompletion ntfy=new NotifyEventCompletion(mContext);
-		ntfy.setListener(new NotifyEventCompletionListener() {
+		NotifyEvent ntfy=new NotifyEvent(mContext);
+		ntfy.setListener(new NotifyEventListener() {
 			@Override
 			public void positiveResponse(Context c,Object[] o) {
     			final String fpath=(String)o[0];
-    			NotifyEventCompletion ntfy_pswd=new NotifyEventCompletion(mContext);
-    			ntfy_pswd.setListener(new NotifyEventCompletionListener(){
+    			NotifyEvent ntfy_pswd=new NotifyEvent(mContext);
+    			ntfy_pswd.setListener(new NotifyEventListener(){
 					@Override
 					public void positiveResponse(Context c, Object[] o) {
 						boolean enc_required=false;
@@ -697,8 +728,8 @@ public class ProfileMaintenance {
 		
 		File lf = new File(profile_dir+"/"+profile_filename);
 		if (lf.exists()) {
-			NotifyEventCompletion ntfy=new NotifyEventCompletion(mContext);
-			ntfy.setListener(new NotifyEventCompletionListener() {
+			NotifyEvent ntfy=new NotifyEvent(mContext);
+			ntfy.setListener(new NotifyEventListener() {
 				@Override
 				public void positiveResponse(Context c,Object[] o) {
 	    			String fp =profile_dir+"/"+profile_filename;
@@ -810,9 +841,9 @@ public class ProfileMaintenance {
 			} else dpnum[i]=-1;
 		}
 
-		NotifyEventCompletion ntfy=new NotifyEventCompletion(mContext);
+		NotifyEvent ntfy=new NotifyEvent(mContext);
 		// set commonDlg.showCommonDialog response 
-		ntfy.setListener(new NotifyEventCompletionListener() {
+		ntfy.setListener(new NotifyEventListener() {
 			@Override
 			public void positiveResponse(Context c,Object[] o) {
 				ArrayList<ProfileListItem> dpItemList = new ArrayList<ProfileListItem>();
@@ -925,9 +956,9 @@ public class ProfileMaintenance {
 				editdir.selectAll();
 				String p_dir=editdir.getText().toString();
 
-				NotifyEventCompletion ntfy=new NotifyEventCompletion(mContext);
+				NotifyEvent ntfy=new NotifyEvent(mContext);
 				//Listen setRemoteShare response 
-				ntfy.setListener(new NotifyEventCompletionListener() {
+				ntfy.setListener(new NotifyEventListener() {
 					@Override
 					public void positiveResponse(Context arg0, Object[] arg1) {
 						editdir.setText((String)arg1[0]);
@@ -1475,9 +1506,9 @@ public class ProfileMaintenance {
 				String url=(String)spinner.getSelectedItem();
 				editdir.selectAll();
 				String p_dir=editdir.getText().toString();
-				NotifyEventCompletion ntfy=new NotifyEventCompletion(mContext);
+				NotifyEvent ntfy=new NotifyEvent(mContext);
 				//Listen setRemoteShare response 
-				ntfy.setListener(new NotifyEventCompletionListener() {
+				ntfy.setListener(new NotifyEventListener() {
 					@Override
 					public void positiveResponse(Context arg0, Object[] arg1) {
 						editdir.setText((String)arg1[0]);
@@ -1559,8 +1590,8 @@ public class ProfileMaintenance {
 						final String t_prof_act=prof_act;
 						final String t_prof_lmp=prof_lmp;
 						final String t_prof_dir=prof_dir;
-						NotifyEventCompletion ntfy=new NotifyEventCompletion(null);
-						ntfy.setListener(new NotifyEventCompletionListener(){
+						NotifyEvent ntfy=new NotifyEvent(null);
+						ntfy.setListener(new NotifyEventListener(){
 							@Override
 							public void positiveResponse(Context c,Object[] o) {
 								dialog.dismiss();
@@ -2130,9 +2161,9 @@ public class ProfileMaintenance {
 		final EditText editaddr = (EditText) dialog.findViewById(R.id.remote_profile_addr);
 		final EditText edithost = (EditText) dialog.findViewById(R.id.remote_profile_hostname);
 		final CheckBox cb_use_hostname = (CheckBox) dialog.findViewById(R.id.remote_profile_use_computer_name);
-		NotifyEventCompletion ntfy=new NotifyEventCompletion(mContext);
+		NotifyEvent ntfy=new NotifyEvent(mContext);
 		//Listen setRemoteShare response 
-		ntfy.setListener(new NotifyEventCompletionListener() {
+		ntfy.setListener(new NotifyEventListener() {
 			@Override
 			public void positiveResponse(Context arg0, Object[] arg1) {
 				if (((String)arg1[0]).equals("A")) {
@@ -2197,9 +2228,9 @@ public class ProfileMaintenance {
 		if (cb_use_hostname.isChecked()) t_url=remote_host;
 		else t_url=remote_addr;
 		String remurl="smb://"+t_url+"/";
-		NotifyEventCompletion ntfy=new NotifyEventCompletion(mContext);
+		NotifyEvent ntfy=new NotifyEvent(mContext);
 		//Listen setRemoteShare response 
-		ntfy.setListener(new NotifyEventCompletionListener() {
+		ntfy.setListener(new NotifyEventListener() {
 			@Override
 			public void positiveResponse(Context arg0, Object[] arg1) {
 				editshare.setText((String)arg1[0]);
@@ -2273,9 +2304,9 @@ public class ProfileMaintenance {
 		if (cb_use_hostname.isChecked()) t_url=remote_host;
 		else t_url=remote_addr;
 		String remurl="smb://"+t_url+"/"+remote_share+"/";
-		NotifyEventCompletion ntfy=new NotifyEventCompletion(mContext);
+		NotifyEvent ntfy=new NotifyEvent(mContext);
 		//Listen setRemoteShare response 
-		ntfy.setListener(new NotifyEventCompletionListener() {
+		ntfy.setListener(new NotifyEventListener() {
 			@Override
 			public void positiveResponse(Context arg0, Object[] arg1) {
 				editdir.setText((String)arg1[0]);
@@ -2295,9 +2326,9 @@ public class ProfileMaintenance {
 		final EditText editmaster = (EditText) dialog.findViewById(R.id.sync_profile_master);
 		final TextView dlg_msg=(TextView) dialog.findViewById(R.id.sync_profile_dlg_msg);
 		final ImageView master_icon=(ImageView) dialog.findViewById(R.id.sync_profile_master_icon);
-		NotifyEventCompletion ntfy=new NotifyEventCompletion(mContext);
+		NotifyEvent ntfy=new NotifyEvent(mContext);
 		//Listen setRemoteShare response 
-		ntfy.setListener(new NotifyEventCompletionListener() {
+		ntfy.setListener(new NotifyEventListener() {
 			@Override
 			public void positiveResponse(Context arg0, Object[] arg1) {
 				editmaster.setText((String)arg1[0]);
@@ -2320,9 +2351,9 @@ public class ProfileMaintenance {
 		final TextView dlg_msg=(TextView) dialog.findViewById(R.id.sync_profile_dlg_msg);
 		final ImageView target_icon=(ImageView) dialog.findViewById(R.id.sync_profile_target_icon);
 		
-		NotifyEventCompletion ntfy=new NotifyEventCompletion(mContext);
+		NotifyEvent ntfy=new NotifyEvent(mContext);
 		//Listen setRemoteShare response 
-		ntfy.setListener(new NotifyEventCompletionListener() {
+		ntfy.setListener(new NotifyEventListener() {
 			@Override
 			public void positiveResponse(Context arg0, Object[] arg1) {
 				edittarget.setText((String)arg1[0]);
@@ -2342,9 +2373,9 @@ public class ProfileMaintenance {
 			final ArrayList<String> n_file_filter) {
 		final TextView dlg_file_filter=(TextView) dialog.findViewById(R.id.sync_profile_file_filter);
 
-		NotifyEventCompletion ntfy=new NotifyEventCompletion(mContext);
+		NotifyEvent ntfy=new NotifyEvent(mContext);
 		//Listen setRemoteShare response 
-		ntfy.setListener(new NotifyEventCompletionListener() {
+		ntfy.setListener(new NotifyEventListener() {
 			@Override
 			public void positiveResponse(Context arg0, Object[] arg1) {
 				String f_fl="";
@@ -2374,9 +2405,9 @@ public class ProfileMaintenance {
 		final TextView dlg_dir_filter=(TextView) dialog.findViewById(R.id.sync_profile_dir_filter);
 		final TextView dlg_msg=(TextView) dialog.findViewById(R.id.sync_profile_dlg_msg);
 
-		NotifyEventCompletion ntfy=new NotifyEventCompletion(mContext);
+		NotifyEvent ntfy=new NotifyEvent(mContext);
 		//Listen setRemoteShare response 
-		ntfy.setListener(new NotifyEventCompletionListener() {
+		ntfy.setListener(new NotifyEventListener() {
 			@Override
 			public void positiveResponse(Context arg0, Object[] arg1) {
 				String d_fl="";
@@ -2460,7 +2491,7 @@ public class ProfileMaintenance {
 		}
 	};
 	
-	public void setFileFilter(final ArrayList<String>file_filter, final NotifyEventCompletion p_ntfy) {
+	public void setFileFilter(final ArrayList<String>file_filter, final NotifyEvent p_ntfy) {
 		ArrayList<FilterListItem> filterList=new ArrayList<FilterListItem>() ;
 		final AdapterFilterList filterAdapter;
 		
@@ -2605,7 +2636,7 @@ public class ProfileMaintenance {
 	
 	public void setDirFilter(final AdapterProfileList prof_dapter,
 			final String prof_master, final ArrayList<String>dir_filter, 
-			final NotifyEventCompletion p_ntfy) {
+			final NotifyEvent p_ntfy) {
 		ArrayList<FilterListItem> filterList=new ArrayList<FilterListItem>() ;
 		final AdapterFilterList filterAdapter;
 		
@@ -2713,9 +2744,9 @@ public class ProfileMaintenance {
 		} else dirbtn.setEnabled(false);
 		dirbtn.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				NotifyEventCompletion ntfy=new NotifyEventCompletion(mContext);
+				NotifyEvent ntfy=new NotifyEvent(mContext);
 				//Listen setRemoteShare response 
-				ntfy.setListener(new NotifyEventCompletionListener() {
+				ntfy.setListener(new NotifyEventListener() {
 					@Override
 					public void positiveResponse(Context arg0, Object[] arg1) {
 						dlg_msg.setText("");
@@ -2846,7 +2877,7 @@ public class ProfileMaintenance {
 	
 	private void listDirFilter(AdapterProfileList t_prof,
 			String prof_master, final ArrayList<String>dir_filter, 
-			AdapterFilterList fla, final NotifyEventCompletion p_ntfy) {
+			AdapterFilterList fla, final NotifyEvent p_ntfy) {
 		if (getProfileType(prof_master,t_prof).equals("L")) {
 			listDirFilterLocal(t_prof, prof_master, dir_filter, fla, p_ntfy);
 		} else {
@@ -2856,7 +2887,7 @@ public class ProfileMaintenance {
 
 	private void listDirFilterLocal(AdapterProfileList t_prof,
 			String prof_master, final ArrayList<String>dir_filter, 
-			final AdapterFilterList fla, final NotifyEventCompletion p_ntfy) {
+			final AdapterFilterList fla, final NotifyEvent p_ntfy) {
 		ProfileListItem t_i=null;
 		
 		for (int i=0;i<t_prof.getCount();i++) 
@@ -2947,9 +2978,9 @@ public class ProfileMaintenance {
 
 	    //OKボタンの指定
 	    btnOk.setEnabled(false);
-        NotifyEventCompletion ntfy=new NotifyEventCompletion(mContext);
+        NotifyEvent ntfy=new NotifyEvent(mContext);
 		//Listen setRemoteShare response 
-		ntfy.setListener(new NotifyEventCompletionListener() {
+		ntfy.setListener(new NotifyEventListener() {
 			@Override
 			public void positiveResponse(Context arg0, Object[] arg1) {
 				btnOk.setEnabled(true);
@@ -3006,7 +3037,7 @@ public class ProfileMaintenance {
 	
 	private void listDirFilterRemote(AdapterProfileList t_prof,
 			String prof_master, final ArrayList<String>dir_filter, 
-			final AdapterFilterList fla, final NotifyEventCompletion p_ntfy) {
+			final AdapterFilterList fla, final NotifyEvent p_ntfy) {
 		ProfileListItem item=null;
 		
 		for (int i=0;i<t_prof.getCount();i++) 
@@ -3023,9 +3054,9 @@ public class ProfileMaintenance {
 		final String remurl="smb://"+t_remurl+"/"+item.getShare();
 		final String remdir="/"+item.getDir()+"/";
 
-		NotifyEventCompletion ntfy=new NotifyEventCompletion(mContext);
+		NotifyEvent ntfy=new NotifyEvent(mContext);
 		// set thread response 
-		ntfy.setListener(new NotifyEventCompletionListener() {
+		ntfy.setListener(new NotifyEventListener() {
 			@Override
 			public void positiveResponse(Context c,Object[] o) {
 				final ArrayList<TreeFilelistItem> rows = new ArrayList<TreeFilelistItem>();
@@ -3113,9 +3144,9 @@ public class ProfileMaintenance {
 
 				//OKボタンの指定
 			    btnOk.setEnabled(false);
-		        NotifyEventCompletion ntfy=new NotifyEventCompletion(mContext);
+		        NotifyEvent ntfy=new NotifyEvent(mContext);
 				//Listen setRemoteShare response 
-				ntfy.setListener(new NotifyEventCompletionListener() {
+				ntfy.setListener(new NotifyEventListener() {
 					@Override
 					public void positiveResponse(Context arg0, Object[] arg1) {
 						btnOk.setEnabled(true);
@@ -3479,10 +3510,10 @@ public class ProfileMaintenance {
 		return active;
 	};
 
-	public void setRemoteAddr(final NotifyEventCompletion p_ntfy) {
+	public void setRemoteAddr(final NotifyEvent p_ntfy) {
 		final ArrayList<ScanAddressResultListItem> ipAddressList = new ArrayList<ScanAddressResultListItem>();
-		NotifyEventCompletion ntfy=new NotifyEventCompletion(mContext);
-		ntfy.setListener(new NotifyEventCompletionListener() {
+		NotifyEvent ntfy=new NotifyEvent(mContext);
+		ntfy.setListener(new NotifyEventListener() {
 			@Override
 			public void positiveResponse(Context c,Object[] o) {
 				if (ipAddressList.size()<1) {
@@ -3514,8 +3545,8 @@ public class ProfileMaintenance {
 			    
 			    CommonDialog.setDlgBoxSizeLimit(dialog, true);
 			    
-			    final NotifyEventCompletion ntfy_lv_click=new NotifyEventCompletion(mContext);
-			    ntfy_lv_click.setListener(new NotifyEventCompletionListener(){
+			    final NotifyEvent ntfy_lv_click=new NotifyEvent(mContext);
+			    ntfy_lv_click.setListener(new NotifyEventListener(){
 					@Override
 					public void positiveResponse(Context c, Object[] o) {
 			            dialog.dismiss();
@@ -3556,8 +3587,8 @@ public class ProfileMaintenance {
 			        	}
 			        	dlg_msg.setText("");
 			            ipAddressList.clear();
-			            NotifyEventCompletion ntfy=new NotifyEventCompletion(mContext);
-			    		ntfy.setListener(new NotifyEventCompletionListener() {
+			            NotifyEvent ntfy=new NotifyEvent(mContext);
+			    		ntfy.setListener(new NotifyEventListener() {
 			    			@Override
 			    			public void positiveResponse(Context c,Object[] o) {
 			    			    lv.setAdapter(new AdapterScanAddressResultList
@@ -3601,7 +3632,7 @@ public class ProfileMaintenance {
 	};
 
 	private void setScanAddressRange(final ArrayList<ScanAddressResultListItem> ipAddressList, 
-			final NotifyEventCompletion p_ntfy) {
+			final NotifyEvent p_ntfy) {
 		final String from=SMBSyncUtil.getLocalIpAddress();
 		String subnet=from.substring(0,from.lastIndexOf("."));
 		String subnet_o1, subnet_o2,subnet_o3;
@@ -3715,7 +3746,7 @@ public class ProfileMaintenance {
 	};
 	
 	private void scanRemoteIpAddress(final ArrayList<ScanAddressResultListItem> ipAddressList,
-			final NotifyEventCompletion p_ntfy) {
+			final NotifyEvent p_ntfy) {
 		final Handler handler=new Handler();
 		final String curr_ip=SMBSyncUtil.getLocalIpAddress();
 		cancelIpAddressListCreation =false;
@@ -3956,7 +3987,7 @@ public class ProfileMaintenance {
  	};
 	
 	private void setSyncMaterOrTagetProfile(
-			boolean mp, String base_prof_name, final NotifyEventCompletion p_ntfy) {
+			boolean mp, String base_prof_name, final NotifyEvent p_ntfy) {
 		final ArrayList<String> rows = new ArrayList<String>();
 		String prof_type=getProfileType(base_prof_name,profileAdapter);
 		ProfileListItem base_pli=getProfile(base_prof_name, profileAdapter);
@@ -4086,7 +4117,7 @@ public class ProfileMaintenance {
 	
 	
 	public void setLocalDir(final String url,final String dir,
-			String p_dir,final NotifyEventCompletion p_ntfy) {
+			String p_dir,final NotifyEvent p_ntfy) {
 		
     	//カスタムダイアログの生成
         final Dialog dialog=new Dialog(mContext);
@@ -4165,8 +4196,8 @@ public class ProfileMaintenance {
 				return false;
 			}
 		});
-		NotifyEventCompletion cb_ntfy=new NotifyEventCompletion(mContext);
-		cb_ntfy.setListener(new NotifyEventCompletionListener() {
+		NotifyEvent cb_ntfy=new NotifyEvent(mContext);
+		cb_ntfy.setListener(new NotifyEventListener() {
 			@Override
 			public void positiveResponse(Context c,Object[] o) {
 				if (o!=null) {
@@ -4234,7 +4265,7 @@ public class ProfileMaintenance {
 	};
 
 	private void createRemoteFileList(String remurl,String remdir, 
-			final NotifyEventCompletion p_event, boolean readSubDirCnt) {
+			final NotifyEvent p_event, boolean readSubDirCnt) {
 		final ArrayList<TreeFilelistItem> remoteFileList =
 								new ArrayList<TreeFilelistItem>();
 		final ThreadCtrl tc=new ThreadCtrl();
@@ -4278,8 +4309,8 @@ public class ProfileMaintenance {
 //		dialog.show(); showDelayedProgDlgで表示
 
 		final Handler hndl=new Handler();
-		NotifyEventCompletion ntfy=new NotifyEventCompletion(mContext);
-		ntfy.setListener(new NotifyEventCompletionListener() {
+		NotifyEvent ntfy=new NotifyEvent(mContext);
+		ntfy.setListener(new NotifyEventListener() {
 			@Override
 			public void positiveResponse(Context c,Object[] o) {
 				hndl.post(new Runnable(){
@@ -4335,11 +4366,11 @@ public class ProfileMaintenance {
 	}
 	
 	public void setRemoteShare(final String remurl, String remdir,
-			final NotifyEventCompletion p_ntfy) { 
+			final NotifyEvent p_ntfy) { 
 		
-		NotifyEventCompletion ntfy=new NotifyEventCompletion(mContext);
+		NotifyEvent ntfy=new NotifyEvent(mContext);
 		// set thread response 
-		ntfy.setListener(new NotifyEventCompletionListener() {
+		ntfy.setListener(new NotifyEventListener() {
 			@Override
 			public void positiveResponse(Context c,Object[] o) {
 				final ArrayList<String> rows = new ArrayList<String>();
@@ -4414,12 +4445,12 @@ public class ProfileMaintenance {
 	};
         
 	public void setRemoteDir(final String remurl, 
-			final String curdir, final String p_dir, final NotifyEventCompletion p_ntfy) { 
+			final String curdir, final String p_dir, final NotifyEvent p_ntfy) { 
 		final ArrayList<TreeFilelistItem> rows = new ArrayList<TreeFilelistItem>();
 		
-		NotifyEventCompletion ntfy=new NotifyEventCompletion(mContext);
+		NotifyEvent ntfy=new NotifyEvent(mContext);
 		// set thread response 
-		ntfy.setListener(new NotifyEventCompletionListener() {
+		ntfy.setListener(new NotifyEventListener() {
 			@Override
 			public void positiveResponse(Context c,Object[] o) {
 				@SuppressWarnings("unchecked")
@@ -4506,9 +4537,9 @@ public class ProfileMaintenance {
 						return false;
 					}
 				});
-				NotifyEventCompletion cb_ntfy=new NotifyEventCompletion(mContext);
+				NotifyEvent cb_ntfy=new NotifyEvent(mContext);
 				// set file list thread response listener 
-				cb_ntfy.setListener(new NotifyEventCompletionListener() {
+				cb_ntfy.setListener(new NotifyEventListener() {
 					@Override
 					public void positiveResponse(Context c,Object[] o) {
 						if (o!=null) {
@@ -4591,8 +4622,8 @@ public class ProfileMaintenance {
 				if (tfi.isSubDirLoaded()) 
 					tfa.reshowChildItem(tfi,pos);
 				else {
-					NotifyEventCompletion ne=new NotifyEventCompletion(mContext);
-					ne.setListener(new NotifyEventCompletionListener() {
+					NotifyEvent ne=new NotifyEvent(mContext);
+					ne.setListener(new NotifyEventListener() {
 						@SuppressWarnings("unchecked")
 						@Override
 						public void positiveResponse(Context c,Object[] o) {

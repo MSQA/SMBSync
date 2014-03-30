@@ -33,7 +33,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 
-import com.sentaroh.android.Utilities.NotifyEventCompletion;
+import com.sentaroh.android.Utilities.NotifyEvent;
 
 public class AdapterScanAddressResultList extends ArrayAdapter<ScanAddressResultListItem>{
 
@@ -41,10 +41,10 @@ public class AdapterScanAddressResultList extends ArrayAdapter<ScanAddressResult
 	private ArrayList<ScanAddressResultListItem>mResultList=null;
 	private int mResourceId=0;
 	private Context mContext;
-	private NotifyEventCompletion mNtfyEvent=null;
+	private NotifyEvent mNtfyEvent=null;
 	
 	public AdapterScanAddressResultList(Context context, int resource,
-			ArrayList<ScanAddressResultListItem> objects, NotifyEventCompletion ntfy) {
+			ArrayList<ScanAddressResultListItem> objects, NotifyEvent ntfy) {
 		super(context, resource, objects);
 		mResultList=objects;
 		mResourceId=resource;

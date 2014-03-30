@@ -58,8 +58,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.sentaroh.android.Utilities.LocalMountPoint;
-import com.sentaroh.android.Utilities.NotifyEventCompletion;
-import com.sentaroh.android.Utilities.NotifyEventCompletion.NotifyEventCompletionListener;
+import com.sentaroh.android.Utilities.NotifyEvent;
+import com.sentaroh.android.Utilities.NotifyEvent.NotifyEventListener;
 import com.sentaroh.android.Utilities.Dialog.CommonDialog;
 import com.sentaroh.android.Utilities.Dialog.DialogBackKeyListener;
 
@@ -162,8 +162,8 @@ public class LocalFileLastModified {
 				for (int i=0;i<lflmAdapter.getCount();i++)
 					if (lflmAdapter.getItem(i).isChecked()) d_mp=lflmAdapter.getItem(i).getLocalMountPoint();
 				final String lmp=d_mp;
-				NotifyEventCompletion ntfy=new NotifyEventCompletion(context);
-				ntfy.setListener(new NotifyEventCompletionListener(){
+				NotifyEvent ntfy=new NotifyEvent(context);
+				ntfy.setListener(new NotifyEventListener(){
 					@Override
 					public void positiveResponse(Context c, Object[] o) {
 						for (int i=0;i<lflmAdapter.getCount();i++)
@@ -190,8 +190,8 @@ public class LocalFileLastModified {
 		// Init ボタンの指定
 		btnInit.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				NotifyEventCompletion ntfy=new NotifyEventCompletion(context);
-				ntfy.setListener(new NotifyEventCompletionListener(){
+				NotifyEvent ntfy=new NotifyEvent(context);
+				ntfy.setListener(new NotifyEventListener(){
 					@Override
 					public void positiveResponse(Context c, Object[] o) {
 						for (int i=0;i<lflmAdapter.getCount();i++)
@@ -218,8 +218,8 @@ public class LocalFileLastModified {
 		// Reset ボタンの指定
 		btnReset.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				NotifyEventCompletion ntfy=new NotifyEventCompletion(context);
-				ntfy.setListener(new NotifyEventCompletionListener(){
+				NotifyEvent ntfy=new NotifyEvent(context);
+				ntfy.setListener(new NotifyEventListener(){
 					@Override
 					public void positiveResponse(Context c, Object[] o) {
 						for (int i=0;i<lflmAdapter.getCount();i++)
@@ -250,8 +250,8 @@ public class LocalFileLastModified {
 		else btnCleanup.setVisibility(Button.GONE);
 		btnCleanup.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				NotifyEventCompletion ntfy=new NotifyEventCompletion(context);
-				ntfy.setListener(new NotifyEventCompletionListener(){
+				NotifyEvent ntfy=new NotifyEvent(context);
+				ntfy.setListener(new NotifyEventListener(){
 					@Override
 					public void positiveResponse(Context c, Object[] o) {
 						File lf=new File(LocalMountPoint.getExternalStorageDir()+"/SMBSync/");

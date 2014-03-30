@@ -70,7 +70,7 @@ import android.webkit.MimeTypeMap;
 
 import com.sentaroh.android.Utilities.DateUtil;
 import com.sentaroh.android.Utilities.LocalMountPoint;
-import com.sentaroh.android.Utilities.NotifyEventCompletion;
+import com.sentaroh.android.Utilities.NotifyEvent;
 import com.sentaroh.android.Utilities.ThreadCtrl;
 
 public class MirrorIO implements Runnable {
@@ -119,7 +119,7 @@ public class MirrorIO implements Runnable {
 	
 	private boolean isExceptionOccured=false;
 	
-	private NotifyEventCompletion notifyEvent;
+	private NotifyEvent notifyEvent;
 	
 	private String settingsSmbRcvBufSize="",settingsSmbSndBufSize="",
 			settingsSmbListSize="",settingsSmbMaxBuffers="",settingsIoBuffers="",
@@ -164,7 +164,7 @@ public class MirrorIO implements Runnable {
 	
 	private SMBSyncUtil mUtil=null;
 	
-	public MirrorIO(GlobalParameters gwa, NotifyEventCompletion ne, ThreadCtrl ac, ThreadCtrl tw ) {
+	public MirrorIO(GlobalParameters gwa, NotifyEvent ne, ThreadCtrl ac, ThreadCtrl tw ) {
 		glblParms=gwa;
 		notifyEvent=ne;
 		tcConfirm=tw;

@@ -5,7 +5,7 @@
     <string name="msgs_mirror_task_result_cancel">同期がキャンセルされました。</string>
     <string name="msgs_mirror_task_result_error_ignored">同期が終了したが、一部または全ての同期プロファイルでエラーが発生しています。</string>
     <string name="msgs_mirror_task_result_error_ended">同期はエラーで終了しました。</string>
-    <string name="msgs_mirror_prof_file_deleted">ファイルを削除しました</string>
+    <string name="msgs_mirror_prof_file_deleted">ファイルを削除しました。</string>
     <string name="msgs_mirror_prof_started">開始しました。</string>
     <string name="msgs_mirror_prof_invalid_mirror_type">ミラータイプが無効です。</string>
     <string name="msgs_mirror_prof_was_failed">失敗しました。</string>

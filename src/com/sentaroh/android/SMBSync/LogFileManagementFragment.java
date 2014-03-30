@@ -52,8 +52,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.sentaroh.android.Utilities.MiscUtil;
-import com.sentaroh.android.Utilities.NotifyEventCompletion;
-import com.sentaroh.android.Utilities.NotifyEventCompletion.NotifyEventCompletionListener;
+import com.sentaroh.android.Utilities.NotifyEvent;
+import com.sentaroh.android.Utilities.NotifyEvent.NotifyEventListener;
 import com.sentaroh.android.Utilities.ThreadCtrl;
 import com.sentaroh.android.Utilities.ContextMenu.CustomContextMenu;
 import com.sentaroh.android.Utilities.ContextMenu.CustomContextMenuItem.CustomContextMenuOnClickListener;
@@ -376,8 +376,8 @@ public class LogFileManagementFragment extends DialogFragment{
 			}
 		}
 		final ThreadCtrl tc=new ThreadCtrl();
-		NotifyEventCompletion ntfy=new NotifyEventCompletion(mContext);
-		ntfy.setListener(new NotifyEventCompletionListener(){
+		NotifyEvent ntfy=new NotifyEvent(mContext);
+		ntfy.setListener(new NotifyEventListener(){
 			@Override
 			public void positiveResponse(Context c, Object[] o) {
 			}
@@ -435,8 +435,8 @@ public class LogFileManagementFragment extends DialogFragment{
     		}
     	}
     	
-    	NotifyEventCompletion ntfy=new NotifyEventCompletion(null);
-    	ntfy.setListener(new NotifyEventCompletionListener(){
+    	NotifyEvent ntfy=new NotifyEvent(null);
+    	ntfy.setListener(new NotifyEventListener(){
 			@Override
 			public void positiveResponse(Context c, Object[] o) {
 				for (int i=0;i<file_path_list.size();i++) {

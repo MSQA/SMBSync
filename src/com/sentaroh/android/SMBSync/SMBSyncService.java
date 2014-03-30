@@ -32,8 +32,8 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.IBinder;
 import android.os.RemoteException;
 
-import com.sentaroh.android.Utilities.NotifyEventCompletion;
-import com.sentaroh.android.Utilities.NotifyEventCompletion.NotifyEventCompletionListener;
+import com.sentaroh.android.Utilities.NotifyEvent;
+import com.sentaroh.android.Utilities.NotifyEvent.NotifyEventListener;
 import com.sentaroh.android.Utilities.ThreadCtrl;
 
 public class SMBSyncService extends Service {
@@ -171,8 +171,8 @@ public class SMBSyncService extends Service {
 		tcMirror.initThreadCtrl();
 		tcMirror.setEnable();//enableAsyncTask();
 		tcConfirm.setEnable();//enableAsyncTask();
-		NotifyEventCompletion ntfy = new NotifyEventCompletion(this);
-		ntfy.setListener(new NotifyEventCompletionListener() {
+		NotifyEvent ntfy = new NotifyEvent(this);
+		ntfy.setListener(new NotifyEventListener() {
 			@Override
 			public void positiveResponse(Context c, Object[] o) {
 				String result_code="", result_msg="";

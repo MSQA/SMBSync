@@ -36,7 +36,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-import com.sentaroh.android.Utilities.NotifyEventCompletion;
+import com.sentaroh.android.Utilities.NotifyEvent;
 import com.sentaroh.android.Utilities.ThreadCtrl;
 import com.sentaroh.android.Utilities.TreeFilelist.TreeFilelistItem;
 
@@ -47,7 +47,7 @@ public class ReadRemoteFilelist implements Runnable  {
 	private String remoteUrl, remoteDir;
 	private NtlmPasswordAuthentication ntlmPasswordAuth;
 	
-	private NotifyEventCompletion notifyEvent;
+	private NotifyEvent notifyEvent;
 	
 	private boolean readDirOnly=false;
 	private boolean readSubDirCnt=true;
@@ -58,7 +58,7 @@ public class ReadRemoteFilelist implements Runnable  {
 	
 	public ReadRemoteFilelist(Context c, ThreadCtrl ac, String ru, String rd, 
 			ArrayList<TreeFilelistItem> fl,String user, String pass, 
-			NotifyEventCompletion ne,boolean dironly, boolean dc, GlobalParameters gp) {
+			NotifyEvent ne,boolean dironly, boolean dc, GlobalParameters gp) {
 		mContext=c;
 		util=new SMBSyncUtil(mContext, "FileList", gp);
 		remoteFileList=fl;

@@ -17,6 +17,9 @@
     <string name="msgs_export_import_pswd_btn_encrypt_export">Encrypt</string>
     <string name="msgs_export_import_pswd_btn_encrypt_import">OK</string>
     <string name="msgs_export_import_pswd_btn_noencrypt">No Encrypt</string>
+    <string name="msgs_export_import_pswd_hint_password">Password</string>
+    <string name="msgs_export_import_pswd_hint_confirm">Confirm password</string>
     <string name="msgs_export_import_pswd_noencrypt_at_all">Not encrypt going forward.(Please check the Settings-Other-Profiles stored on external media If you want to encrypt)</string>
+    <string name="msgs_export_import_pswd_unmatched_confirm_pswd">Unmatched password and confirm password</string>
     
 </resources>

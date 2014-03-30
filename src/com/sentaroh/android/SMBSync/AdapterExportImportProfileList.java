@@ -35,7 +35,7 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 
-import com.sentaroh.android.Utilities.NotifyEventCompletion;
+import com.sentaroh.android.Utilities.NotifyEvent;
 
 class ExportImportProfileListItem {
 	public boolean isChecked=false;
@@ -74,8 +74,8 @@ public class AdapterExportImportProfileList extends ArrayAdapter<ExportImportPro
 		return result;
 	}
 	
-	private NotifyEventCompletion cb_ntfy=null;
-	final public void setCheckButtonListener(NotifyEventCompletion ntfy) {
+	private NotifyEvent cb_ntfy=null;
+	final public void setCheckButtonListener(NotifyEvent ntfy) {
 		cb_ntfy=ntfy;
 	};
 	

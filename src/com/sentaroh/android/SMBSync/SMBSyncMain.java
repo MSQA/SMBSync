@@ -104,8 +104,8 @@ import android.widget.Toast;
 
 import com.sentaroh.android.Utilities.CallBackListener;
 import com.sentaroh.android.Utilities.LocalMountPoint;
-import com.sentaroh.android.Utilities.NotifyEventCompletion;
-import com.sentaroh.android.Utilities.NotifyEventCompletion.NotifyEventCompletionListener;
+import com.sentaroh.android.Utilities.NotifyEvent;
+import com.sentaroh.android.Utilities.NotifyEvent.NotifyEventListener;
 import com.sentaroh.android.Utilities.ThreadCtrl;
 import com.sentaroh.android.Utilities.ContextMenu.CustomContextMenu;
 import com.sentaroh.android.Utilities.ContextMenu.CustomContextMenuItem.CustomContextMenuOnClickListener;
@@ -272,8 +272,8 @@ public class SMBSyncMain extends FragmentActivity {
 			}
 		} else {
 			setUiEnabled();
-			NotifyEventCompletion svc_ntfy=new NotifyEventCompletion(mContext);
-			svc_ntfy.setListener(new NotifyEventCompletionListener(){
+			NotifyEvent svc_ntfy=new NotifyEvent(mContext);
+			svc_ntfy.setListener(new NotifyEventListener(){
 				@Override
 				public void positiveResponse(Context c, Object[] o) {
 					NotificationUtil.clearNotification(glblParms);
@@ -301,8 +301,8 @@ public class SMBSyncMain extends FragmentActivity {
 							}
 						} else {
 //							setTheme(R.style.MainTheme);
-							NotifyEventCompletion ntfy_nr=new NotifyEventCompletion(mContext);
-							ntfy_nr.setListener(new NotifyEventCompletionListener(){
+							NotifyEvent ntfy_nr=new NotifyEvent(mContext);
+							ntfy_nr.setListener(new NotifyEventListener(){
 								@Override
 								public void positiveResponse(Context c,Object[] o) {
 									if (LocalFileLastModified.isLastModifiedWasUsed(profileAdapter))
@@ -684,8 +684,8 @@ public class SMBSyncMain extends FragmentActivity {
 	private void checkLastModifiedListValidity() {
 		final ArrayList<LocalFileLastModifiedMaintListItem> maint_list=
 				new ArrayList<LocalFileLastModifiedMaintListItem>();
-		final NotifyEventCompletion th_ntfy=new NotifyEventCompletion(mContext);
-		th_ntfy.setListener(new NotifyEventCompletionListener(){
+		final NotifyEvent th_ntfy=new NotifyEvent(mContext);
+		th_ntfy.setListener(new NotifyEventListener(){
 			@Override
 			public void positiveResponse(Context c, Object[] o) {
 				checkMixedMountPoint(maint_list);
@@ -807,8 +807,8 @@ public class SMBSyncMain extends FragmentActivity {
 			}
 		}
 		if (!m_line.equals("")) {
-			NotifyEventCompletion ntfy=new NotifyEventCompletion(mContext);
-			ntfy.setListener(new NotifyEventCompletionListener(){
+			NotifyEvent ntfy=new NotifyEvent(mContext);
+			ntfy.setListener(new NotifyEventListener(){
 				@Override
 				public void positiveResponse(Context c, Object[] o) {
 					LocalFileLastModified lflm=
@@ -827,8 +827,8 @@ public class SMBSyncMain extends FragmentActivity {
 	};
 	
 	private void importProfileAndParms() {
-		NotifyEventCompletion ntfy=new NotifyEventCompletion(this);
-		ntfy.setListener(new NotifyEventCompletionListener(){
+		NotifyEvent ntfy=new NotifyEvent(this);
+		ntfy.setListener(new NotifyEventListener(){
 			@Override
 			public void positiveResponse(Context c, Object[] o) {
 				applySettingParms();
@@ -995,8 +995,8 @@ public class SMBSyncMain extends FragmentActivity {
 	
 	private void confirmTerminateApplication() {
 		
-//		NotifyEventCompletion ntfy=new NotifyEventCompletion(mContext);
-//		ntfy.setListener(new NotifyEventCompletionListener() {
+//		NotifyEvent ntfy=new NotifyEvent(mContext);
+//		ntfy.setListener(new NotifyEventListener() {
 //			@Override
 //			public void positiveResponse(Context c,Object[] o) {
 //				terminateApplication();
@@ -1499,8 +1499,8 @@ public class SMBSyncMain extends FragmentActivity {
 			}
 		}
 		if (del_cnt==historyAdapter.getCount()) del_all_history=true;
-		NotifyEventCompletion ntfy=new NotifyEventCompletion(this);
-		ntfy.setListener(new NotifyEventCompletionListener(){
+		NotifyEvent ntfy=new NotifyEvent(this);
+		ntfy.setListener(new NotifyEventListener(){
 			@Override
 			public void positiveResponse(Context c, Object[] o) {
 				for (int i=historyAdapter.getCount()-1;i>=0;i--) {
@@ -2288,7 +2288,7 @@ public class SMBSyncMain extends FragmentActivity {
 
 	private ISvcClient mSvcClient=null;
 	
-	private void openService(final NotifyEventCompletion p_ntfy) {
+	private void openService(final NotifyEvent p_ntfy) {
     	if (DEBUG_ENABLE) 
 			util.addDebugLogMsg(1,"I","openService entered");
         mSvcConnection = new ServiceConnection(){
@@ -2352,8 +2352,8 @@ public class SMBSyncMain extends FragmentActivity {
 	private void showConfirmDialog(String fp, String method) {
     	if (DEBUG_ENABLE) 
 			util.addDebugLogMsg(1,"I","showConfirmDialog entered");
-		final NotifyEventCompletion ntfy=new NotifyEventCompletion(mContext);
-		ntfy.setListener(new NotifyEventCompletionListener(){
+		final NotifyEvent ntfy=new NotifyEvent(mContext);
+		ntfy.setListener(new NotifyEventListener(){
 			@Override
 			public void positiveResponse(Context c, Object[] o) {
 				try {
@@ -2498,8 +2498,8 @@ public class SMBSyncMain extends FragmentActivity {
 			}
 		});
 		
-		final NotifyEventCompletion at_ne=new NotifyEventCompletion(mContext);
-		at_ne.setListener(new NotifyEventCompletionListener() {
+		final NotifyEvent at_ne=new NotifyEvent(mContext);
+		at_ne.setListener(new NotifyEventListener() {
 			@Override
 			public void positiveResponse(Context c,Object[] o) {
 				util.addLogMsg("I",getString(R.string.msgs_astart_expired));
@@ -2564,8 +2564,8 @@ public class SMBSyncMain extends FragmentActivity {
 			}
 		});
 		
-		final NotifyEventCompletion at_ne=new NotifyEventCompletion(mContext);
-		at_ne.setListener(new NotifyEventCompletionListener() {
+		final NotifyEvent at_ne=new NotifyEvent(mContext);
+		at_ne.setListener(new NotifyEventListener() {
 			@Override
 			public void positiveResponse(Context c,Object[] o) {
 				util.addLogMsg("I",getString(R.string.msgs_aterm_expired));
@@ -2644,7 +2644,7 @@ public class SMBSyncMain extends FragmentActivity {
 	};
 
 	private void autoTimer( 
-			final ThreadCtrl threadCtl, final NotifyEventCompletion at_ne, final String msg) {
+			final ThreadCtrl threadCtl, final NotifyEvent at_ne, final String msg) {
 		setUiDisabled();
 		final Handler handler=new Handler();
        	new Thread(new Runnable() {
