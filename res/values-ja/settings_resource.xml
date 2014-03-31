@@ -110,7 +110,7 @@
         <item>1:デバッグ情報</item>
         <item>2:詳細デバッグ情報</item>
         <item>3:ファイル比較情報</item>
-        <item>9:全デバッグ情報</item>
+        <item>9:全デバッグ情報(パスワードも出力されます)</item>
     </string-array>
     
     <string name="settings_default_current_setting">現設定=</string>

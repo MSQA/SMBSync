@@ -70,7 +70,7 @@ public class NotificationUtil {
 //		   		.setTicker(gwa.notificationAppName)
 			   	.setOngoing(true)
 			   	.setAutoCancel(false)
-			   	.setSmallIcon(R.drawable.ic_48_smbsync)
+			   	.setSmallIcon(R.drawable.ic_48_smbsync)//smbsync_animation)
 			    .setContentTitle(gwa.notificationAppName)
 			    .setContentText("")
 //		    	.setSubText("subtext")

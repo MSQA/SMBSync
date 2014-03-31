@@ -9,8 +9,9 @@
     <string name="msgs_export_import_profile_import_success">下記項目を取り込みました。</string>
     <string name="msgs_export_import_profile_reset_current_profile">現在のプロファイルを全て削除して取り込む。</string>
     
-    <string name="msgs_export_import_pswd_password_title">プロファイル パスワード</string>
-    <string name="msgs_export_import_pswd_specify_password">プロファイルをパスワード保護する場合は、パスワードと確認パスワードを入力してください。</string>
+    <string name="msgs_export_import_pswd_password_title">プロファイル パスワード保護</string>
+    <string name="msgs_export_import_pswd_password_protect">プロファイル をパスワードで保護する</string>
+    <string name="msgs_export_import_pswd_specify_password">パスワードと確認パスワードを入力してください。</string>
     <string name="msgs_export_import_pswd_password_required">ファイルがパスワード保護されています、パスワードを指定してください。</string>
     <string name="msgs_export_import_pswd_invalid_password">パスワードが間違っています、指定し直してください。</string>
     

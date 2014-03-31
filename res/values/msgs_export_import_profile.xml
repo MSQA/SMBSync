@@ -9,7 +9,8 @@
     <string name="msgs_export_import_profile_import_success">Following profile item(s) are imported.</string>
     <string name="msgs_export_import_profile_reset_current_profile">All of the current profile was removed and to import profile.</string>
     
-    <string name="msgs_export_import_pswd_password_title">Profile password</string>
+    <string name="msgs_export_import_pswd_password_title">Profile password protection</string>
+    <string name="msgs_export_import_pswd_password_protect">Password protection for the profile.</string>
     <string name="msgs_export_import_pswd_specify_password">Please specify the password for the profile.</string>
     <string name="msgs_export_import_pswd_invalid_password">Password is incorrect, please specify the correct password.</string>
     <string name="msgs_export_import_pswd_password_required">File is password protected, Please specify the password.</string>

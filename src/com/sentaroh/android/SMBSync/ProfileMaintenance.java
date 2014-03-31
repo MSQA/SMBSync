@@ -64,8 +64,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 
-import javax.crypto.SecretKey;
-
 import jcifs.UniAddress;
 import android.app.Dialog;
 import android.content.Context;
@@ -100,6 +98,7 @@ import android.widget.TextView;
 
 import com.sentaroh.android.Utilities.Base64Compat;
 import com.sentaroh.android.Utilities.EncryptUtil;
+import com.sentaroh.android.Utilities.EncryptUtil.CipherParms;
 import com.sentaroh.android.Utilities.LocalMountPoint;
 import com.sentaroh.android.Utilities.NotifyEvent;
 import com.sentaroh.android.Utilities.NotifyEvent.NotifyEventListener;
@@ -136,7 +135,7 @@ public class ProfileMaintenance {
 	private GlobalParameters glblParms=null;
 
 	private String mProfilePassword="";
-	private String mProfilePasswordPrefix="SMBSync";
+	private final String mProfilePasswordPrefix="*SMBSync*";
 	
 	ProfileMaintenance (SMBSyncUtil mu, Context c,  
 			AdapterProfileList pa, ListView pv,
@@ -170,12 +169,7 @@ public class ProfileMaintenance {
     			ntfy_pswd.setListener(new NotifyEventListener(){
 					@Override
 					public void positiveResponse(Context c, Object[] o) {
-						if (o!=null) {
-//							mProfileWasEncrypted=true;
-							mProfilePassword=(String)o[0];
-						} else {
-//							mProfileWasEncrypted=false;
-						}
+						mProfilePassword=(String)o[0];
 		    			final AdapterProfileList tfl = createProfileList(true,fpath);
 		    			ProfileListItem pli=tfl.getItem(0);
 		    			if (errorCreateProfileList) {
@@ -196,7 +190,7 @@ public class ProfileMaintenance {
     			});
     			if (isProfileWasEncrypted(fpath)) {
     				promptPasswordForImport(fpath,ntfy_pswd);
-    			} else ntfy_pswd.notifyToListener(true, null);
+    			} else ntfy_pswd.notifyToListener(true, new Object[]{""});
 			}
 			@Override
 			public void negativeResponse(Context c,Object[] o) {
@@ -229,7 +223,7 @@ public class ProfileMaintenance {
 			}
 		}
 		return result;
-	}
+	};
 	
 	public void promptPasswordForImport(final String fpath,  
 			final NotifyEvent ntfy_pswd) {
@@ -239,14 +233,16 @@ public class ProfileMaintenance {
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		dialog.setContentView(R.layout.password_input_dlg);
 		final TextView dlg_msg = (TextView) dialog.findViewById(R.id.password_input_msg);
-		final CheckBox cb_noencrypt = (CheckBox) dialog.findViewById(R.id.password_input_no_encrypt_at_all);
+		final CheckBox cb_noprotect = (CheckBox) dialog.findViewById(R.id.password_input_no_encrypt_at_all);
+		final CheckBox cb_protect = (CheckBox) dialog.findViewById(R.id.password_input_protect);
 		final Button btnOk = (Button) dialog.findViewById(R.id.password_input_ok_btn);
 		final Button btnCancel = (Button) dialog.findViewById(R.id.password_input_cancel_btn);
 		final EditText et_password=(EditText) dialog.findViewById(R.id.password_input_password);
 		final EditText et_confirm=(EditText) dialog.findViewById(R.id.password_input_password_confirm);
 		et_confirm.setVisibility(EditText.GONE);
 		btnOk.setText(mContext.getString(R.string.msgs_export_import_pswd_btn_ok));
-		cb_noencrypt.setVisibility(CheckBox.GONE);
+		cb_noprotect.setVisibility(CheckBox.GONE);
+		cb_protect.setVisibility(CheckBox.GONE);
 		
 		dlg_msg.setText(mContext.getString(R.string.msgs_export_import_pswd_password_required));
 		
@@ -278,10 +274,11 @@ public class ProfileMaintenance {
 					pl = br.readLine();
 					if (pl!=null) {
 						if (pl.startsWith(SMBSYNC_PROF_VER3+SMBSYNC_PROF_ENC)) {
-							SecretKey sec_key=EncryptUtil.generateKey(mProfilePasswordPrefix+passwd);
+							CipherParms cp=EncryptUtil.initDecryptEnv(
+									mProfilePasswordPrefix+passwd);
 							String enc_str=pl.replace(SMBSYNC_PROF_VER3+SMBSYNC_PROF_ENC, "");
 							byte[] enc_array=Base64Compat.decode(enc_str, Base64Compat.NO_WRAP);
-							String dec_str=EncryptUtil.decrypt(enc_array, sec_key);
+							String dec_str=EncryptUtil.decrypt(enc_array, cp);
 //							Log.v("","enc_str="+enc_str+", dec_str="+dec_str);
 							if (!SMBSYNC_PROF_ENC.equals(dec_str)) {
 								dlg_msg.setText(mContext.getString(R.string.msgs_export_import_pswd_invalid_password));
@@ -328,7 +325,8 @@ public class ProfileMaintenance {
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		dialog.setContentView(R.layout.password_input_dlg);
 		final TextView dlg_msg = (TextView) dialog.findViewById(R.id.password_input_msg);
-		final CheckBox cb_noencrypt = (CheckBox) dialog.findViewById(R.id.password_input_no_encrypt_at_all);
+		final CheckBox cb_noprotect_at_all = (CheckBox) dialog.findViewById(R.id.password_input_no_encrypt_at_all);
+		final CheckBox cb_protect = (CheckBox) dialog.findViewById(R.id.password_input_protect);
 		final Button btnOk = (Button) dialog.findViewById(R.id.password_input_ok_btn);
 		final Button btnCancel = (Button) dialog.findViewById(R.id.password_input_cancel_btn);
 		final EditText et_password=(EditText) dialog.findViewById(R.id.password_input_password);
@@ -338,6 +336,25 @@ public class ProfileMaintenance {
 		
 		CommonDialog.setDlgBoxSizeCompact(dialog);
 
+		cb_protect.setChecked(true);
+		cb_noprotect_at_all.setVisibility(CheckBox.GONE);
+		cb_protect.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+			@Override
+			public void onCheckedChanged(CompoundButton arg0, boolean isChecked) {
+				if (isChecked) {
+					cb_noprotect_at_all.setVisibility(CheckBox.GONE);
+					et_password.setVisibility(EditText.VISIBLE);
+					et_confirm.setVisibility(EditText.VISIBLE);
+					setPasswordPromptOkButton(et_password, et_confirm, 
+							btnOk, dlg_msg);
+				} else {
+					dlg_msg.setText("");
+					cb_noprotect_at_all.setVisibility(CheckBox.VISIBLE);
+					et_password.setVisibility(EditText.GONE);
+					et_confirm.setVisibility(EditText.GONE);
+				}
+			}
+		});
 		et_password.setEnabled(true);
 		et_confirm.setEnabled(false);
 		et_password.addTextChangedListener(new TextWatcher(){
@@ -346,26 +363,6 @@ public class ProfileMaintenance {
 				btnOk.setEnabled(false);
 				setPasswordPromptOkButton(et_password, et_confirm, 
 						btnOk, dlg_msg);
-//				if (arg0.length()>0 && et_confirm.getText().length()==0) {
-//					dlg_msg.setText(mContext.getString(R.string.msgs_export_import_pswd_unmatched_confirm_pswd));
-//					et_confirm.setEnabled(true);
-//				} else if (arg0.length()>0 && et_confirm.getText().length()>0) {
-//					et_confirm.setEnabled(true);
-//					if (!et_password.getText().toString().equals(et_confirm.getText().toString())) {
-//						btnOk.setEnabled(false);
-//						dlg_msg.setText(mContext.getString(R.string.msgs_export_import_pswd_unmatched_confirm_pswd));
-//					} else {
-//						btnOk.setEnabled(true);
-//						dlg_msg.setText("");
-//					}
-//				} else if (arg0.length()==0 && et_confirm.getText().length()==0) {
-//					btnOk.setEnabled(true);
-//					dlg_msg.setText(mContext.getString(R.string.msgs_export_import_pswd_specify_password));
-//					et_password.setEnabled(true);
-//					et_confirm.setEnabled(false);
-//				} else if (arg0.length()==0 && et_confirm.getText().length()>0) {
-//					dlg_msg.setText(mContext.getString(R.string.msgs_export_import_pswd_unmatched_confirm_pswd));
-//				}
 			}
 			@Override
 			public void beforeTextChanged(CharSequence arg0, int arg1,int arg2, int arg3) {}
@@ -379,26 +376,6 @@ public class ProfileMaintenance {
 				btnOk.setEnabled(false);
 				setPasswordPromptOkButton(et_password, et_confirm, 
 						btnOk, dlg_msg);
-//				if (arg0.length()>0 && et_password.getText().length()==0) {
-//					dlg_msg.setText(mContext.getString(R.string.msgs_export_import_pswd_unmatched_confirm_pswd));
-//					et_password.setEnabled(true);
-//				} else if (arg0.length()>0 && et_password.getText().length()>0) {
-//					et_confirm.setEnabled(true);
-//					if (!et_password.getText().toString().equals(et_confirm.getText().toString())) {
-//						btnOk.setEnabled(false);
-//						dlg_msg.setText(mContext.getString(R.string.msgs_export_import_pswd_unmatched_confirm_pswd));
-//					} else {
-//						btnOk.setEnabled(true);
-//						dlg_msg.setText("");
-//					}
-//				} else if (arg0.length()==0 && et_password.getText().length()==0) {
-//					btnOk.setEnabled(true);
-//					dlg_msg.setText(mContext.getString(R.string.msgs_export_import_pswd_specify_password));
-//					et_password.setEnabled(true);
-//					et_confirm.setEnabled(false);
-//				} else if (arg0.length()==0 && et_password.getText().length()>0) {
-//					dlg_msg.setText(mContext.getString(R.string.msgs_export_import_pswd_unmatched_confirm_pswd));
-//				}
 			}
 			@Override
 			public void beforeTextChanged(CharSequence arg0, int arg1,int arg2, int arg3) {}
@@ -406,7 +383,7 @@ public class ProfileMaintenance {
 			public void onTextChanged(CharSequence arg0, int arg1, int arg2,int arg3) {}
 		});
 
-		cb_noencrypt.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+		cb_noprotect_at_all.setOnCheckedChangeListener(new OnCheckedChangeListener(){
 			@Override
 			public void onCheckedChanged(CompoundButton arg0, boolean isChecked) {
 				if (isChecked) {
@@ -424,13 +401,15 @@ public class ProfileMaintenance {
 			public void onClick(View v) {
 				et_password.selectAll();
 				String passwd=et_password.getText().toString();
-				if (cb_noencrypt.isChecked() || passwd.length()==0) {
+				if (!cb_protect.isChecked()) {
 					dialog.dismiss();
-					glblParms.settingExportedProfileEncryptRequired=!cb_noencrypt.isChecked();
-					SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-					prefs.edit().putBoolean(mContext.getString(R.string.settings_exported_profile_encryption), 
-							!cb_noencrypt.isChecked()).commit();
-					ntfy_pswd.notifyToListener(true, null);
+					if (cb_noprotect_at_all.isChecked()) {
+						glblParms.settingExportedProfileEncryptRequired=false;
+						SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+						prefs.edit().putBoolean(mContext.getString(R.string.settings_exported_profile_encryption), 
+								false).commit();
+					}
+					ntfy_pswd.notifyToListener(true, new Object[] {""});
 				} else {
 					if (!passwd.equals(et_confirm.getText().toString())) {
 						//Unmatch
@@ -491,9 +470,15 @@ public class ProfileMaintenance {
 	
 	private void selectImportProfileItem(final AdapterProfileList tfl, final NotifyEvent p_ntfy) {
 		ArrayList<ExportImportProfileListItem> eipl=new ArrayList<ExportImportProfileListItem>();
+		ExportImportProfileListItem eipli=new ExportImportProfileListItem();
+		eipli.isChecked=true;
+		eipli.item_type="*";
+		eipli.item_name=mContext.getString(R.string.msgs_export_import_profile_setting_parms);
+		eipl.add(eipli);
+
 		for (int i=0;i<tfl.getCount();i++) {
 			ProfileListItem pl=tfl.getItem(i);
-			ExportImportProfileListItem eipli=new ExportImportProfileListItem();
+			eipli=new ExportImportProfileListItem();
 			eipli.isChecked=true;
 			eipli.item_type=pl.getType();
 			eipli.item_name=pl.getName();
@@ -507,11 +492,6 @@ public class ProfileMaintenance {
 //				return arg0.item_name.compareToIgnoreCase(arg1.item_name);
 //			}
 //		});
-		ExportImportProfileListItem eipli=new ExportImportProfileListItem();
-		eipli.isChecked=true;
-		eipli.item_type="*";
-		eipli.item_name=mContext.getString(R.string.msgs_export_import_profile_setting_parms);
-		eipl.add(eipli);
 		
 		final Dialog dialog=new Dialog(mContext);
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -747,14 +727,12 @@ public class ProfileMaintenance {
     			ntfy_pswd.setListener(new NotifyEventListener(){
 					@Override
 					public void positiveResponse(Context c, Object[] o) {
-						boolean enc_required=false;
-						if (o!=null) {
-							enc_required=true;
-							mProfilePassword=(String)o[0];
-						}
+						mProfilePassword=(String)o[0];
+						boolean encrypt_required=false;
+						if (!mProfilePassword.equals("")) encrypt_required=true; 
 		    			String fd=fpath.substring(0,fpath.lastIndexOf("/"));
 		    			String fn=fpath.replace(fd+"/","");
-		    			exportProfileToFile(fd,fn,enc_required);
+		    			exportProfileToFile(fd,fn,encrypt_required);
 					}
 					@Override
 					public void negativeResponse(Context c, Object[] o) {
@@ -802,7 +780,7 @@ public class ProfileMaintenance {
 		} else {
 			String fp =profile_dir+"/"+profile_filename;
 			String fd =profile_dir;
-			if (saveProfileToFile(true,fd,fp,profileAdapter, encrypt_required)) {
+			if (saveProfileToFile(true,fd,fp,profileAdapter,encrypt_required)) {
 				commonDlg.showCommonDialog(false,"I",
 						String.format(msgs_export_prof_success,fp),"",null);
 				if (DEBUG_ENABLE) util.addDebugLogMsg(1,"I","Profile was exported. fn="+fp);						
@@ -4716,48 +4694,29 @@ public class ProfileMaintenance {
 		
 		importedSettingParmList.clear();
 
-		// L name active dir
-		// R name active addr share user pass dir
-		// M name active master target synctype filter1 filter2 filter3
-		
 		if (sdcard) {
 			File sf = new File(fp);
 			if (sf.exists()) {
-				SecretKey sec_key=EncryptUtil.generateKey(mProfilePasswordPrefix+mProfilePassword);
-//				Log.v("","dec pswd="+mProfilePassword);
-				boolean prof_encrypted=false;
+				CipherParms cp=null;
+				boolean prof_encrypted=isProfileWasEncrypted(fp);
+				if (prof_encrypted) {
+					cp=EncryptUtil.initDecryptEnv(
+							mProfilePasswordPrefix+mProfilePassword);
+				}
 				try {
 					BufferedReader br;
 					br = new BufferedReader(new FileReader(fp),8192);
 					String pl;
-					int lc=0;
 					while ((pl = br.readLine()) != null) {
-						lc++;
-						if (lc==1) {
-							if (pl.startsWith(SMBSYNC_PROF_VER1) || pl.startsWith(SMBSYNC_PROF_VER2)) {
-								addProfileList(pl, sync, rem, lcl);
-							} else if (pl.startsWith(SMBSYNC_PROF_VER3)) {
-								if (pl.startsWith(SMBSYNC_PROF_VER3+SMBSYNC_PROF_ENC)) {
-									prof_encrypted=true;
-//									String enc_str=pl.replace(SMBSYNC_PROF_VER3+SMBSYNC_PROF_ENC, "");
-//									byte[] enc_array=Base64Compat.decode(enc_str, Base64Compat.NO_WRAP);
-//									String dec_str=EncryptUtil.decrypt(enc_array, sec_key);
-//									if (SMBSYNC_PROF_ENC.equals(dec_str)) {
-//										
-//									} else {
-//										//
-//									}
-								}
-							}
-						} else {
-							if (pl.startsWith(SMBSYNC_PROF_VER1) || pl.startsWith(SMBSYNC_PROF_VER2)) {
-								addProfileList(pl, sync, rem, lcl);
-							} else if (pl.startsWith(SMBSYNC_PROF_VER3)) {
+						if (pl.startsWith(SMBSYNC_PROF_VER1) || pl.startsWith(SMBSYNC_PROF_VER2)) {
+							addProfileList(pl, sync, rem, lcl);
+						} else if (pl.startsWith(SMBSYNC_PROF_VER3)) {
+							if (!pl.startsWith(SMBSYNC_PROF_VER3+SMBSYNC_PROF_ENC) &&
+									!pl.startsWith(SMBSYNC_PROF_VER3+SMBSYNC_PROF_DEC)) {
 								if (prof_encrypted) {
 									String enc_str=pl.replace(SMBSYNC_PROF_VER3, "");
 									byte[] enc_array=Base64Compat.decode(enc_str, Base64Compat.NO_WRAP);
-									String dec_str=EncryptUtil.decrypt(enc_array, sec_key);
-//									String dec=EncryptUtil.getDecryptStr(pl.replaceAll("\u0008", "\n"), mProfilePassword);
+									String dec_str=EncryptUtil.decrypt(enc_array, cp);
 									addProfileList(SMBSYNC_PROF_VER3+dec_str, sync, rem, lcl);
 //									Log.v("","len="+enc_str.length()+", enc="+enc_str);
 								} else {
@@ -5379,9 +5338,11 @@ public class ProfileMaintenance {
 		PrintWriter pw;
 		BufferedWriter bw=null;
 		try {
-			SecretKey sec_key=null;
+			CipherParms cp=null;
 			if (sdcard) {
-				sec_key=EncryptUtil.generateKey(mProfilePasswordPrefix+mProfilePassword);
+				if (encrypt_required) {
+					cp=EncryptUtil.initEncryptEnv(mProfilePasswordPrefix+mProfilePassword);
+				}
 //				Log.v("","enc pswd="+mProfilePassword);
 				File lf=new File(fd);
 				if (!lf.exists()) lf.mkdir();
@@ -5389,11 +5350,11 @@ public class ProfileMaintenance {
 				pw = new PrintWriter(bw);
 				ofp=fp;
 				if (encrypt_required) {
-					String enc = 
-							Base64Compat.encodeToString(
-								EncryptUtil.encrypt(SMBSYNC_PROF_ENC,sec_key), 
-								Base64Compat.NO_WRAP);
-					pw.println(SMBSYNC_PROF_VER3+SMBSYNC_PROF_ENC+enc);
+					byte[] enc_array=EncryptUtil.encrypt(SMBSYNC_PROF_ENC, cp); 
+					String enc_str = 
+							Base64Compat.encodeToString(enc_array, Base64Compat.NO_WRAP);
+//					MiscUtil.hexString("", enc_array, 0, enc_array.length);
+					pw.println(SMBSYNC_PROF_VER3+SMBSYNC_PROF_ENC+enc_str);
 				}
 				else pw.println(SMBSYNC_PROF_VER3+SMBSYNC_PROF_DEC);
 			} else {
@@ -5429,12 +5390,12 @@ public class ProfileMaintenance {
 					if (!item.getType().equals("")) {
 						pl = "";
 						if (item.getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
-							pl =" "+item.getGroup()+"\t"+
+							pl =item.getGroup()+"\t"+
 									SMBSYNC_PROF_TYPE_LOCAL+ "\t" + pl_name + "\t"
 									+ pl_active + "\t" +pl_dir+"\t"+
 									pl_lmp+"\t";
 						} else if (item.getType().equals(SMBSYNC_PROF_TYPE_REMOTE)) {
-							pl =" "+item.getGroup()+"\t"+
+							pl =item.getGroup()+"\t"+
 									SMBSYNC_PROF_TYPE_REMOTE+ "\t" + pl_name + "\t"
 									+ pl_active + "\t" +
 									pl_user+"\t" +
@@ -5467,7 +5428,7 @@ public class ProfileMaintenance {
 							if (!item.isConfirmRequired()) conf="0";
 							String ujlm="1";
 							if (!item.isForceLastModifiedUseSmbsync()) ujlm="0";
-							pl =" "+item.getGroup()+"\t"+
+							pl =item.getGroup()+"\t"+
 									SMBSYNC_PROF_TYPE_SYNC+ "\t" + pl_name + "\t"+
 									pl_active + "\t" +
 									pl_synctype+"\t" +
@@ -5486,7 +5447,7 @@ public class ProfileMaintenance {
 							if (encrypt_required) {
 								String enc = 
 										Base64Compat.encodeToString(
-											EncryptUtil.encrypt(pl,sec_key), 
+											EncryptUtil.encrypt(pl, cp), 
 											Base64Compat.NO_WRAP);
 								pw.println(SMBSYNC_PROF_VER3+enc);
 //								Log.v("","len="+enc.length()+", enc="+enc);
@@ -5499,7 +5460,7 @@ public class ProfileMaintenance {
 					}
 				}
 			}
-			saveSettingsParmsToFile(pw,encrypt_required,sec_key);
+			saveSettingsParmsToFile(pw,encrypt_required,cp);
 			pw.close();
 			bw.close();
 		} catch (IOException e) {
@@ -5532,7 +5493,7 @@ public class ProfileMaintenance {
 	};
 
 	private void saveSettingsParmsToFileString(String group, PrintWriter pw, String dflt,
-			boolean encrypt_required, final SecretKey sec_key, String key) {
+			boolean encrypt_required, final CipherParms cp, String key) {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
 		String k_type, k_val;
 
@@ -5541,8 +5502,9 @@ public class ProfileMaintenance {
 		String k_str=group+"\t"+
 				SMBSYNC_PROF_TYPE_SETTINGS+"\t"+key+"\t"+k_type+"\t"+k_val;
 		if (encrypt_required) {
+			byte[] out=EncryptUtil.encrypt(k_str,cp);
 			String enc = Base64Compat.encodeToString(
-						EncryptUtil.encrypt(k_str,sec_key), 
+						out, 
 						Base64Compat.NO_WRAP);
 			pw.println(SMBSYNC_PROF_VER3+enc);
 		} else {
@@ -5552,7 +5514,7 @@ public class ProfileMaintenance {
 	
 	@SuppressWarnings("unused")
 	private void saveSettingsParmsToFileInt(String group, PrintWriter pw, int dflt,
-			boolean encrypt_required, final SecretKey sec_key, String key) {
+			boolean encrypt_required, final CipherParms cp, String key) {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
 		String k_type;
 		int k_val;
@@ -5563,7 +5525,7 @@ public class ProfileMaintenance {
 				SMBSYNC_PROF_TYPE_SETTINGS+"\t"+key+"\t"+k_type+"\t"+k_val;
 		if (encrypt_required) {
 			String enc = Base64Compat.encodeToString(
-						EncryptUtil.encrypt(k_str,sec_key), 
+						EncryptUtil.encrypt(k_str,cp), 
 						Base64Compat.NO_WRAP);
 			pw.println(SMBSYNC_PROF_VER3+enc);
 		} else {
@@ -5571,7 +5533,7 @@ public class ProfileMaintenance {
 		}
 	};
 	private void saveSettingsParmsToFileBoolean(String group, PrintWriter pw, boolean dflt,
-			boolean encrypt_required, final SecretKey sec_key, String key) {
+			boolean encrypt_required, final CipherParms cp, String key) {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
 		String k_type;
 		boolean k_val;
@@ -5582,7 +5544,7 @@ public class ProfileMaintenance {
 				SMBSYNC_PROF_TYPE_SETTINGS+"\t"+key+"\t"+k_type+"\t"+k_val;
 		if (encrypt_required) {
 			String enc = Base64Compat.encodeToString(
-						EncryptUtil.encrypt(k_str,sec_key), 
+						EncryptUtil.encrypt(k_str, cp), 
 						Base64Compat.NO_WRAP);
 			pw.println(SMBSYNC_PROF_VER3+enc);
 		} else {
@@ -5591,50 +5553,50 @@ public class ProfileMaintenance {
 	};
 	
 	private void saveSettingsParmsToFile(PrintWriter pw, boolean encrypt_required,
-			final SecretKey sec_key) {
+			final CipherParms cp) {
 		String group="Default";// 12Bytes
-		saveSettingsParmsToFileString(group, pw, "0",    encrypt_required,sec_key,mContext.getString(R.string.settings_network_wifi_option));
-		saveSettingsParmsToFileBoolean(group, pw, false, encrypt_required,sec_key,mContext.getString(R.string.settings_auto_start));
-		saveSettingsParmsToFileBoolean(group, pw, false, encrypt_required,sec_key,mContext.getString(R.string.settings_auto_term));
-		saveSettingsParmsToFileBoolean(group, pw, false, encrypt_required,sec_key,mContext.getString(R.string.settings_backgroound_execution));
-		saveSettingsParmsToFileString(group, pw, "0",    encrypt_required,sec_key,mContext.getString(R.string.settings_background_termination_notification));
-		saveSettingsParmsToFileBoolean(group, pw, false, encrypt_required,sec_key,mContext.getString(R.string.settings_error_option));
-		saveSettingsParmsToFileBoolean(group, pw, false, encrypt_required,sec_key,mContext.getString(R.string.settings_ui_keep_screen_on));
-		saveSettingsParmsToFileBoolean(group, pw, false, encrypt_required,sec_key,mContext.getString(R.string.settings_wifi_lock));
+		saveSettingsParmsToFileString(group, pw, "0",    encrypt_required,cp,mContext.getString(R.string.settings_network_wifi_option));
+		saveSettingsParmsToFileBoolean(group, pw, false, encrypt_required,cp,mContext.getString(R.string.settings_auto_start));
+		saveSettingsParmsToFileBoolean(group, pw, false, encrypt_required,cp,mContext.getString(R.string.settings_auto_term));
+		saveSettingsParmsToFileBoolean(group, pw, false, encrypt_required,cp,mContext.getString(R.string.settings_backgroound_execution));
+		saveSettingsParmsToFileString(group, pw, "0",    encrypt_required,cp,mContext.getString(R.string.settings_background_termination_notification));
+		saveSettingsParmsToFileBoolean(group, pw, false, encrypt_required,cp,mContext.getString(R.string.settings_error_option));
+		saveSettingsParmsToFileBoolean(group, pw, false, encrypt_required,cp,mContext.getString(R.string.settings_ui_keep_screen_on));
+		saveSettingsParmsToFileBoolean(group, pw, false, encrypt_required,cp,mContext.getString(R.string.settings_wifi_lock));
 
-		saveSettingsParmsToFileBoolean(group, pw, false, encrypt_required,sec_key,mContext.getString(R.string.settings_ui_keep_screen_on));
-		saveSettingsParmsToFileBoolean(group, pw, false, encrypt_required,sec_key,mContext.getString(R.string.settings_ui_alternate_ui));
-		saveSettingsParmsToFileBoolean(group, pw, false, encrypt_required,sec_key,mContext.getString(R.string.settings_debug_msg_diplay));
-		saveSettingsParmsToFileString(group, pw, "0",    encrypt_required,sec_key,mContext.getString(R.string.settings_log_option));
-		saveSettingsParmsToFileString(group, pw, "0",    encrypt_required,sec_key,mContext.getString(R.string.settings_log_level));
-		saveSettingsParmsToFileString(group, pw, "",     encrypt_required,sec_key,mContext.getString(R.string.settings_log_dir));
-		saveSettingsParmsToFileString(group, pw, "10",   encrypt_required,sec_key,mContext.getString(R.string.settings_log_generation));
-		saveSettingsParmsToFileBoolean(group, pw, false, encrypt_required,sec_key,mContext.getString(R.string.settings_suppress_warning_mixed_mp));
+		saveSettingsParmsToFileBoolean(group, pw, false, encrypt_required,cp,mContext.getString(R.string.settings_ui_keep_screen_on));
+		saveSettingsParmsToFileBoolean(group, pw, false, encrypt_required,cp,mContext.getString(R.string.settings_ui_alternate_ui));
+		saveSettingsParmsToFileBoolean(group, pw, false, encrypt_required,cp,mContext.getString(R.string.settings_debug_msg_diplay));
+		saveSettingsParmsToFileString(group, pw, "0",    encrypt_required,cp,mContext.getString(R.string.settings_log_option));
+		saveSettingsParmsToFileString(group, pw, "0",    encrypt_required,cp,mContext.getString(R.string.settings_log_level));
+		saveSettingsParmsToFileString(group, pw, "",     encrypt_required,cp,mContext.getString(R.string.settings_log_dir));
+		saveSettingsParmsToFileString(group, pw, "10",   encrypt_required,cp,mContext.getString(R.string.settings_log_generation));
+		saveSettingsParmsToFileBoolean(group, pw, false, encrypt_required,cp,mContext.getString(R.string.settings_suppress_warning_mixed_mp));
 
-		saveSettingsParmsToFileString(group, pw, "",     encrypt_required,sec_key,mContext.getString(R.string.settings_default_user));
-		saveSettingsParmsToFileString(group, pw, "",     encrypt_required,sec_key,mContext.getString(R.string.settings_default_pass));
-		saveSettingsParmsToFileString(group, pw, "",     encrypt_required,sec_key,mContext.getString(R.string.settings_default_addr));
+		saveSettingsParmsToFileString(group, pw, "",     encrypt_required,cp,mContext.getString(R.string.settings_default_user));
+		saveSettingsParmsToFileString(group, pw, "",     encrypt_required,cp,mContext.getString(R.string.settings_default_pass));
+		saveSettingsParmsToFileString(group, pw, "",     encrypt_required,cp,mContext.getString(R.string.settings_default_addr));
 
-		saveSettingsParmsToFileString(group, pw, "0",    encrypt_required,sec_key,mContext.getString(R.string.settings_media_store_last_mod_time));
-		saveSettingsParmsToFileString(group, pw, "3",    encrypt_required,sec_key,mContext.getString(R.string.settings_file_diff_time_seconds));
-		saveSettingsParmsToFileBoolean(group, pw, false, encrypt_required,sec_key,mContext.getString(R.string.settings_media_scanner_non_media_files_scan));
-		saveSettingsParmsToFileBoolean(group, pw, false, encrypt_required,sec_key,mContext.getString(R.string.settings_media_scanner_scan_extstg));
+		saveSettingsParmsToFileString(group, pw, "0",    encrypt_required,cp,mContext.getString(R.string.settings_media_store_last_mod_time));
+		saveSettingsParmsToFileString(group, pw, "3",    encrypt_required,cp,mContext.getString(R.string.settings_file_diff_time_seconds));
+		saveSettingsParmsToFileBoolean(group, pw, false, encrypt_required,cp,mContext.getString(R.string.settings_media_scanner_non_media_files_scan));
+		saveSettingsParmsToFileBoolean(group, pw, false, encrypt_required,cp,mContext.getString(R.string.settings_media_scanner_scan_extstg));
 		
-		saveSettingsParmsToFileBoolean(group, pw, false, encrypt_required,sec_key,mContext.getString(R.string.settings_exit_clean));
-		saveSettingsParmsToFileBoolean(group, pw, false, encrypt_required,sec_key,mContext.getString(R.string.settings_exported_profile_encryption));
+		saveSettingsParmsToFileBoolean(group, pw, false, encrypt_required,cp,mContext.getString(R.string.settings_exit_clean));
+		saveSettingsParmsToFileBoolean(group, pw, false, encrypt_required,cp,mContext.getString(R.string.settings_exported_profile_encryption));
 		
-		saveSettingsParmsToFileString(group, pw, "0",    encrypt_required,sec_key,mContext.getString(R.string.settings_smb_lm_compatibility));
-		saveSettingsParmsToFileBoolean(group, pw, false, encrypt_required,sec_key,mContext.getString(R.string.settings_smb_use_extended_security));
+		saveSettingsParmsToFileString(group, pw, "0",    encrypt_required,cp,mContext.getString(R.string.settings_smb_lm_compatibility));
+		saveSettingsParmsToFileBoolean(group, pw, false, encrypt_required,cp,mContext.getString(R.string.settings_smb_use_extended_security));
 		
-		saveSettingsParmsToFileString(group, pw, "0",    encrypt_required,sec_key,mContext.getString(R.string.settings_smb_perform_class));
+		saveSettingsParmsToFileString(group, pw, "0",    encrypt_required,cp,mContext.getString(R.string.settings_smb_perform_class));
 		
-		saveSettingsParmsToFileString(group, pw, "0",    encrypt_required,sec_key,mContext.getString(R.string.settings_smb_log_level));
-		saveSettingsParmsToFileString(group, pw, "",     encrypt_required,sec_key,mContext.getString(R.string.settings_smb_rcv_buf_size));
-		saveSettingsParmsToFileString(group, pw, "",     encrypt_required,sec_key,mContext.getString(R.string.settings_smb_snd_buf_size));
-		saveSettingsParmsToFileString(group, pw, "",     encrypt_required,sec_key,mContext.getString(R.string.settings_smb_listSize));
-		saveSettingsParmsToFileString(group, pw, "",     encrypt_required,sec_key,mContext.getString(R.string.settings_smb_maxBuffers));
-		saveSettingsParmsToFileString(group, pw, "",     encrypt_required,sec_key,mContext.getString(R.string.settings_io_buffers));
-		saveSettingsParmsToFileString(group, pw, "false",encrypt_required,sec_key,mContext.getString(R.string.settings_smb_tcp_nodelay));
+		saveSettingsParmsToFileString(group, pw, "0",    encrypt_required,cp,mContext.getString(R.string.settings_smb_log_level));
+		saveSettingsParmsToFileString(group, pw, "",     encrypt_required,cp,mContext.getString(R.string.settings_smb_rcv_buf_size));
+		saveSettingsParmsToFileString(group, pw, "",     encrypt_required,cp,mContext.getString(R.string.settings_smb_snd_buf_size));
+		saveSettingsParmsToFileString(group, pw, "",     encrypt_required,cp,mContext.getString(R.string.settings_smb_listSize));
+		saveSettingsParmsToFileString(group, pw, "",     encrypt_required,cp,mContext.getString(R.string.settings_smb_maxBuffers));
+		saveSettingsParmsToFileString(group, pw, "",     encrypt_required,cp,mContext.getString(R.string.settings_io_buffers));
+		saveSettingsParmsToFileString(group, pw, "false",encrypt_required,cp,mContext.getString(R.string.settings_smb_tcp_nodelay));
 	};
 
 	
