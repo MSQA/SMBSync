@@ -569,52 +569,54 @@ public class SMBSyncUtil {
 		try {
 			String dir=glblParms.SMBSync_External_Root_Dir+"/SMBSync";
 			File lf=new File(dir+"/history.txt");
-			FileReader fw=new FileReader(lf);
-			BufferedReader br=new BufferedReader(fw,4096*16);
-			String line="";
-			String[] l_array=null;
-		    while ((line = br.readLine()) != null) {
-		    	l_array=line.split("\u0001");
-		    	if (l_array!=null && l_array.length>=11) {
-		    		SyncHistoryListItem hli=new SyncHistoryListItem();
-		    		try {
-			    		hli.sync_date=l_array[0];
-			    		hli.sync_time=l_array[1];
-			    		hli.sync_prof=l_array[2];
-			    		hli.sync_status=Integer.valueOf(l_array[3]);
-			    		hli.sync_result_no_of_copied=Integer.valueOf(l_array[4]);
-			    		hli.sync_result_no_of_deleted=Integer.valueOf(l_array[5]);
-			    		hli.sync_result_no_of_ignored=Integer.valueOf(l_array[6]);
-			    		hli.sync_error_text=l_array[7];
-			    		hli.sync_copied_file=string2Array(l_array[8]);
-			    		hli.sync_deleted_file=string2Array(l_array[9]);
-			    		hli.sync_ignored_file=string2Array(l_array[10]);
-			    		if (l_array.length>=12) {
-			    			hli.sync_log_file_path=l_array[11];
-				    		if (!hli.sync_log_file_path.equals("")) {
-								File tf=new File(hli.sync_log_file_path);
-								if (tf.exists()) hli.isLogFileAvailable=true;
+			if (lf.exists()) {
+				FileReader fw=new FileReader(lf);
+				BufferedReader br=new BufferedReader(fw,4096*16);
+				String line="";
+				String[] l_array=null;
+			    while ((line = br.readLine()) != null) {
+			    	l_array=line.split("\u0001");
+			    	if (l_array!=null && l_array.length>=11) {
+			    		SyncHistoryListItem hli=new SyncHistoryListItem();
+			    		try {
+				    		hli.sync_date=l_array[0];
+				    		hli.sync_time=l_array[1];
+				    		hli.sync_prof=l_array[2];
+				    		hli.sync_status=Integer.valueOf(l_array[3]);
+				    		hli.sync_result_no_of_copied=Integer.valueOf(l_array[4]);
+				    		hli.sync_result_no_of_deleted=Integer.valueOf(l_array[5]);
+				    		hli.sync_result_no_of_ignored=Integer.valueOf(l_array[6]);
+				    		hli.sync_error_text=l_array[7];
+				    		hli.sync_copied_file=string2Array(l_array[8]);
+				    		hli.sync_deleted_file=string2Array(l_array[9]);
+				    		hli.sync_ignored_file=string2Array(l_array[10]);
+				    		if (l_array.length>=12) {
+				    			hli.sync_log_file_path=l_array[11];
+					    		if (!hli.sync_log_file_path.equals("")) {
+									File tf=new File(hli.sync_log_file_path);
+									if (tf.exists()) hli.isLogFileAvailable=true;
+					    		}
 				    		}
+				    		hl.add(hli);
+			    		} catch(Exception e) {
+			    			addLogMsg("W","History list can not loaded");
+			    			e.printStackTrace();
 			    		}
-			    		hl.add(hli);
-		    		} catch(Exception e) {
-		    			addLogMsg("W","History list can not loaded");
-		    			e.printStackTrace();
-		    		}
-		    	} 
-			}
-			br.close();
-			if (hl.size()>1) {
-				Collections.sort(hl,new Comparator<SyncHistoryListItem>(){
-					@Override
-					public int compare(SyncHistoryListItem lhs, SyncHistoryListItem rhs) {
-						if (rhs.sync_date.equals(lhs.sync_date)) {
-							if (rhs.sync_time.equals(lhs.sync_time)) {
-								return lhs.sync_prof.compareToIgnoreCase(rhs.sync_prof);
-							} else return rhs.sync_time.compareTo(lhs.sync_time) ;
-						} else return rhs.sync_date.compareTo(lhs.sync_date) ;
-					}
-				});
+			    	} 
+				}
+				br.close();
+				if (hl.size()>1) {
+					Collections.sort(hl,new Comparator<SyncHistoryListItem>(){
+						@Override
+						public int compare(SyncHistoryListItem lhs, SyncHistoryListItem rhs) {
+							if (rhs.sync_date.equals(lhs.sync_date)) {
+								if (rhs.sync_time.equals(lhs.sync_time)) {
+									return lhs.sync_prof.compareToIgnoreCase(rhs.sync_prof);
+								} else return rhs.sync_time.compareTo(lhs.sync_time) ;
+							} else return rhs.sync_date.compareTo(lhs.sync_date) ;
+						}
+					});
+				}
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

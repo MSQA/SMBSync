@@ -240,26 +240,24 @@ public class ProfileMaintenance {
 		dialog.setContentView(R.layout.password_input_dlg);
 		final TextView dlg_msg = (TextView) dialog.findViewById(R.id.password_input_msg);
 		final CheckBox cb_noencrypt = (CheckBox) dialog.findViewById(R.id.password_input_no_encrypt_at_all);
-		final Button btnEncrypt = (Button) dialog.findViewById(R.id.password_input_encrypt_btn);
-		final Button btnNoencrypt = (Button) dialog.findViewById(R.id.password_input_noencrypt_btn);
+		final Button btnOk = (Button) dialog.findViewById(R.id.password_input_ok_btn);
 		final Button btnCancel = (Button) dialog.findViewById(R.id.password_input_cancel_btn);
-		final EditText etInput=(EditText) dialog.findViewById(R.id.password_input_password);
-		final EditText etInput_confirm=(EditText) dialog.findViewById(R.id.password_input_password_confirm);
-		etInput_confirm.setVisibility(EditText.GONE);
-		btnEncrypt.setText(mContext.getString(R.string.msgs_export_import_pswd_btn_encrypt_import));
-		btnNoencrypt.setVisibility(Button.GONE);
+		final EditText et_password=(EditText) dialog.findViewById(R.id.password_input_password);
+		final EditText et_confirm=(EditText) dialog.findViewById(R.id.password_input_password_confirm);
+		et_confirm.setVisibility(EditText.GONE);
+		btnOk.setText(mContext.getString(R.string.msgs_export_import_pswd_btn_ok));
 		cb_noencrypt.setVisibility(CheckBox.GONE);
 		
-		dlg_msg.setText(mContext.getString(R.string.msgs_export_import_pswd_specify_password));
+		dlg_msg.setText(mContext.getString(R.string.msgs_export_import_pswd_password_required));
 		
 		CommonDialog.setDlgBoxSizeCompact(dialog);
 		
-		btnEncrypt.setEnabled(false);
-		etInput.addTextChangedListener(new TextWatcher(){
+		btnOk.setEnabled(false);
+		et_password.addTextChangedListener(new TextWatcher(){
 			@Override
 			public void afterTextChanged(Editable arg0) {
-				if (arg0.length()>0) btnEncrypt.setEnabled(true);
-				else btnEncrypt.setEnabled(false);
+				if (arg0.length()>0) btnOk.setEnabled(true);
+				else btnOk.setEnabled(false);
 			}
 			@Override
 			public void beforeTextChanged(CharSequence arg0, int arg1,int arg2, int arg3) {}
@@ -268,10 +266,10 @@ public class ProfileMaintenance {
 		});
 
 		//OK button
-		btnEncrypt.setOnClickListener(new View.OnClickListener() {
+		btnOk.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				etInput.selectAll();
-				String passwd=etInput.getText().toString();
+				et_password.selectAll();
+				String passwd=et_password.getText().toString();
 				BufferedReader br;
 				String pl;
 				boolean pswd_invalid=true;
@@ -331,30 +329,43 @@ public class ProfileMaintenance {
 		dialog.setContentView(R.layout.password_input_dlg);
 		final TextView dlg_msg = (TextView) dialog.findViewById(R.id.password_input_msg);
 		final CheckBox cb_noencrypt = (CheckBox) dialog.findViewById(R.id.password_input_no_encrypt_at_all);
-		final Button btnEncrypt = (Button) dialog.findViewById(R.id.password_input_encrypt_btn);
-		final Button btnNoencrypt = (Button) dialog.findViewById(R.id.password_input_noencrypt_btn);
+		final Button btnOk = (Button) dialog.findViewById(R.id.password_input_ok_btn);
 		final Button btnCancel = (Button) dialog.findViewById(R.id.password_input_cancel_btn);
-		final EditText etInput=(EditText) dialog.findViewById(R.id.password_input_password);
-		final EditText etInput_confirm=(EditText) dialog.findViewById(R.id.password_input_password_confirm);
+		final EditText et_password=(EditText) dialog.findViewById(R.id.password_input_password);
+		final EditText et_confirm=(EditText) dialog.findViewById(R.id.password_input_password_confirm);
 		
 		dlg_msg.setText(mContext.getString(R.string.msgs_export_import_pswd_specify_password));
 		
 		CommonDialog.setDlgBoxSizeCompact(dialog);
-		
-		btnEncrypt.setEnabled(false);
-		etInput.addTextChangedListener(new TextWatcher(){
+
+		et_password.setEnabled(true);
+		et_confirm.setEnabled(false);
+		et_password.addTextChangedListener(new TextWatcher(){
 			@Override
 			public void afterTextChanged(Editable arg0) {
-				if (etInput_confirm.getText().length()>0) {
-					if (arg0.length()>0) {
-						if (!etInput.getText().toString().equals(etInput_confirm.getText().toString())) {
-							btnEncrypt.setEnabled(false);
-							dlg_msg.setText(mContext.getString(R.string.msgs_export_import_pswd_unmatched_confirm_pswd));
-						} else {
-							btnEncrypt.setEnabled(true);
-						}
-					} else btnEncrypt.setEnabled(false);
-				} else btnEncrypt.setEnabled(false);
+				btnOk.setEnabled(false);
+				setPasswordPromptOkButton(et_password, et_confirm, 
+						btnOk, dlg_msg);
+//				if (arg0.length()>0 && et_confirm.getText().length()==0) {
+//					dlg_msg.setText(mContext.getString(R.string.msgs_export_import_pswd_unmatched_confirm_pswd));
+//					et_confirm.setEnabled(true);
+//				} else if (arg0.length()>0 && et_confirm.getText().length()>0) {
+//					et_confirm.setEnabled(true);
+//					if (!et_password.getText().toString().equals(et_confirm.getText().toString())) {
+//						btnOk.setEnabled(false);
+//						dlg_msg.setText(mContext.getString(R.string.msgs_export_import_pswd_unmatched_confirm_pswd));
+//					} else {
+//						btnOk.setEnabled(true);
+//						dlg_msg.setText("");
+//					}
+//				} else if (arg0.length()==0 && et_confirm.getText().length()==0) {
+//					btnOk.setEnabled(true);
+//					dlg_msg.setText(mContext.getString(R.string.msgs_export_import_pswd_specify_password));
+//					et_password.setEnabled(true);
+//					et_confirm.setEnabled(false);
+//				} else if (arg0.length()==0 && et_confirm.getText().length()>0) {
+//					dlg_msg.setText(mContext.getString(R.string.msgs_export_import_pswd_unmatched_confirm_pswd));
+//				}
 			}
 			@Override
 			public void beforeTextChanged(CharSequence arg0, int arg1,int arg2, int arg3) {}
@@ -362,19 +373,32 @@ public class ProfileMaintenance {
 			public void onTextChanged(CharSequence arg0, int arg1, int arg2,int arg3) {}
 		});
 
-		etInput_confirm.addTextChangedListener(new TextWatcher(){
+		et_confirm.addTextChangedListener(new TextWatcher(){
 			@Override
 			public void afterTextChanged(Editable arg0) {
-				if (etInput.getText().length()>0) {
-					if (!etInput.getText().toString().equals(etInput_confirm.getText().toString())) {
-						//Unmatch
-						btnEncrypt.setEnabled(false);
-						dlg_msg.setText(mContext.getString(R.string.msgs_export_import_pswd_unmatched_confirm_pswd));
-					} else {
-						btnEncrypt.setEnabled(true);
-						dlg_msg.setText("");
-					}
-				} else btnEncrypt.setEnabled(false);
+				btnOk.setEnabled(false);
+				setPasswordPromptOkButton(et_password, et_confirm, 
+						btnOk, dlg_msg);
+//				if (arg0.length()>0 && et_password.getText().length()==0) {
+//					dlg_msg.setText(mContext.getString(R.string.msgs_export_import_pswd_unmatched_confirm_pswd));
+//					et_password.setEnabled(true);
+//				} else if (arg0.length()>0 && et_password.getText().length()>0) {
+//					et_confirm.setEnabled(true);
+//					if (!et_password.getText().toString().equals(et_confirm.getText().toString())) {
+//						btnOk.setEnabled(false);
+//						dlg_msg.setText(mContext.getString(R.string.msgs_export_import_pswd_unmatched_confirm_pswd));
+//					} else {
+//						btnOk.setEnabled(true);
+//						dlg_msg.setText("");
+//					}
+//				} else if (arg0.length()==0 && et_password.getText().length()==0) {
+//					btnOk.setEnabled(true);
+//					dlg_msg.setText(mContext.getString(R.string.msgs_export_import_pswd_specify_password));
+//					et_password.setEnabled(true);
+//					et_confirm.setEnabled(false);
+//				} else if (arg0.length()==0 && et_password.getText().length()>0) {
+//					dlg_msg.setText(mContext.getString(R.string.msgs_export_import_pswd_unmatched_confirm_pswd));
+//				}
 			}
 			@Override
 			public void beforeTextChanged(CharSequence arg0, int arg1,int arg2, int arg3) {}
@@ -386,38 +410,36 @@ public class ProfileMaintenance {
 			@Override
 			public void onCheckedChanged(CompoundButton arg0, boolean isChecked) {
 				if (isChecked) {
-					btnEncrypt.setEnabled(false);
-					etInput.setEnabled(false);
+					et_password.setEnabled(false);
+					et_confirm.setEnabled(false);
 				} else {
-					if (etInput.getText().length()>0) {
-						btnEncrypt.setEnabled(true);
-					} else {
-						btnEncrypt.setEnabled(false);
-					}
-					etInput.setEnabled(true);
+					et_password.setEnabled(true);
+					et_confirm.setEnabled(true);
 				}
 			}
 		});
 
-		//Noencrypt button
-		btnNoencrypt.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-				dialog.dismiss();
-				glblParms.settingExportedProfileEncryptRequired=!cb_noencrypt.isChecked();
-				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-				prefs.edit().putBoolean(mContext.getString(R.string.settings_exported_profile_encryption), 
-						!cb_noencrypt.isChecked()).commit();
-				ntfy_pswd.notifyToListener(true, null);
-			}
-		});
-				
 		//OK button
-		btnEncrypt.setOnClickListener(new View.OnClickListener() {
+		btnOk.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				etInput.selectAll();
-				String passwd=etInput.getText().toString();
-				dialog.dismiss();
-				ntfy_pswd.notifyToListener(true, new Object[] {passwd});
+				et_password.selectAll();
+				String passwd=et_password.getText().toString();
+				if (cb_noencrypt.isChecked() || passwd.length()==0) {
+					dialog.dismiss();
+					glblParms.settingExportedProfileEncryptRequired=!cb_noencrypt.isChecked();
+					SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+					prefs.edit().putBoolean(mContext.getString(R.string.settings_exported_profile_encryption), 
+							!cb_noencrypt.isChecked()).commit();
+					ntfy_pswd.notifyToListener(true, null);
+				} else {
+					if (!passwd.equals(et_confirm.getText().toString())) {
+						//Unmatch
+						dlg_msg.setText(mContext.getString(R.string.msgs_export_import_pswd_unmatched_confirm_pswd));
+					} else {
+						dialog.dismiss();
+						ntfy_pswd.notifyToListener(true, new Object[] {passwd});
+					}
+				}
 			}
 		});
 		// CANCELボタンの指定
@@ -439,6 +461,33 @@ public class ProfileMaintenance {
 		dialog.show();
 
 	};
+
+	private void setPasswordPromptOkButton(EditText et_passwd, EditText et_confirm, 
+			Button btn_ok, TextView dlg_msg) {
+		String password=et_passwd.getText().toString();
+		String confirm=et_confirm.getText().toString();
+		if (password.length()>0 && et_confirm.getText().length()==0) {
+			dlg_msg.setText(mContext.getString(R.string.msgs_export_import_pswd_unmatched_confirm_pswd));
+			et_confirm.setEnabled(true);
+		} else if (password.length()>0 && et_confirm.getText().length()>0) {
+			et_confirm.setEnabled(true);
+			if (!password.equals(confirm)) {
+				btn_ok.setEnabled(false);
+				dlg_msg.setText(mContext.getString(R.string.msgs_export_import_pswd_unmatched_confirm_pswd));
+			} else {
+				btn_ok.setEnabled(true);
+				dlg_msg.setText("");
+			}
+		} else if (password.length()==0 && confirm.length()==0) {
+			btn_ok.setEnabled(true);
+			dlg_msg.setText(mContext.getString(R.string.msgs_export_import_pswd_specify_password));
+			et_passwd.setEnabled(true);
+			et_confirm.setEnabled(false);
+		} else if (password.length()==0 && confirm.length()>0) {
+			dlg_msg.setText(mContext.getString(R.string.msgs_export_import_pswd_unmatched_confirm_pswd));
+		}
+
+	}
 	
 	private void selectImportProfileItem(final AdapterProfileList tfl, final NotifyEvent p_ntfy) {
 		ArrayList<ExportImportProfileListItem> eipl=new ArrayList<ExportImportProfileListItem>();

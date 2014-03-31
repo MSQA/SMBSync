@@ -326,8 +326,8 @@
     <string name="settings_misc_title">Miscellaneous</string>
     
     <string name="settings_exported_profile_encryption_title">Profiles stored on external media.</string>
-    <string name="settings_exported_profile_encryption_summary_dis">Not encrypted.</string>
-    <string name="settings_exported_profile_encryption_summary_ena">To encrypt.</string>
+    <string name="settings_exported_profile_encryption_summary_dis">Do not password protection.</string>
+    <string name="settings_exported_profile_encryption_summary_ena">Password protected.</string>
 	<string name="settings_exported_profile_encryption">settings_exported_profile_encryption</string>
     
 </resources>

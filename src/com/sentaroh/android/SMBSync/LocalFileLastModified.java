@@ -544,14 +544,18 @@ public class LocalFileLastModified {
 	final public static boolean isSetLastModifiedFunctional(String lmp) {
 		boolean result=false;
 		File lf=new File(lmp+"/"+"SMBSyncLastModifiedTest.temp");
+		File dir=new File(lmp+"/");
 		try {
-			lf.delete();
-			lf.createNewFile();
-			result=lf.setLastModified(0);
-			lf.delete();
+			if (dir.canWrite()) {
+				if (lf.exists()) lf.delete();
+				lf.createNewFile();
+				result=lf.setLastModified(0);
+				lf.delete();
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+//		Log.v("","result="+result+", lmp="+lmp);
 		return result;
 	};
 
