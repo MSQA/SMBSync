@@ -167,6 +167,7 @@ public class SMBSyncService extends Service {
 
 	private void startThread() {
 //		final Handler hndl=new Handler();
+		NotificationUtil.setNotificationIcon(glblParms, R.drawable.ic_48_smbsync_run);
 		tcConfirm.initThreadCtrl();
 		tcMirror.initThreadCtrl();
 		tcMirror.setEnable();//enableAsyncTask();
@@ -175,6 +176,7 @@ public class SMBSyncService extends Service {
 		ntfy.setListener(new NotifyEventListener() {
 			@Override
 			public void positiveResponse(Context c, Object[] o) {
+				NotificationUtil.setNotificationIcon(glblParms, R.drawable.ic_48_smbsync_wait);
 				String result_code="", result_msg="";
 				if (tcMirror.isThreadResultSuccess()) {
 					result_code="OK";
