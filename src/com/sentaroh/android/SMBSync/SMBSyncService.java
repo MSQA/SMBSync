@@ -167,7 +167,7 @@ public class SMBSyncService extends Service {
 
 	private void startThread() {
 //		final Handler hndl=new Handler();
-		NotificationUtil.setNotificationIcon(glblParms, R.drawable.ic_48_smbsync_run);
+		NotificationUtil.setNotificationIcon(glblParms, R.drawable.ic_48_smbsync_run_anim);
 		tcConfirm.initThreadCtrl();
 		tcMirror.initThreadCtrl();
 		tcMirror.setEnable();//enableAsyncTask();

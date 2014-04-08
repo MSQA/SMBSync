@@ -56,9 +56,10 @@ public class NotificationUtil {
 
 	static final public void setNotificationIcon(GlobalParameters gwa,
 			int notification_icon) {
+		gwa.notificationIcon=notification_icon;
 		gwa.notificationBuilder.setContentIntent(gwa.notificationPendingIntent)
-			   	.setSmallIcon(notification_icon)//smbsync_animation)
-			    ;
+	   	.setSmallIcon(gwa.notificationIcon)//smbsync_animation)
+	    ;
 		gwa.notification=gwa.notificationBuilder.build();
 		if (Build.VERSION.SDK_INT>=16) {//JB(4.1以上
 			gwa.notificationBigTextStyle = 
@@ -85,7 +86,7 @@ public class NotificationUtil {
 //		   		.setTicker(gwa.notificationAppName)
 			   	.setOngoing(true)
 			   	.setAutoCancel(false)
-			   	.setSmallIcon(R.drawable.ic_48_smbsync_wait)//smbsync_animation)
+			   	.setSmallIcon(gwa.notificationIcon)//smbsync_animation)
 			    .setContentTitle(gwa.notificationAppName)
 			    .setContentText("")
 //		    	.setSubText("subtext")
@@ -122,8 +123,10 @@ public class NotificationUtil {
 			.setContentTitle(gwa.notificationLastShowedTitle)
 		    .setContentText(gwa.notificationLastShowedMessage)
 		    ;
+
 		if (Build.VERSION.SDK_INT<16) {//JB以前
 			gwa.notification=gwa.notificationBuilder.build();
+			gwa.notification.icon=gwa.notificationIcon;
 			gwa.notificationManager.notify(R.string.app_name,gwa.notification);
 		} else {
 			gwa.notificationBigTextStyle = 
@@ -166,6 +169,7 @@ public class NotificationUtil {
 		    ;
 		if (Build.VERSION.SDK_INT<16) {//JB以外
 			gwa.notification=gwa.notificationBuilder.build();
+			gwa.notification.icon=gwa.notificationIcon;
 			gwa.notificationManager.notify(R.string.app_name,gwa.notification);
 		} else {
 			gwa.notificationBigTextStyle
