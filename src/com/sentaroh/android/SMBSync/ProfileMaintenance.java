@@ -233,27 +233,25 @@ public class ProfileMaintenance {
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		dialog.setContentView(R.layout.password_input_dlg);
 		final TextView dlg_msg = (TextView) dialog.findViewById(R.id.password_input_msg);
-		final CheckBox cb_noprotect = (CheckBox) dialog.findViewById(R.id.password_input_no_encrypt_at_all);
 		final CheckBox cb_protect = (CheckBox) dialog.findViewById(R.id.password_input_protect);
-		final Button btnOk = (Button) dialog.findViewById(R.id.password_input_ok_btn);
-		final Button btnCancel = (Button) dialog.findViewById(R.id.password_input_cancel_btn);
+		final Button btn_ok = (Button) dialog.findViewById(R.id.password_input_ok_btn);
+		final Button btn_cancel = (Button) dialog.findViewById(R.id.password_input_cancel_btn);
 		final EditText et_password=(EditText) dialog.findViewById(R.id.password_input_password);
 		final EditText et_confirm=(EditText) dialog.findViewById(R.id.password_input_password_confirm);
 		et_confirm.setVisibility(EditText.GONE);
-		btnOk.setText(mContext.getString(R.string.msgs_export_import_pswd_btn_ok));
-		cb_noprotect.setVisibility(CheckBox.GONE);
+		btn_ok.setText(mContext.getString(R.string.msgs_export_import_pswd_btn_ok));
 		cb_protect.setVisibility(CheckBox.GONE);
 		
 		dlg_msg.setText(mContext.getString(R.string.msgs_export_import_pswd_password_required));
 		
 		CommonDialog.setDlgBoxSizeCompact(dialog);
 		
-		btnOk.setEnabled(false);
+		btn_ok.setEnabled(false);
 		et_password.addTextChangedListener(new TextWatcher(){
 			@Override
 			public void afterTextChanged(Editable arg0) {
-				if (arg0.length()>0) btnOk.setEnabled(true);
-				else btnOk.setEnabled(false);
+				if (arg0.length()>0) btn_ok.setEnabled(true);
+				else btn_ok.setEnabled(false);
 			}
 			@Override
 			public void beforeTextChanged(CharSequence arg0, int arg1,int arg2, int arg3) {}
@@ -262,7 +260,7 @@ public class ProfileMaintenance {
 		});
 
 		//OK button
-		btnOk.setOnClickListener(new View.OnClickListener() {
+		btn_ok.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				et_password.selectAll();
 				String passwd=et_password.getText().toString();
@@ -298,7 +296,7 @@ public class ProfileMaintenance {
 			}
 		});
 		// CANCELボタンの指定
-		btnCancel.setOnClickListener(new View.OnClickListener() {
+		btn_cancel.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				dialog.dismiss();
 				ntfy_pswd.notifyToListener(false, null);
@@ -308,7 +306,7 @@ public class ProfileMaintenance {
 		dialog.setOnCancelListener(new Dialog.OnCancelListener() {
 			@Override
 			public void onCancel(DialogInterface arg0) {
-				btnCancel.performClick();
+				btn_cancel.performClick();
 			}
 		});
 //		dialog.setCancelable(false);
@@ -325,10 +323,9 @@ public class ProfileMaintenance {
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		dialog.setContentView(R.layout.password_input_dlg);
 		final TextView dlg_msg = (TextView) dialog.findViewById(R.id.password_input_msg);
-		final CheckBox cb_noprotect_at_all = (CheckBox) dialog.findViewById(R.id.password_input_no_encrypt_at_all);
 		final CheckBox cb_protect = (CheckBox) dialog.findViewById(R.id.password_input_protect);
-		final Button btnOk = (Button) dialog.findViewById(R.id.password_input_ok_btn);
-		final Button btnCancel = (Button) dialog.findViewById(R.id.password_input_cancel_btn);
+		final Button btn_ok = (Button) dialog.findViewById(R.id.password_input_ok_btn);
+		final Button btn_cancel = (Button) dialog.findViewById(R.id.password_input_cancel_btn);
 		final EditText et_password=(EditText) dialog.findViewById(R.id.password_input_password);
 		final EditText et_confirm=(EditText) dialog.findViewById(R.id.password_input_password_confirm);
 		
@@ -336,33 +333,25 @@ public class ProfileMaintenance {
 		
 		CommonDialog.setDlgBoxSizeCompact(dialog);
 
-		cb_protect.setChecked(true);
-		cb_noprotect_at_all.setVisibility(CheckBox.GONE);
 		cb_protect.setOnCheckedChangeListener(new OnCheckedChangeListener(){
 			@Override
 			public void onCheckedChanged(CompoundButton arg0, boolean isChecked) {
-				if (isChecked) {
-					cb_noprotect_at_all.setVisibility(CheckBox.GONE);
-					et_password.setVisibility(EditText.VISIBLE);
-					et_confirm.setVisibility(EditText.VISIBLE);
-					setPasswordPromptOkButton(et_password, et_confirm, 
-							btnOk, dlg_msg);
-				} else {
-					dlg_msg.setText("");
-					cb_noprotect_at_all.setVisibility(CheckBox.VISIBLE);
-					et_password.setVisibility(EditText.GONE);
-					et_confirm.setVisibility(EditText.GONE);
-				}
+				setPasswordFieldVisibility(isChecked, et_password,
+						et_confirm, btn_ok, dlg_msg);
 			}
 		});
+		cb_protect.setChecked(glblParms.settingExportedProfileEncryptRequired);
+		setPasswordFieldVisibility(glblParms.settingExportedProfileEncryptRequired,
+				et_password, et_confirm, btn_ok, dlg_msg);
+
 		et_password.setEnabled(true);
 		et_confirm.setEnabled(false);
 		et_password.addTextChangedListener(new TextWatcher(){
 			@Override
 			public void afterTextChanged(Editable arg0) {
-				btnOk.setEnabled(false);
+				btn_ok.setEnabled(false);
 				setPasswordPromptOkButton(et_password, et_confirm, 
-						btnOk, dlg_msg);
+						btn_ok, dlg_msg);
 			}
 			@Override
 			public void beforeTextChanged(CharSequence arg0, int arg1,int arg2, int arg3) {}
@@ -373,9 +362,9 @@ public class ProfileMaintenance {
 		et_confirm.addTextChangedListener(new TextWatcher(){
 			@Override
 			public void afterTextChanged(Editable arg0) {
-				btnOk.setEnabled(false);
+				btn_ok.setEnabled(false);
 				setPasswordPromptOkButton(et_password, et_confirm, 
-						btnOk, dlg_msg);
+						btn_ok, dlg_msg);
 			}
 			@Override
 			public void beforeTextChanged(CharSequence arg0, int arg1,int arg2, int arg3) {}
@@ -383,32 +372,20 @@ public class ProfileMaintenance {
 			public void onTextChanged(CharSequence arg0, int arg1, int arg2,int arg3) {}
 		});
 
-		cb_noprotect_at_all.setOnCheckedChangeListener(new OnCheckedChangeListener(){
-			@Override
-			public void onCheckedChanged(CompoundButton arg0, boolean isChecked) {
-				if (isChecked) {
-					et_password.setEnabled(false);
-					et_confirm.setEnabled(false);
-				} else {
-					et_password.setEnabled(true);
-					et_confirm.setEnabled(true);
-				}
-			}
-		});
-
 		//OK button
-		btnOk.setOnClickListener(new View.OnClickListener() {
+		btn_ok.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				et_password.selectAll();
 				String passwd=et_password.getText().toString();
+				if ((cb_protect.isChecked() && !glblParms.settingExportedProfileEncryptRequired) ||
+						(!cb_protect.isChecked() && glblParms.settingExportedProfileEncryptRequired)) {
+					glblParms.settingExportedProfileEncryptRequired=cb_protect.isChecked();
+					SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+					prefs.edit().putBoolean(mContext.getString(R.string.settings_exported_profile_encryption), 
+							cb_protect.isChecked()).commit();
+				}
 				if (!cb_protect.isChecked()) {
 					dialog.dismiss();
-					if (cb_noprotect_at_all.isChecked()) {
-						glblParms.settingExportedProfileEncryptRequired=false;
-						SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-						prefs.edit().putBoolean(mContext.getString(R.string.settings_exported_profile_encryption), 
-								false).commit();
-					}
 					ntfy_pswd.notifyToListener(true, new Object[] {""});
 				} else {
 					if (!passwd.equals(et_confirm.getText().toString())) {
@@ -422,7 +399,7 @@ public class ProfileMaintenance {
 			}
 		});
 		// CANCELボタンの指定
-		btnCancel.setOnClickListener(new View.OnClickListener() {
+		btn_cancel.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				dialog.dismiss();
 				ntfy_pswd.notifyToListener(false, null);
@@ -432,7 +409,7 @@ public class ProfileMaintenance {
 		dialog.setOnCancelListener(new Dialog.OnCancelListener() {
 			@Override
 			public void onCancel(DialogInterface arg0) {
-				btnCancel.performClick();
+				btn_cancel.performClick();
 			}
 		});
 //		dialog.setCancelable(false);
@@ -441,6 +418,20 @@ public class ProfileMaintenance {
 
 	};
 
+	private void setPasswordFieldVisibility(boolean isChecked, EditText et_password,
+			EditText et_confirm, Button btn_ok, TextView dlg_msg) {
+		if (isChecked) {
+			et_password.setVisibility(EditText.VISIBLE);
+			et_confirm.setVisibility(EditText.VISIBLE);
+			setPasswordPromptOkButton(et_password, et_confirm, 
+					btn_ok, dlg_msg);
+		} else {
+			dlg_msg.setText("");
+			et_password.setVisibility(EditText.GONE);
+			et_confirm.setVisibility(EditText.GONE);
+		}
+	};
+	
 	private void setPasswordPromptOkButton(EditText et_passwd, EditText et_confirm, 
 			Button btn_ok, TextView dlg_msg) {
 		String password=et_passwd.getText().toString();
@@ -466,19 +457,14 @@ public class ProfileMaintenance {
 			dlg_msg.setText(mContext.getString(R.string.msgs_export_import_pswd_unmatched_confirm_pswd));
 		}
 
-	}
+	};
 	
 	private void selectImportProfileItem(final AdapterProfileList tfl, final NotifyEvent p_ntfy) {
 		ArrayList<ExportImportProfileListItem> eipl=new ArrayList<ExportImportProfileListItem>();
-		ExportImportProfileListItem eipli=new ExportImportProfileListItem();
-		eipli.isChecked=true;
-		eipli.item_type="*";
-		eipli.item_name=mContext.getString(R.string.msgs_export_import_profile_setting_parms);
-		eipl.add(eipli);
 
 		for (int i=0;i<tfl.getCount();i++) {
 			ProfileListItem pl=tfl.getItem(i);
-			eipli=new ExportImportProfileListItem();
+			ExportImportProfileListItem eipli=new ExportImportProfileListItem();
 			eipli.isChecked=true;
 			eipli.item_type=pl.getType();
 			eipli.item_name=pl.getName();
@@ -492,6 +478,11 @@ public class ProfileMaintenance {
 //				return arg0.item_name.compareToIgnoreCase(arg1.item_name);
 //			}
 //		});
+//		ExportImportProfileListItem eipli=new ExportImportProfileListItem();
+//		eipli.isChecked=true;
+//		eipli.item_type="*";
+//		eipli.item_name=mContext.getString(R.string.msgs_export_import_profile_setting_parms);
+//		eipl.add(eipli);
 		
 		final Dialog dialog=new Dialog(mContext);
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -512,6 +503,8 @@ public class ProfileMaintenance {
 		final RadioButton rb_select_all=(RadioButton)dialog.findViewById(R.id.export_import_profile_list_rb_select_all);
 		final RadioButton rb_unselect_all=(RadioButton)dialog.findViewById(R.id.export_import_profile_list_rb_unselect_all);
 		final CheckBox cb_reset_profile=(CheckBox)dialog.findViewById(R.id.export_import_profile_list_cb_reset_profile);
+		final CheckBox cb_import_settings=(CheckBox)dialog.findViewById(R.id.export_import_profile_list_cb_import_settings);
+		cb_import_settings.setChecked(true);
 		
 		final AdapterExportImportProfileList imp_list_adapt=
 				new AdapterExportImportProfileList(mContext, R.layout.export_import_profile_list_item, eipl);
@@ -587,7 +580,8 @@ public class ProfileMaintenance {
 				  if (imp_list_adapt.isItemSelected()) {
 					  ok_btn.setEnabled(true);
 				  } else {
-					  ok_btn.setEnabled(false);
+					  if (cb_import_settings.isChecked()) ok_btn.setEnabled(true);
+					  else ok_btn.setEnabled(false);
 				  }
 			}
 			@Override
@@ -602,7 +596,8 @@ public class ProfileMaintenance {
 			public void onClick(View arg0) {
 				dialog.dismiss();
 				if (cb_reset_profile.isChecked()) profileAdapter.clear();
-				importSelectedProfileItem(imp_list_adapt,tfl,p_ntfy);
+				importSelectedProfileItem(imp_list_adapt,tfl,
+						cb_import_settings.isChecked(),p_ntfy);
 			}
 		});
 		cancel_btn.setOnClickListener(new OnClickListener(){
@@ -618,7 +613,7 @@ public class ProfileMaintenance {
 	
 	private void importSelectedProfileItem(
 			final AdapterExportImportProfileList imp_list_adapt,
-			final AdapterProfileList tfl,
+			final AdapterProfileList tfl, final boolean import_settings,
 			final NotifyEvent p_ntfy) {
 		String repl_list="";
 		for (int i=0;i<imp_list_adapt.getCount();i++) {
@@ -637,7 +632,7 @@ public class ProfileMaintenance {
 				for (int i=0;i<tfl.getCount();i++) {
 					ProfileListItem pfli=tfl.getItem(i);
 					ExportImportProfileListItem eipli=imp_list_adapt.getItem(i);
-					if (eipli.isChecked && !eipli.item_type.equals("*")) {
+					if (eipli.isChecked ) {
 						imp_list+=pfli.getName()+"\n";
 						if (getProfile(pfli.getName(), profileAdapter)!=null) {
 							for (int j=0;j<profileAdapter.getCount();j++) {
@@ -652,16 +647,14 @@ public class ProfileMaintenance {
 						}
 					}
 				}
-				ExportImportProfileListItem eipli=imp_list_adapt.getItem(imp_list_adapt.getCount()-1);
-				boolean setting_parms_restored=false;
-				if (eipli.isChecked && eipli.item_type.equals("*")) {
+//				ExportImportProfileListItem eipli=imp_list_adapt.getItem(imp_list_adapt.getCount()-1);
+				if (import_settings) {
 					restoreImportedSettingParms();
-					setting_parms_restored=true;
 					imp_list+=mContext.getString(R.string.msgs_export_import_profile_setting_parms)+"\n";
 				}
 				profileAdapter.sort();
 				saveProfileToFile(false,"","",profileAdapter,false);
-				if (setting_parms_restored) p_ntfy.notifyToListener(true, null);
+				if (import_settings) p_ntfy.notifyToListener(true, null);
 				commonDlg.showCommonDialog(false,"I",
 						mContext.getString(R.string.msgs_export_import_profile_import_success),
 						imp_list,null); 
@@ -738,9 +731,7 @@ public class ProfileMaintenance {
 					public void negativeResponse(Context c, Object[] o) {
 					}
     			});
-    			if (glblParms.settingExportedProfileEncryptRequired) {
-    				promptPasswordForExport(fpath,ntfy_pswd);
-    			} else ntfy_pswd.notifyToListener(true, null);
+    			promptPasswordForExport(fpath,ntfy_pswd);
 			}
 
 			@Override
@@ -916,7 +907,8 @@ public class ProfileMaintenance {
 
 	private boolean isSyncProfileDisabled(ProfileListItem item) {
 		boolean result=false;
-		
+//		Log.v("","master type="+item.getMasterType()+", name="+item.getMasterName());
+//		Log.v("","target type="+item.getTargetType()+", name="+item.getTargetName());
 		if (getProfileType(item.getMasterName(),profileAdapter).equals("")) {
 			item.setMasterType("");
 			item.setMasterName("");
@@ -1001,8 +993,8 @@ public class ProfileMaintenance {
 			}
 		});
 		// CANCELボタンの指定
-		final Button btnCancel = (Button) dialog.findViewById(R.id.local_profile_cancel);
-		btnCancel.setOnClickListener(new View.OnClickListener() {
+		final Button btn_cancel = (Button) dialog.findViewById(R.id.local_profile_cancel);
+		btn_cancel.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				dialog.dismiss();
 //				profileListView.setSelectionFromTop(currentViewPosX,currentViewPosY);
@@ -1012,13 +1004,13 @@ public class ProfileMaintenance {
 		dialog.setOnCancelListener(new Dialog.OnCancelListener() {
 			@Override
 			public void onCancel(DialogInterface arg0) {
-				btnCancel.performClick();
+				btn_cancel.performClick();
 			}
 		});
 
 		// OKボタンの指定
-		Button btnOK = (Button) dialog.findViewById(R.id.local_profile_ok);
-		btnOK.setOnClickListener(new View.OnClickListener() {
+		Button btn_ok = (Button) dialog.findViewById(R.id.local_profile_ok);
+		btn_ok.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				String prof_name, prof_dir, prof_act, prof_lmp;
 				boolean audit_error = false;
@@ -1201,8 +1193,8 @@ public class ProfileMaintenance {
 		});
 		
 		// CANCELボタンの指定
-		final Button btnCancel = (Button) dialog.findViewById(R.id.remote_profile_cancel);
-		btnCancel.setOnClickListener(new View.OnClickListener() {
+		final Button btn_cancel = (Button) dialog.findViewById(R.id.remote_profile_cancel);
+		btn_cancel.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				dialog.dismiss();
 //				profileListView.setSelectionFromTop(currentViewPosX,currentViewPosY);
@@ -1212,12 +1204,12 @@ public class ProfileMaintenance {
 		dialog.setOnCancelListener(new Dialog.OnCancelListener() {
 			@Override
 			public void onCancel(DialogInterface arg0) {
-				btnCancel.performClick();
+				btn_cancel.performClick();
 			}
 		});
 		// OKボタンの指定
-		Button btnOK = (Button) dialog.findViewById(R.id.remote_profile_ok);
-		btnOK.setOnClickListener(new View.OnClickListener() {
+		Button btn_ok = (Button) dialog.findViewById(R.id.remote_profile_ok);
+		btn_ok.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				String prof_name, prof_user, prof_pass, prof_share, prof_dir, prof_act;
 				String prof_addr="", prof_host="";
@@ -1405,8 +1397,8 @@ public class ProfileMaintenance {
 		});
 		
 		// CANCELボタンの指定
-		final Button btnCancel = (Button) dialog.findViewById(R.id.sync_profile_cancel);
-		btnCancel.setOnClickListener(new View.OnClickListener() {
+		final Button btn_cancel = (Button) dialog.findViewById(R.id.sync_profile_cancel);
+		btn_cancel.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				dialog.dismiss();
 //				profileListView.setSelectionFromTop(currentViewPosX,currentViewPosY);
@@ -1416,13 +1408,13 @@ public class ProfileMaintenance {
 		dialog.setOnCancelListener(new Dialog.OnCancelListener() {
 			@Override
 			public void onCancel(DialogInterface arg0) {
-				btnCancel.performClick();
+				btn_cancel.performClick();
 			}
 		});
 
 		// OKボタンの指定
-		Button btnOK = (Button) dialog.findViewById(R.id.sync_profile_ok);
-		btnOK.setOnClickListener(new View.OnClickListener() {
+		Button btn_ok = (Button) dialog.findViewById(R.id.sync_profile_ok);
+		btn_ok.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				String prof_name, prof_act, prof_master, prof_target, prof_syncopt = null;
 				editmaster.selectAll();
@@ -1552,8 +1544,8 @@ public class ProfileMaintenance {
 		});
 		
 		// CANCELボタンの指定
-		final Button btnCancel = (Button) dialog.findViewById(R.id.local_profile_cancel);
-		btnCancel.setOnClickListener(new View.OnClickListener() {
+		final Button btn_cancel = (Button) dialog.findViewById(R.id.local_profile_cancel);
+		btn_cancel.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				dialog.dismiss();
 //				profileListView.setSelectionFromTop(currentViewPosX, currentViewPosY);
@@ -1563,12 +1555,12 @@ public class ProfileMaintenance {
 		dialog.setOnCancelListener(new Dialog.OnCancelListener() {
 			@Override
 			public void onCancel(DialogInterface arg0) {
-				btnCancel.performClick();
+				btn_cancel.performClick();
 			}
 		});
 		// OKボタンの指定
-		Button btnOK = (Button) dialog.findViewById(R.id.local_profile_ok);
-		btnOK.setOnClickListener(new View.OnClickListener() {
+		Button btn_ok = (Button) dialog.findViewById(R.id.local_profile_ok);
+		btn_ok.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				String prof_name, prof_dir, prof_act, prof_lmp;
 				boolean audit_error = false;
@@ -1768,8 +1760,8 @@ public class ProfileMaintenance {
 		});
 
 		// CANCELボタンの指定
-		final Button btnCancel = (Button) dialog.findViewById(R.id.remote_profile_cancel);
-		btnCancel.setOnClickListener(new View.OnClickListener() {
+		final Button btn_cancel = (Button) dialog.findViewById(R.id.remote_profile_cancel);
+		btn_cancel.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				dialog.dismiss();
 			}
@@ -1778,12 +1770,12 @@ public class ProfileMaintenance {
 		dialog.setOnCancelListener(new Dialog.OnCancelListener() {
 			@Override
 			public void onCancel(DialogInterface arg0) {
-				btnCancel.performClick();
+				btn_cancel.performClick();
 			}
 		});
 		// OKボタンの指定
-		Button btnOK = (Button) dialog.findViewById(R.id.remote_profile_ok);
-		btnOK.setOnClickListener(new View.OnClickListener() {
+		Button btn_ok = (Button) dialog.findViewById(R.id.remote_profile_ok);
+		btn_ok.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				String prof_name, remote_user, remote_pass, remote_share, 
 				prof_dir, prof_act = null;
@@ -1998,8 +1990,8 @@ public class ProfileMaintenance {
 		});
 
 		// CANCELボタンの指定
-		final Button btnCancel = (Button) dialog.findViewById(R.id.sync_profile_cancel);
-		btnCancel.setOnClickListener(new View.OnClickListener() {
+		final Button btn_cancel = (Button) dialog.findViewById(R.id.sync_profile_cancel);
+		btn_cancel.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				dialog.dismiss();
 //				profileListView.setSelectionFromTop(currentViewPosX,currentViewPosY);
@@ -2009,12 +2001,12 @@ public class ProfileMaintenance {
 		dialog.setOnCancelListener(new Dialog.OnCancelListener() {
 			@Override
 			public void onCancel(DialogInterface arg0) {
-				btnCancel.performClick();
+				btn_cancel.performClick();
 			}
 		});
 		// OKボタンの指定
-		Button btnOK = (Button) dialog.findViewById(R.id.sync_profile_ok);
-		btnOK.setOnClickListener(new View.OnClickListener() {
+		Button btn_ok = (Button) dialog.findViewById(R.id.sync_profile_ok);
+		btn_ok.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				String prof_name, prof_act, prof_master, prof_target, sync_opt = null,audit_msg="";
 				boolean audit_error=false;
@@ -2105,8 +2097,8 @@ public class ProfileMaintenance {
 		final TextView dlg_title = (TextView) dialog.findViewById(R.id.single_item_input_title);		
 //		final TextView dlg_msg = (TextView) dialog.findViewById(R.id.single_item_input_msg);
 		final TextView dlg_cmp = (TextView) dialog.findViewById(R.id.single_item_input_name);
-		final Button btnOk = (Button) dialog.findViewById(R.id.single_item_input_ok_btn);
-		final Button btnCancel = (Button) dialog.findViewById(R.id.single_item_input_cancel_btn);
+		final Button btn_ok = (Button) dialog.findViewById(R.id.single_item_input_ok_btn);
+		final Button btn_cancel = (Button) dialog.findViewById(R.id.single_item_input_cancel_btn);
 		final EditText etInput=(EditText) dialog.findViewById(R.id.single_item_input_dir);
 		
 		dlg_title.setText(mContext.getString(R.string.msgs_rename_profile));
@@ -2114,11 +2106,11 @@ public class ProfileMaintenance {
 		dlg_cmp.setVisibility(TextView.GONE);
 		CommonDialog.setDlgBoxSizeCompact(dialog);
 		etInput.setText(pli.getName());
-		btnOk.setEnabled(false);
+		btn_ok.setEnabled(false);
 		etInput.addTextChangedListener(new TextWatcher(){
 			@Override
 			public void afterTextChanged(Editable arg0) {
-				if (!arg0.equals(pli.getName())) btnOk.setEnabled(true);
+				if (!arg0.equals(pli.getName())) btn_ok.setEnabled(true);
 			}
 			@Override
 			public void beforeTextChanged(CharSequence arg0, int arg1,int arg2, int arg3) {}
@@ -2127,7 +2119,7 @@ public class ProfileMaintenance {
 		});
 		
 		//OK button
-		btnOk.setOnClickListener(new View.OnClickListener() {
+		btn_ok.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				dialog.dismiss();
 				etInput.selectAll();
@@ -2165,7 +2157,7 @@ public class ProfileMaintenance {
 			}
 		});
 		// CANCELボタンの指定
-		btnCancel.setOnClickListener(new View.OnClickListener() {
+		btn_cancel.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				dialog.dismiss();
 			}
@@ -2174,7 +2166,7 @@ public class ProfileMaintenance {
 		dialog.setOnCancelListener(new Dialog.OnCancelListener() {
 			@Override
 			public void onCancel(DialogInterface arg0) {
-				btnCancel.performClick();
+				btn_cancel.performClick();
 			}
 		});
 //		dialog.setCancelable(false);
@@ -2556,8 +2548,8 @@ public class ProfileMaintenance {
 
 		final EditText et_filter=(EditText)dialog.findViewById(R.id.filter_select_edit_new_filter);
 		final Button addBtn = (Button) dialog.findViewById(R.id.filter_select_edit_add_btn);
-		final Button btnCancel = (Button) dialog.findViewById(R.id.filter_select_edit_cancel_btn);
-		final Button btnOK = (Button) dialog.findViewById(R.id.filter_select_edit_ok_btn);
+		final Button btn_cancel = (Button) dialog.findViewById(R.id.filter_select_edit_cancel_btn);
+		final Button btn_ok = (Button) dialog.findViewById(R.id.filter_select_edit_ok_btn);
 		
         lv.setOnItemClickListener(new OnItemClickListener(){
         	public void onItemClick(AdapterView<?> items, View view, int idx, long id) {
@@ -2575,10 +2567,10 @@ public class ProfileMaintenance {
 			public void afterTextChanged(Editable s) {
 				if (s.length()!=0) {
 					addBtn.setEnabled(true);
-					btnOK.setEnabled(false);
+					btn_ok.setEnabled(false);
 				} else {
 					addBtn.setEnabled(false);
-					btnOK.setEnabled(true);
+					btn_ok.setEnabled(true);
 				}
 //				et_filter.setText(s);
 			}
@@ -2618,12 +2610,12 @@ public class ProfileMaintenance {
 						return lhs.getFilter().compareToIgnoreCase(rhs.getFilter());
 					};
 				});
-				btnOK.setEnabled(true);
+				btn_ok.setEnabled(true);
 			}
 		});
 
 		// CANCELボタンの指定
-		btnCancel.setOnClickListener(new View.OnClickListener() {
+		btn_cancel.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				dialog.dismiss();
 //				profileListView.setSelectionFromTop(currentViewPosX,currentViewPosY);
@@ -2633,11 +2625,11 @@ public class ProfileMaintenance {
 		dialog.setOnCancelListener(new Dialog.OnCancelListener() {
 			@Override
 			public void onCancel(DialogInterface arg0) {
-				btnCancel.performClick();
+				btn_cancel.performClick();
 			}
 		});
 		// OKボタンの指定
-		btnOK.setOnClickListener(new View.OnClickListener() {
+		btn_ok.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				dialog.dismiss();
 				file_filter.clear();
@@ -2699,8 +2691,8 @@ public class ProfileMaintenance {
 
 		final EditText et_filter=(EditText)dialog.findViewById(R.id.filter_select_edit_new_filter);
 		final Button addbtn = (Button) dialog.findViewById(R.id.filter_select_edit_add_btn);
-		final Button btnCancel = (Button) dialog.findViewById(R.id.filter_select_edit_cancel_btn);
-		final Button btnOK = (Button) dialog.findViewById(R.id.filter_select_edit_ok_btn);
+		final Button btn_cancel = (Button) dialog.findViewById(R.id.filter_select_edit_cancel_btn);
+		final Button btn_ok = (Button) dialog.findViewById(R.id.filter_select_edit_ok_btn);
 
         lv.setOnItemClickListener(new OnItemClickListener(){
         	public void onItemClick(AdapterView<?> items, View view, int idx, long id) {
@@ -2718,11 +2710,11 @@ public class ProfileMaintenance {
 				if (s.length()!=0) {
 					addbtn.setEnabled(true);
 					dirbtn.setEnabled(false);
-					btnOK.setEnabled(false);
+					btn_ok.setEnabled(false);
 				} else {
 					addbtn.setEnabled(false);
 					dirbtn.setEnabled(true);
-					btnOK.setEnabled(true);
+					btn_ok.setEnabled(true);
 				}
 //				et_filter.setText(s);
 			}
@@ -2760,7 +2752,7 @@ public class ProfileMaintenance {
 					};
 				});
 				dirbtn.setEnabled(true);
-				btnOK.setEnabled(true);
+				btn_ok.setEnabled(true);
 			}
 		});
 		// Directoryボタンの指定
@@ -2789,7 +2781,7 @@ public class ProfileMaintenance {
 		});
 
 		// CANCELボタンの指定
-		btnCancel.setOnClickListener(new View.OnClickListener() {
+		btn_cancel.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				dialog.dismiss();
 //				profileListView.setSelectionFromTop(currentViewPosX,currentViewPosY);
@@ -2799,11 +2791,11 @@ public class ProfileMaintenance {
 		dialog.setOnCancelListener(new Dialog.OnCancelListener() {
 			@Override
 			public void onCancel(DialogInterface arg0) {
-				btnCancel.performClick();
+				btn_cancel.performClick();
 			}
 		});
 		// OKボタンの指定
-		btnOK.setOnClickListener(new View.OnClickListener() {
+		btn_ok.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				dialog.dismiss();
 				dir_filter.clear();
@@ -2839,8 +2831,8 @@ public class ProfileMaintenance {
 		final EditText et_filter=(EditText)dialog.findViewById(R.id.filter_edit_dlg_filter);
 		et_filter.setText(filter);
 		// CANCELボタンの指定
-		final Button btnCancel = (Button) dialog.findViewById(R.id.filter_edit_dlg_cancel_btn);
-		btnCancel.setOnClickListener(new View.OnClickListener() {
+		final Button btn_cancel = (Button) dialog.findViewById(R.id.filter_edit_dlg_cancel_btn);
+		btn_cancel.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				dialog.dismiss();
 //				profileListView.setSelectionFromTop(currentViewPosX,currentViewPosY);
@@ -2850,12 +2842,12 @@ public class ProfileMaintenance {
 		dialog.setOnCancelListener(new Dialog.OnCancelListener() {
 			@Override
 			public void onCancel(DialogInterface arg0) {
-				btnCancel.performClick();
+				btn_cancel.performClick();
 			}
 		});
 		// OKボタンの指定
-		Button btnOK = (Button) dialog.findViewById(R.id.filter_edit_dlg_ok_btn);
-		btnOK.setOnClickListener(new View.OnClickListener() {
+		Button btn_ok = (Button) dialog.findViewById(R.id.filter_edit_dlg_ok_btn);
+		btn_ok.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				TextView dlg_msg =(TextView)dialog.findViewById(R.id.filter_edit_dlg_msg);
 				
@@ -2936,7 +2928,7 @@ public class ProfileMaintenance {
 		((TextView)dialog.findViewById(R.id.item_select_list_dlg_subtitle))
     		.setText(msgs_current_dir+item.getLocalMountPoint()+"/"+cdir);
         final TextView dlg_msg=(TextView)dialog.findViewById(R.id.item_select_list_dlg_msg);
-	    final Button btnOk=(Button)dialog.findViewById(R.id.item_select_list_dlg_ok_btn);
+	    final Button btn_ok=(Button)dialog.findViewById(R.id.item_select_list_dlg_ok_btn);
         dlg_msg.setVisibility(TextView.VISIBLE);
 
 //        if (rows.size()<=2) 
@@ -2980,8 +2972,8 @@ public class ProfileMaintenance {
 				    		final TreeFilelistItem tfi=tfa.getDataItem(t_pos);
 							if (tfi.getName().startsWith("---")) return;
 							tfa.setDataItemIsUnselected(t_pos);
-							if (tfa.isDataItemIsSelected()) btnOk.setEnabled(true);
-							else btnOk.setEnabled(false);
+							if (tfa.isDataItemIsSelected()) btn_ok.setEnabled(true);
+							else btn_ok.setEnabled(false);
 						}
 				  	});
 	  			} else {
@@ -2994,7 +2986,7 @@ public class ProfileMaintenance {
 				    		final TreeFilelistItem tfi=tfa.getDataItem(t_pos);
 							if (tfi.getName().startsWith("---")) return;
 							tfa.setDataItemIsSelected(t_pos);
-							btnOk.setEnabled(true);
+							btn_ok.setEnabled(true);
 						}
 				  	});
 	  			}
@@ -3004,13 +2996,13 @@ public class ProfileMaintenance {
 		});
 
 	    //OKボタンの指定
-	    btnOk.setEnabled(false);
+	    btn_ok.setEnabled(false);
         NotifyEvent ntfy=new NotifyEvent(mContext);
 		//Listen setRemoteShare response 
 		ntfy.setListener(new NotifyEventListener() {
 			@Override
 			public void positiveResponse(Context arg0, Object[] arg1) {
-				btnOk.setEnabled(true);
+				btn_ok.setEnabled(true);
 			}
 			@Override
 			public void negativeResponse(Context arg0, Object[] arg1) {
@@ -3021,15 +3013,15 @@ public class ProfileMaintenance {
 						break;
 					}
 				}
-				if (checked) btnOk.setEnabled(true);
-				else btnOk.setEnabled(false);
+				if (checked) btn_ok.setEnabled(true);
+				else btn_ok.setEnabled(false);
 			}
 		});
 		tfa.setCbCheckListener(ntfy);
 		
-	    btnOk.setText(mContext.getString(R.string.msgs_filter_list_dlg_add));
-	    btnOk.setVisibility(Button.VISIBLE);
-	    btnOk.setOnClickListener(new View.OnClickListener() {
+	    btn_ok.setText(mContext.getString(R.string.msgs_filter_list_dlg_add));
+	    btn_ok.setVisibility(Button.VISIBLE);
+	    btn_ok.setOnClickListener(new View.OnClickListener() {
 	        public void onClick(View v) {
 	        	if (!addDirFilter(true,tfa,fla,"/"+cdir+"/",dlg_msg)) return;
 	        	addDirFilter(false,tfa,fla,"/"+cdir+"/",dlg_msg);
@@ -3039,9 +3031,9 @@ public class ProfileMaintenance {
 	    });
 
         //CANCELボタンの指定
-        final Button btnCancel=(Button)dialog.findViewById(R.id.item_select_list_dlg_cancel_btn);
-        btnCancel.setText(mContext.getString(R.string.msgs_filter_list_dlg_close));
-        btnCancel.setOnClickListener(new View.OnClickListener() {
+        final Button btn_cancel=(Button)dialog.findViewById(R.id.item_select_list_dlg_cancel_btn);
+        btn_cancel.setText(mContext.getString(R.string.msgs_filter_list_dlg_close));
+        btn_cancel.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 dialog.dismiss();
                 p_ntfy.notifyToListener(true, null);
@@ -3051,7 +3043,7 @@ public class ProfileMaintenance {
 		dialog.setOnCancelListener(new Dialog.OnCancelListener() {
 			@Override
 			public void onCancel(DialogInterface arg0) {
-				btnCancel.performClick();
+				btn_cancel.performClick();
 			}
 		});
 //        dialog.setOnKeyListener(new DialogOnKeyListener(context));
@@ -3104,7 +3096,7 @@ public class ProfileMaintenance {
 				((TextView)dialog.findViewById(R.id.item_select_list_dlg_subtitle))
 		    		.setText(msgs_current_dir+"/"+remurl+remdir);
 		        final TextView dlg_msg=(TextView)dialog.findViewById(R.id.item_select_list_dlg_msg);
-			    final Button btnOk=(Button)dialog.findViewById(R.id.item_select_list_dlg_ok_btn);
+			    final Button btn_ok=(Button)dialog.findViewById(R.id.item_select_list_dlg_ok_btn);
 		        dlg_msg.setVisibility(TextView.VISIBLE);
 				
 //		        if (rows.size()<=2) 
@@ -3146,8 +3138,8 @@ public class ProfileMaintenance {
 						    		final TreeFilelistItem tfi=tfa.getDataItem(t_pos);
 									if (tfi.getName().startsWith("---")) return;
 									tfa.setDataItemIsUnselected(t_pos);
-									if (tfa.isDataItemIsSelected()) btnOk.setEnabled(true);
-									else btnOk.setEnabled(false);
+									if (tfa.isDataItemIsSelected()) btn_ok.setEnabled(true);
+									else btn_ok.setEnabled(false);
 								}
 						  	});
 			  			} else {
@@ -3160,7 +3152,7 @@ public class ProfileMaintenance {
 						    		final TreeFilelistItem tfi=tfa.getDataItem(t_pos);
 									if (tfi.getName().startsWith("---")) return;
 									tfa.setDataItemIsSelected(t_pos);
-									btnOk.setEnabled(true);
+									btn_ok.setEnabled(true);
 								}
 						  	});
 			  			}
@@ -3170,13 +3162,13 @@ public class ProfileMaintenance {
 				});
 
 				//OKボタンの指定
-			    btnOk.setEnabled(false);
+			    btn_ok.setEnabled(false);
 		        NotifyEvent ntfy=new NotifyEvent(mContext);
 				//Listen setRemoteShare response 
 				ntfy.setListener(new NotifyEventListener() {
 					@Override
 					public void positiveResponse(Context arg0, Object[] arg1) {
-						btnOk.setEnabled(true);
+						btn_ok.setEnabled(true);
 					}
 					@Override
 					public void negativeResponse(Context arg0, Object[] arg1) {
@@ -3187,15 +3179,15 @@ public class ProfileMaintenance {
 								break;
 							}
 						}
-						if (checked) btnOk.setEnabled(true);
-						else btnOk.setEnabled(false);
+						if (checked) btn_ok.setEnabled(true);
+						else btn_ok.setEnabled(false);
 					}
 				});
 				tfa.setCbCheckListener(ntfy);
 
-			    btnOk.setText(mContext.getString(R.string.msgs_filter_list_dlg_add));
-			    btnOk.setVisibility(Button.VISIBLE);
-			    btnOk.setOnClickListener(new View.OnClickListener() {
+			    btn_ok.setText(mContext.getString(R.string.msgs_filter_list_dlg_add));
+			    btn_ok.setVisibility(Button.VISIBLE);
+			    btn_ok.setOnClickListener(new View.OnClickListener() {
 			        public void onClick(View v) {
 			        	if (!addDirFilter(true,tfa,fla,remdir,dlg_msg)) return;
 			        	addDirFilter(false,tfa,fla,remdir,dlg_msg);
@@ -3205,9 +3197,9 @@ public class ProfileMaintenance {
 			        }
 			    });
 				//CANCELボタンの指定
-				final Button btnCancel=(Button)dialog.findViewById(R.id.item_select_list_dlg_cancel_btn);
-				btnCancel.setText(mContext.getString(R.string.msgs_filter_list_dlg_close));
-				btnCancel.setOnClickListener(new View.OnClickListener() {
+				final Button btn_cancel=(Button)dialog.findViewById(R.id.item_select_list_dlg_cancel_btn);
+				btn_cancel.setText(mContext.getString(R.string.msgs_filter_list_dlg_close));
+				btn_cancel.setOnClickListener(new View.OnClickListener() {
 				    public void onClick(View v) {
 				        dialog.dismiss();
 				        p_ntfy.notifyToListener(true, null);
@@ -3217,7 +3209,7 @@ public class ProfileMaintenance {
 				dialog.setOnCancelListener(new Dialog.OnCancelListener() {
 					@Override
 					public void onCancel(DialogInterface arg0) {
-						btnCancel.performClick();
+						btn_cancel.performClick();
 					}
 				});
 //				dialog.setOnKeyListener(new DialogOnKeyListener(context));
@@ -3527,6 +3519,7 @@ public class ProfileMaintenance {
 			String item_key=profileAdapter.getItem(i).getGroup()+
 					profileAdapter.getItem(i).getType()+
 					profileAdapter.getItem(i).getName();
+//			Log.v("","item_key="+item_key+", obj_key="+prof_grp+prof_type+prof_name);
 			if (item_key.equals(prof_grp+prof_type+prof_name)) {
 				if (profileAdapter.getItem(i).getActive()
 						.equals(SMBSYNC_PROF_INACTIVE))
@@ -3632,8 +3625,8 @@ public class ProfileMaintenance {
 			    });
 
 			    //CANCELボタンの指定
-			    final Button btnCancel=(Button)dialog.findViewById(R.id.item_select_list_dlg_cancel_btn);
-			    btnCancel.setOnClickListener(new View.OnClickListener() {
+			    final Button btn_cancel=(Button)dialog.findViewById(R.id.item_select_list_dlg_cancel_btn);
+			    btn_cancel.setOnClickListener(new View.OnClickListener() {
 			        public void onClick(View v) {
 			            dialog.dismiss();
 			            p_ntfy.notifyToListener(false, null);
@@ -3643,7 +3636,7 @@ public class ProfileMaintenance {
 				dialog.setOnCancelListener(new Dialog.OnCancelListener() {
 					@Override
 					public void onCancel(DialogInterface arg0) {
-						btnCancel.performClick();
+						btn_cancel.performClick();
 					}
 				});
 //			    dialog.setOnKeyListener(new DialogOnKeyListener(context));
@@ -3723,11 +3716,11 @@ public class ProfileMaintenance {
 		});
 
 		
-		final Button btnCancel = (Button) dialog.findViewById(R.id.scan_address_range_btn_cancel);
-		final Button btnOk = (Button) dialog.findViewById(R.id.scan_address_range_btn_ok);
+		final Button btn_cancel = (Button) dialog.findViewById(R.id.scan_address_range_btn_cancel);
+		final Button btn_ok = (Button) dialog.findViewById(R.id.scan_address_range_btn_ok);
 		CommonDialog.setDlgBoxSizeCompact(dialog);
 		// OKボタンの指定
-		btnOk.setOnClickListener(new View.OnClickListener() {
+		btn_ok.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				if (auditScanAddressRangeValue(dialog)) {
 					toEt.selectAll();
@@ -3754,7 +3747,7 @@ public class ProfileMaintenance {
 			}
 		});
 		// CANCELボタンの指定
-		btnCancel.setOnClickListener(new View.OnClickListener() {
+		btn_cancel.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				dialog.dismiss();
 			}
@@ -3763,7 +3756,7 @@ public class ProfileMaintenance {
 		dialog.setOnCancelListener(new Dialog.OnCancelListener() {
 			@Override
 			public void onCancel(DialogInterface arg0) {
-				btnCancel.performClick();
+				btn_cancel.performClick();
 			}
 		});
 
@@ -3784,14 +3777,14 @@ public class ProfileMaintenance {
 		TextView tvtitle=(TextView) dialog.findViewById(R.id.progress_spin_dlg_title);
 		tvtitle.setText(R.string.msgs_progress_spin_dlg_addr_listing);
 		final TextView tvmsg=(TextView) dialog.findViewById(R.id.progress_spin_dlg_msg);
-		final Button btnCancel = (Button) dialog.findViewById(R.id.progress_spin_dlg_btn_cancel);
-		btnCancel.setText(R.string.msgs_progress_spin_dlg_addr_cancel);
+		final Button btn_cancel = (Button) dialog.findViewById(R.id.progress_spin_dlg_btn_cancel);
+		btn_cancel.setText(R.string.msgs_progress_spin_dlg_addr_cancel);
 		CommonDialog.setDlgBoxSizeCompact(dialog);
 		// CANCELボタンの指定
-		btnCancel.setOnClickListener(new View.OnClickListener() {
+		btn_cancel.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				btnCancel.setText(mContext.getString(R.string.msgs_progress_dlg_canceling));
-				btnCancel.setEnabled(false);
+				btn_cancel.setText(mContext.getString(R.string.msgs_progress_dlg_canceling));
+				btn_cancel.setEnabled(false);
 				util.addDebugLogMsg(1,"W","IP Address list creation was cancelled");
 				cancelIpAddressListCreation=true;
 			}
@@ -3800,7 +3793,7 @@ public class ProfileMaintenance {
 		dialog.setOnCancelListener(new Dialog.OnCancelListener() {
 			@Override
 			public void onCancel(DialogInterface arg0) {
-				btnCancel.performClick();
+				btn_cancel.performClick();
 			}
 		});
 //		dialog.setOnKeyListener(new DialogOnKeyListener(context));
@@ -4077,8 +4070,8 @@ public class ProfileMaintenance {
             }
         });	 
         //CANCELボタンの指定
-        final Button btnCancel=(Button)dialog.findViewById(R.id.item_select_list_dlg_cancel_btn);
-        btnCancel.setOnClickListener(new View.OnClickListener() {
+        final Button btn_cancel=(Button)dialog.findViewById(R.id.item_select_list_dlg_cancel_btn);
+        btn_cancel.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 dialog.dismiss();
                 p_ntfy.notifyToListener(false, null);
@@ -4088,7 +4081,7 @@ public class ProfileMaintenance {
 		dialog.setOnCancelListener(new Dialog.OnCancelListener() {
 			@Override
 			public void onCancel(DialogInterface arg0) {
-				btnCancel.performClick();
+				btn_cancel.performClick();
 			}
 		});
 //        dialog.setOnKeyListener(new DialogOnKeyListener(context));
@@ -4154,7 +4147,7 @@ public class ProfileMaintenance {
         	.setText(msgs_select_local_dir);
         ((TextView)dialog.findViewById(R.id.item_select_list_dlg_subtitle))
         	.setText(msgs_current_dir+url+dir);
-	    final Button btnOk=(Button)dialog.findViewById(R.id.item_select_list_dlg_ok_btn);
+	    final Button btn_ok=(Button)dialog.findViewById(R.id.item_select_list_dlg_ok_btn);
 
 //        if (rows.size()<=2) 
 //        	((TextView)dialog.findViewById(R.id.item_select_list_dlg_spacer))
@@ -4201,8 +4194,8 @@ public class ProfileMaintenance {
 				    		final TreeFilelistItem tfi=tfa.getDataItem(t_pos);
 							if (tfi.getName().startsWith("---")) return;
 							tfa.setDataItemIsUnselected(t_pos);
-							if (tfa.isDataItemIsSelected()) btnOk.setEnabled(true);
-							else btnOk.setEnabled(false);
+							if (tfa.isDataItemIsSelected()) btn_ok.setEnabled(true);
+							else btn_ok.setEnabled(false);
 						}
 				  	});
 	  			} else {
@@ -4215,7 +4208,7 @@ public class ProfileMaintenance {
 				    		final TreeFilelistItem tfi=tfa.getDataItem(t_pos);
 							if (tfi.getName().startsWith("---")) return;
 							tfa.setDataItemIsSelected(t_pos);
-							btnOk.setEnabled(true);
+							btn_ok.setEnabled(true);
 						}
 				  	});
 	  			}
@@ -4229,15 +4222,15 @@ public class ProfileMaintenance {
 			public void positiveResponse(Context c,Object[] o) {
 				if (o!=null) {
 					int pos=(Integer)o[0];
-					if (tfa.getDataItem(pos).isChecked()) btnOk.setEnabled(true);
+					if (tfa.getDataItem(pos).isChecked()) btn_ok.setEnabled(true);
 				}
 			}
 			@Override
 			public void negativeResponse(Context c,Object[] o) {
-				btnOk.setEnabled(false);
+				btn_ok.setEnabled(false);
 				for (int i=0;i<tfa.getDataItemCount();i++) {
 					if (tfa.getDataItem(i).isChecked()) {
-						btnOk.setEnabled(true);
+						btn_ok.setEnabled(true);
 						break;
 					}
 				}
@@ -4246,9 +4239,9 @@ public class ProfileMaintenance {
 		tfa.setCbCheckListener(cb_ntfy);
 
 	    //OKボタンの指定
-		btnOk.setEnabled(false);
-	    btnOk.setVisibility(Button.VISIBLE);
-	    btnOk.setOnClickListener(new View.OnClickListener() {
+		btn_ok.setEnabled(false);
+	    btn_ok.setVisibility(Button.VISIBLE);
+	    btn_ok.setOnClickListener(new View.OnClickListener() {
 	        public void onClick(View v) {
 	            String sel="";
 	            for (int i=0;i<tfa.getCount();i++) {
@@ -4270,8 +4263,8 @@ public class ProfileMaintenance {
 	    });
 
         //CANCELボタンの指定
-        final Button btnCancel=(Button)dialog.findViewById(R.id.item_select_list_dlg_cancel_btn);
-        btnCancel.setOnClickListener(new View.OnClickListener() {
+        final Button btn_cancel=(Button)dialog.findViewById(R.id.item_select_list_dlg_cancel_btn);
+        btn_cancel.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 dialog.dismiss();
                 p_ntfy.notifyToListener(false, null);
@@ -4281,7 +4274,7 @@ public class ProfileMaintenance {
 		dialog.setOnCancelListener(new Dialog.OnCancelListener() {
 			@Override
 			public void onCancel(DialogInterface arg0) {
-				btnCancel.performClick();
+				btn_cancel.performClick();
 			}
 		});
 //        dialog.setOnKeyListener(new DialogOnKeyListener(context));
@@ -4309,26 +4302,26 @@ public class ProfileMaintenance {
 			.setText("");
 		((TextView)dialog.findViewById(R.id.progress_spin_dlg_msg))
 			.setVisibility(TextView.GONE);
-		final Button btnCancel = (Button) dialog.findViewById(R.id.progress_spin_dlg_btn_cancel);
-		btnCancel.setText(R.string.msgs_progress_spin_dlg_filelist_cancel);
+		final Button btn_cancel = (Button) dialog.findViewById(R.id.progress_spin_dlg_btn_cancel);
+		btn_cancel.setText(R.string.msgs_progress_spin_dlg_filelist_cancel);
 		
 //		(dialog.context.findViewById(R.id.progress_spin_dlg)).setVisibility(TextView.GONE);
 //		(dialog.context.findViewById(R.id.progress_spin_dlg)).setEnabled(false);
 		
 		CommonDialog.setDlgBoxSizeCompact(dialog);
 		// CANCELボタンの指定
-		btnCancel.setOnClickListener(new View.OnClickListener() {
+		btn_cancel.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				tc.setDisable();//disableAsyncTask();
-				btnCancel.setText(mContext.getString(R.string.msgs_progress_dlg_canceling));
-				btnCancel.setEnabled(false);
+				btn_cancel.setText(mContext.getString(R.string.msgs_progress_dlg_canceling));
+				btn_cancel.setEnabled(false);
 				if (DEBUG_ENABLE) util.addDebugLogMsg(1,"W","Sharelist is cancelled.");
 			}
 		});
 		dialog.setOnCancelListener(new Dialog.OnCancelListener() {
 			@Override
 			public void onCancel(DialogInterface arg0) {
-				btnCancel.performClick();
+				btn_cancel.performClick();
 			}
 		});
 //		dialog.setOnKeyListener(new DialogOnKeyListener(context));
@@ -4443,8 +4436,8 @@ public class ProfileMaintenance {
 					}
 				});	 
 				//CANCELボタンの指定
-				final Button btnCancel=(Button)dialog.findViewById(R.id.item_select_list_dlg_cancel_btn);
-				btnCancel.setOnClickListener(new View.OnClickListener() {
+				final Button btn_cancel=(Button)dialog.findViewById(R.id.item_select_list_dlg_cancel_btn);
+				btn_cancel.setOnClickListener(new View.OnClickListener() {
 				    public void onClick(View v) {
 				        dialog.dismiss();
 			    		p_ntfy.notifyToListener(false, null);
@@ -4454,7 +4447,7 @@ public class ProfileMaintenance {
 				dialog.setOnCancelListener(new Dialog.OnCancelListener() {
 					@Override
 					public void onCancel(DialogInterface arg0) {
-						btnCancel.performClick();
+						btn_cancel.performClick();
 					}
 				});
 //				dialog.setOnKeyListener(new DialogOnKeyListener(context));
@@ -4496,7 +4489,7 @@ public class ProfileMaintenance {
 			    
 			    ((TextView)dialog.findViewById(R.id.item_select_list_dlg_subtitle))
 			    	.setText(msgs_current_dir+"/"+remurl);
-			    final Button btnOk=(Button)dialog.findViewById(R.id.item_select_list_dlg_ok_btn);
+			    final Button btn_ok=(Button)dialog.findViewById(R.id.item_select_list_dlg_ok_btn);
 //		        if (rows.size()<=2) 
 //		        	((TextView)dialog.findViewById(R.id.item_select_list_dlg_spacer))
 //		        	.setVisibility(TextView.VISIBLE);
@@ -4543,7 +4536,7 @@ public class ProfileMaintenance {
 						    		final TreeFilelistItem tfi=tfa.getDataItem(t_pos);
 									if (tfi.getName().startsWith("---")) return;
 									tfa.setDataItemIsUnselected(t_pos);
-									btnOk.setEnabled(false);
+									btn_ok.setEnabled(false);
 								}
 						  	});
 			  			} else {
@@ -4556,7 +4549,7 @@ public class ProfileMaintenance {
 						    		final TreeFilelistItem tfi=tfa.getDataItem(t_pos);
 									if (tfi.getName().startsWith("---")) return;
 									tfa.setDataItemIsSelected(t_pos);
-									btnOk.setEnabled(true);
+									btn_ok.setEnabled(true);
 								}
 						  	});
 			  			}
@@ -4571,15 +4564,15 @@ public class ProfileMaintenance {
 					public void positiveResponse(Context c,Object[] o) {
 						if (o!=null) {
 							int pos=(Integer)o[0];
-							if (tfa.getDataItem(pos).isChecked()) btnOk.setEnabled(true);
+							if (tfa.getDataItem(pos).isChecked()) btn_ok.setEnabled(true);
 						}
 					}
 					@Override
 					public void negativeResponse(Context c,Object[] o) {
-						btnOk.setEnabled(false);
+						btn_ok.setEnabled(false);
 						for (int i=0;i<tfa.getDataItemCount();i++) {
 							if (tfa.getDataItem(i).isChecked()) {
-								btnOk.setEnabled(true);
+								btn_ok.setEnabled(true);
 								break;
 							}
 						}
@@ -4588,9 +4581,9 @@ public class ProfileMaintenance {
 				tfa.setCbCheckListener(cb_ntfy);
 
 			    //OKボタンの指定
-				btnOk.setEnabled(false);
-			    btnOk.setVisibility(Button.VISIBLE);
-			    btnOk.setOnClickListener(new View.OnClickListener() {
+				btn_ok.setEnabled(false);
+			    btn_ok.setVisibility(Button.VISIBLE);
+			    btn_ok.setOnClickListener(new View.OnClickListener() {
 			        public void onClick(View v) {
 			            String sel="";
 			            for (int i=0;i<tfa.getCount();i++) {
@@ -4608,8 +4601,8 @@ public class ProfileMaintenance {
 			        }
 			    });
 			    //CANCELボタンの指定
-			    final Button btnCancel=(Button)dialog.findViewById(R.id.item_select_list_dlg_cancel_btn);
-			    btnCancel.setOnClickListener(new View.OnClickListener() {
+			    final Button btn_cancel=(Button)dialog.findViewById(R.id.item_select_list_dlg_cancel_btn);
+			    btn_cancel.setOnClickListener(new View.OnClickListener() {
 			        public void onClick(View v) {
 			            dialog.dismiss();
 			            p_ntfy.notifyToListener(false, null);
@@ -4619,7 +4612,7 @@ public class ProfileMaintenance {
 				dialog.setOnCancelListener(new Dialog.OnCancelListener() {
 					@Override
 					public void onCancel(DialogInterface arg0) {
-						btnCancel.performClick();
+						btn_cancel.performClick();
 					}
 				});
 
@@ -4873,7 +4866,7 @@ public class ProfileMaintenance {
 				}
 		} else if (profVer.equals(SMBSYNC_PROF_VER3)) {
 			if (pl.length()>10){
-				addProfileListVer3(pl.substring(7,pl.length()),sync,rem,lcl);
+				addProfileListVer3(pl.substring(6,pl.length()),sync,rem,lcl);
 				addImportSettingsParm(pl);
 			}
 		} else addProfileListVer0(pl, sync, rem, lcl);
@@ -5112,7 +5105,6 @@ public class ProfileMaintenance {
 
 	public void addProfileListVer3(String pl, ArrayList<ProfileListItem> sync,
 			ArrayList<ProfileListItem> rem, ArrayList<ProfileListItem> lcl) {
-		if (pl.startsWith(SMBSYNC_PROF_VER2+","+"SETTINGS")) return; //ignore settings entry
 		//Extract ArrayList<String> field
 		String list1="",list2="", npl="";
 		if (pl.indexOf("[")>=0) {
@@ -5135,9 +5127,11 @@ public class ProfileMaintenance {
 			if (tmp_pl[i]==null) parm[i]="";
 			else {
 				if (tmp_pl[i]==null) parm[i]="";
-				else parm[i]=convertToSpecChar(tmp_pl[i]);
+				else parm[i]=convertToSpecChar(tmp_pl[i].trim());
 			}
 		}
+		if (parm[1].equals("SETTINGS")) return; //ignore settings entry
+		
 		if (parm[1].equals(SMBSYNC_PROF_TYPE_REMOTE)) {//Remote
 			rem.add(setRemoteProfilelistItem(
 					parm[0],//group

@@ -25,18 +25,29 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="#ff0000" />
 
+    <CheckBox
+        android:id="@+id/export_import_profile_list_cb_import_settings"
+        style="@style/check_box_style"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:text="@string/msgs_export_import_profile_import_settings" />
+    
+	<include layout="@layout/divider_line3" />
+
     <RadioGroup
         android:id="@+id/export_import_profile_list_rg_item_select"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal" >
 
         <RadioButton
             android:id="@+id/export_import_profile_list_rb_select_all"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="10dp"
+            android:layout_weight="1"
             android:text="@string/msgs_export_import_profile_select_all" />
 
         <RadioButton
@@ -48,6 +59,8 @@
 
     </RadioGroup>
 
+    <include layout="@layout/divider_line3" />
+			    
     <CheckBox
         android:id="@+id/export_import_profile_list_cb_reset_profile"
         style="@style/check_box_style"
@@ -56,10 +69,14 @@
         android:layout_marginLeft="5dp"
         android:text="@string/msgs_export_import_profile_reset_current_profile" />
 
+	<include layout="@layout/divider_line3" />
+	    
     <ListView
         android:id="@+id/export_import_profile_listview"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
         android:layout_weight="1" >
     </ListView>
 

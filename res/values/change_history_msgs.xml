@@ -9,8 +9,11 @@
 &lt;br&gt;
 2014-xx-xx Ver1.80
 &lt;br&gt;
--Modified to not check the exit
--Was to can be acquired an optional WiFi lock during synchronization (Settings -> Sync)
+-Add sample and parameters when you want to boot from other applications to help
+-Change Notification icon during synchronization(Android 4.x)
+-Add password protection for the profile to be written to external media
+-Change so as not to perform end confirmation
+-Get WiFi lock during synchronization(Settings -> Sync)
 &lt;br&gt;
 &lt;br&gt;
 2014-03-02 Ver1.79

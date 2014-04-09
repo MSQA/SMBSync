@@ -383,15 +383,15 @@ public class SMBSyncSettings extends PreferenceActivity{
 				pref_key
 					.setSummary(c.getString(R.string.settings_exit_clean_summary_dis));
 			}
-    	} else if (key_string.equals(c.getString(R.string.settings_exported_profile_encryption))) {
-			isChecked=true;
-			if (shared_pref.getBoolean(key_string, true)) {
-				pref_key
-					.setSummary(c.getString(R.string.settings_exported_profile_encryption_summary_ena));
-			} else {
-				pref_key
-					.setSummary(c.getString(R.string.settings_exported_profile_encryption_summary_dis));
-			}
+//    	} else if (key_string.equals(c.getString(R.string.settings_exported_profile_encryption))) {
+//			isChecked=true;
+//			if (shared_pref.getBoolean(key_string, true)) {
+//				pref_key
+//					.setSummary(c.getString(R.string.settings_exported_profile_encryption_summary_ena));
+//			} else {
+//				pref_key
+//					.setSummary(c.getString(R.string.settings_exported_profile_encryption_summary_dis));
+//			}
     	}
 
     	return isChecked;
@@ -761,7 +761,7 @@ public class SMBSyncSettings extends PreferenceActivity{
         	shared_pref.edit().putBoolean(getString(R.string.settings_exit_clean),true).commit();
     		findPreference(getString(R.string.settings_exit_clean).toString()).setEnabled(false);
         	initSettingValueAfterHc(shared_pref,getString(R.string.settings_exit_clean));
-        	initSettingValueAfterHc(shared_pref,getString(R.string.settings_exported_profile_encryption));
+//        	initSettingValueAfterHc(shared_pref,getString(R.string.settings_exported_profile_encryption));
         };
         
         @Override
