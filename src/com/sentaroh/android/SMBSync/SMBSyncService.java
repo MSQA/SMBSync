@@ -126,7 +126,7 @@ public class SMBSyncService extends Service {
 		@Override
 		public void aidlStartForeground() throws RemoteException {
 			mUtil.addDebugLogMsg(1, "I", "aidlStartForeground entered");
-			NotificationUtil.setNotificationEnabled(glblParms);
+//			NotificationUtil.setNotificationEnabled(glblParms);
 			startForeground(R.string.app_name,glblParms.notification);
 		}
 
@@ -134,7 +134,7 @@ public class SMBSyncService extends Service {
 		public void aidlStopForeground(boolean clear_notification)
 				throws RemoteException {
 			mUtil.addDebugLogMsg(1, "I", "aidlStopForeground entered, clear="+clear_notification);
-			if (clear_notification) NotificationUtil.setNotificationDisabled(glblParms);
+//			if (clear_notification) NotificationUtil.setNotificationDisabled(glblParms);
 			stopForeground(clear_notification);
 		}
 

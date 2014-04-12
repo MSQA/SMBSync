@@ -61,6 +61,7 @@ public class GlobalParameters extends Application{
 	public String SMBSync_Internal_Root_Dir="";
 	
 	public NotificationManager notificationManager;
+	public boolean isNotificationWasShowed=false;
 	public int notificationIcon=R.drawable.ic_48_smbsync_wait;
 	public Notification notification;
 	public Builder notificationBuilder;
@@ -69,7 +70,7 @@ public class GlobalParameters extends Application{
 	public PendingIntent notificationPendingIntent;
 	public String notificationLastShowedMessage=null, notificationLastShowedTitle="";
 	public String notificationAppName="";
-	public boolean notiifcationEnabled=false;
+//	public boolean notiifcationEnabled=false;
 	
 	public ISvcCallback callBackStub=null;
 	

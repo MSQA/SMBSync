@@ -191,7 +191,6 @@ public class SMBSyncMain extends FragmentActivity {
 		mWifiLock=mWifi.createWifiLock(WifiManager.WIFI_MODE_FULL, "SMBSync-wifi");
 
 		if (tcService==null) tcService=new ThreadCtrl();
-//		NotificationUtil.initNotification(glblParms);
 
 //		if (Build.VERSION.SDK_INT>=14)
 //			this.getActionBar().setHomeButtonEnabled(false);
@@ -256,9 +255,8 @@ public class SMBSyncMain extends FragmentActivity {
 					", isActivityForeground="+util.isActivityForeground());
 		util.setActivityIsForeground(true);
 		if (restartStatus==1) {
-			NotificationUtil.clearNotification(glblParms);
 			try {
-				mSvcClient.aidlStopForeground(true);
+				mSvcClient.aidlStopForeground(false);
 			} catch (RemoteException e) {
 				e.printStackTrace();
 			}
@@ -276,8 +274,6 @@ public class SMBSyncMain extends FragmentActivity {
 			svc_ntfy.setListener(new NotifyEventListener(){
 				@Override
 				public void positiveResponse(Context c, Object[] o) {
-					NotificationUtil.clearNotification(glblParms);
-
 					setCallbackListener();
 					
 					if (restartStatus==0) startupWarning();
@@ -296,11 +292,8 @@ public class SMBSyncMain extends FragmentActivity {
 							autoStartDlg();
 							if (glblParms.settingBackgroundExecution) {
 								setScreenSwitchToHome();
-							} else {
-//								setTheme(R.style.MainTheme);
 							}
 						} else {
-//							setTheme(R.style.MainTheme);
 							NotifyEvent ntfy_nr=new NotifyEvent(mContext);
 							ntfy_nr.setListener(new NotifyEventListener(){
 								@Override
@@ -324,7 +317,6 @@ public class SMBSyncMain extends FragmentActivity {
 							}
 						}
 					} else if (restartStatus==2) {
-//						setTheme(R.style.MainTheme);
 						restoreTaskData();
 						if (currentViewType.equals("M")) tabHost.setCurrentTab(1);
 						util.addLogMsg("I",msgs_smbsync_main_restart+" Version "+packageVersionName);
@@ -2227,7 +2219,6 @@ public class SMBSyncMain extends FragmentActivity {
 				else {
 					glblParms.settingAutoTerm=false;
 					showMirrorThreadResult(result_code,result_msg);
-//					autoTerminateDlg(result_code, result_msg);
 				}		
 			}
 		} else {
@@ -2275,14 +2266,6 @@ public class SMBSyncMain extends FragmentActivity {
 				final String sync_prof, final String date, final String time, 
 				final String tag,final String debug_or_msg, final String fp, final String msg_text)
 				throws RemoteException {
-//			mUiHandler.post(new Runnable(){
-//				@Override
-//				public void run() {
-//					showReceivedMessage(glblParms,msglistAdapter,msgListView,
-//							cat, flag, sync_prof, date, time, tag, debug_or_msg,
-//							fp, msg_text);
-//				}
-//			});
 		}
     };
 
@@ -2442,35 +2425,6 @@ public class SMBSyncMain extends FragmentActivity {
 		});
 	};
 
-//	static private void showReceivedMessageX(GlobalParameters gp, MsglistAdapter ma,
-//			ListView lv, final String cat, final String flag,
-//			final String sync_prof, final String date, final String time, final String tag,
-//			final String debug_or_msg, final String fp, final String msg_text) {
-//
-//		if (flag.equals("0")) {
-//			mMainViewProf.setText(sync_prof);
-//			mMainViewFilepath.setText(fp);
-//			mMainViewMessage.setText(msg_text);
-//			showOngoingNotificationMsg(glblParms,sync_prof,fp,msg_text);
-//		} else { //
-//			if (flag.equals("1")) {
-//				mMainViewProf.setText(sync_prof);
-//				mMainViewFilepath.setText(fp);
-//				mMainViewMessage.setText(msg_text);
-//				showOngoingNotificationMsg(glblParms,sync_prof,fp,msg_text);
-//			}  
-//			if (debug_or_msg.equals("M") || 
-//					(debug_or_msg.equals("D")&&glblParms.settingDebugMsgDisplay)) {
-//				StringBuilder sb=new StringBuilder(256);
-//				if (!sync_prof.equals("")) sb.append(sync_prof).append(" ");
-//				if (!fp.equals("")) sb.append(fp).append(" ");
-//				sb.append(msg_text);
-//				SMBSyncUtil.addMsgToMsglistAdapter(gp,ma,lv,
-//						new MsglistItem(cat,date,time,tag,sb.toString()));
-//			}
-//		}
-//	};
-
 	private void autoStartDlg() {
 		final ThreadCtrl threadCtl=new ThreadCtrl();
 		threadCtl.setEnable();//enableAsyncTask();
@@ -2582,12 +2536,9 @@ public class SMBSyncMain extends FragmentActivity {
 						public void run() {
 							if (DEBUG_ENABLE) 
 								util.addDebugLogMsg(1,"I","Auto termination was invoked.");
-//							if (!util.isActivityForeground())
-//							NotificationUtil.clearNotification(glblParms);
 							if (!glblParms.settingBgTermNotification.equals(SMBSYNC_NOTIFICATION_MESSAGE_NO)) {
 //								Log.v("","result code="+result_code+", result_msg="+result_msg);
 								if (glblParms.settingBgTermNotification.equals(SMBSYNC_NOTIFICATION_MESSAGE_ALWAYS)) 
-//									NotificationUtil.showNoticeNotificationMsg(mContext,glblParms,getString(R.string.msgs_aterm_terminated));
 									NotificationUtil.showNoticeNotificationMsg(mContext,glblParms,result_msg);
 								else {
 									if (!result_code.equals("OK")) {
@@ -2702,10 +2653,6 @@ public class SMBSyncMain extends FragmentActivity {
 	}
 	
 	private void showNotificationMsg(String msg ) {
-//		if (!NotificationUtil.isNotificationEnabled(glblParms)) {
-//			NotificationUtil.setNotificationMessage(glblParms, "", "", msg);
-//			return;
-//		}
 		try {
 			mSvcClient.aidlShowNotificationMsg("","",msg);
 		} catch (RemoteException e) {
@@ -2715,10 +2662,6 @@ public class SMBSyncMain extends FragmentActivity {
 
 	@SuppressWarnings("unused")
 	private void showNotificationMsg(String prof, String msg ) {
-//		if (!NotificationUtil.isNotificationEnabled(glblParms)) {
-//			NotificationUtil.setNotificationMessage(glblParms, prof, "", msg);
-//			return;
-//		}
 		try {
 			mSvcClient.aidlShowNotificationMsg(prof,"",msg);
 		} catch (RemoteException e) {
@@ -2727,10 +2670,6 @@ public class SMBSyncMain extends FragmentActivity {
 	};
 	@SuppressWarnings("unused")
 	private void showNotificationMsg(String prof, String fp, String msg ) {
-//		if (!NotificationUtil.isNotificationEnabled(glblParms)) {
-//			NotificationUtil.setNotificationMessage(glblParms, prof, fp, msg);
-//			return;
-//		}
 		try {
 			mSvcClient.aidlShowNotificationMsg(prof,fp,msg);
 		} catch (RemoteException e) {
