@@ -27,7 +27,7 @@
         <item>3</item>
     </string-array>	    
 	
-    <string name="settings_auto_start_title">Sync task auto start</string>
+    <string name="settings_auto_start_title">Auto Sync start-up</string>
     <string name="settings_auto_start_summary_dis">Autostart was disabling.</string>
     <string name="settings_auto_start_summary_ena">Sync task will not started immediately 
 	    after application startup.</string>

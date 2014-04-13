@@ -57,6 +57,7 @@
     <string name="msgs_smbsync_main_restart">SMBSyncが再起動しました。</string>
     <string name="msgs_smbsync_main_restart_msglost">SMBSyncは再起動しましたが、メッセージを回復できませんでした。</string>
     <string name="msgs_smbsync_main_end"	>SMBSyncが終了しました。</string>
+    <string name="msgs_smbsync_main_settings_force_log_enabled"	>自動同期起動が有効なため、ログ記録を有効にしました。</string>
     
     <string name="msgs_create_profile_error">プロファイルリスト作成に失敗しました。ファイル=%s</string>
     <string name="msgs_create_profile_not_found">指定されたファイルが見つからないためプロファイルリスト作成できません。ファイル=%s</string>

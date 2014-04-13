@@ -57,6 +57,7 @@
     <string name="msgs_smbsync_main_restart">SMBSync was restarted.</string>
     <string name="msgs_smbsync_main_restart_msglost">SMBSyncwas restarted, but message was lost.</string>
     <string name="msgs_smbsync_main_end">SMBSync was ended</string>
+    <string name="msgs_smbsync_main_settings_force_log_enabled"	>To enable logging because Auto sync startup was enabled.</string>
     
     <string name="msgs_create_profile_error">create profile was failed. file=%s</string>
     <string name="msgs_create_profile_not_found">"create profile was failed. Because specified file was not found. file=%s</string>

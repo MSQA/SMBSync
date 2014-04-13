@@ -154,11 +154,6 @@ public class SMBSyncService extends Service {
 		}
 
 		@Override
-		public void aidlReshowNotificationMsg() throws RemoteException {
-			NotificationUtil.reshowOngoingNotificationMsg(glblParms);
-		}
-
-		@Override
 		public void aidlShowNotificationMsg(String prof, String fp, String msg)
 				throws RemoteException {
 			NotificationUtil.showOngoingNotificationMsg(glblParms, prof, fp, msg);

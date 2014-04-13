@@ -33,6 +33,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 public class NotificationUtil {
 	
@@ -51,15 +52,36 @@ public class NotificationUtil {
 		gwa.notificationPendingIntent =PendingIntent.getActivity(gwa.svcContext, 0, gwa.notificationIntent,
     					PendingIntent.FLAG_UPDATE_CURRENT);
 
-    	buildNotification(gwa);
+		gwa.notificationBuilder=new NotificationCompat.Builder(gwa.svcContext);
+		gwa.notificationBuilder.setContentIntent(gwa.notificationPendingIntent)
+		   	.setTicker(gwa.notificationAppName)
+			.setOngoing(true)
+			.setAutoCancel(false)
+			.setSmallIcon(gwa.notificationIcon)//smbsync_animation)
+			.setContentTitle(gwa.notificationAppName)
+			.setContentText("")
+//		    .setSubText("subtext")
+//		    .setLargeIcon(largeIcon)
+			.setWhen(0)
+//			.addAction(action_icon, action_title, action_pi)
+			;
+		gwa.notification=gwa.notificationBuilder.build();
+		if (Build.VERSION.SDK_INT>=16) {//JB(4.1以上
+			gwa.notificationBigTextStyle = 
+   		   			new NotificationCompat.BigTextStyle(gwa.notificationBuilder);
+			gwa.notificationBigTextStyle
+				.setBigContentTitle(gwa.notificationLastShowedTitle)
+				.bigText(gwa.notificationLastShowedMessage);
+		}
+
 	};
 
 	static final public void setNotificationIcon(GlobalParameters gwa,
 			int notification_icon) {
 		gwa.notificationIcon=notification_icon;
 		gwa.notificationBuilder.setContentIntent(gwa.notificationPendingIntent)
-	   	.setSmallIcon(gwa.notificationIcon)//smbsync_animation)
-	    ;
+	   		.setSmallIcon(gwa.notificationIcon)//smbsync_animation)
+	   		;
 		gwa.notification=gwa.notificationBuilder.build();
 		if (Build.VERSION.SDK_INT>=16) {//JB(4.1以上
 			gwa.notificationBigTextStyle = 
@@ -70,30 +92,6 @@ public class NotificationUtil {
 		}
 	};
 
-	static final public void buildNotification(GlobalParameters gwa) {
-		gwa.notificationBuilder=new NotificationCompat.Builder(gwa.svcContext);
-		gwa.notificationBuilder.setContentIntent(gwa.notificationPendingIntent)
-		   		.setTicker(gwa.notificationAppName)
-			   	.setOngoing(true)
-			   	.setAutoCancel(false)
-			   	.setSmallIcon(gwa.notificationIcon)//smbsync_animation)
-			    .setContentTitle(gwa.notificationAppName)
-			    .setContentText("")
-//		    	.setSubText("subtext")
-//		    	.setLargeIcon(largeIcon)
-			    .setWhen(System.currentTimeMillis())
-//			    .addAction(action_icon, action_title, action_pi)
-			    ;
-		gwa.notification=gwa.notificationBuilder.build();
-		if (Build.VERSION.SDK_INT>=16) {//JB(4.1以上
-			gwa.notificationBigTextStyle = 
-   		   			new NotificationCompat.BigTextStyle(gwa.notificationBuilder);
-			gwa.notificationBigTextStyle
-				.setBigContentTitle(gwa.notificationLastShowedTitle)
-				.bigText(gwa.notificationLastShowedMessage);
-		}
-	};
-	
 	final static public Notification getNotification(GlobalParameters gwa) {
 		return gwa.notification;
 	};
@@ -107,34 +105,6 @@ public class NotificationUtil {
 		else gwa.notificationLastShowedMessage=fp+" "+msg;
 	};
 	
-	final static public Notification reshowOngoingNotificationMsg(GlobalParameters gwa) {
-		gwa.notificationBuilder
-			.setContentTitle(gwa.notificationLastShowedTitle)
-		    .setContentText(gwa.notificationLastShowedMessage)
-		    ;
-		if (gwa.isNotificationWasShowed) {
-			gwa.notificationBuilder.setTicker(gwa.notificationAppName);
-			gwa.isNotificationWasShowed=true;
-		} else {
-			gwa.notificationBuilder.setTicker(null);
-		}
-		if (Build.VERSION.SDK_INT<16) {//JB以前
-			gwa.notification=gwa.notificationBuilder.build();
-			gwa.notification.icon=gwa.notificationIcon;
-			gwa.notificationManager.notify(R.string.app_name,gwa.notification);
-		} else {
-			gwa.notificationBigTextStyle = 
-   		   			new NotificationCompat.BigTextStyle(gwa.notificationBuilder);
-			gwa.notificationBigTextStyle
-				.setBigContentTitle(gwa.notificationLastShowedTitle)
-				.bigText(gwa.notificationLastShowedMessage);
-
-			gwa.notification=gwa.notificationBigTextStyle.build();
-			gwa.notificationManager.notify(R.string.app_name,gwa.notification);
-		}
-    	return gwa.notification;
-	};
-
 	final static public Notification showOngoingNotificationMsg(GlobalParameters gwa, 
 			String msg ) {
 		return showOngoingNotificationMsg(gwa,"","",msg);
@@ -148,22 +118,20 @@ public class NotificationUtil {
 	final static public Notification showOngoingNotificationMsg(GlobalParameters gwa, 
 			String prof, String fp, String msg ) {
 		setNotificationMessage(gwa,prof,fp,msg);
-		gwa.isNotificationWasShowed=true;
 		gwa.notificationBuilder
 			.setContentTitle(gwa.notificationLastShowedTitle)
 		    .setContentText(gwa.notificationLastShowedMessage)
 		    ;
-		if (Build.VERSION.SDK_INT<16) {//JB以外
-			gwa.notification=gwa.notificationBuilder.build();
-			gwa.notification.icon=gwa.notificationIcon;
-			gwa.notificationManager.notify(R.string.app_name,gwa.notification);
-		} else {
+		if (Build.VERSION.SDK_INT>=16) {//JB
 			gwa.notificationBigTextStyle
 				.setBigContentTitle(gwa.notificationLastShowedTitle)
 				.bigText(gwa.notificationLastShowedMessage);
 			gwa.notification=gwa.notificationBigTextStyle.build();
-			gwa.notificationManager.notify(R.string.app_name,gwa.notification);
+		} else {
+			gwa.notification=gwa.notificationBuilder.build();
+			gwa.notification.icon=gwa.notificationIcon;
 		}
+		gwa.notificationManager.notify(R.string.app_name,gwa.notification);
 
     	return gwa.notification;
 	};
@@ -172,15 +140,16 @@ public class NotificationUtil {
 		clearNotification(gwa);
 		NotificationCompat.Builder builder=new NotificationCompat.Builder(context);
 		builder.setTicker(gwa.notificationAppName)
-			   	.setOngoing(false)
-			   	.setAutoCancel(true)
-			   	.setSmallIcon(R.drawable.ic_48_smbsync_wait)
-			    .setContentTitle(context.getString(R.string.app_name))
-			    .setContentText(msg)
-			    .setWhen(System.currentTimeMillis())
-//			    .addAction(action_icon, action_title, action_pi)
-			    ;
+			.setOngoing(false)
+			.setAutoCancel(true)
+			.setSmallIcon(R.drawable.ic_48_smbsync_wait)
+			.setContentTitle(context.getString(R.string.app_name))
+			.setContentText(msg)
+			.setWhen(System.currentTimeMillis())
+//			.addAction(action_icon, action_title, action_pi)
+			;
 
+		Log.v("","option="+gwa.settingLogOption);
 		boolean valid_log_file_exists=false;
 		if (!gwa.currentLogFilePath.equals("") && !gwa.settingLogOption.equals("0")) {
 			File lf=new File(gwa.currentLogFilePath);
@@ -200,8 +169,7 @@ public class NotificationUtil {
 			builder.setContentIntent(dummy_pi);
 		}
 		
-		Notification notification=builder.build();
-		gwa.notificationManager.notify(R.string.app_name,notification);
+		gwa.notificationManager.notify(R.string.app_name,builder.build());
 	};
 
 	final static public void clearNotification(GlobalParameters gwa) {

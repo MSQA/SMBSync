@@ -16,6 +16,5 @@ interface ISvcClient{
 	
 	void aidlStopService() ;
 	
-	void aidlReshowNotificationMsg();
 	void aidlShowNotificationMsg(String prof, String fp, String msg);
 }

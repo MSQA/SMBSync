@@ -255,11 +255,7 @@ public class SMBSyncMain extends FragmentActivity {
 					", isActivityForeground="+util.isActivityForeground());
 		util.setActivityIsForeground(true);
 		if (restartStatus==1) {
-			try {
-				mSvcClient.aidlStopForeground(false);
-			} catch (RemoteException e) {
-				e.printStackTrace();
-			}
+			svcStopForeground(false);
 			if (!glblParms.freezeMessageViewScroll) {
 				glblParms.uiHandler.post(new Runnable(){
 					@Override
@@ -283,12 +279,10 @@ public class SMBSyncMain extends FragmentActivity {
 					if (restartStatus==0) {
 						util.addLogMsg("I",msgs_smbsync_main_start+" Version "+packageVersionName );
 						showNotificationMsg(msgs_smbsync_main_start+" Version "+packageVersionName );
-						listSMBSyncOption();
-
 						loadExtraDataParms();
-
+						listSMBSyncOption();
 						if (glblParms.settingAutoStart && 
-								glblParms.externalStorageIsMounted && !util.isRemoteDisable()) {
+							glblParms.externalStorageIsMounted && !util.isRemoteDisable()) {
 							autoStartDlg();
 							if (glblParms.settingBackgroundExecution) {
 								setScreenSwitchToHome();
@@ -306,7 +300,7 @@ public class SMBSyncMain extends FragmentActivity {
 							});
 							
 							if (glblParms.settingAutoStart && 
-									(!glblParms.externalStorageIsMounted || util.isRemoteDisable())) {
+								(!glblParms.externalStorageIsMounted || util.isRemoteDisable())) {
 								String m_txt="";
 								if (!glblParms.externalStorageIsMounted) m_txt=c.getString(R.string.msgs_astart_abort_external_storage_not_mounted);
 								if (util.isRemoteDisable()) m_txt=c.getString(R.string.msgs_astart_abort_wifi_option_not_satisfied);
@@ -359,14 +353,9 @@ public class SMBSyncMain extends FragmentActivity {
 					",currentView="+currentViewType+
 				", getChangingConfigurations="+getChangingConfigurations()+
 				", isActivityForeground="+util.isActivityForeground());
-		if (!isTaskTermination && mSvcClient!=null) {
-			try {
-				mSvcClient.aidlStartForeground();
-				reshowOngoingNotificationMsg();
-			} catch (RemoteException e) {
-				e.printStackTrace();
-			}
-		}
+//		if (!isTaskTermination && mSvcClient!=null) {
+//		}
+		svcStartForeground();
 		saveTaskData();
 	};
 
@@ -377,7 +366,7 @@ public class SMBSyncMain extends FragmentActivity {
 			util.addDebugLogMsg(1,"I","onStop entered, " +
 					", isActivityForeground="+util.isActivityForeground());
 		util.setActivityIsForeground(false);
-		saveTaskData();
+//		saveTaskData();
 	};
 
 	@Override
@@ -411,6 +400,22 @@ public class SMBSyncMain extends FragmentActivity {
 	    super.onConfigurationChanged(newConfig);
 	    if (util!=null && DEBUG_ENABLE)
 	    	util.addDebugLogMsg(1,"I","onConfigurationChanged Entered");
+	};
+
+	private void svcStartForeground() {
+		try {
+			mSvcClient.aidlStartForeground();
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+	};
+
+	private void svcStopForeground(boolean clear) {
+		try {
+			mSvcClient.aidlStopForeground(clear);
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
 	};
 
 	private void initAdapterAndView() {
@@ -1264,6 +1269,9 @@ public class SMBSyncMain extends FragmentActivity {
 		if (glblParms.debugLevel==9)
 			if (DEBUG_ENABLE) util.addDebugLogMsg(1,"I","settings_default_pass="+
 					glblParms.settingPassword);
+		if (glblParms.settingAutoStart) util.addLogMsg("I",
+				getString(R.string.msgs_smbsync_main_settings_force_log_enabled));
+
 	};
 
 	@SuppressLint("SdCardPath")
@@ -2173,9 +2181,9 @@ public class SMBSyncMain extends FragmentActivity {
 	private void setScreenOn(int timeout) {
 		if (glblParms.settingScreenOnEnabled) {
 			if (!mScreenOnWakelock.isHeld()) {
-				util.addDebugLogMsg(1,"I","Wakelock acquired");
 		    	if (timeout==0) mScreenOnWakelock.acquire();
 		    	else mScreenOnWakelock.acquire(timeout);
+				util.addDebugLogMsg(1,"I","Wakelock acquired");
 			} else {
 				if (DEBUG_ENABLE) 
 					util.addDebugLogMsg(1,"I","Wakelock not acquired, because Wakelock already acquired");
@@ -2245,7 +2253,7 @@ public class SMBSyncMain extends FragmentActivity {
 					mirrorTaskEnded(result_code, result_msg);
 					clearScreenOn();
 					relWifiLock();
-					setScreenOn(500);
+//					setScreenOn(500);
 				}
 			});
 		}
@@ -2461,7 +2469,7 @@ public class SMBSyncMain extends FragmentActivity {
 				if (glblParms.settingAutoStart){
 					if (DEBUG_ENABLE) 
 						util.addDebugLogMsg(1,"I","Auto synchronization was invoked.");
-					saveTaskData();
+//					saveTaskData();
 					boolean sel_prof=false;
 					for (int i=0;i<profileAdapter.getCount();i++) {
 						if (profileAdapter.getItem(i).getType().equals(SMBSYNC_PROF_TYPE_SYNC) && 
@@ -2523,15 +2531,12 @@ public class SMBSyncMain extends FragmentActivity {
 			@Override
 			public void positiveResponse(Context c,Object[] o) {
 				util.addLogMsg("I",getString(R.string.msgs_aterm_expired));
-				try {
-					mSvcClient.aidlStopForeground(true);
-				} catch (RemoteException e) {
-					e.printStackTrace();
-				}
 				if (glblParms.settingAutoTerm){
+					svcStopForeground(true);
+
 					//Wait until stopForeground() completion 
 					Handler hndl=new Handler();
-					hndl.postDelayed(new Runnable(){
+					hndl.post(new Runnable(){
 						@Override
 						public void run() {
 							if (DEBUG_ENABLE) 
@@ -2552,15 +2557,9 @@ public class SMBSyncMain extends FragmentActivity {
 							}
 							saveTaskData();
 							util.flushLogFile();
-							Handler hndl=new Handler();
-							hndl.postDelayed(new Runnable(){
-								@Override
-								public void run() {
-									terminateApplication();
-								}
-							}, 500);
+							terminateApplication();
 						}
-					}, 100);
+					});
 				}
 			}
 			@Override
@@ -2572,22 +2571,10 @@ public class SMBSyncMain extends FragmentActivity {
 		util.addLogMsg("I",getString(R.string.msgs_aterm_started));
 		if (extraDataSpecifiedAutoTerm) {
 			util.addLogMsg("I", getString(R.string.msgs_aterm_back_ground_term));
-			Handler hndl=new Handler();
-			hndl.postDelayed(new Runnable(){
-				@Override
-				public void run() {
-					at_ne.notifyToListener(true, null);
-				}
-			}, 500);
+			at_ne.notifyToListener(true, null);
 		} else if (!util.isActivityForeground()) {
 			util.addLogMsg("I", getString(R.string.msgs_aterm_back_ground_term));
-			Handler hndl=new Handler();
-			hndl.postDelayed(new Runnable(){
-				@Override
-				public void run() {
-					at_ne.notifyToListener(true, null);
-				}
-			}, 500);
+			at_ne.notifyToListener(true, null);
 		} else {
 			autoTimer(threadCtl, at_ne,
 					getString(R.string.msgs_aterm_terminate_after));
@@ -2644,13 +2631,13 @@ public class SMBSyncMain extends FragmentActivity {
        	.start();
 	};
 	
-	private void reshowOngoingNotificationMsg() {
-		try {
-			mSvcClient.aidlReshowNotificationMsg();
-		} catch (RemoteException e) {
-			e.printStackTrace();
-		}
-	}
+//	private void reshowOngoingNotificationMsg() {
+//		try {
+//			mSvcClient.aidlReshowNotificationMsg();
+//		} catch (RemoteException e) {
+//			e.printStackTrace();
+//		}
+//	}
 	
 	private void showNotificationMsg(String msg ) {
 		try {
@@ -2814,7 +2801,7 @@ public class SMBSyncMain extends FragmentActivity {
 				    ObjectOutputStream oos = new ObjectOutputStream(fos);
 				    oos.writeObject(data);
 				    oos.close();
-				    util.addDebugLogMsg(1,"I", "saveRestartData restart data was saved.");
+				    util.addDebugLogMsg(1,"I", "Restart data was saved.");
 				} catch (Exception e) {
 					e.printStackTrace();
 				    util.addDebugLogMsg(1,"E", 
@@ -2852,7 +2839,7 @@ public class SMBSyncMain extends FragmentActivity {
 				
 				profileAdapter.clear();
 				profileAdapter.setAllItem(data.pl);
-			    util.addDebugLogMsg(1,"I", "saveRestartData restart data was restored.");
+			    util.addDebugLogMsg(1,"I", "Restart data was restored.");
 			} catch (Exception e) {
 				e.printStackTrace();
 			    util.addDebugLogMsg(1,"E", 
