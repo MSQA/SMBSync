@@ -150,7 +150,7 @@ public class SMBSyncUtil {
 //	                if (!inetAddress.isLoopbackAddress() && !(inetAddress.toString().indexOf(":")>=0)) {
 //	                    return inetAddress.getHostAddress().toString();
 //	                }
-	            	Log.v("","ip="+inetAddress.getHostAddress());
+//	            	Log.v("","ip="+inetAddress.getHostAddress());
 	            	if (inetAddress.isSiteLocalAddress()) {
 	                    result=inetAddress.getHostAddress();
 	                    break;
@@ -464,16 +464,17 @@ public class SMBSyncUtil {
 				return result;
 			}
 		});
-		
-		int l_epos=lfm_list.size()-(glblParms.settiingLogGeneration+1);
-		if (l_epos>0) {
-			for (int i=0;i<l_epos;i++) {
-				addDebugLogMsg(1,"I","Log file was deleted, name="+lfm_list.get(0).log_file_path);
+		ArrayList<LogFileManagemntListItem>lfm_del_list= new ArrayList<LogFileManagemntListItem>();
+		for (LogFileManagemntListItem lfmli:lfm_list) {
+			if (lfmli.log_file_generation>=glblParms.settiingLogGeneration) {
+				addDebugLogMsg(1,"I","Log file was deleted, name="+lfmli.log_file_path);
 				File lf=new File(lfm_list.get(0).log_file_path);
 				lf.delete();
-				lfm_list.remove(0);
+				lfm_del_list.add(lfmli);
 			}
-			
+		}
+		for (LogFileManagemntListItem del_lfmli:lfm_del_list) {
+			lfm_list.remove(del_lfmli);
 		}
 	};
 	
@@ -558,6 +559,27 @@ public class SMBSyncUtil {
     	if (lfm_fl.size()==0) {
     		LogFileManagemntListItem t=new LogFileManagemntListItem();
     		lfm_fl.add(t);
+    	} else {
+    		String c_lfm_date="";
+    		int gen=-1;
+    		for (LogFileManagemntListItem lfmli:lfm_fl) {
+    			String n_lfm_date="";
+    			String lfm_date_time=lfmli.log_file_name.replace("SMBSync_log_", "")
+    					.replace(".txt","");
+    			if (lfm_date_time.indexOf("_")>=0) {
+    				n_lfm_date=lfm_date_time.substring(0,lfm_date_time.indexOf("_"));
+    			} else {
+    				n_lfm_date=lfm_date_time;
+    			}
+    			if (!c_lfm_date.equals(n_lfm_date)) {
+    				gen++;
+    				c_lfm_date=n_lfm_date;
+    			} 
+    			lfmli.log_file_generation=gen;
+//    			Log.v("","file name="+lfmli.log_file_name+
+//    					", c_lfm_date="+c_lfm_date+", n_lfm_date="+n_lfm_date+
+//    					", gen="+lfmli.log_file_generation);
+    		}
     	}
     	return lfm_fl;
     };

@@ -224,18 +224,6 @@ public class SMBSyncMain extends FragmentActivity {
 		if (profMaint==null) 
 			profMaint=new ProfileMaintenance(util,this, profileAdapter, 
 					profileListView, commonDlg,ccMenu, glblParms);
-		
-//		SecretKey sec_key=EncryptUtil.generateKey("aa");
-//		String pl="test data";
-//		String enc_str = 
-//				Base64Compat.encodeToString(
-//					EncryptUtil.encrypt(pl,sec_key), 
-//					Base64Compat.NO_WRAP);
-//		
-//		byte[] enc_array=Base64Compat.decode(enc_str, Base64Compat.NO_WRAP);
-//		String dec=EncryptUtil.decrypt(enc_array, sec_key);
-//		Log.v("","pl="+pl+", enc_str="+enc_str+", dec_str="+dec);
-
 	};
 
 	@Override
@@ -255,7 +243,6 @@ public class SMBSyncMain extends FragmentActivity {
 					", isActivityForeground="+util.isActivityForeground());
 		util.setActivityIsForeground(true);
 		if (restartStatus==1) {
-			svcStopForeground(false);
 			if (!glblParms.freezeMessageViewScroll) {
 				glblParms.uiHandler.post(new Runnable(){
 					@Override
@@ -270,6 +257,7 @@ public class SMBSyncMain extends FragmentActivity {
 			svc_ntfy.setListener(new NotifyEventListener(){
 				@Override
 				public void positiveResponse(Context c, Object[] o) {
+					svcStartForeground();
 					setCallbackListener();
 					
 					if (restartStatus==0) startupWarning();
@@ -355,7 +343,6 @@ public class SMBSyncMain extends FragmentActivity {
 				", isActivityForeground="+util.isActivityForeground());
 //		if (!isTaskTermination && mSvcClient!=null) {
 //		}
-		svcStartForeground();
 		saveTaskData();
 	};
 
@@ -403,18 +390,22 @@ public class SMBSyncMain extends FragmentActivity {
 	};
 
 	private void svcStartForeground() {
-		try {
-			mSvcClient.aidlStartForeground();
-		} catch (RemoteException e) {
-			e.printStackTrace();
+		if (mSvcClient!=null) {
+			try {
+				mSvcClient.aidlStartForeground();
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
 		}
 	};
 
 	private void svcStopForeground(boolean clear) {
-		try {
-			mSvcClient.aidlStopForeground(clear);
-		} catch (RemoteException e) {
-			e.printStackTrace();
+		if (mSvcClient!=null) {
+			try {
+				mSvcClient.aidlStopForeground(clear);
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
 		}
 	};
 
@@ -1126,7 +1117,7 @@ public class SMBSyncMain extends FragmentActivity {
 		String p_opt=glblParms.settingLogOption;
 		glblParms.settingLogOption=
 				prefs.getString(getString(R.string.settings_log_option), "0");
-		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd_HHmmss");
 		glblParms.settingLogMsgFilename="SMBSync_log_"+df.format(System.currentTimeMillis())+".txt";
 
 		if (!glblParms.settingLogOption.equals(p_opt)) {
@@ -2314,8 +2305,10 @@ public class SMBSyncMain extends FragmentActivity {
 			} catch (RemoteException e) {
 				e.printStackTrace();
 			}
+    		mSvcClient=null;
     		unbindService(mSvcConnection);
 	    	mSvcConnection=null;
+//	    	Log.v("","close service");
     	}
 //        Intent intent = new Intent(this, SMBSyncService.class);
 //        stopService(intent);
@@ -2332,11 +2325,13 @@ public class SMBSyncMain extends FragmentActivity {
 	};
 
 	final private void unsetCallbackListener() {
-		try{
-			mSvcClient.removeCallBack(mSvcCallbackStub);
-		} catch (RemoteException e){
-			e.printStackTrace();
-			util.addDebugLogMsg(0,"E", "unsetCallbackListener error :"+e.toString());
+		if (mSvcClient!=null) {
+			try{
+				mSvcClient.removeCallBack(mSvcCallbackStub);
+			} catch (RemoteException e){
+				e.printStackTrace();
+				util.addDebugLogMsg(0,"E", "unsetCallbackListener error :"+e.toString());
+			}
 		}
 	};
 

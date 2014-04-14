@@ -90,7 +90,7 @@ public class AdapterLogFileManagementList extends BaseAdapter{
         if (o.log_file_name!=null) {
         	if (o.isCurrentLogFile) holder.tv_log_file_name.setTextColor(Color.RED);
         	else holder.tv_log_file_name.setTextColor(Color.WHITE);
-    		holder.tv_log_file_name.setText(o.log_file_name);
+    		holder.tv_log_file_name.setText(o.log_file_name+" "+o.log_file_generation);
     		holder.tv_log_file_size.setText(o.log_file_size);
     		holder.tv_log_file_date.setText(o.log_file_last_modified_date);
     		holder.tv_log_file_time.setText(o.log_file_last_modified_time);
@@ -120,6 +120,7 @@ public class AdapterLogFileManagementList extends BaseAdapter{
 class LogFileManagemntListItem {
 	public boolean isChecked=false;
 	public boolean isCurrentLogFile=false;
+	public int log_file_generation=-1;
 	public String log_file_name=null;
 	public String log_file_path=null;
 	public String log_file_size=null;

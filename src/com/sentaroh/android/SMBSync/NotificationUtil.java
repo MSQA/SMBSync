@@ -33,7 +33,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 
 public class NotificationUtil {
 	
@@ -149,7 +148,6 @@ public class NotificationUtil {
 //			.addAction(action_icon, action_title, action_pi)
 			;
 
-		Log.v("","option="+gwa.settingLogOption);
 		boolean valid_log_file_exists=false;
 		if (!gwa.currentLogFilePath.equals("") && !gwa.settingLogOption.equals("0")) {
 			File lf=new File(gwa.currentLogFilePath);

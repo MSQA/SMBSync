@@ -109,9 +109,9 @@
         <item>1</item>
     </string-array>	    
 
-	<string name="settings_log_generation_title">Log file generation</string>
-	<string name="settings_log_generation_summary">%s generation is saved.</string>
-	<string name="settings_log_generation_dialog_title">Select log file generation</string>
+	<string name="settings_log_generation_title">Generation of log files.</string>
+	<string name="settings_log_generation_summary">keep for %s Generation(s).</string>
+	<string name="settings_log_generation_dialog_title">Select Generation</string>
 	<string name="settings_log_generation">settings_log_generation</string>
 	<string-array name="settings_log_generation_list_entries">
         <item>1 Generation</item>
