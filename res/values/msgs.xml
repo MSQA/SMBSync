@@ -53,10 +53,10 @@
     <string name="msgs_filelist_cancel">Creating remote file list was cancelled.</string>
     <string name="msgs_filelist_error">An error occurred while creating the remote file list.</string>
     
-    <string name="msgs_smbsync_main_start">SMBSync was successfully started.</string>
-    <string name="msgs_smbsync_main_restart">SMBSync was restarted.</string>
-    <string name="msgs_smbsync_main_restart_msglost">SMBSyncwas restarted, but message was lost.</string>
-    <string name="msgs_smbsync_main_end">SMBSync was ended</string>
+    <string name="msgs_smbsync_main_start">Application was successfully started.</string>
+    <string name="msgs_smbsync_main_restart">Application was restarted.</string>
+    <string name="msgs_smbsync_main_restart_msglost">Application was restarted, but message was lost.</string>
+    <string name="msgs_smbsync_main_end">Application was being terminated.</string>
     <string name="msgs_smbsync_main_settings_force_log_enabled"	>To enable logging because Auto sync startup was enabled.</string>
     
     <string name="msgs_create_profile_error">create profile was failed. file=%s</string>

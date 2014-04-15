@@ -1873,7 +1873,7 @@ public class ProfileMaintenance {
 		n_dir_filter.addAll(prof_dir_filter);
 
 		// カスタムダイアログの生成
-		final Dialog dialog = new Dialog(mContext);
+		final Dialog dialog = new Dialog(mContext);//,android.R.style.Theme_Light);
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		dialog.getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);

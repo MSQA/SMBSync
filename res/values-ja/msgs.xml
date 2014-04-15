@@ -53,10 +53,10 @@
 	<string name="msgs_filelist_cancel"		>ファイルリスト作成は中断しました。</string>
     <string name="msgs_filelist_error"		>リモートリスト作成中にエラーが発生しました。</string>
     
-    <string name="msgs_smbsync_main_start"	>SMBSyncが正常起動しました。</string>
-    <string name="msgs_smbsync_main_restart">SMBSyncが再起動しました。</string>
-    <string name="msgs_smbsync_main_restart_msglost">SMBSyncは再起動しましたが、メッセージを回復できませんでした。</string>
-    <string name="msgs_smbsync_main_end"	>SMBSyncが終了しました。</string>
+    <string name="msgs_smbsync_main_start"	>正常起動しました。</string>
+    <string name="msgs_smbsync_main_restart">再起動しました。</string>
+    <string name="msgs_smbsync_main_restart_msglost">再起動しましたが、メッセージを回復できませんでした。</string>
+    <string name="msgs_smbsync_main_end"	>正常終了します。</string>
     <string name="msgs_smbsync_main_settings_force_log_enabled"	>自動同期起動が有効なため、ログ記録を有効にしました。</string>
     
     <string name="msgs_create_profile_error">プロファイルリスト作成に失敗しました。ファイル=%s</string>

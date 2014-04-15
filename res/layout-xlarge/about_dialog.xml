@@ -1,22 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE layout>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" >
-	<TextView 
+    android:orientation="vertical"
+    tools:ignore="SpUsage" >
+
+    <TextView
         android:id="@+id/about_dialog_title"
-        android:layout_gravity="center"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text=""
+        android:layout_gravity="center"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:paddingTop="10dp"
-	    android:textSize="30dp"/>
-	
-	<include layout="@layout/divider_line1_turquoise" />
-	
+        android:text=""
+        android:textSize="30dp" />
+
+    <include layout="@layout/divider_line1_turquoise" />
+
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -25,21 +28,23 @@
         <Button
             android:id="@+id/about_dialog_btn_show_func"
             android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:layout_marginRight="1dp"
             android:layout_weight="0.29"
-            android:text="@string/msgs_about_dlg_func_btn" 
-	        android:layout_height="60dp"
-    	    android:textSize="25dp"/>
+            android:text="@string/msgs_about_dlg_func_btn"
+            android:textSize="25dp" />
+
         <Button
             android:id="@+id/about_dialog_btn_show_change"
             android:layout_width="wrap_content"
+            android:layout_height="60dp"
             android:layout_weight="0.21"
-            android:text="@string/msgs_about_dlg_change_btn" 
-	        android:layout_height="60dp"
-    	    android:textSize="25dp"/>
-
+            android:text="@string/msgs_about_dlg_change_btn"
+            android:textSize="25dp" />
     </LinearLayout>
-	<include layout="@layout/divider_line2" />
-	
+
+    <include layout="@layout/divider_line2" />
+
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="0dp"
@@ -67,19 +72,18 @@
             android:minHeight="48dp"
             android:text=""
             android:textAppearance="?android:attr/textAppearanceLarge" />
-
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        >
-	
-	    <Button
-	        android:id="@+id/about_dialog_btn_ok"
-	        android:layout_width="fill_parent"
-	        android:layout_height="60dp"
-	        android:textSize="25dp"
-	        android:text="@string/msgs_dlg_ok_btn" />
+        android:layout_height="wrap_content" >
+
+        <Button
+            android:id="@+id/about_dialog_btn_ok"
+            android:layout_width="fill_parent"
+            android:layout_height="60dp"
+            android:text="@string/msgs_dlg_ok_btn"
+            android:textSize="25dp" />
     </LinearLayout>
+
 </LinearLayout>

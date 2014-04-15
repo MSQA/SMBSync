@@ -39,7 +39,6 @@ import java.util.Locale;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -174,14 +173,15 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
                 
                 if (!getItem(position).getActive().equals("A")) {
              	   //v.setVisibility(View.INVISIBLE);
-//             	   v.setBackgroundColor(Color.argb(32, 255, 255, 255));
-//             	   v.setBackgroundColor(Color.DKGRAY);
-             	   holder.tv_row_name.setTextColor(Color.DKGRAY);
-             	   holder.tv_row_active.setTextColor(Color.DKGRAY);
+//             	   holder.tv_row_name.setTextColor(Color.DKGRAY);
+//             	   holder.tv_row_active.setTextColor(Color.DKGRAY);
+              	   holder.tv_row_name.setEnabled(false);
+              	   holder.tv_row_active.setEnabled(false);
                 } else {
-//             	   v.setBackgroundColor(Color.BLACK);
-             	   holder.tv_row_name.setTextColor(Color.WHITE);
-             	   holder.tv_row_active.setTextColor(Color.WHITE);
+//             	   holder.tv_row_name.setTextColor(Color.WHITE);
+//             	   holder.tv_row_active.setTextColor(Color.WHITE);
+               	   holder.tv_row_name.setEnabled(true);
+               	   holder.tv_row_active.setEnabled(true);
                 }
                
                 if (o.getType().equals("S")) {//Sync profile
@@ -214,17 +214,27 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
                     holder.tv_row_synctype.setText(synctp);
                     
                     if (!getItem(position).getActive().equals("A")) {
-                    	holder.tv_row_master.setTextColor(Color.DKGRAY);
-                    	holder.tv_row_master_const.setTextColor(Color.DKGRAY);
-                    	holder.tv_row_target.setTextColor(Color.DKGRAY);
-                    	holder.tv_row_target_const.setTextColor(Color.DKGRAY);
-                    	holder.tv_row_synctype.setTextColor(Color.DKGRAY);
+//                    	holder.tv_row_master.setTextColor(Color.DKGRAY);
+//                    	holder.tv_row_master_const.setTextColor(Color.DKGRAY);
+//                    	holder.tv_row_target.setTextColor(Color.DKGRAY);
+//                    	holder.tv_row_target_const.setTextColor(Color.DKGRAY);
+//                    	holder.tv_row_synctype.setTextColor(Color.DKGRAY);
+                    	holder.tv_row_master.setEnabled(false);
+                    	holder.tv_row_master_const.setEnabled(false);
+                    	holder.tv_row_target.setEnabled(false);
+                    	holder.tv_row_target_const.setEnabled(false);
+                    	holder.tv_row_synctype.setEnabled(false);
                     } else {
-                    	holder.tv_row_master.setTextColor(Color.WHITE);
-                    	holder.tv_row_master_const.setTextColor(Color.WHITE);
-                    	holder.tv_row_target.setTextColor(Color.WHITE);
-                    	holder.tv_row_target_const.setTextColor(Color.WHITE);
-                    	holder.tv_row_synctype.setTextColor(Color.WHITE);
+//                    	holder.tv_row_master.setTextColor(Color.WHITE);
+//                    	holder.tv_row_master_const.setTextColor(Color.WHITE);
+//                    	holder.tv_row_target.setTextColor(Color.WHITE);
+//                    	holder.tv_row_target_const.setTextColor(Color.WHITE);
+//                    	holder.tv_row_synctype.setTextColor(Color.WHITE);
+                    	holder.tv_row_master.setEnabled(true);
+                    	holder.tv_row_master_const.setEnabled(true);
+                    	holder.tv_row_target.setEnabled(true);
+                    	holder.tv_row_target_const.setEnabled(true);
+                    	holder.tv_row_synctype.setEnabled(true);
                     }
                 } else if (o.getType().equals("R") || o.getType().equals("L")) {//Remote or Local profile
                 	holder.tv_dir_name.setVisibility(LinearLayout.VISIBLE);
@@ -239,9 +249,11 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
                     }
                 	
                 	if (!getItem(position).getActive().equals("A")) {
-                    	holder.tv_dir_name.setTextColor(Color.DKGRAY);
+//                    	holder.tv_dir_name.setTextColor(Color.DKGRAY);
+                    	holder.tv_dir_name.setEnabled(false);
                     } else {
-                    	holder.tv_dir_name.setTextColor(Color.WHITE);
+//                    	holder.tv_dir_name.setTextColor(Color.WHITE);
+                    	holder.tv_dir_name.setEnabled(true);
                     }
                 } else {
                 	holder.tv_dir_name.setVisibility(LinearLayout.GONE);

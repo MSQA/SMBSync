@@ -170,6 +170,7 @@ public class SMBSyncMain extends FragmentActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 //		setTheme(android.R.style.Theme_Dialog);
+//		setTheme(android.R.style.Theme_Holo);
 //		setTheme(android.R.style.Theme_Light);
 		super.onCreate(savedInstanceState);
 //		requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -893,8 +894,8 @@ public class SMBSyncMain extends FragmentActivity {
 		
 		func_view.setVisibility(TextView.VISIBLE);
 		change_view.setVisibility(TextView.GONE);
-		btnChange.setBackgroundResource(R.drawable.button_back_ground_color_selector);
-		btnFunc.setBackgroundResource(R.drawable.button_back_ground_color_selector);
+		btnChange.setBackgroundResource(R.drawable.button_bg_color_selector);
+		btnFunc.setBackgroundResource(R.drawable.button_bg_color_selector);
 		btnChange.setTextColor(Color.DKGRAY);
 		btnFunc.setTextColor(Color.GREEN);
 		btnFunc.setEnabled(false);

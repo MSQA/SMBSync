@@ -25,9 +25,11 @@
             android:id="@+id/about_dialog_btn_show_func"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginRight="1dp"
             android:layout_weight="0.29"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/msgs_about_dlg_func_btn" />
+            android:text="@string/msgs_about_dlg_func_btn"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
         <Button
             android:id="@+id/about_dialog_btn_show_change"
             android:layout_width="wrap_content"

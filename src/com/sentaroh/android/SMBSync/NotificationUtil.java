@@ -98,7 +98,7 @@ public class NotificationUtil {
 	final static public void setNotificationMessage(GlobalParameters gwa,  
 			String prof, String fp, String msg) {
 		if (prof.equals("")) gwa.notificationLastShowedTitle=gwa.notificationAppName;
-		else gwa.notificationLastShowedTitle=gwa.notificationAppName+"       "+prof;
+		else gwa.notificationLastShowedTitle=prof;//gwa.notificationAppName+"       "+prof;
 		
 		if (fp.equals("")) gwa.notificationLastShowedMessage=msg;
 		else gwa.notificationLastShowedMessage=fp+" "+msg;

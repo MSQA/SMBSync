@@ -564,10 +564,12 @@ public class SMBSyncUtil {
     		int gen=-1;
     		for (LogFileManagemntListItem lfmli:lfm_fl) {
     			String n_lfm_date="";
-    			String lfm_date_time=lfmli.log_file_name.replace("SMBSync_log_", "")
+    			String lfm_date_time=lfmli.log_file_name
+    					.replace("SMBSync_log_", "")
     					.replace(".txt","");
     			if (lfm_date_time.indexOf("_")>=0) {
-    				n_lfm_date=lfm_date_time.substring(0,lfm_date_time.indexOf("_"));
+    				n_lfm_date=lfm_date_time
+    						.substring(0,lfm_date_time.indexOf("_"));
     			} else {
     				n_lfm_date=lfm_date_time;
     			}
@@ -576,9 +578,6 @@ public class SMBSyncUtil {
     				c_lfm_date=n_lfm_date;
     			} 
     			lfmli.log_file_generation=gen;
-//    			Log.v("","file name="+lfmli.log_file_name+
-//    					", c_lfm_date="+c_lfm_date+", n_lfm_date="+n_lfm_date+
-//    					", gen="+lfmli.log_file_generation);
     		}
     	}
     	return lfm_fl;
