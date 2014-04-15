@@ -88,8 +88,18 @@ public class Constants {
 	public final static String SMBSYNC_PROF_FILTER_INCLUDE="I";
 	public final static String SMBSYNC_PROF_FILTER_EXCLUDE="E";
 	
-	public static final String SMBSYNC_NOTIFICATION_MESSAGE_ALWAYS = "0";
-	public static final String SMBSYNC_NOTIFICATION_MESSAGE_ERROR = "1";
-	public static final String SMBSYNC_NOTIFICATION_MESSAGE_NO = "2";
+	public static final String SMBSYNC_BG_TERM_NOTIFY_MSG_ALWAYS = GlobalParameters.BG_TERM_NOTIFY_MSG_ALWAYS;
+	public static final String SMBSYNC_BG_TERM_NOTIFY_MSG_ERROR = GlobalParameters.BG_TERM_NOTIFY_MSG_ERROR;
+	public static final String SMBSYNC_BG_TERM_NOTIFY_MSG_NO = GlobalParameters.BG_TERM_NOTIFY_MSG_NO;
+
+	public static final String SMBSYNC_PB_RINGTONE_NOTIFICATION_ALWAYS = GlobalParameters.PB_RINGTONE_WHEN_SYNC_ENDED_ALWAYS;
+	public static final String SMBSYNC_PB_RINGTONE_NOTIFICATION_SUCCESS = GlobalParameters.PB_RINGTONE_WHEN_SYNC_ENDED_SUCCESS;
+	public static final String SMBSYNC_PB_RINGTONE_NOTIFICATION_ERROR = GlobalParameters.PB_RINGTONE_WHEN_SYNC_ENDED_ERROR;
+	public static final String SMBSYNC_PB_RINGTONE_NOTIFICATION_NO = GlobalParameters.PB_RINGTONE_WHEN_SYNC_ENDED_NONE;
+
+	public static final String SMBSYNC_VIBRATE_WHEN_SYNC_ENDED_ALWAYS = GlobalParameters.VIBRATE_WHEN_SYNC_ENDED_ALWAYS;
+	public static final String SMBSYNC_VIBRATE_WHEN_SYNC_ENDED_SUCCESS = GlobalParameters.VIBRATE_WHEN_SYNC_ENDED_SUCCESS;
+	public static final String SMBSYNC_VIBRATE_WHEN_SYNC_ENDED_ERROR = GlobalParameters.VIBRATE_WHEN_SYNC_ENDED_ERROR;
+	public static final String SMBSYNC_VIBRATE_WHEN_SYNC_ENDED_NO = GlobalParameters.VIBRATE_WHEN_SYNC_ENDED_NONE;
 
 }

@@ -23,13 +23,21 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_NOTIFICATION_MESSAGE_ALWAYS;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_NOTIFICATION_MESSAGE_ERROR;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_NOTIFICATION_MESSAGE_NO;
+import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_BG_TERM_NOTIFY_MSG_ALWAYS;
+import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_BG_TERM_NOTIFY_MSG_ERROR;
+import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_BG_TERM_NOTIFY_MSG_NO;
+import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PB_RINGTONE_NOTIFICATION_ALWAYS;
+import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PB_RINGTONE_NOTIFICATION_ERROR;
+import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PB_RINGTONE_NOTIFICATION_NO;
+import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PB_RINGTONE_NOTIFICATION_SUCCESS;
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_SYNC_WIFI_OPTION_ADAPTER_OFF;
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_SYNC_WIFI_OPTION_ADAPTER_ON;
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_SYNC_WIFI_OPTION_CONNECTED_ANY_AP;
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_SYNC_WIFI_OPTION_CONNECTED_SPEC_AP;
+import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_VIBRATE_WHEN_SYNC_ENDED_ALWAYS;
+import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_VIBRATE_WHEN_SYNC_ENDED_ERROR;
+import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_VIBRATE_WHEN_SYNC_ENDED_NO;
+import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_VIBRATE_WHEN_SYNC_ENDED_SUCCESS;
 
 import java.util.List;
 
@@ -106,6 +114,9 @@ public class SMBSyncSettings extends PreferenceActivity{
 		initSettingValueBeforeHc(shared_pref,getString(R.string.settings_suppress_warning_mixed_mp));
 		initSettingValueBeforeHc(shared_pref,getString(R.string.settings_background_termination_notification));
 
+		initSettingValueBeforeHc(shared_pref,getString(R.string.settings_playback_ringtone_when_sync_ended));
+		initSettingValueBeforeHc(shared_pref,getString(R.string.settings_vibrate_when_sync_ended));
+		
     	initSettingValueBeforeHc(shared_pref,getString(R.string.settings_media_scanner_non_media_files_scan));
     	initSettingValueBeforeHc(shared_pref,getString(R.string.settings_media_scanner_scan_extstg));
     	
@@ -166,7 +177,7 @@ public class SMBSyncSettings extends PreferenceActivity{
     public void onResume(){
         super.onResume();
         if (DEBUG_ENABLE) Log.v(APPLICATION_TAG,"SettingsActivity onResume entered");
-		setTitle(R.string.settings_main_title);
+//		setTitle(R.string.settings_main_title);
         if (Build.VERSION.SDK_INT<=10) {
     	    mPrefAct.getPreferenceScreen().getSharedPreferences()
     			.registerOnSharedPreferenceChangeListener(listenerBeforeHc);  
@@ -355,15 +366,45 @@ public class SMBSyncSettings extends PreferenceActivity{
 			}
 		} else if (key_string.equals(c.getString(R.string.settings_background_termination_notification))) {
 			isChecked=true;
-			if (shared_pref.getString(key_string,"0").equals(SMBSYNC_NOTIFICATION_MESSAGE_ALWAYS)) {
+			if (shared_pref.getString(key_string,"0").equals(SMBSYNC_BG_TERM_NOTIFY_MSG_ALWAYS)) {
 				pref_key
 					.setSummary(c.getString(R.string.settings_background_termination_notification_summary_always));
-			} else if (shared_pref.getString(key_string,"1").equals(SMBSYNC_NOTIFICATION_MESSAGE_ERROR)){
+			} else if (shared_pref.getString(key_string,"1").equals(SMBSYNC_BG_TERM_NOTIFY_MSG_ERROR)){
 				pref_key
 					.setSummary(c.getString(R.string.settings_background_termination_notification_summary_error));
-			} else if (shared_pref.getString(key_string,"2").equals(SMBSYNC_NOTIFICATION_MESSAGE_NO)){
+			} else if (shared_pref.getString(key_string,"2").equals(SMBSYNC_BG_TERM_NOTIFY_MSG_NO)){
 				pref_key
 					.setSummary(c.getString(R.string.settings_background_termination_notification_summary_no));
+			}
+		} else if (key_string.equals(c.getString(R.string.settings_playback_ringtone_when_sync_ended))) {
+			isChecked=true;
+			if (shared_pref.getString(key_string,"0").equals(SMBSYNC_PB_RINGTONE_NOTIFICATION_ALWAYS)) {
+				pref_key
+					.setSummary(c.getString(R.string.settings_playback_ringtone_when_sync_ended_summary_always));
+			} else if (shared_pref.getString(key_string,"0").equals(SMBSYNC_PB_RINGTONE_NOTIFICATION_ERROR)){
+				pref_key
+					.setSummary(c.getString(R.string.settings_playback_ringtone_when_sync_ended_summary_error));
+			} else if (shared_pref.getString(key_string,"0").equals(SMBSYNC_PB_RINGTONE_NOTIFICATION_SUCCESS)){
+				pref_key
+					.setSummary(c.getString(R.string.settings_playback_ringtone_when_sync_ended_summary_success));
+			} else if (shared_pref.getString(key_string,"0").equals(SMBSYNC_PB_RINGTONE_NOTIFICATION_NO)){
+				pref_key
+					.setSummary(c.getString(R.string.settings_playback_ringtone_when_sync_ended_summary_no));
+			}
+		} else if (key_string.equals(c.getString(R.string.settings_vibrate_when_sync_ended))) {
+			isChecked=true;
+			if (shared_pref.getString(key_string,"0").equals(SMBSYNC_VIBRATE_WHEN_SYNC_ENDED_ALWAYS)) {
+				pref_key
+					.setSummary(c.getString(R.string.settings_vibrate_when_sync_ended_summary_always));
+			} else if (shared_pref.getString(key_string,"0").equals(SMBSYNC_VIBRATE_WHEN_SYNC_ENDED_ERROR)){
+				pref_key
+					.setSummary(c.getString(R.string.settings_vibrate_when_sync_ended_summary_error));
+			} else if (shared_pref.getString(key_string,"0").equals(SMBSYNC_VIBRATE_WHEN_SYNC_ENDED_SUCCESS)){
+				pref_key
+					.setSummary(c.getString(R.string.settings_vibrate_when_sync_ended_summary_success));
+			} else if (shared_pref.getString(key_string,"0").equals(SMBSYNC_VIBRATE_WHEN_SYNC_ENDED_NO)){
+				pref_key
+					.setSummary(c.getString(R.string.settings_vibrate_when_sync_ended_summary_no));
 			}
     	}
 
@@ -626,6 +667,7 @@ public class SMBSyncSettings extends PreferenceActivity{
         	if (DEBUG_ENABLE) Log.v(APPLICATION_TAG,"SettingsFragmentSync onStart entered");
     	    getPreferenceScreen().getSharedPreferences()
     			.registerOnSharedPreferenceChangeListener(listenerAfterHc);
+    	    getActivity().setTitle(R.string.settings_sync_title);
         };
         @Override
         public void onStop() {
@@ -659,7 +701,7 @@ public class SMBSyncSettings extends PreferenceActivity{
         	if (DEBUG_ENABLE) Log.v(APPLICATION_TAG,"SettingsFragmentDiff onStart entered");
     	    getPreferenceScreen().getSharedPreferences()
     			.registerOnSharedPreferenceChangeListener(listenerAfterHc);
-//    		getActivity().setTitle(R.string.settings_main_title);
+   		getActivity().setTitle(R.string.settings_file_diff_condition_title);
         };
         @Override
         public void onStop() {
@@ -700,7 +742,7 @@ public class SMBSyncSettings extends PreferenceActivity{
         	if (DEBUG_ENABLE) Log.v(APPLICATION_TAG,"SettingsFragmentLog onStart entered");
     	    getPreferenceScreen().getSharedPreferences()
     			.registerOnSharedPreferenceChangeListener(listenerAfterHc);
-//    		getActivity().setTitle(R.string.settings_main_title);
+    		getActivity().setTitle(R.string.settings_log_title);
         };
         @Override
         public void onStop() {
@@ -734,7 +776,7 @@ public class SMBSyncSettings extends PreferenceActivity{
         	if (DEBUG_ENABLE) Log.v(APPLICATION_TAG,"SettingsFragmentMedia onStart entered");
     	    getPreferenceScreen().getSharedPreferences()
     			.registerOnSharedPreferenceChangeListener(listenerAfterHc);
-//    		getActivity().setTitle(R.string.settings_main_title);
+    		getActivity().setTitle(R.string.settings_media_scanner_option_title);
         };
         @Override
         public void onStop() {
@@ -770,7 +812,7 @@ public class SMBSyncSettings extends PreferenceActivity{
         	if (DEBUG_ENABLE) Log.v(APPLICATION_TAG,"SettingsFragmentMisc onStart entered");
     	    getPreferenceScreen().getSharedPreferences()
     			.registerOnSharedPreferenceChangeListener(listenerAfterHc);
-//    		getActivity().setTitle(R.string.settings_main_title);
+    		getActivity().setTitle(R.string.settings_misc_title);
         };
         @Override
         public void onStop() {
@@ -815,7 +857,7 @@ public class SMBSyncSettings extends PreferenceActivity{
         	if (DEBUG_ENABLE) Log.v(APPLICATION_TAG,"SettingsFragmentSmb onStart entered");
     	    getPreferenceScreen().getSharedPreferences()
     			.registerOnSharedPreferenceChangeListener(listenerAfterHc);
-//    		getActivity().setTitle(R.string.settings_main_title);
+    		getActivity().setTitle(R.string.settings_smb_title);
         };
         @Override
         public void onStop() {
@@ -844,6 +886,9 @@ public class SMBSyncSettings extends PreferenceActivity{
     		initSettingValueAfterHc(shared_pref,getString(R.string.settings_suppress_warning_mixed_mp));
     		initSettingValueAfterHc(shared_pref,getString(R.string.settings_background_termination_notification));
     		
+    		initSettingValueAfterHc(shared_pref,getString(R.string.settings_playback_ringtone_when_sync_ended));
+    		initSettingValueAfterHc(shared_pref,getString(R.string.settings_vibrate_when_sync_ended));
+    		
         };
         
         @Override
@@ -852,7 +897,7 @@ public class SMBSyncSettings extends PreferenceActivity{
         	if (DEBUG_ENABLE) Log.v(APPLICATION_TAG,"SettingsFragmentUi onStart entered");
     	    getPreferenceScreen().getSharedPreferences()
     			.registerOnSharedPreferenceChangeListener(listenerAfterHc);
-//    		getActivity().setTitle(R.string.settings_main_title);
+    		getActivity().setTitle(R.string.settings_ui_title);
         };
         @Override
         public void onStop() {

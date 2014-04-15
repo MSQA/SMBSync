@@ -24,6 +24,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 */
 
 import static com.sentaroh.android.SMBSync.Constants.DEBUG_ENABLE;
+import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_BG_TERM_NOTIFY_MSG_ALWAYS;
+import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_BG_TERM_NOTIFY_MSG_NO;
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_CONFIRM_FOR_COPY;
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_CONFIRM_RESP_NO;
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_CONFIRM_RESP_NOALL;
@@ -33,8 +35,9 @@ import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_EXTRA_PARM_AUTO_STA
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_EXTRA_PARM_AUTO_TERM;
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_EXTRA_PARM_BACKGROUND_EXECUTION;
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_EXTRA_PARM_SYNC_PROFILE;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_NOTIFICATION_MESSAGE_ALWAYS;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_NOTIFICATION_MESSAGE_NO;
+import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PB_RINGTONE_NOTIFICATION_ALWAYS;
+import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PB_RINGTONE_NOTIFICATION_ERROR;
+import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PB_RINGTONE_NOTIFICATION_SUCCESS;
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROF_ACTIVE;
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROF_TYPE_LOCAL;
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROF_TYPE_REMOTE;
@@ -43,6 +46,9 @@ import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_SERIALIZABLE_FILE_N
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_SUPPRESS_WARNING_MIXED_MP;
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_SYNC_WIFI_OPTION_ADAPTER_OFF;
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_SYNC_WIFI_OPTION_CONNECTED_ANY_AP;
+import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_VIBRATE_WHEN_SYNC_ENDED_ALWAYS;
+import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_VIBRATE_WHEN_SYNC_ENDED_ERROR;
+import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_VIBRATE_WHEN_SYNC_ENDED_SUCCESS;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -66,6 +72,8 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.media.MediaPlayer;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Build;
@@ -76,6 +84,8 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.os.RemoteException;
+import android.os.SystemClock;
+import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.text.ClipboardManager;
@@ -1142,8 +1152,13 @@ public class SMBSyncMain extends FragmentActivity {
 				prefs.getBoolean(getString(R.string.settings_error_option), false);
 		glblParms.settingBackgroundExecution=
 				prefs.getBoolean(getString(R.string.settings_backgroound_execution), false);
-		glblParms.settingBgTermNotification=
+		glblParms.settingBgTermNotifyMsg=
 				prefs.getString(getString(R.string.settings_background_termination_notification), "0");
+
+		glblParms.settingVibrateWhenSyncEnded=
+				prefs.getString(getString(R.string.settings_vibrate_when_sync_ended), "0");
+		glblParms.settingRingtoneWhenSyncEnded=
+				prefs.getString(getString(R.string.settings_playback_ringtone_when_sync_ended), "0");
 
 		glblParms.settingScreenOnEnabled=
 				prefs.getBoolean(getString(R.string.settings_ui_keep_screen_on), false);
@@ -1255,7 +1270,7 @@ public class SMBSyncMain extends FragmentActivity {
 				",settings_auto_term="+glblParms.settingAutoTerm+
 				",settings_error_option="+glblParms.settingErrorOption+
 				",settings_background_execution="+glblParms.settingBackgroundExecution+
-				",settings_background_termination_notification="+glblParms.settingBgTermNotification+
+				",settings_background_termination_notification="+glblParms.settingBgTermNotifyMsg+
 				",settings_log_option="+glblParms.settingLogOption+
 				",settings_log_dir="+glblParms.settingLogMsgDir);
 		if (glblParms.debugLevel==9)
@@ -2204,6 +2219,9 @@ public class SMBSyncMain extends FragmentActivity {
 				util.loadHistoryList());
 		historyListView.setAdapter(historyAdapter);
 		historyAdapter.notifyDataSetChanged();
+		
+//		playBackDefaultNotification();
+//		vibrateDefaultPattern();
 
 		glblParms.msgListView.setFastScrollEnabled(true);
 		util.flushLogFile();
@@ -2227,12 +2245,68 @@ public class SMBSyncMain extends FragmentActivity {
 		}
 	};
 	
+	private void playBackDefaultNotification() {
+		Thread th=new Thread(){
+			@Override
+			public void run() {
+				Uri uri=RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+				if (uri!=null) {
+//					Ringtone rt=RingtoneManager.getRingtone(mContext, uri);
+//					rt.play();
+//					SystemClock.sleep(1000);
+//					rt.stop();
+					MediaPlayer player = MediaPlayer.create(mContext, uri);
+					if (player!=null) {
+						int dur=player.getDuration();
+						player.start();
+						SystemClock.sleep(dur+10);
+						player.stop();
+						player.reset();
+						player.release();
+					}
+				}
+			}
+		};
+		th.start();
+	};
+
+	private void vibrateDefaultPattern() {
+		Thread th=new Thread(){
+			@Override
+			public void run() {
+				Vibrator vibrator = (Vibrator)mContext.getSystemService(Context.VIBRATOR_SERVICE);
+				vibrator.vibrate(new long[]{0,200,400,200,400,200},-1);
+			}
+		};
+		th.start();
+    };
+    
 	private void showMirrorThreadResult(final String code, final String text) {
 		if (!glblParms.settingAutoTerm)
 			if (util.isActivityForeground())
 				commonDlg.showCommonDialog(false,"I",text,"",null);
-		if (glblParms.settingBgTermNotification.equals(SMBSYNC_NOTIFICATION_MESSAGE_ALWAYS))
+		if (glblParms.settingBgTermNotifyMsg.equals(SMBSYNC_BG_TERM_NOTIFY_MSG_ALWAYS))
 			showNotificationMsg(text);
+//		Log.v("","code="+code+", pb="+glblParms.settingRingtoneWhenSyncEnded+", vib="+glblParms.settingVibrateWhenSyncEnded);
+		if (code.equals("OK")) {
+			if (glblParms.settingVibrateWhenSyncEnded.equals(SMBSYNC_VIBRATE_WHEN_SYNC_ENDED_ALWAYS) ||
+				glblParms.settingVibrateWhenSyncEnded.equals(SMBSYNC_VIBRATE_WHEN_SYNC_ENDED_SUCCESS)) {
+				vibrateDefaultPattern();
+			}
+			if (glblParms.settingRingtoneWhenSyncEnded.equals(SMBSYNC_PB_RINGTONE_NOTIFICATION_ALWAYS) ||
+				glblParms.settingRingtoneWhenSyncEnded.equals(SMBSYNC_PB_RINGTONE_NOTIFICATION_SUCCESS)) {
+				playBackDefaultNotification();
+			}
+		} else {
+			if (glblParms.settingVibrateWhenSyncEnded.equals(SMBSYNC_VIBRATE_WHEN_SYNC_ENDED_ALWAYS) ||
+				glblParms.settingVibrateWhenSyncEnded.equals(SMBSYNC_VIBRATE_WHEN_SYNC_ENDED_ERROR)) {
+				vibrateDefaultPattern();
+			}
+			if (glblParms.settingRingtoneWhenSyncEnded.equals(SMBSYNC_PB_RINGTONE_NOTIFICATION_ALWAYS) ||
+				glblParms.settingRingtoneWhenSyncEnded.equals(SMBSYNC_PB_RINGTONE_NOTIFICATION_ERROR)) {
+				playBackDefaultNotification();
+			}
+		}
 	};
 
 	private ISvcCallback mSvcCallbackStub=new ISvcCallback.Stub() {
@@ -2537,9 +2611,9 @@ public class SMBSyncMain extends FragmentActivity {
 						public void run() {
 							if (DEBUG_ENABLE) 
 								util.addDebugLogMsg(1,"I","Auto termination was invoked.");
-							if (!glblParms.settingBgTermNotification.equals(SMBSYNC_NOTIFICATION_MESSAGE_NO)) {
+							if (!glblParms.settingBgTermNotifyMsg.equals(SMBSYNC_BG_TERM_NOTIFY_MSG_NO)) {
 //								Log.v("","result code="+result_code+", result_msg="+result_msg);
-								if (glblParms.settingBgTermNotification.equals(SMBSYNC_NOTIFICATION_MESSAGE_ALWAYS)) 
+								if (glblParms.settingBgTermNotifyMsg.equals(SMBSYNC_BG_TERM_NOTIFY_MSG_ALWAYS)) 
 									NotificationUtil.showNoticeNotificationMsg(mContext,glblParms,result_msg);
 								else {
 									if (!result_code.equals("OK")) {

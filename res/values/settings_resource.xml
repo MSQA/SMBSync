@@ -75,9 +75,6 @@
 	<string name="settings_error_option_summary_ena">Ignore error, processing continued.</string>
 	<string name="settings_error_option">settings_error_option</string>
 
-	<string name="settings_log_title">Log</string>	    
-	<string name="settings_log_preference_screen_title">Message/Log option</string>
-	
 	<string name="settings_background_termination_notification_title">Background termination notification.</string>
 	<string name="settings_background_termination_notification_summary_always">Always shows notification message</string>
 	<string name="settings_background_termination_notification_summary_error">Show notification message when error detected.</string>
@@ -86,7 +83,7 @@
 	<string name="settings_background_termination_notification">settings_background_termination_notification</string>
 	<string-array name="settings_background_termination_notification_list_entries">
         <item>Always show</item>
-        <item>When Error detected</item>
+        <item>When sync was ended with error</item>
         <item>Not show</item>
     </string-array>
     <string-array name="settings_background_termination_notification_list_values">
@@ -94,6 +91,49 @@
         <item>1</item>
         <item>2</item>
     </string-array>	    
+
+	<string name="settings_playback_ringtone_when_sync_ended_title">Playback default notification</string>
+	<string name="settings_playback_ringtone_when_sync_ended_summary_always">To playback default notification when sync was ended.</string>
+	<string name="settings_playback_ringtone_when_sync_ended_summary_error">To playback default notification when sync was ended with error.</string>
+	<string name="settings_playback_ringtone_when_sync_ended_summary_suucess">To playback default notification when sync was ended without error.</string>
+	<string name="settings_playback_ringtone_when_sync_ended_summary_no">Do not playback default notification.</string>
+	<string name="settings_playback_ringtone_when_sync_ended_dialog_title">Select playback condition</string>
+	<string name="settings_playback_ringtone_when_sync_ended">settings_playback_ringtone_when_sync_ended</string>
+	<string-array name="settings_playback_ringtone_when_sync_ended_list_entries">
+        <item>None</item>
+        <item>Always</item>
+        <item>When sync was ended successfully</item>
+        <item>When sync was ended with error</item>
+    </string-array>
+    <string-array name="settings_playback_ringtone_when_sync_ended_list_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>	    
+
+	<string name="settings_vibrate_when_sync_ended_title">Vibration</string>
+	<string name="settings_vibrate_when_sync_ended_summary_always">Always vibrate when sync was ended.</string>
+	<string name="settings_vibrate_when_sync_ended_summary_success">Vibrate when sync was ended successfully.</string>
+	<string name="settings_vibrate_when_sync_ended_summary_error">Vibrate when sync was ended with error.</string>
+	<string name="settings_vibrate_when_sync_ended_summary_no">Do not vibrate.</string>
+	<string name="settings_vibrate_when_sync_ended_dialog_title">Select vibratio condition.</string>
+	<string name="settings_vibrate_when_sync_ended">settings_vibrate_when_sync_ended</string>
+	<string-array name="settings_vibrate_when_sync_ended_list_entries">
+        <item>None</item>
+        <item>Always</item>
+        <item>When sync was ended successfully</item>
+        <item>When sync was ended with error</item>
+    </string-array>
+    <string-array name="settings_vibrate_when_sync_ended_list_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>	    
+    		
+	<string name="settings_log_title">Log</string>	    
+	<string name="settings_log_preference_screen_title">Message/Log option</string>
 	
 	<string name="settings_log_option_title">Message logging option</string>
 	<string name="settings_log_option_summary_no">No log message file.</string>
@@ -163,7 +203,7 @@
     
     <string name="settings_default_current_setting">current settings=</string>
 
-    <string name="settings_media_scanner_option_title">MediaScanner option</string>
+    <string name="settings_media_scanner_option_title">MediaScanner</string>
 
 	<string name="settings_media_scanner_non_media_files_scan_title">Scan for non-media file </string>
 	<string name="settings_media_scanner_non_media_files_scan_summary_dis">Disable scan</string>
@@ -175,7 +215,7 @@
 	<string name="settings_media_scanner_scan_extstg_summary_ena">Scan /mnt/extsd etc</string>
 	<string name="settings_media_scanner_scan_extstg">settings_media_scanner_scan_extstg</string>
     
-    <string name="settings_file_diff_condition_title">How to Determine files that have been updated</string>
+    <string name="settings_file_diff_condition_title">Difference determination of files</string>
 	
 	<string name="settings_file_diff_time_title">Allowable value of Last Modified</string>
 	<string name="settings_file_diff_time_summary">current settings=%s Second</string>

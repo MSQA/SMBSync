@@ -32,7 +32,7 @@
 	<string name="settings_backgroound_execution_summary_dis">SMBSyncをフォアグランドで実行</string>
 	<string name="settings_backgroound_execution_summary_ena">SMBSyncをバックグランドで実行(アプリケーションが起動後にホームスクリーンが表示されます)</string>
 
-	<string name="settings_ui_title">表示</string>
+	<string name="settings_ui_title">ユーザーインターフェース</string>
 	
     <string name="settings_ui_keep_screen_on_title">同期中の画面オン</string>
     <string name="settings_ui_keep_screen_on_summary_dis">同期中でも画面がオフになることを許容する</string>
@@ -59,9 +59,6 @@
 	<string name="settings_error_option_summary_dis">エラーが発生した場合には同期を終了</string>
 	<string name="settings_error_option_summary_ena">エラーを無視して次の同期を実行</string>
 
-	<string name="settings_log_title">ログ</string>
-	<string name="settings_log_preference_screen_title">メッセージ/ログ オプション</string>
-
 	<string name="settings_background_termination_notification_title">バックグラウンド終了の通知</string>
 	<string name="settings_background_termination_notification_summary_always">常に表示</string>
 	<string name="settings_background_termination_notification_summary_error">エラー時のみ表示</string>
@@ -72,6 +69,35 @@
         <item>エラー時のみ</item>
         <item>表示しない</item>
     </string-array>
+    
+	<string name="settings_playback_ringtone_when_sync_ended_title">同期終了時の通知音の再生</string>
+	<string name="settings_playback_ringtone_when_sync_ended_summary_always">常に再生する</string>
+	<string name="settings_playback_ringtone_when_sync_ended_summary_error">同期がエラーで終了したときに再生する</string>
+	<string name="settings_playback_ringtone_when_sync_ended_summary_success">同期が正常終了したときに再生する</string>
+	<string name="settings_playback_ringtone_when_sync_ended_summary_no">再生しない</string>
+	<string name="settings_playback_ringtone_when_sync_ended_dialog_title">再生する条件の選択</string>
+	<string-array name="settings_playback_ringtone_when_sync_ended_list_entries">
+        <item>再生しない</item>
+        <item>常に再生する</item>
+        <item>正常終了したときに再生する</item>
+        <item>エラーで終了したときに再生する</item>
+    </string-array>
+
+	<string name="settings_vibrate_when_sync_ended_title">同期終了時のバイブレーション</string>
+	<string name="settings_vibrate_when_sync_ended_summary_always">常に振動させる</string>
+	<string name="settings_vibrate_when_sync_ended_summary_success">同期が正常終了したときに振動する</string>
+	<string name="settings_vibrate_when_sync_ended_summary_error">同期がエラーで終了したときに振動する</string>
+	<string name="settings_vibrate_when_sync_ended_summary_no">振動させない</string>
+	<string name="settings_vibrate_when_sync_ended_dialog_title">振動させる条件の選択</string>
+	<string-array name="settings_vibrate_when_sync_ended_list_entries">
+        <item>振動しない</item>
+        <item>常に振動するする</item>
+        <item>正常終了したときに振動する</item>
+        <item>エラーで終了したときに振動する</item>
+    </string-array>
+		
+	<string name="settings_log_title">ログ</string>
+	<string name="settings_log_preference_screen_title">ログ</string>
 			
 	<string name="settings_log_option_title">ログ記録</string>
 	<string name="settings_log_option_summary_no">ログファイルは作成しない</string>
@@ -115,7 +141,7 @@
     
     <string name="settings_default_current_setting">現設定=</string>
     
-    <string name="settings_media_scanner_option_title">MediaScannerオプション</string>
+    <string name="settings_media_scanner_option_title">メディアスキャナー</string>
 
 	<string name="settings_media_scanner_non_media_files_scan_title">非メディアファイル</string>
 	<string name="settings_media_scanner_non_media_files_scan_summary_dis">スキャンしない</string>

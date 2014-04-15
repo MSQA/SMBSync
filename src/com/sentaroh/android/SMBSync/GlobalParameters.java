@@ -96,9 +96,26 @@ public class GlobalParameters extends Application{
 	public boolean settingAltUiEnabled=true;
 	public String settingLogOption="0";
 	public String settingLogMsgDir="/SMBSync/";
-	public String settingBgTermNotification="0";
+	
+	public String settingBgTermNotifyMsg="0";
+	public static final String BG_TERM_NOTIFY_MSG_ALWAYS = "0";
+	public static final String BG_TERM_NOTIFY_MSG_ERROR = "1";
+	public static final String BG_TERM_NOTIFY_MSG_NO = "2";
+
 	public String settingLogMsgFilename="SMBSync_log_yyyy-mm-dd.txt";
 	public int settiingLogGeneration=1;
 	public boolean settingExportedProfileEncryptRequired=true;
+	
+	public static final String VIBRATE_WHEN_SYNC_ENDED_NONE="0";
+	public static final String VIBRATE_WHEN_SYNC_ENDED_ALWAYS="1";
+	public static final String VIBRATE_WHEN_SYNC_ENDED_SUCCESS="2";
+	public static final String VIBRATE_WHEN_SYNC_ENDED_ERROR="3";
+	public String settingVibrateWhenSyncEnded=VIBRATE_WHEN_SYNC_ENDED_ALWAYS;
+	
+	public static final String PB_RINGTONE_WHEN_SYNC_ENDED_NONE="0";
+	public static final String PB_RINGTONE_WHEN_SYNC_ENDED_ALWAYS="1";
+	public static final String PB_RINGTONE_WHEN_SYNC_ENDED_SUCCESS="2";
+	public static final String PB_RINGTONE_WHEN_SYNC_ENDED_ERROR="3";
+	public String settingRingtoneWhenSyncEnded=PB_RINGTONE_WHEN_SYNC_ENDED_ALWAYS;
 	
 }
