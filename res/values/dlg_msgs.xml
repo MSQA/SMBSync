@@ -42,11 +42,8 @@
     <string name="msgs_sync_profile_dlg_filefltr">File</string>
     <string name="msgs_sync_profile_dlg_dirfltr">Directory</string>
     <string name="msgs_sync_profile_master_dir_cb_enable">Process files and directories immediately below master directory</string>
-    <string name="msgs_sync_profile_master_dir_cb_disable">Ignore files immediately below master directory</string>
-    <string name="msgs_sync_profile_confirm_required">Confirm(Confirm before override copy or delete)</string>
-    <string name="msgs_sync_profile_confirm_nothing">Confirm(Override　copy or delete without confirmation)</string>
-    <string name="msgs_sync_profile_last_modified_force_smbsync">Force determine last modified time by SMBSync method</string>
-    <string name="msgs_sync_profile_last_modified_auto">Determine last modified time by System</string>
+    <string name="msgs_sync_profile_confirm_required">Confirm before override copy or delete</string>
+    <string name="msgs_sync_profile_last_modified_smbsync">Force determine last modified time by SMBSync method</string>
 
     <string name="msgs_filter_list_dlg_add">Add</string>
     <string name="msgs_filter_list_dlg_delete">Delete</string>

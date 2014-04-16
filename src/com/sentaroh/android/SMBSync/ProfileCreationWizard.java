@@ -1252,16 +1252,8 @@ public class ProfileCreationWizard {
 		});
 
 		cb_master_dir.setChecked(true);
-		if (cb_master_dir.isChecked()) cb_master_dir.setText(mContext.getString(R.string.msgs_sync_profile_master_dir_cb_enable));
-		else cb_master_dir.setText(mContext.getString(R.string.msgs_sync_profile_master_dir_cb_disable));
-
 		cb_confirm.setChecked(true);
-		if (cb_confirm.isChecked()) cb_confirm.setText(mContext.getString(R.string.msgs_sync_profile_confirm_required));
-		else cb_confirm.setText(mContext.getString(R.string.msgs_sync_profile_confirm_nothing));
-
 		cb_last_modified.setChecked(false);
-		if (cb_last_modified.isChecked()) cb_last_modified.setText(mContext.getString(R.string.msgs_sync_profile_last_modified_force_smbsync));
-		else cb_last_modified.setText(mContext.getString(R.string.msgs_sync_profile_last_modified_auto));
 
 		if (mWizData.file_filter.size()==0) tv_file_filter.setText(mContext.getString(R.string.msgs_filter_list_dlg_not_specified));
 		else {
@@ -1443,7 +1435,7 @@ public class ProfileCreationWizard {
 		if (mWizData.confirm_required) sync_confirm+="YES";
 		else sync_confirm+="NO";
 
-		String sync_last_mod=mContext.getString(R.string.msgs_sync_profile_last_modified_auto)+":";
+		String sync_last_mod=mContext.getString(R.string.msgs_sync_profile_last_modified_smbsync)+":";
 		if (mWizData.use_system_last_mod) sync_last_mod+="YES";
 		else sync_last_mod+="NO";
 		

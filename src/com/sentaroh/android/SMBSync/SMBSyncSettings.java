@@ -285,58 +285,16 @@ public class SMBSyncSettings extends PreferenceActivity{
 			}
     	} else if (key_string.equals(c.getString(R.string.settings_auto_start))) {
     		isChecked=true;
-    		if (shared_pref.getBoolean(key_string, false)) {
-    			pref_key
-    				.setSummary(c.getString(R.string.settings_auto_start_summary_ena));
-    		} else {
-    			pref_key
-					.setSummary(c.getString(R.string.settings_auto_start_summary_dis));
-    		}
     	} else if (key_string.equals(c.getString(R.string.settings_auto_term))) {
     		isChecked=true;
-    		if (shared_pref.getBoolean(key_string, false)) {
-    			pref_key
-    				.setSummary(c.getString(R.string.settings_auto_term_summary_ena));
-    		} else {
-    			pref_key
-    				.setSummary(c.getString(R.string.settings_auto_term_summary_dis));
-    		}
     	} else if (key_string.equals(c.getString(R.string.settings_backgroound_execution))) {
     		isChecked=true;
-    		if (shared_pref.getBoolean(key_string, false)) {
-    			pref_key
-    				.setSummary(c.getString(R.string.settings_backgroound_execution_summary_ena));
-    		} else {
-    			pref_key
-    				.setSummary(c.getString(R.string.settings_backgroound_execution_summary_dis));
-    		}
 		} else if (key_string.equals(c.getString(R.string.settings_error_option))) {
 			isChecked=true;
-			if (shared_pref.getBoolean(key_string, false)) {
-				pref_key
-					.setSummary(c.getString(R.string.settings_error_option_summary_ena));
-			} else {
-				pref_key
-					.setSummary(c.getString(R.string.settings_error_option_summary_dis));
-			}
 		} else if (key_string.equals(c.getString(R.string.settings_ui_keep_screen_on))) {
 			isChecked=true;
-			if (shared_pref.getBoolean(key_string, false)) {
-				pref_key
-					.setSummary(c.getString(R.string.settings_ui_keep_screen_on_summary_ena));
-			} else {
-				pref_key
-					.setSummary(c.getString(R.string.settings_ui_keep_screen_on_summary_dis));
-			}
 		} else if (key_string.equals(c.getString(R.string.settings_wifi_lock))) {
 			isChecked=true;
-			if (shared_pref.getBoolean(key_string, false)) {
-				pref_key
-					.setSummary(c.getString(R.string.settings_wifi_lock_summary_ena));
-			} else {
-				pref_key
-					.setSummary(c.getString(R.string.settings_wifi_lock_summary_dis));
-			}
     	}
 
     	return isChecked;
@@ -348,22 +306,8 @@ public class SMBSyncSettings extends PreferenceActivity{
 		
 		if (key_string.equals(c.getString(R.string.settings_ui_alternate_ui))) {
 				isChecked=true;
-				if (shared_pref.getBoolean(key_string, false)) {
-					pref_key
-						.setSummary(c.getString(R.string.settings_ui_alternate_ui_summary_ena));
-				} else {
-					pref_key
-						.setSummary(c.getString(R.string.settings_ui_alternate_ui_summary_dis));
-				}
 		} else if (key_string.equals(c.getString(R.string.settings_suppress_warning_mixed_mp))) {
 			isChecked=true;
-			if (shared_pref.getBoolean(key_string, false)) {
-				pref_key
-					.setSummary(c.getString(R.string.settings_suppress_warning_mixed_mp_summary_dis));
-			} else {
-				pref_key
-					.setSummary(c.getString(R.string.settings_suppress_warning_mixed_mp_summary_ena));
-			}
 		} else if (key_string.equals(c.getString(R.string.settings_background_termination_notification))) {
 			isChecked=true;
 			if (shared_pref.getString(key_string,"0").equals(SMBSYNC_BG_TERM_NOTIFY_MSG_ALWAYS)) {
@@ -445,13 +389,6 @@ public class SMBSyncSettings extends PreferenceActivity{
 		
     	if (key_string.equals(c.getString(R.string.settings_debug_msg_diplay))) {
     		isChecked=true;
-    		if (shared_pref.getBoolean(key_string, false)) {
-    			pref_key
-    				.setSummary(c.getString(R.string.settings_debug_msg_diplay_summary_ena));
-    		} else {
-    			pref_key
-    			.setSummary(c.getString(R.string.settings_debug_msg_diplay_summary_dis));
-    		}
     	} else if (key_string.equals(c.getString(R.string.settings_log_option))) {
     		isChecked=true;
     		if (shared_pref.getString(key_string, "0").equals("0")) {
@@ -489,22 +426,8 @@ public class SMBSyncSettings extends PreferenceActivity{
 		
     	if (key_string.equals(c.getString(R.string.settings_media_scanner_non_media_files_scan))) {
     		isChecked=true;
-    		if (shared_pref.getBoolean(key_string, true)) {
-    			pref_key
-    				.setSummary(c.getString(R.string.settings_media_scanner_non_media_files_scan_summary_ena));
-    		} else {
-    			pref_key
-    			.setSummary(c.getString(R.string.settings_media_scanner_non_media_files_scan_summary_dis));
-    		}
     	} else if (key_string.equals(c.getString(R.string.settings_media_scanner_scan_extstg))) {
     		isChecked=true;
-    		if (shared_pref.getBoolean(key_string, true)) {
-    			pref_key
-    				.setSummary(c.getString(R.string.settings_media_scanner_scan_extstg_summary_ena));
-    		} else {
-    			pref_key
-    			.setSummary(c.getString(R.string.settings_media_scanner_scan_extstg_summary_dis));
-    		}
     	}
 
     	return isChecked;
@@ -542,13 +465,6 @@ public class SMBSyncSettings extends PreferenceActivity{
         	}
    		} else if (key_string.equals(c.getString(R.string.settings_smb_use_extended_security))) {
 			isChecked=true;
-    		if (shared_pref.getBoolean(key_string, false)) {
-        		pref_key
-    				.setSummary(c.getString(R.string.settings_smb_use_extended_security_summary_ena));
-    		} else {
-    			pref_key
-				.setSummary(c.getString(R.string.settings_smb_use_extended_security_summary_dis));
-    		}
     	} else if (key_string.equals(c.getString(R.string.settings_smb_perform_class))) {
 			isChecked=true;
         	if (shared_pref.getString(key_string, "").equals("0")) {

@@ -248,7 +248,7 @@
 	            android:layout_height="wrap_content"
 				android:layout_marginBottom="6dp"
 				android:layout_marginLeft="5dp"
-	            android:text="@string/msgs_sync_profile_last_modified_auto" 
+	            android:text="@string/msgs_sync_profile_last_modified_smbsync" 
 		        android:textAppearance="?android:attr/textAppearanceMedium" />
 	        		    		    
 	    </LinearLayout>

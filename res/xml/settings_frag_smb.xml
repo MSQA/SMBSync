@@ -13,7 +13,7 @@
 		    <CheckBoxPreference
 				android:key="@string/settings_smb_use_extended_security"
 				android:title="@string/settings_smb_use_extended_security_title"
-				android:summary="@string/settings_smb_use_extended_security_summary_dis" />
+				android:summary="@string/settings_smb_use_extended_security_summary_ena" />
 		    						
 			<EditTextPreference
 				android:key="@string/settings_default_user"

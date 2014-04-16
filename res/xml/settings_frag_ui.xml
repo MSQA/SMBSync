@@ -4,15 +4,15 @@
         <CheckBoxPreference
 			android:key="@string/settings_ui_alternate_ui"
 			android:title="@string/settings_ui_alternate_ui_title"
-			android:summary="@string/settings_ui_alternate_ui_summary_dis" />
+			android:summary="@string/settings_ui_alternate_ui_summary_ena" />
         <CheckBoxPreference
 			android:key="@string/settings_debug_msg_diplay"
 			android:title="@string/settings_debug_msg_diplay_title"
-			android:summary="@string/settings_debug_msg_diplay_summary_dis" />
+			android:summary="@string/settings_debug_msg_diplay_summary_ena" />
 	    <CheckBoxPreference
 			android:key="@string/settings_suppress_warning_mixed_mp"
 			android:title="@string/settings_suppress_warning_mixed_mp_title"
-			android:summary="@string/settings_suppress_warning_mixed_mp_summary_dis" />
+			android:summary="@string/settings_suppress_warning_mixed_mp_summary_ena" />
   	    <ListPreference
 			android:key="@string/settings_background_termination_notification"
 			android:title="@string/settings_background_termination_notification_title"

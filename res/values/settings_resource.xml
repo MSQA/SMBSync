@@ -28,50 +28,41 @@
     </string-array>	    
 	
     <string name="settings_auto_start_title">Auto Sync start-up</string>
-    <string name="settings_auto_start_summary_dis">Autostart was disabling.</string>
     <string name="settings_auto_start_summary_ena">Sync task will not started immediately 
 	    after application startup.</string>
 	<string name="settings_auto_start">settings_auto_start</string>
 	
     <string name="settings_auto_term_title">Auto termination</string>
-	<string name="settings_auto_term_summary_dis">Auto termination is disabling.</string>
 	<string name="settings_auto_term_summary_ena">Application will be terminated after sync task end.</string>
 	<string name="settings_auto_term">settings_auto_term</string>
 
     <string name="settings_backgroound_execution_title">Background execution</string>
-	<string name="settings_backgroound_execution_summary_dis">Run in the foreground.</string>
 	<string name="settings_backgroound_execution_summary_ena">Run in the background.(Show home screen after application started)</string>
 	<string name="settings_backgroound_execution">settings_backgroound_execution</string>
 
     <string name="settings_ui_title">User interface</string>
 
     <string name="settings_ui_keep_screen_on_title">Screen state during synchronization</string>
-    <string name="settings_ui_keep_screen_on_summary_dis">Allow the screen turns off even during synchronization.</string>
     <string name="settings_ui_keep_screen_on_summary_ena">Screen so that does not turn off during synchronization.</string>
 	<string name="settings_ui_keep_screen_on">settings_ui_keep_screen_on</string>	
     
     <string name="settings_wifi_lock_title">Wifi lock during synchronization</string>
-    <string name="settings_wifi_lock_summary_dis">Do not acquire Wifi lock during synchronization.</string>
     <string name="settings_wifi_lock_summary_ena">Acquire Wifi lock during synchronization.</string>
 	<string name="settings_wifi_lock">settings_wifi_lock</string>	
     
 	<string name="settings_ui_alternate_ui_title">Alternate UI for tab</string>
-    <string name="settings_ui_alternate_ui_summary_dis">Click and select an item.</string>
     <string name="settings_ui_alternate_ui_summary_ena">To edit the item if you click when the other items is not selected. To select the item if you click when the other items are selected.</string>
 	<string name="settings_ui_alternate_ui">settings_ui_alternate_ui</string>	
 				
     <string name="settings_debug_msg_diplay_title">Show/hide debug message</string>
-	<string name="settings_debug_msg_diplay_summary_dis">Hide debug message to message tab.</string>
 	<string name="settings_debug_msg_diplay_summary_ena">Show debug message to message tab.</string>
 	<string name="settings_debug_msg_diplay">settings_debug_msg_diplay</string>
 
 	<string name="settings_suppress_warning_mixed_mp_title">Suppress mixed mount point name.</string>
-    <string name="settings_suppress_warning_mixed_mp_summary_dis">Suppress mixed mount point name.</string>
-    <string name="settings_suppress_warning_mixed_mp_summary_ena">Show mixed mount point name.</string>
+    <string name="settings_suppress_warning_mixed_mp_summary_ena">Suppress mixed mount point name.</string>
 	<string name="settings_suppress_warning_mixed_mp">settings_suppress_warning_mixed_mp</string>	
 			
     <string name="settings_error_option_title">Error process option</string>
-	<string name="settings_error_option_summary_dis">If error occurred, terminate sync.</string>
 	<string name="settings_error_option_summary_ena">Ignore error, processing continued.</string>
 	<string name="settings_error_option">settings_error_option</string>
 
@@ -133,9 +124,9 @@
     </string-array>	    
     		
 	<string name="settings_log_title">Log</string>	    
-	<string name="settings_log_preference_screen_title">Message/Log option</string>
+	<string name="settings_log_preference_screen_title">Log</string>
 	
-	<string name="settings_log_option_title">Message logging option</string>
+	<string name="settings_log_option_title">Message logging</string>
 	<string name="settings_log_option_summary_no">No log message file.</string>
 	<string name="settings_log_option_summary_date_time">Append with a starting date(yyyy-mm-dd) of application to the log file name.</string>
 	<string name="settings_log_option_dialog_title">Message Logging option</string>
@@ -206,12 +197,10 @@
     <string name="settings_media_scanner_option_title">MediaScanner</string>
 
 	<string name="settings_media_scanner_non_media_files_scan_title">Scan for non-media file </string>
-	<string name="settings_media_scanner_non_media_files_scan_summary_dis">Disable scan</string>
 	<string name="settings_media_scanner_non_media_files_scan_summary_ena">Scan　text, PDF, etc</string>
 	<string name="settings_media_scanner_non_media_files_scan">settings_media_scanner_non_media_files_scan</string>
 	
 	<string name="settings_media_scanner_scan_extstg_title">Scan for external storage</string>
-	<string name="settings_media_scanner_scan_extstg_summary_dis">Disable scan</string>
 	<string name="settings_media_scanner_scan_extstg_summary_ena">Scan /mnt/extsd etc</string>
 	<string name="settings_media_scanner_scan_extstg">settings_media_scanner_scan_extstg</string>
     
@@ -280,7 +269,6 @@
     <string name="settings_smb_tuning_summary"></string>
 
     <string name="settings_smb_use_extended_security_title">jcifs.smb.client.useExtendedSecurity</string>
-    <string name="settings_smb_use_extended_security_summary_dis">Do not use extended security(Default)</string>
     <string name="settings_smb_use_extended_security_summary_ena">Use extended security</string>
 	<string name="settings_smb_use_extended_security">settings_smb_use_extended_security</string>	
 
@@ -366,7 +354,6 @@
     <string name="settings_misc_title">Miscellaneous</string>
     
     <string name="settings_exported_profile_encryption_title">Profiles stored on external media.</string>
-    <string name="settings_exported_profile_encryption_summary_dis">Do not password protection.</string>
     <string name="settings_exported_profile_encryption_summary_ena">Password protected.</string>
 	<string name="settings_exported_profile_encryption">settings_exported_profile_encryption</string>
     

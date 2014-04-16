@@ -4,10 +4,10 @@
         <CheckBoxPreference
             android:key="@string/settings_media_scanner_non_media_files_scan"
 			android:title="@string/settings_media_scanner_non_media_files_scan_title"
-			android:summary="@string/settings_media_scanner_non_media_files_scan_summary_dis" />
+			android:summary="@string/settings_media_scanner_non_media_files_scan_summary_ena" />
         <CheckBoxPreference
 			android:key="@string/settings_media_scanner_scan_extstg"
 			android:title="@string/settings_media_scanner_scan_extstg_title"
-			android:summary="@string/settings_media_scanner_scan_extstg_summary_dis" />
+			android:summary="@string/settings_media_scanner_scan_extstg_summary_ena" />
 
 </PreferenceScreen>

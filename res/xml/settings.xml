@@ -13,50 +13,50 @@
 	    <CheckBoxPreference
 			android:key="@string/settings_auto_start"
 			android:title="@string/settings_auto_start_title"
-			android:summary="@string/settings_auto_start_summary_dis" 
+			android:summary="@string/settings_auto_start_summary_ena" 
 			android:dependency="settings_network_wifi_option"/>
 	    
 	    <CheckBoxPreference
 			android:key="@string/settings_auto_term"
 			android:title="@string/settings_auto_term_title"
-			android:summary="@string/settings_auto_term_summary_dis" 
+			android:summary="@string/settings_auto_term_summary_ena" 
 			android:dependency="settings_auto_start"/>
 	
 	    <CheckBoxPreference
 			android:key="@string/settings_backgroound_execution"
 			android:title="@string/settings_backgroound_execution_title"
-			android:summary="@string/settings_backgroound_execution_summary_dis" 
+			android:summary="@string/settings_backgroound_execution_summary_ena" 
 			android:dependency="settings_auto_start"/>
 	  	    	    	    
 	    <CheckBoxPreference
 			android:key="@string/settings_error_option"
 			android:title="@string/settings_error_option_title"
-			android:summary="@string/settings_error_option_summary_dis" />
+			android:summary="@string/settings_error_option_summary_ena" />
 	    
 	    <CheckBoxPreference
 			android:key="@string/settings_ui_keep_screen_on"
 			android:title="@string/settings_ui_keep_screen_on_title"
-			android:summary="@string/settings_ui_keep_screen_on_summary_dis" />
+			android:summary="@string/settings_ui_keep_screen_on_summary_ena" />
 	    
 	    <CheckBoxPreference
 			android:key="@string/settings_wifi_lock"
 			android:title="@string/settings_wifi_lock_title"
-			android:summary="@string/settings_wifi_lock_summary_dis" />
+			android:summary="@string/settings_wifi_lock_summary_ena" />
 	    	    
 	</PreferenceCategory>	    
 	<PreferenceCategory android:title="@string/settings_ui_title">
 	    <CheckBoxPreference
 			android:key="@string/settings_ui_alternate_ui"
 			android:title="@string/settings_ui_alternate_ui_title"
-			android:summary="@string/settings_ui_alternate_ui_summary_dis" />
+			android:summary="@string/settings_ui_alternate_ui_summary_ena" />
         <CheckBoxPreference
 			android:key="@string/settings_debug_msg_diplay"
 			android:title="@string/settings_debug_msg_diplay_title"
-			android:summary="@string/settings_debug_msg_diplay_summary_dis" />
+			android:summary="@string/settings_debug_msg_diplay_summary_ena" />
 	    <CheckBoxPreference
 			android:key="@string/settings_suppress_warning_mixed_mp"
 			android:title="@string/settings_suppress_warning_mixed_mp_title"
-			android:summary="@string/settings_suppress_warning_mixed_mp_summary_dis" />
+			android:summary="@string/settings_suppress_warning_mixed_mp_summary_ena" />
   	    <ListPreference
 			android:key="@string/settings_background_termination_notification"
 			android:title="@string/settings_background_termination_notification_title"
@@ -112,11 +112,11 @@
 	    <CheckBoxPreference
             android:key="@string/settings_media_scanner_non_media_files_scan"
 			android:title="@string/settings_media_scanner_non_media_files_scan_title"
-			android:summary="@string/settings_media_scanner_non_media_files_scan_summary_dis" />
+			android:summary="@string/settings_media_scanner_non_media_files_scan_summary_ena" />
         <CheckBoxPreference
 			android:key="@string/settings_media_scanner_scan_extstg"
 			android:title="@string/settings_media_scanner_scan_extstg_title"
-			android:summary="@string/settings_media_scanner_scan_extstg_summary_dis" />
+			android:summary="@string/settings_media_scanner_scan_extstg_summary_ena" />
     </PreferenceCategory>
 	<PreferenceCategory android:title="@string/settings_file_diff_condition_title">
         <ListPreference
@@ -146,7 +146,7 @@
 	    <CheckBoxPreference
 			android:key="@string/settings_smb_use_extended_security"
 			android:title="@string/settings_smb_use_extended_security_title"
-			android:summary="@string/settings_smb_use_extended_security_summary_dis" />
+			android:summary="@string/settings_smb_use_extended_security_summary_ena" />
 	    	    
 		<EditTextPreference
 			android:key="@string/settings_default_user"

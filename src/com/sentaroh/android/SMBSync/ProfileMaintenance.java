@@ -1323,6 +1323,7 @@ public class ProfileMaintenance {
 		setSyncOptionSpinner(spinnerSyncOption, prof_syncopt); 
 
 		final CheckBox cbmpd = (CheckBox)dialog.findViewById(R.id.sync_profile_master_dir_cb);
+		cbmpd.setChecked(true);
 		if (prof_dir_filter.size()!=0) cbmpd.setEnabled(true);
 			else cbmpd.setEnabled(false);
 		final CheckBox cbConf = (CheckBox)dialog.findViewById(R.id.sync_profile_confirm);
@@ -1367,32 +1368,6 @@ public class ProfileMaintenance {
 		dir_filter_btn.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				processDirectoryFilterButton(dialog, prof_dir_filter);
-			}
-		});
-		// Master Dir processボタンの指定
-		cbmpd.setChecked(true);
-		cbmpd.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView,
-				boolean isChecked) {
-				if (isChecked) cbmpd.setText(mContext.getString(R.string.msgs_sync_profile_master_dir_cb_enable));
-				else cbmpd.setText(mContext.getString(R.string.msgs_sync_profile_master_dir_cb_disable));
-			}
-		});
-		//Confirm
-		cbConf.setOnCheckedChangeListener(new OnCheckedChangeListener(){
-			@Override
-			public void onCheckedChanged(CompoundButton arg0, boolean isChecked) {
-				if (isChecked) cbConf.setText(mContext.getString(R.string.msgs_sync_profile_confirm_required));
-				else cbConf.setText(mContext.getString(R.string.msgs_sync_profile_confirm_nothing));
-			}
-		});
-		//Last Modified
-		cbLastMod.setOnCheckedChangeListener(new OnCheckedChangeListener(){
-			@Override
-			public void onCheckedChanged(CompoundButton arg0, boolean isChecked) {
-				if (isChecked) cbLastMod.setText(mContext.getString(R.string.msgs_sync_profile_last_modified_force_smbsync));
-				else cbLastMod.setText(mContext.getString(R.string.msgs_sync_profile_last_modified_auto));
 			}
 		});
 		
@@ -1901,11 +1876,7 @@ public class ProfileMaintenance {
 		final CheckBox cbConf = (CheckBox)dialog.findViewById(R.id.sync_profile_confirm);
 		final CheckBox cbLastMod = (CheckBox)dialog.findViewById(R.id.sync_profile_last_modified);
 		cbConf.setChecked(prof_conf);
-		if (prof_conf) cbConf.setText(mContext.getString(R.string.msgs_sync_profile_confirm_required));
-		else cbConf.setText(mContext.getString(R.string.msgs_sync_profile_confirm_nothing));
 		cbLastMod.setChecked(prof_ujlm);
-		if (prof_ujlm) cbLastMod.setText(mContext.getString(R.string.msgs_sync_profile_last_modified_force_smbsync));
-		else cbLastMod.setText(mContext.getString(R.string.msgs_sync_profile_last_modified_auto));
 
 		final Spinner spinnerSyncOption=(Spinner)dialog.findViewById(R.id.sync_profile_sync_option);
 		setSyncOptionSpinner(spinnerSyncOption, prof_syncopt); 
@@ -1918,8 +1889,6 @@ public class ProfileMaintenance {
 			cbmpd.setEnabled(true);
 			cbmpd.setChecked(true);
 		} else cbmpd.setEnabled(false);
-		if (prof_mpd) cbmpd.setText(mContext.getString(R.string.msgs_sync_profile_master_dir_cb_enable));
-		else cbmpd.setText(mContext.getString(R.string.msgs_sync_profile_master_dir_cb_disable));
 
 		final ImageView master_icon=(ImageView) dialog.findViewById(R.id.sync_profile_master_icon);
 		final ImageView target_icon=(ImageView) dialog.findViewById(R.id.sync_profile_target_icon);
@@ -1964,30 +1933,6 @@ public class ProfileMaintenance {
 			else cbmpd.setEnabled(false);
 		if (prof_mpd) cbmpd.setChecked(true);
 			else cbmpd.setChecked(false);
-		cbmpd.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-				@Override
-				public void onCheckedChanged(CompoundButton buttonView,
-					boolean isChecked) {
-					if (isChecked) cbmpd.setText(mContext.getString(R.string.msgs_sync_profile_master_dir_cb_enable));
-					else cbmpd.setText(mContext.getString(R.string.msgs_sync_profile_master_dir_cb_disable));
-			}
-		});
-		//Confirm
-		cbConf.setOnCheckedChangeListener(new OnCheckedChangeListener(){
-			@Override
-			public void onCheckedChanged(CompoundButton arg0, boolean isChecked) {
-				if (isChecked) cbConf.setText(mContext.getString(R.string.msgs_sync_profile_confirm_required));
-				else cbConf.setText(mContext.getString(R.string.msgs_sync_profile_confirm_nothing));
-			}
-		});
-		//Last Modified
-		cbLastMod.setOnCheckedChangeListener(new OnCheckedChangeListener(){
-			@Override
-			public void onCheckedChanged(CompoundButton arg0, boolean isChecked) {
-				if (isChecked) cbLastMod.setText(mContext.getString(R.string.msgs_sync_profile_last_modified_force_smbsync));
-				else cbLastMod.setText(mContext.getString(R.string.msgs_sync_profile_last_modified_auto));
-			}
-		});
 
 		// CANCELボタンの指定
 		final Button btn_cancel = (Button) dialog.findViewById(R.id.sync_profile_cancel);

@@ -21,42 +21,33 @@
     </string-array>
 	
     <string name="settings_auto_start_title">自動同期起動</string>
-    <string name="settings_auto_start_summary_dis">自動同期起動は使用しない</string>
     <string name="settings_auto_start_summary_ena">アプリケーション起動後に同期を実行</string>
 	
     <string name="settings_auto_term_title">自動停止</string>
-	<string name="settings_auto_term_summary_dis">自動停止は使用しない</string>
 	<string name="settings_auto_term_summary_ena">自動同期終了後に終了する</string>
 	
     <string name="settings_backgroound_execution_title">バックグラウンド実行</string>
-	<string name="settings_backgroound_execution_summary_dis">SMBSyncをフォアグランドで実行</string>
-	<string name="settings_backgroound_execution_summary_ena">SMBSyncをバックグランドで実行(アプリケーションが起動後にホームスクリーンが表示されます)</string>
+	<string name="settings_backgroound_execution_summary_ena">SMBSyncをバックグランドで実行(アプリケーションの起動後にホームスクリーンが表示されます)</string>
 
 	<string name="settings_ui_title">ユーザーインターフェース</string>
 	
     <string name="settings_ui_keep_screen_on_title">同期中の画面オン</string>
-    <string name="settings_ui_keep_screen_on_summary_dis">同期中でも画面がオフになることを許容する</string>
     <string name="settings_ui_keep_screen_on_summary_ena">同期中に画面がオフにならないようにする</string>
 		
     <string name="settings_wifi_lock_title">同期中のWifiロック</string>
-    <string name="settings_wifi_lock_summary_dis">Wifiロックは取得しない</string>
     <string name="settings_wifi_lock_summary_ena">同期中はWifiロックを取得する</string>
 	<string name="settings_wifi_lock">settings_wifi_lock</string>	
     
     <string name="settings_ui_alternate_ui_title">代替UI</string>
-    <string name="settings_ui_alternate_ui_summary_dis">項目をクリックしたら選択</string>
     <string name="settings_ui_alternate_ui_summary_ena">他の項目が選択されていないときにクリックしたら編集、他の項目が選択されているときは項目を選択。</string>
 			
     <string name="settings_debug_msg_diplay_title">デバッグメッセージの表示</string>
-	<string name="settings_debug_msg_diplay_summary_dis">メッセージタブに表示しない</string>
 	<string name="settings_debug_msg_diplay_summary_ena">メッセージタブに表示する</string>
 
 	<string name="settings_suppress_warning_mixed_mp_title">警告メッセージ抑止</string>
-    <string name="settings_suppress_warning_mixed_mp_summary_dis">ローカルマウントポイント混在を抑止する</string>
-    <string name="settings_suppress_warning_mixed_mp_summary_ena">ローカルマウントポイント混在を表示する</string>
+    <string name="settings_suppress_warning_mixed_mp_summary_ena">ローカルマウントポイント混在を抑止する</string>
 			
     <string name="settings_error_option_title">エラー時のオプション</string>
-	<string name="settings_error_option_summary_dis">エラーが発生した場合には同期を終了</string>
 	<string name="settings_error_option_summary_ena">エラーを無視して次の同期を実行</string>
 
 	<string name="settings_background_termination_notification_title">バックグラウンド終了の通知</string>
@@ -144,12 +135,10 @@
     <string name="settings_media_scanner_option_title">メディアスキャナー</string>
 
 	<string name="settings_media_scanner_non_media_files_scan_title">非メディアファイル</string>
-	<string name="settings_media_scanner_non_media_files_scan_summary_dis">スキャンしない</string>
 	<string name="settings_media_scanner_non_media_files_scan_summary_ena">text,PDF等をスキャンする</string>
 	<string name="settings_media_scanner_non_media_files_scan">settings_media_scanner_non_media_files_scan</string>
 	
 	<string name="settings_media_scanner_scan_extstg_title">外部ストレージ</string>
-	<string name="settings_media_scanner_scan_extstg_summary_dis">スキャンしない</string>
 	<string name="settings_media_scanner_scan_extstg_summary_ena">/mnt/extsd等をスキャンする</string>
     
     
@@ -194,7 +183,6 @@
     <string name="settings_other_title">その他</string>
     
     <string name="settings_exit_clean_title">終了時の処理</string>
-    <string name="settings_exit_clean_summary_dis">アプリケーション終了時にプロセスを終了しない</string>
     <string name="settings_exit_clean_summary_ena">アプリケーション終了時にプロセスを終了する</string>
 
 	<string name="settings_smb_perform_class_title">SMBパフォーマンス</string>
@@ -214,7 +202,6 @@
 	<string name="settings_misc_title">その他</string>
 	
     <string name="settings_exported_profile_encryption_title">外部メディアに保存するプロファイル</string>
-    <string name="settings_exported_profile_encryption_summary_dis">パスワード保護をしない</string>
     <string name="settings_exported_profile_encryption_summary_ena">パスワードで保護する</string>
 	<string name="settings_exported_profile_encryption">settings_exported_profile_encryption</string>
 	
