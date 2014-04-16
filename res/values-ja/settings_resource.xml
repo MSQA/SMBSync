@@ -91,7 +91,7 @@
 	<string name="settings_vibrate_when_sync_ended_dialog_title">振動させる条件の選択</string>
 	<string-array name="settings_vibrate_when_sync_ended_list_entries">
         <item>振動しない</item>
-        <item>常に振動するする</item>
+        <item>常に振動する</item>
         <item>正常終了したときに振動する</item>
         <item>エラーで終了したときに振動する</item>
     </string-array>

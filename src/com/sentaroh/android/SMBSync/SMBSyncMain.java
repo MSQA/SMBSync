@@ -180,7 +180,7 @@ public class SMBSyncMain extends FragmentActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 //		setTheme(android.R.style.Theme_Dialog);
-//		setTheme(android.R.style.Theme_Holo);
+//		setTheme(android.R.style.Theme_Holo_Light);
 //		setTheme(android.R.style.Theme_Light);
 		super.onCreate(savedInstanceState);
 //		requestWindowFeature(Window.FEATURE_NO_TITLE);

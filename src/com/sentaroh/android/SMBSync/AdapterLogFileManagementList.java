@@ -90,6 +90,9 @@ public class AdapterLogFileManagementList extends BaseAdapter{
         if (o.log_file_name!=null) {
         	if (o.isCurrentLogFile) holder.tv_log_file_name.setTextColor(Color.RED);
         	else holder.tv_log_file_name.setTextColor(Color.WHITE);
+//        	TypedValue outValue = new TypedValue();
+//        	c.getTheme().resolveAttribute(android.R.attr.textColorPrimary, outValue, true);
+//        	holder.tv_log_file_name.setTextColor(outValue.resourceId);
         	if (o.log_file_generation>9) holder.tv_log_file_name.setText(""+o.log_file_generation+"\u00a0 "+o.log_file_name);
         	else holder.tv_log_file_name.setText("0"+o.log_file_generation+"\u00a0"+o.log_file_name);
     		holder.tv_log_file_size.setText(o.log_file_size);

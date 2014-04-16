@@ -149,7 +149,6 @@ public class AdapterMessageList extends ArrayAdapter<MsgListItem> {
     		Typeface tf=Typeface.create(Typeface.MONOSPACE, Typeface.NORMAL);
         	holder.tv_row_msg.setTypeface(tf);
         	holder.tv_row_msg.setLineBreak(CustomTextView.LINE_BREAK_NO_WORD_WRAP);
-
             holder.config=v.getResources().getConfiguration();
             v.setTag(holder);
         } else {
