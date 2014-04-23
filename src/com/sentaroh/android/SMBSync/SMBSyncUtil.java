@@ -206,7 +206,7 @@ public class SMBSyncUtil {
 		sendMsgToActivity(log_cat,msgflag,syncProfName,dt.substring(0,10),
 				dt.substring(11),mLogId,"M",fp,log_msg);
 		if (!msgflag.equals("0")) 
-			writeLogMsgToFile(glblParms.logWriter,log_cat,syncProfName, fp,log_msg);
+			writeLogMsgToFile(log_cat,syncProfName, fp,log_msg);
 		if (glblParms.debugLevel>0) { 
 			if (glblParms.debugLevel>0 && log) 
 				Log.v(DEBUG_TAG,
@@ -216,10 +216,9 @@ public class SMBSyncUtil {
 	};
 
 	private StringBuilder mSbForWriteLog = new StringBuilder(256);
-	final private void writeLogMsgToFile(PrintWriter pw, String cat, String prof, 
+	final private void writeLogMsgToFile(String cat, String prof, 
 			String fp, String msg) {
-		if (pw!=null) { 
-			synchronized(pw) {
+		if (glblParms.logWriter!=null) { 
 				String dt=DateUtil.convDateTimeTo_YearMonthDayHourMinSec(System.currentTimeMillis());
 				mSbForWriteLog.setLength(0);
 				mSbForWriteLog.append(cat).append(" ")
@@ -234,11 +233,10 @@ public class SMBSyncUtil {
 				}
 				mSbForWriteLog.append(msg);
 				try {
-					pw.println(mSbForWriteLog);
+					writeLog(glblParms,mSbForWriteLog.toString());
 				} catch(Exception e) {
 					e.printStackTrace();
 				}
-			}
 //			if (logFileFlushCnt>1000) {
 //				flushLogFile();
 //				logFileFlushCnt=0;
@@ -285,7 +283,7 @@ public class SMBSyncUtil {
 		// flag=1 both, arg2=0 dialog only, arg2=2 msgview only
 		sendMsgToActivity(log_cat,"2",sync_prof,dt.substring(0,10), dt.substring(11),
 				mLogId,"M",fp,log_msg);
-		writeLogMsgToFile(glblParms.logWriter,"M "+log_cat, sync_prof, fp, log_msg);
+		writeLogMsgToFile("M "+log_cat, sync_prof, fp, log_msg);
 		if (glblParms.debugLevel>0)
 			Log.v(DEBUG_TAG,
 					buildLogCatString(mSbForAddLogMsg, log_cat,mLogId,sync_prof,fp,log_msg));
@@ -296,13 +294,11 @@ public class SMBSyncUtil {
 			  		 new MsgListItem(cat,sdfDate.format(System.currentTimeMillis()),
 					 sdfTime.format(System.currentTimeMillis()),"MAIN",logmsg));
 		if (glblParms.logWriter!=null) {
-			synchronized(glblParms.logWriter) {
-				glblParms.logWriter.println("M "+cat+" "+
+				writeLog(glblParms, "M "+cat+" "+
 					sdfDate.format(System.currentTimeMillis())+" "+
 					sdfTime.format(System.currentTimeMillis())+" "+
 					("MAIN"+"          ").substring(0,13)+logmsg);
 //				glblParms.logWriter.flush();
-			}
 		}
 		if (DEBUG_ENABLE ) {
 			if (glblParms.debugLevel>0) Log.v(DEBUG_TAG,cat+" "+mLogId+logmsg);
@@ -364,7 +360,7 @@ public class SMBSyncUtil {
 							dt.substring(11),mLogId,"D","", 
 							mSbForaddDebugLogMsg1.toString());
 				}
-				writeLogMsgToFile(glblParms.logWriter,"D "+log_cat,syncProfName, "", 
+				writeLogMsgToFile("D "+log_cat,syncProfName, "", 
 						mSbForaddDebugLogMsg1.toString());
 			}			
 			if (DEBUG_ENABLE) 
@@ -385,7 +381,6 @@ public class SMBSyncUtil {
 								sdfTime.format(System.currentTimeMillis()),mLogId,logmsg));
 			}
 			if (glblParms.logWriter!=null) {
-				synchronized(glblParms.logWriter) {
 					String dt=DateUtil.convDateTimeTo_YearMonthDayHourMinSec(System.currentTimeMillis());
 					mSbForaddDebugLogMsg2.setLength(0);
 					mSbForaddDebugLogMsg2.append("D ")
@@ -397,9 +392,7 @@ public class SMBSyncUtil {
 						.append(" ")
 						.append(mLogId)
 						.append(logmsg);
-					glblParms.logWriter.println(mSbForaddDebugLogMsg2);
-//					glblParms.logWriter.flush();
-				}
+					writeLog(glblParms,mSbForaddDebugLogMsg2.toString());
 			}
 			if (DEBUG_ENABLE) Log.v(DEBUG_TAG,cat+" "+mLogId+logmsg);
 		}
@@ -411,6 +404,19 @@ public class SMBSyncUtil {
 				glblParms.logWriter.flush();
 			}
 	};
+	
+	static public void writeLog(GlobalParameters gp, String msg) {
+		if (gp.logWriter!=null) 
+			synchronized(gp.logWriter) {
+				gp.logWriter.println(msg);
+				gp.logLineCount++;
+				if (gp.logLineCount>100) {
+					gp.logWriter.flush();
+					gp.logLineCount=0;
+				}
+			}
+	};
+	
 	
 	@SuppressLint("SdCardPath")
 	public void openLogFile() {

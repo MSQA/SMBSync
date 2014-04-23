@@ -122,8 +122,9 @@ public class ProfileCreationWizard {
 		final TextView dlg_msg=(TextView) dialog.findViewById(R.id.sync_wizard_dlg_msg);
 
 		final CheckBox cb_all_files=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_cb_all_files);
-//		cb_all_files.setChecked(true);
-//		ll_sel_files.setVisibility(LinearLayout.GONE);
+		final LinearLayout ll_sel_files=(LinearLayout)dialog.findViewById(R.id.sync_wizard_dlg_process_files_list);
+		cb_all_files.setChecked(true);
+		ll_sel_files.setVisibility(LinearLayout.GONE);
 		cb_all_files.setEnabled(false);
 		setProcessedFileSelectCheckBoxEnabled(dialog,false);
 		setProcessedFileSelectCheckBoxChecked(dialog, false);
@@ -135,7 +136,9 @@ public class ProfileCreationWizard {
 					btn_next.setEnabled(true);
 					setProcessedFileSelectCheckBoxEnabled(dialog,false);
 					setProcessedFileSelectCheckBoxChecked(dialog, false);
+					ll_sel_files.setVisibility(LinearLayout.GONE);
 				} else {
+					ll_sel_files.setVisibility(LinearLayout.VISIBLE);
 					setProcessedFileSelectCheckBoxEnabled(dialog,true);
 					setProcessedFileSelectCheckBoxChecked(dialog,false);
 					if (isProcessedFileSelected(dialog)) {

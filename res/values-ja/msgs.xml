@@ -64,7 +64,7 @@
     <string name="msgs_save_to_profile_error">"プロファイルの保存に失敗しました。ファイル=%s</string>
     
     <string name="msgs_dir_empty"			>--- ディレクトリは空です ---</string>
-	<string name="msgs_no_profile"			>--- リモート/ローカル プロファイルがありません ---</string>
+	<string name="delete_msgs_no_profile"			>--- リモート/ローカル プロファイルがありません ---</string>
  	<string name="msgs_override"			>上書きしますか?</string>
 	<string name="msgs_active_sync_prof_not_found">有効な同期プロファイがありません。</string>
 	<string name="msgs_clear_log_message"	>ログメッセージのクリア</string>

@@ -70,31 +70,26 @@
                 android:layout_marginLeft="5dp"
                 android:orientation="horizontal" >
 
-                <Button
-                    android:id="@+id/sync_profile_listbtn1"
-                    android:layout_width="90dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="1dp"
-                    android:text="@string/msgs_sync_profile_dlg_mstrlist" />
-
-                <ImageView
-                    android:id="@+id/sync_profile_master_icon"
+                <ImageButton
+                    android:id="@+id/sync_profile_edit_master"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
-                    android:layout_gravity="top"
-                    android:layout_marginTop="5dp"
-                    android:gravity="center"
-                    android:src="@drawable/blank" />
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_32_browse_text" />
 
-                <EditText
-                    android:id="@+id/sync_profile_master"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="5dp"
-                    android:layout_weight="1.0"
-                    android:hint="@string/msgs_sync_profile_dlg_master"
-                    android:inputType="text"
-                    android:textAppearance="?android:attr/textAppearanceSmall"/>
+		        <Spinner
+		            android:id="@+id/sync_profile_master_spinner"
+		            style="@android:style/Widget.Spinner"
+		            android:layout_width="0dp"
+		            android:layout_height="wrap_content"
+		            android:layout_marginBottom="5dp"
+		            android:layout_marginLeft="1dp"
+		            android:layout_marginRight="5dp"
+		            android:layout_weight="1"
+		            android:background="@drawable/spinner_color_background"
+		            android:minHeight="30dp"
+		            android:paddingLeft="5dp"/>
+
             </LinearLayout>
 
             <LinearLayout
@@ -104,31 +99,26 @@
                 android:orientation="horizontal"
                 android:textAppearance="?android:attr/textAppearanceSmall" >
 
-                <Button
-                    android:id="@+id/sync_profile_listbtn2"
-                    android:layout_width="90dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="1dp"
-                    android:text="@string/msgs_sync_profile_dlg_trgtlist" />
-
-                <ImageView
-                    android:id="@+id/sync_profile_target_icon"
+                <ImageButton
+                    android:id="@+id/sync_profile_edit_target"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
-                    android:layout_gravity="top"
-                    android:layout_marginTop="5dp"
-                    android:gravity="center"
-                    android:src="@drawable/blank" />
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_32_browse_text" />
 
-                <EditText
-                    android:id="@+id/sync_profile_target"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="5dp"
-                    android:layout_weight="1.0"
-                    android:hint="@string/msgs_sync_profile_dlg_target"
-                    android:inputType="text"
-                    android:textAppearance="?android:attr/textAppearanceSmall"/>
+		        <Spinner
+		            android:id="@+id/sync_profile_target_spinner"
+		            style="@android:style/Widget.Spinner"
+		            android:layout_width="0dp"
+		            android:layout_height="wrap_content"
+		            android:layout_marginBottom="5dp"
+		            android:layout_marginLeft="1dp"
+		            android:layout_marginRight="5dp"
+		            android:layout_weight="1"
+		            android:background="@drawable/spinner_color_background"
+		            android:minHeight="30dp"
+		            android:paddingLeft="5dp"/>
+                
             </LinearLayout>
 
             <LinearLayout

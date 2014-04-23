@@ -82,12 +82,14 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -277,7 +279,6 @@ public class ProfileMaintenance {
 							String enc_str=pl.replace(SMBSYNC_PROF_VER3+SMBSYNC_PROF_ENC, "");
 							byte[] enc_array=Base64Compat.decode(enc_str, Base64Compat.NO_WRAP);
 							String dec_str=EncryptUtil.decrypt(enc_array, cp);
-//							Log.v("","enc_str="+enc_str+", dec_str="+dec_str);
 							if (!SMBSYNC_PROF_ENC.equals(dec_str)) {
 								dlg_msg.setText(mContext.getString(R.string.msgs_export_import_pswd_invalid_password));
 							} else {
@@ -907,8 +908,6 @@ public class ProfileMaintenance {
 
 	private boolean isSyncProfileDisabled(ProfileListItem item) {
 		boolean result=false;
-//		Log.v("","master type="+item.getMasterType()+", name="+item.getMasterName());
-//		Log.v("","target type="+item.getTargetType()+", name="+item.getTargetName());
 		if (getProfileType(item.getMasterName(),profileAdapter).equals("")) {
 			item.setMasterType("");
 			item.setMasterName("");
@@ -1287,7 +1286,65 @@ public class ProfileMaintenance {
 		
 		adapterSyncOption.notifyDataSetChanged();
 	};
-	
+
+	public void setSyncMasterProfileSpinner(Spinner spinner_master, String prof_master) {
+		final SpinnerAdapterProfileSelection adapter_spinner=new SpinnerAdapterProfileSelection(mContext, R.layout.custom_simple_spinner_item);
+		adapter_spinner.setTextColor(Color.BLACK);
+		adapter_spinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		spinner_master.setPrompt(msgs_select_profile);
+		spinner_master.setAdapter(adapter_spinner);
+		int pos=0,cnt=-1;
+		
+		for (ProfileListItem pli:profileAdapter.getAllItem()) {
+			if (pli.getType().equals(SMBSYNC_PROF_TYPE_REMOTE) || 
+					pli.getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
+				cnt++;
+				adapter_spinner.add(pli.getType()+" "+pli.getName());
+				if (prof_master.equals(pli.getName())) pos=cnt;
+			}
+		}
+		
+		spinner_master.setSelection(pos);
+		adapter_spinner.notifyDataSetChanged();
+	};
+
+	public void setSyncTargetProfileSpinner(Spinner spinner_target, String prof_master, String prof_target) {
+		final SpinnerAdapterProfileSelection adapter_spinner=new SpinnerAdapterProfileSelection(mContext, R.layout.custom_simple_spinner_item);
+		adapter_spinner.setTextColor(Color.BLACK);
+		adapter_spinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		spinner_target.setPrompt(msgs_select_profile);
+		spinner_target.setAdapter(adapter_spinner);
+
+		ProfileListItem m_pli=getProfile(SMBSYNC_PROF_GROUP_DEFAULT, prof_master);
+		String mst_type="";
+		if (m_pli!=null) mst_type=m_pli.getType();
+		
+		int pos=0, cnt=-1;
+		
+		for (ProfileListItem pli:profileAdapter.getAllItem()) {
+			if (mst_type.equals(SMBSYNC_PROF_TYPE_REMOTE)) {
+				if (pli.getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
+					cnt++;
+					adapter_spinner.add(pli.getType()+" "+pli.getName());
+					if (prof_target.equals(pli.getName())) pos=cnt;
+				}
+			} else if (mst_type.equals(SMBSYNC_PROF_TYPE_LOCAL)) {
+				if (pli.getType().equals(SMBSYNC_PROF_TYPE_REMOTE) || 
+						pli.getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
+					if (!prof_master.equals(pli.getName())) {
+						cnt++;
+						adapter_spinner.add(pli.getType()+" "+pli.getName());
+						if (prof_target.equals(pli.getName())) pos=cnt;
+					}
+				}
+			}
+		}
+		spinner_target.setSelection(pos);
+		adapter_spinner.notifyDataSetChanged();
+//		Log.v("","master="+prof_master+", target="+prof_target);
+//		Log.v("","set sp_t="+spinner_target.getSelectedItem());
+	};
+
 	public void addSyncProfile(boolean add_op, String prof_name, String prof_act,
 			String prof_master, String prof_target, String prof_syncopt,
 			final ArrayList<String> ff,final ArrayList<String> df,String dialog_msg) {
@@ -1312,10 +1369,6 @@ public class ProfileMaintenance {
 		dlg_file_filter.setText(R.string.msgs_filter_list_dlg_not_specified);
 		final TextView dlg_dir_filter=(TextView) dialog.findViewById(R.id.sync_profile_dir_filter);
 		dlg_dir_filter.setText(R.string.msgs_filter_list_dlg_not_specified);
-		final EditText editmaster = (EditText)dialog.findViewById(R.id.sync_profile_master);
-		editmaster.setText(prof_master);
-		final EditText edittarget = (EditText)dialog.findViewById(R.id.sync_profile_target);
-		edittarget.setText(prof_target);
 		final EditText editname = (EditText)dialog.findViewById(R.id.sync_profile_name);
 		editname.setText(prof_name);
 
@@ -1336,25 +1389,90 @@ public class ProfileMaintenance {
 		if (prof_act.equals(SMBSYNC_PROF_ACTIVE)) tg.setChecked(true);
 			else tg.setChecked(false);
 
-		// Masterボタンの指定
-		Button listBtn1 = (Button) dialog.findViewById(R.id.sync_profile_listbtn1);
-		listBtn1.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-				edittarget.selectAll();
-				String prof_target = edittarget.getText().toString();
-				processMasterListingButton(dialog,prof_target);
+		
+		final Spinner spinner_master=(Spinner)dialog.findViewById(R.id.sync_profile_master_spinner);
+		final Spinner spinner_target=(Spinner)dialog.findViewById(R.id.sync_profile_target_spinner);
+		setSyncMasterProfileSpinner(spinner_master,"");
+		setSyncTargetProfileSpinner(spinner_target,spinner_master.getSelectedItem().toString().substring(2),"");
+//		Log.v("","add main sp_m="+spinner_master.getSelectedItem()+", sp_t="+spinner_target.getSelectedItem());
+		
+		final ImageButton ib_edit_master = (ImageButton)dialog.findViewById(R.id.sync_profile_edit_master);
+		final ImageButton ib_edit_target = (ImageButton)dialog.findViewById(R.id.sync_profile_edit_target);
+		
+		spinner_master.setOnItemSelectedListener(new OnItemSelectedListener(){
+			@Override
+			public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+				String c_mst="", c_tgt="";
+				if (spinner_target.getSelectedItem()!=null) 
+					c_tgt=spinner_target.getSelectedItem().toString().substring(2);
+				if (spinner_master.getSelectedItem()!=null) 
+					c_mst=spinner_master.getSelectedItem().toString().substring(2);
+				setSyncTargetProfileSpinner(spinner_target,c_mst,c_tgt);
+//				Log.v("","c_mst="+c_mst+", c_tgt="+c_tgt);
+				setMasterProfileEditButtonListener(dialog, c_mst);
+				setTargetProfileEditButtonListener(dialog, c_tgt);
 			}
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {}
+		});
+		
+		ib_edit_master.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View arg0) {
+				String m_name=spinner_master.getSelectedItem().toString().substring(2);
+				int num=-1;
+				ProfileListItem m_pli=getProfile(SMBSYNC_PROF_GROUP_DEFAULT,m_name);
+				if (m_pli!=null) {
+					for (int i=0;i<profileAdapter.getCount();i++) {
+						if (profileAdapter.getItem(i).getName().equals(m_name)) {
+							num=i;
+							break;
+						}
+					}
+					if (m_pli.getType().equals(SMBSYNC_PROF_TYPE_REMOTE)) {
+						editProfileRemote(m_name, SMBSYNC_PROF_TYPE_REMOTE,
+								num, m_pli.getActive(), 
+								m_pli.getAddr(), m_pli.getUser(), m_pli.getPass(),
+								m_pli.getShare(), m_pli.getDir(),m_pli.getHostname(), "");
+					} else if (m_pli.getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
+						editProfileLocal(m_name, SMBSYNC_PROF_TYPE_LOCAL,
+								num, m_pli.getLocalMountPoint(), m_pli.getActive(),
+								m_pli.getDir(), "");
+					}
+				}
+			}
+			
 		});
 
-		// Targetボタンの指定
-		Button listBtn2 = (Button) dialog.findViewById(R.id.sync_profile_listbtn2);
-		listBtn2.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-				editmaster.selectAll();
-				String prof_master = editmaster.getText().toString();
-				processTargetListingButton(dialog,prof_master);
+		ib_edit_target.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View arg0) {
+				String t_name=spinner_target.getSelectedItem().toString().substring(2);;
+				int num=-1;
+				ProfileListItem m_pli=getProfile(SMBSYNC_PROF_GROUP_DEFAULT, t_name);
+				if (m_pli!=null) {
+					for (int i=0;i<profileAdapter.getCount();i++) {
+						if (profileAdapter.getItem(i).getName().equals(t_name)) {
+							num=i;
+							break;
+						}
+					}
+					if (m_pli.getType().equals(SMBSYNC_PROF_TYPE_REMOTE)) {
+						editProfileRemote(t_name, m_pli.getType(),
+								num, m_pli.getActive(), 
+								m_pli.getAddr(), m_pli.getUser(), m_pli.getPass(),
+								m_pli.getShare(), m_pli.getDir(),m_pli.getHostname(), "");
+					} else if (m_pli.getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
+						editProfileLocal(t_name, SMBSYNC_PROF_TYPE_LOCAL,
+								num, m_pli.getLocalMountPoint(), m_pli.getActive(),
+								m_pli.getDir(), "");
+					}
+				}
 			}
+			
 		});
+
+
 		
 		// file filterボタンの指定
 		Button file_filter_btn = (Button) dialog.findViewById(R.id.sync_profile_file_filter_btn);
@@ -1392,15 +1510,11 @@ public class ProfileMaintenance {
 		btn_ok.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				String prof_name, prof_act, prof_master, prof_target, prof_syncopt = null;
-				editmaster.selectAll();
-				
 				boolean audit_error = false;
 				String audit_msg="";
 				
-				editmaster.selectAll();
-				prof_master = editmaster.getText().toString();
-				edittarget.selectAll();
-				prof_target = edittarget.getText().toString();
+				prof_master = spinner_master.getSelectedItem().toString().substring(2);
+				prof_target = spinner_target.getSelectedItem().toString().substring(2);
 				editname.selectAll();
 				prof_name = editname.getText().toString();
 
@@ -1863,10 +1977,6 @@ public class ProfileMaintenance {
 		final TextView dlg_dir_filter=(TextView) dialog.findViewById(R.id.sync_profile_dir_filter);
 		dlg_dir_filter.setText(d_fl);
 
-		final EditText editmaster = (EditText) dialog.findViewById(R.id.sync_profile_master);
-		editmaster.setText(prof_master);
-		final EditText edittarget = (EditText) dialog.findViewById(R.id.sync_profile_target);
-		edittarget.setText(prof_target);
 		final EditText editname = (EditText) dialog.findViewById(R.id.sync_profile_name);
 		editname.setText(prof_name);
 		editname.setTextColor(Color.LTGRAY);
@@ -1877,6 +1987,9 @@ public class ProfileMaintenance {
 		final CheckBox cbLastMod = (CheckBox)dialog.findViewById(R.id.sync_profile_last_modified);
 		cbConf.setChecked(prof_conf);
 		cbLastMod.setChecked(prof_ujlm);
+		
+		final ImageButton ib_edit_master=(ImageButton) dialog.findViewById(R.id.sync_profile_edit_master);
+		final ImageButton ib_edit_target=(ImageButton) dialog.findViewById(R.id.sync_profile_edit_target);
 
 		final Spinner spinnerSyncOption=(Spinner)dialog.findViewById(R.id.sync_profile_sync_option);
 		setSyncOptionSpinner(spinnerSyncOption, prof_syncopt); 
@@ -1890,30 +2003,85 @@ public class ProfileMaintenance {
 			cbmpd.setChecked(true);
 		} else cbmpd.setEnabled(false);
 
-		final ImageView master_icon=(ImageView) dialog.findViewById(R.id.sync_profile_master_icon);
-		final ImageView target_icon=(ImageView) dialog.findViewById(R.id.sync_profile_target_icon);
-
-		// Masterボタンの指定
-		Button listBtn1 = (Button) dialog.findViewById(R.id.sync_profile_listbtn1);
-		setSyncDialogIcon(prof_master,master_icon);
-		listBtn1.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-				edittarget.selectAll();
-				String prof_target = edittarget.getText().toString();
-				processMasterListingButton(dialog,prof_target);
+		final Spinner spinner_master=(Spinner)dialog.findViewById(R.id.sync_profile_master_spinner);
+		final Spinner spinner_target=(Spinner)dialog.findViewById(R.id.sync_profile_target_spinner);
+		setSyncMasterProfileSpinner(spinner_master,prof_master);
+		setSyncTargetProfileSpinner(spinner_target,prof_master,prof_target);
+		
+		spinner_master.setOnItemSelectedListener(new OnItemSelectedListener(){
+			@Override
+			public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+				String c_mst="", c_tgt="";
+				if (spinner_target.getSelectedItem()!=null) 
+					c_tgt=spinner_target.getSelectedItem().toString().substring(2);
+				if (spinner_master.getSelectedItem()!=null) 
+					c_mst=spinner_master.getSelectedItem().toString().substring(2);
+				setSyncTargetProfileSpinner(spinner_target,c_mst,c_tgt);
 			}
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {}
 		});
 
-		// Targetボタンの指定
-		Button listBtn2 = (Button) dialog.findViewById(R.id.sync_profile_listbtn2);
-		setSyncDialogIcon(prof_target,target_icon);
-		listBtn2.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-				editmaster.selectAll();
-				String prof_master = editmaster.getText().toString();
-				processTargetListingButton(dialog,prof_master);
+		setMasterProfileEditButtonListener(dialog, prof_master);
+		setTargetProfileEditButtonListener(dialog, prof_target);
+		
+		ib_edit_master.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View arg0) {
+				String m_name=spinner_master.getSelectedItem().toString().substring(2);
+				int num=-1;
+				ProfileListItem m_pli=getProfile(SMBSYNC_PROF_GROUP_DEFAULT,m_name);
+				if (m_pli!=null) {
+					for (int i=0;i<profileAdapter.getCount();i++) {
+						if (profileAdapter.getItem(i).getName().equals(m_name)) {
+							num=i;
+							break;
+						}
+					}
+					if (m_pli.getType().equals(SMBSYNC_PROF_TYPE_REMOTE)) {
+						editProfileRemote(m_name, m_pli.getType(),
+								num, m_pli.getActive(), 
+								m_pli.getAddr(), m_pli.getUser(), m_pli.getPass(),
+								m_pli.getShare(), m_pli.getDir(),m_pli.getHostname(), "");
+					} else if (m_pli.getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
+						editProfileLocal(m_name, prof_type,
+								num, m_pli.getLocalMountPoint(), m_pli.getActive(),
+								m_pli.getDir(), "");
+					}
+				}
 			}
+			
 		});
+
+		ib_edit_target.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View arg0) {
+				String t_name=spinner_target.getSelectedItem().toString().substring(2);;
+				int num=-1;
+				ProfileListItem m_pli=getProfile(SMBSYNC_PROF_GROUP_DEFAULT, t_name);
+				if (m_pli!=null) {
+					for (int i=0;i<profileAdapter.getCount();i++) {
+						if (profileAdapter.getItem(i).getName().equals(t_name)) {
+							num=i;
+							break;
+						}
+					}
+					if (m_pli.getType().equals(SMBSYNC_PROF_TYPE_REMOTE)) {
+						editProfileRemote(t_name, m_pli.getType(),
+								num, m_pli.getActive(), 
+								m_pli.getAddr(), m_pli.getUser(), m_pli.getPass(),
+								m_pli.getShare(), m_pli.getDir(),m_pli.getHostname(), "");
+					} else if (m_pli.getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
+						editProfileLocal(t_name, prof_type,
+								num, m_pli.getLocalMountPoint(), m_pli.getActive(),
+								m_pli.getDir(), "");
+					}
+				}
+			}
+			
+		});
+
+		
 		// file filterボタンの指定
 		Button file_filter_btn = (Button) dialog.findViewById(R.id.sync_profile_file_filter_btn);
 		file_filter_btn.setOnClickListener(new View.OnClickListener() {
@@ -1956,10 +2124,8 @@ public class ProfileMaintenance {
 				String prof_name, prof_act, prof_master, prof_target, sync_opt = null,audit_msg="";
 				boolean audit_error=false;
 				
-				editmaster.selectAll();
-				prof_master = editmaster.getText().toString();
-				edittarget.selectAll();
-				prof_target = edittarget.getText().toString();
+				prof_master = spinner_master.getSelectedItem().toString().substring(2);
+				prof_target = spinner_target.getSelectedItem().toString().substring(2);
 				editname.selectAll();
 				prof_name = editname.getText().toString();
 
@@ -2286,53 +2452,40 @@ public class ProfileMaintenance {
 		setRemoteDir(remurl, "",p_dir, ntfy);
 	};
 	
-	private void processMasterListingButton(Dialog dialog, String prof_target) {
-		final EditText editmaster = (EditText) dialog.findViewById(R.id.sync_profile_master);
-		final TextView dlg_msg=(TextView) dialog.findViewById(R.id.sync_profile_dlg_msg);
-		final ImageView master_icon=(ImageView) dialog.findViewById(R.id.sync_profile_master_icon);
-		NotifyEvent ntfy=new NotifyEvent(mContext);
-		//Listen setRemoteShare response 
-		ntfy.setListener(new NotifyEventListener() {
-			@Override
-			public void positiveResponse(Context arg0, Object[] arg1) {
-				editmaster.setText((String)arg1[0]);
-				setSyncDialogIcon((String)arg1[0],master_icon);
-			}
-
-			@Override
-			public void negativeResponse(Context arg0, Object[] arg1) {
-				if (arg1!=null) dlg_msg.setText((String)arg1[0]);
-				else dlg_msg.setText("");
-//				setSyncDialogIcon(prof_master,master_icon);
-			}
+	
+	private void setMasterProfileEditButtonListener(Dialog dialog, final String prof_name) {
+		final ImageButton ib_edit_master=(ImageButton) dialog.findViewById(R.id.sync_profile_edit_master);
+		final ProfileListItem pli=getProfile(SMBSYNC_PROF_GROUP_DEFAULT, prof_name);
+		if (pli==null) ib_edit_master.setEnabled(false);//setVisibility(ImageButton.GONE);
+		else {
+			ib_edit_master.setEnabled(true);//.setVisibility(ImageButton.VISIBLE);
 			
-		});
-		setSyncMaterOrTagetProfile(true,prof_target,ntfy);
+		}
+
 	};
 
-	private void processTargetListingButton(Dialog dialog, String prof_master) {
-		final EditText edittarget = (EditText) dialog.findViewById(R.id.sync_profile_target);
-		final TextView dlg_msg=(TextView) dialog.findViewById(R.id.sync_profile_dlg_msg);
-		final ImageView target_icon=(ImageView) dialog.findViewById(R.id.sync_profile_target_icon);
+	private void setTargetProfileEditButtonListener(Dialog dialog, final String prof_name) {
+		final ImageButton ib_edit_target=(ImageButton) dialog.findViewById(R.id.sync_profile_edit_target);
+		final ProfileListItem pli=getProfile(SMBSYNC_PROF_GROUP_DEFAULT, prof_name);
+		if (pli==null) ib_edit_target.setEnabled(false);//.setVisibility(ImageButton.GONE);
+		else {
+			ib_edit_target.setEnabled(true);//.setVisibility(ImageButton.VISIBLE);
+		}
+
+	};
+
+	private ProfileListItem getProfile(String group, String name) {
+		ProfileListItem pli=null;
+		for (int i=0;i<profileAdapter.getCount();i++) {
+			if (profileAdapter.getItem(i).getGroup().equals(SMBSYNC_PROF_GROUP_DEFAULT) &&
+					profileAdapter.getItem(i).getName().equals(name)) {
+				pli=profileAdapter.getItem(i);
+			}
+		}
+		return pli;
 		
-		NotifyEvent ntfy=new NotifyEvent(mContext);
-		//Listen setRemoteShare response 
-		ntfy.setListener(new NotifyEventListener() {
-			@Override
-			public void positiveResponse(Context arg0, Object[] arg1) {
-				edittarget.setText((String)arg1[0]);
-				setSyncDialogIcon((String)arg1[0],target_icon);
-			}
-
-			@Override
-			public void negativeResponse(Context arg0, Object[] arg1) {
-				if (arg1!=null) dlg_msg.setText((String)arg1[0]);
-				else dlg_msg.setText("");
-			}
-		});
-		setSyncMaterOrTagetProfile(false,prof_master,ntfy);
 	};
-
+	
 	private void processFileFilterButton(Dialog dialog,
 			final ArrayList<String> n_file_filter) {
 		final TextView dlg_file_filter=(TextView) dialog.findViewById(R.id.sync_profile_file_filter);
@@ -2364,7 +2517,6 @@ public class ProfileMaintenance {
 	
 	private void processDirectoryFilterButton(Dialog dialog,
 			final ArrayList<String> n_dir_filter) {
-		final EditText editmaster = (EditText) dialog.findViewById(R.id.sync_profile_master);
 		final CheckBox cbmpd = (CheckBox)dialog.findViewById(R.id.sync_profile_master_dir_cb);
 		final TextView dlg_dir_filter=(TextView) dialog.findViewById(R.id.sync_profile_dir_filter);
 		final TextView dlg_msg=(TextView) dialog.findViewById(R.id.sync_profile_dlg_msg);
@@ -2391,20 +2543,20 @@ public class ProfileMaintenance {
 			public void negativeResponse(Context arg0, Object[] arg1) {}
 		});
 
-		editmaster.selectAll();
-		if (getProfileType(editmaster.getText().toString(),profileAdapter)
+		Spinner spinner_master=(Spinner)dialog.findViewById(R.id.sync_profile_master_spinner);
+//		Spinner spinner_target=(Spinner)dialog.findViewById(R.id.sync_profile_target_spinner);
+		if (getProfileType(spinner_master.getSelectedItem().toString(),profileAdapter)
 				.equals("")) {
-			editmaster.requestFocus();
-			if (editmaster.getText().toString().length()==0) {
+			if (spinner_master.getSelectedItem().toString().length()==0) {
 				dlg_msg.setText(msgs_audit_msgs_master2);
 			} else {
 				dlg_msg.setText(String.format(
 					mContext.getString(R.string.msgs_filter_list_dlg_master_prof_not_found),
-					editmaster.getText().toString()));
+					spinner_master.getSelectedItem().toString()));
 			}
 			return;
 		}
-		setDirFilter(profileAdapter,editmaster.getText().toString(),n_dir_filter,ntfy);
+		setDirFilter(profileAdapter,spinner_master.getSelectedItem().toString(),n_dir_filter,ntfy);
 	};
 	
 	public void setLocalMountPointSpinner(Spinner spinner, String prof_lmp) {
@@ -3213,15 +3365,13 @@ public class ProfileMaintenance {
 		String prof_name, prof_master, prof_target;
 		boolean audit_error=false;
 		String audit_msg="";
-		EditText editmaster = (EditText) dialog.findViewById(R.id.sync_profile_master);
-		EditText edittarget = (EditText) dialog.findViewById(R.id.sync_profile_target);
+		Spinner spinner_master=(Spinner)dialog.findViewById(R.id.sync_profile_master_spinner);
+		Spinner spinner_target=(Spinner)dialog.findViewById(R.id.sync_profile_target_spinner);
 		EditText editname = (EditText) dialog.findViewById(R.id.sync_profile_name);
 		CheckBox tg = (CheckBox)dialog.findViewById(R.id.sync_profile_active);
 		
-		editmaster.selectAll();
-		prof_master = editmaster.getText().toString();
-		edittarget.selectAll();
-		prof_target = edittarget.getText().toString();
+		prof_master = spinner_master.getSelectedItem().toString().substring(2);
+		prof_target = spinner_target.getSelectedItem().toString().substring(2);
 		editname.selectAll();
 		prof_name = editname.getText().toString();
 		
@@ -3229,25 +3379,20 @@ public class ProfileMaintenance {
 			audit_error=true;
 			prof_master=removeInvalidChar(prof_master);
 			audit_msg=String.format(msgs_audit_msgs_master1,detectedInvalidCharMsg);
-			editmaster.setText(prof_master);
-			editmaster.requestFocus();
 		} else if (prof_master.length()==0) {
 			audit_error=true;
 			audit_msg=msgs_audit_msgs_master2;
-			editmaster.requestFocus();
 		} else if (!isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,
 				 SMBSYNC_PROF_TYPE_SYNC, prof_master)) {
 			audit_msg= String.format(
 					mContext.getString(R.string.msgs_master_profile_not_found), 
 					prof_master);
-			editmaster.requestFocus();
 			audit_error=true;
 		} else if (tg.isChecked() && !isProfileActive(SMBSYNC_PROF_GROUP_DEFAULT,
 				getProfileType(prof_master,profileAdapter), prof_master)) {
 			audit_msg= 
 					mContext.getString(R.string.msgs_prof_active_not_activated);
 			audit_error=true;
-			editmaster.requestFocus();
 		}
 
 		if (!audit_error) {
@@ -3255,25 +3400,20 @@ public class ProfileMaintenance {
 				audit_error=true;
 				prof_target=removeInvalidChar(prof_target);
 				audit_msg=String.format(msgs_audit_msgs_target1,detectedInvalidCharMsg);
-				edittarget.setText(prof_target);
-				edittarget.requestFocus();
 			} else if (prof_target.length()==0) {
 				audit_error=true;
 				audit_msg=msgs_audit_msgs_target2;
-				edittarget.requestFocus();
 			} else if (!isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,
 					 SMBSYNC_PROF_TYPE_SYNC, prof_target)) {
 				audit_msg= String.format(
 						mContext.getString(R.string.msgs_target_profile_not_found), 
 						prof_target);
 				audit_error=true;
-				edittarget.requestFocus();
 			} else if (tg.isChecked() && !isProfileActive(SMBSYNC_PROF_GROUP_DEFAULT,
 					getProfileType(prof_target,profileAdapter), prof_target)) {
 				audit_msg= 
 						mContext.getString(R.string.msgs_prof_active_not_activated);
 				audit_error=true;
-				edittarget.requestFocus();
 			}
 
 		}
@@ -3297,7 +3437,6 @@ public class ProfileMaintenance {
 				if (t_typ.equals(SMBSYNC_PROF_TYPE_REMOTE)) {
 					audit_error=true;
 					audit_msg=mContext.getString(R.string.msgs_invalid_profile_combination);
-					editmaster.requestFocus();
 				}
 			}
 		}
@@ -3464,7 +3603,6 @@ public class ProfileMaintenance {
 			String item_key=profileAdapter.getItem(i).getGroup()+
 					profileAdapter.getItem(i).getType()+
 					profileAdapter.getItem(i).getName();
-//			Log.v("","item_key="+item_key+", obj_key="+prof_grp+prof_type+prof_name);
 			if (item_key.equals(prof_grp+prof_type+prof_name)) {
 				if (profileAdapter.getItem(i).getActive()
 						.equals(SMBSYNC_PROF_INACTIVE))
@@ -3951,89 +4089,82 @@ public class ProfileMaintenance {
     	return srv_name;
  	};
 	
-	private void setSyncMaterOrTagetProfile(
-			boolean mp, String base_prof_name, final NotifyEvent p_ntfy) {
-		final ArrayList<String> rows = new ArrayList<String>();
-		String prof_type=getProfileType(base_prof_name,profileAdapter);
-		ProfileListItem base_pli=getProfile(base_prof_name, profileAdapter);
-//		Log.v("","mp="+mp+", type="+prof_type);
-		for (int i = 0; i < profileAdapter.getCount(); i++) {
-			ProfileListItem item = profileAdapter.getItem(i);
-			if (!mp) {
-				if (!item.getType().equals(SMBSYNC_PROF_TYPE_SYNC) && 
-					item.getActive().equals(SMBSYNC_PROF_ACTIVE)) {
-					if (prof_type.equals(SMBSYNC_PROF_TYPE_LOCAL)) {
-						if (item.getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
-							if (!base_pli.getLocalMountPoint().equals(item.getLocalMountPoint()) || 
-									!base_pli.getDir().equals(item.getDir())) {
-								rows.add(item.getType()+" "+item.getName());
-							}
-						} else {
-							rows.add(item.getType()+" "+item.getName());
-						}
-					} else {
-						if (item.getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
-							rows.add(item.getType()+" "+item.getName());
-						}
-					}
-				}
-			} else {
-				if (!item.getType().equals(SMBSYNC_PROF_TYPE_SYNC) && 
-						item.getActive().equals(SMBSYNC_PROF_ACTIVE)) {
-						rows.add(item.getType()+" "+item.getName());
-				}
-			}
-		}
-		if (rows.size()<1) rows.add(msgs_no_profile);
-    	//カスタムダイアログの生成
-        final Dialog dialog=new Dialog(mContext);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-    	dialog.setContentView(R.layout.item_select_list_dlg);
-        ((TextView)dialog.findViewById(R.id.item_select_list_dlg_title))
-        	.setText(msgs_select_profile);
-        ((TextView)dialog.findViewById(R.id.item_select_list_dlg_subtitle))
-    	.setVisibility(TextView.GONE);
-        
-//        if (rows.size()<=2) 
-//       	((TextView)dialog.findViewById(R.id.item_select_list_dlg_spacer))
-//        	.setVisibility(TextView.VISIBLE);
-        
-        CommonDialog.setDlgBoxSizeLimit(dialog, false);
-        
-        ListView lv = (ListView) dialog.findViewById(android.R.id.list);
-        lv.setAdapter(new AdapterSelectSyncProfileList(mContext, R.layout.sync_profile_list_item_view, rows));
-        lv.setScrollingCacheEnabled(false);
-        lv.setScrollbarFadingEnabled(false);
-        
-        lv.setOnItemClickListener(new OnItemClickListener(){
-        	public void onItemClick(AdapterView<?> items, View view, int idx, long id) {
-        		if (rows.get(idx).startsWith("---")) return;
-	        	// リストアイテムを選択したときの処理
-                dialog.dismiss();
-				p_ntfy.notifyToListener(true, 
-						new Object[]{rows.get(idx).substring(2,rows.get(idx).length())});
-            }
-        });	 
-        //CANCELボタンの指定
-        final Button btn_cancel=(Button)dialog.findViewById(R.id.item_select_list_dlg_cancel_btn);
-        btn_cancel.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                dialog.dismiss();
-                p_ntfy.notifyToListener(false, null);
-            }
-        });
-		// Cancelリスナーの指定
-		dialog.setOnCancelListener(new Dialog.OnCancelListener() {
-			@Override
-			public void onCancel(DialogInterface arg0) {
-				btn_cancel.performClick();
-			}
-		});
-//        dialog.setOnKeyListener(new DialogOnKeyListener(context));
-//        dialog.setCancelable(false);
-        dialog.show();
-		
-	};
+//	private void setSyncMaterOrTagetProfile(
+//			boolean mp, String base_prof_name, final NotifyEvent p_ntfy) {
+//		final ArrayList<String> rows = new ArrayList<String>();
+//		String prof_type=getProfileType(base_prof_name,profileAdapter);
+//		ProfileListItem base_pli=getProfile(base_prof_name, profileAdapter);
+//		for (int i = 0; i < profileAdapter.getCount(); i++) {
+//			ProfileListItem item = profileAdapter.getItem(i);
+//			if (!mp) {
+//				if (!item.getType().equals(SMBSYNC_PROF_TYPE_SYNC) && 
+//					item.getActive().equals(SMBSYNC_PROF_ACTIVE)) {
+//					if (prof_type.equals(SMBSYNC_PROF_TYPE_LOCAL)) {
+//						if (item.getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
+//							if (!base_pli.getLocalMountPoint().equals(item.getLocalMountPoint()) || 
+//									!base_pli.getDir().equals(item.getDir())) {
+//								rows.add(item.getType()+" "+item.getName());
+//							}
+//						} else {
+//							rows.add(item.getType()+" "+item.getName());
+//						}
+//					} else {
+//						if (item.getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
+//							rows.add(item.getType()+" "+item.getName());
+//						}
+//					}
+//				}
+//			} else {
+//				if (!item.getType().equals(SMBSYNC_PROF_TYPE_SYNC) && 
+//						item.getActive().equals(SMBSYNC_PROF_ACTIVE)) {
+//						rows.add(item.getType()+" "+item.getName());
+//				}
+//			}
+//		}
+//		if (rows.size()<1) rows.add(msgs_no_profile);
+//    	//カスタムダイアログの生成
+//        final Dialog dialog=new Dialog(mContext);
+//        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+//    	dialog.setContentView(R.layout.item_select_list_dlg);
+//        ((TextView)dialog.findViewById(R.id.item_select_list_dlg_title))
+//        	.setText(msgs_select_profile);
+//        ((TextView)dialog.findViewById(R.id.item_select_list_dlg_subtitle))
+//    	.setVisibility(TextView.GONE);
+//        
+//        CommonDialog.setDlgBoxSizeLimit(dialog, false);
+//        
+//        ListView lv = (ListView) dialog.findViewById(android.R.id.list);
+//        lv.setAdapter(new AdapterSelectSyncProfileList(mContext, R.layout.sync_profile_list_item_view, rows));
+//        lv.setScrollingCacheEnabled(false);
+//        lv.setScrollbarFadingEnabled(false);
+//        
+//        lv.setOnItemClickListener(new OnItemClickListener(){
+//        	public void onItemClick(AdapterView<?> items, View view, int idx, long id) {
+//        		if (rows.get(idx).startsWith("---")) return;
+//	        	// リストアイテムを選択したときの処理
+//                dialog.dismiss();
+//				p_ntfy.notifyToListener(true, 
+//						new Object[]{rows.get(idx).substring(2,rows.get(idx).length())});
+//            }
+//        });	 
+//        //CANCELボタンの指定
+//        final Button btn_cancel=(Button)dialog.findViewById(R.id.item_select_list_dlg_cancel_btn);
+//        btn_cancel.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View v) {
+//                dialog.dismiss();
+//                p_ntfy.notifyToListener(false, null);
+//            }
+//        });
+//		// Cancelリスナーの指定
+//		dialog.setOnCancelListener(new Dialog.OnCancelListener() {
+//			@Override
+//			public void onCancel(DialogInterface arg0) {
+//				btn_cancel.performClick();
+//			}
+//		});
+//        dialog.show();
+//		
+//	};
 
 	private ArrayList<TreeFilelistItem>  createLocalFilelist(boolean dironly, 
 			String url, String dir) {
@@ -4656,7 +4787,6 @@ public class ProfileMaintenance {
 									byte[] enc_array=Base64Compat.decode(enc_str, Base64Compat.NO_WRAP);
 									String dec_str=EncryptUtil.decrypt(enc_array, cp);
 									addProfileList(SMBSYNC_PROF_VER3+dec_str, sync, rem, lcl);
-//									Log.v("","len="+enc_str.length()+", enc="+enc_str);
 								} else {
 									addProfileList(pl, sync, rem, lcl);
 								}
@@ -5282,7 +5412,6 @@ public class ProfileMaintenance {
 				if (encrypt_required) {
 					cp=EncryptUtil.initEncryptEnv(mProfilePasswordPrefix+mProfilePassword);
 				}
-//				Log.v("","enc pswd="+mProfilePassword);
 				File lf=new File(fd);
 				if (!lf.exists()) lf.mkdir();
 				bw = new BufferedWriter(new FileWriter(fp),8192);
@@ -5389,7 +5518,6 @@ public class ProfileMaintenance {
 											EncryptUtil.encrypt(pl, cp), 
 											Base64Compat.NO_WRAP);
 								pw.println(SMBSYNC_PROF_VER3+enc);
-//								Log.v("","len="+enc.length()+", enc="+enc);
 							} else {
 								pw.println(SMBSYNC_PROF_VER3+pl);
 							}
@@ -5540,7 +5668,7 @@ public class ProfileMaintenance {
 
 	
 	private static String msgs_dir_empty	;
-	private static String msgs_no_profile	;
+//	private static String msgs_no_profile	;
 	private static String msgs_override	;
 	private static String msgs_add_local_profile	;
 	private static String msgs_add_remote_profile	;
@@ -5607,7 +5735,7 @@ public class ProfileMaintenance {
 		msgs_filelist_error=	mContext.getString(R.string.msgs_filelist_error);
 		
 		msgs_dir_empty					=	mContext.getString(R.string.msgs_dir_empty	);
-		msgs_no_profile					=	mContext.getString(R.string.msgs_no_profile	);
+//		msgs_no_profile					=	mContext.getString(R.string.msgs_no_profile	);
 		msgs_override					=	mContext.getString(R.string.msgs_override	);
 		msgs_add_local_profile			=	mContext.getString(R.string.msgs_add_local_profile	);
 		msgs_add_remote_profile			=	mContext.getString(R.string.msgs_add_remote_profile	);

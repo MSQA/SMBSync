@@ -45,6 +45,7 @@ public class GlobalParameters extends Application{
 	public Context svcContext=null;
 	
 	public PrintWriter logWriter=null;
+	public int logLineCount=0;
 	public String currentLogFilePath="";
 	
 	public boolean activityIsForeground=true;

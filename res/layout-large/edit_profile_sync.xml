@@ -67,32 +67,27 @@
 		        android:layout_marginLeft="5dp"
 		        android:layout_marginTop="5dp"
 		        android:orientation="horizontal" >
-		        <Button
-		            android:id="@+id/sync_profile_listbtn1"
-		            android:layout_width="150dp"
-		            android:layout_height="wrap_content"
-		            android:layout_marginTop="1dp"
-		            android:textAppearance="?android:attr/textAppearanceMedium"
-		            android:text="@string/msgs_sync_profile_dlg_mstrlist" />
-			    <ImageView
-			        android:id="@+id/sync_profile_master_icon"
-				    android:layout_width="40dp"
-				    android:layout_height="40dp"
-				    android:layout_gravity="top"
-				    android:layout_marginTop="5dp"
-				    android:src="@drawable/blank"
-				    android:gravity="center"/>
+
+                <ImageButton
+                    android:id="@+id/sync_profile_edit_master"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_32_browse_text" />
 		        
-		        <EditText
-		            android:id="@+id/sync_profile_master"
-		            android:layout_weight="1.0"
+		        <Spinner
+		            android:id="@+id/sync_profile_master_spinner"
+		            style="@android:style/Widget.Spinner"
 		            android:layout_width="0dp"
 		            android:layout_height="wrap_content"
-		            android:inputType="text"
+		            android:layout_marginBottom="5dp"
+		            android:layout_marginLeft="1dp"
 		            android:layout_marginRight="5dp"
-		            android:textAppearance="?android:attr/textAppearanceLarge"
-		            android:hint="@string/msgs_sync_profile_dlg_master" />
-
+		            android:layout_weight="1"
+		            android:background="@drawable/spinner_color_background"
+		            android:minHeight="40dp"
+		            android:paddingLeft="5dp"/>
+		        
 		    </LinearLayout>
 		    <LinearLayout
 		        android:layout_width="fill_parent"
@@ -101,32 +96,26 @@
 		        android:orientation="horizontal"
 		        android:layout_marginTop="5dp" >
 
-		        <Button
-		            android:id="@+id/sync_profile_listbtn2"
-		            android:layout_width="150dp"
-		            android:layout_height="wrap_content"
-		            android:layout_marginTop="1dp"
-		            android:textAppearance="?android:attr/textAppearanceMedium"
-		            android:text="@string/msgs_sync_profile_dlg_trgtlist" />
-			    <ImageView
-			        android:id="@+id/sync_profile_target_icon"
-				    android:layout_width="40dp"
-				    android:layout_height="40dp"
-				    android:layout_gravity="top"
-				    android:layout_marginTop="5dp"
-				    android:src="@drawable/blank"
-				    android:gravity="center"/>
+                <ImageButton
+                    android:id="@+id/sync_profile_edit_target"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_32_browse_text" />
 		        
-		        <EditText
-		            android:id="@+id/sync_profile_target"
-		            android:layout_weight="1.0"
+		        <Spinner
+		            android:id="@+id/sync_profile_target_spinner"
+		            style="@android:style/Widget.Spinner"
 		            android:layout_width="0dp"
 		            android:layout_height="wrap_content"
-		            android:inputType="text"
+		            android:layout_marginBottom="5dp"
+		            android:layout_marginLeft="1dp"
 		            android:layout_marginRight="5dp"
-		            android:textAppearance="?android:attr/textAppearanceLarge"
-		            android:hint="@string/msgs_sync_profile_dlg_target" />
-
+		            android:layout_weight="1"
+		            android:background="@drawable/spinner_color_background"
+		            android:minHeight="40dp"
+		            android:paddingLeft="5dp"/>
+		        		        
 		    </LinearLayout>
 
 		    <LinearLayout

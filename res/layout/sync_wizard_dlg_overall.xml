@@ -62,7 +62,7 @@
     <CheckBox
         android:id="@+id/sync_wizard_dlg_cb_all_files"
         style="@style/check_box_style"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/msgs_sync_wizard_sync_all_files" />
 

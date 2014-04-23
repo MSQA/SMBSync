@@ -4,51 +4,45 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    tools:ignore="HardcodedText" >
+    tools:ignore="HardcodedText,UselessParent" >
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
         android:text="@string/msgs_sync_wizard_sync_video_files"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
-    <LinearLayout
+    <CheckBox
+        android:id="@+id/sync_wizard_dlg_overall_videos_cb_mpg"
+        style="@style/check_box_style"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:text="mpg "
+        android:typeface="monospace" />
 
-        <CheckBox
-            android:id="@+id/sync_wizard_dlg_overall_videos_cb_mpg"
-            style="@style/check_box_style"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="mpg "
-            android:typeface="monospace" />
+    <CheckBox
+        android:id="@+id/sync_wizard_dlg_overall_videos_cb_wmv"
+        style="@style/check_box_style"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="wmv "
+        android:typeface="monospace" />
 
-        <CheckBox
-            android:id="@+id/sync_wizard_dlg_overall_videos_cb_wmv"
-            style="@style/check_box_style"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="wmv "
-            android:typeface="monospace" />
+    <CheckBox
+        android:id="@+id/sync_wizard_dlg_overall_videos_cb_avi"
+        style="@style/check_box_style"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="avi "
+        android:typeface="monospace" />
 
-        <CheckBox
-            android:id="@+id/sync_wizard_dlg_overall_videos_cb_avi"
-            style="@style/check_box_style"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="avi "
-            android:typeface="monospace" />
-
-        <CheckBox
-            android:id="@+id/sync_wizard_dlg_overall_videos_cb_mp4"
-            style="@style/check_box_style"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="mp4 "
-            android:typeface="monospace" />
-    </LinearLayout>
+    <CheckBox
+        android:id="@+id/sync_wizard_dlg_overall_videos_cb_mp4"
+        style="@style/check_box_style"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="mp4 "
+        android:typeface="monospace" />
 
 </LinearLayout>

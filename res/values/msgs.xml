@@ -64,7 +64,7 @@
     <string name="msgs_save_to_profile_error">"Save profile was failed. file=%s</string>
     
     <string name="msgs_dir_empty"			>--- Directory is empty ---</string>
-	<string name="msgs_no_profile"			>--- No remote or local profile ---</string>
+	<string name="delete_msgs_no_profile"			>--- No remote or local profile ---</string>
  	<string name="msgs_override"			>override?</string>
 	<string name="msgs_active_sync_prof_not_found">Active sync profile can not be found.</string>
 	<string name="msgs_clear_log_message"	>Clear log messages</string>
