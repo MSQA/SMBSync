@@ -94,20 +94,21 @@ public class ReadRemoteFilelist implements Runnable  {
 			SmbFile[] fl = remoteFile.listFiles();
 
 			for (int i=0;i<fl.length;i++){
+				String fn=fl[i].getName();
+				if (fn.endsWith("/")) fn=fn.substring(0,fn.length()-1);
 				if (getFLCtrl.isEnable()) {
-					String fn=fl[i].getName();
-					if (fn.endsWith("/")) fn=fn.substring(0,fn.length()-1);
-					String fp=fl[i].getPath();
-					if (fp.endsWith("/")) fp=fp.substring(0,fp.lastIndexOf("/"));
-					fp=fp.substring(remoteUrl.length()+1,fp.length());
-					if (fp.lastIndexOf("/")>0) {
-						fp="/"+fp.substring(0,fp.lastIndexOf("/")+1);
-					} else fp="/";
-					int dirct=0;
 					if (readSubDirCnt && fl[i].canRead() && 
 							fl[i].isDirectory() && !fn.equals("IPC$") && 
 							!fn.equals(".android_secure") &&
 							!fn.equals("System Volume Information")) {
+						String fp=fl[i].getPath();
+						if (fp.endsWith("/")) fp=fp.substring(0,fp.lastIndexOf("/"));
+						fp=fp.substring(remoteUrl.length()+1,fp.length());
+						if (fp.lastIndexOf("/")>0) {
+							fp="/"+fp.substring(0,fp.lastIndexOf("/")+1);
+						} else fp="/";
+						int dirct=0;
+						boolean exception_occured=false;
 						SmbFile tdf=new SmbFile(fl[i].getPath(),ntlmPasswordAuth);
 						SmbFile[] tfl=null;
 						try {
@@ -119,32 +120,33 @@ public class ReadRemoteFilelist implements Runnable  {
 								dirct=tfl.length;
 							}
 						} catch (SmbException e) {
-							//nop
-
+							exception_occured=true;
 						}
+						if (!exception_occured) {
+							TreeFilelistItem fi=new TreeFilelistItem (
+									fn,
+									"",
+									fl[i].isDirectory(),
+									fl[i].length(),
+									fl[i].lastModified(),
+									false,
+									fl[i].canRead(),
+									fl[i].canWrite(),
+									fl[i].isHidden(),
+									fp,0);
+							fi.setSubDirItemCount(dirct);
+							if (readDirOnly) {
+								if (fi.isDir()) remoteFileList.add(fi);
+							} else remoteFileList.add(fi);
+						}
+						if (DEBUG_ENABLE) 
+							util.addDebugLogMsg(2,"I","filelist detail="+fn+",isDir=" +
+								fl[i].isDirectory()+", canRead="+fl[i].canRead()+
+								", canWrite="+fl[i].canWrite()+",fp="+fp+", dircnt="+dirct+", exception="+exception_occured);
 					}
-					TreeFilelistItem fi=new TreeFilelistItem (
-							fn,
-							"",
-							fl[i].isDirectory(),
-							fl[i].length(),
-							fl[i].lastModified(),
-							false,
-							fl[i].canRead(),
-							fl[i].canWrite(),
-							fl[i].isHidden(),
-							fp,0);
-					fi.setSubDirItemCount(dirct);
-					if (readDirOnly) {
-						if (fi.isDir()) remoteFileList.add(fi);
-					} else remoteFileList.add(fi);
-					if (DEBUG_ENABLE) 
-						util.addDebugLogMsg(2,"I","filelist detail="+fn+",isDir=" +
-							fl[i].isDirectory()+", canRead="+fl[i].canRead()+
-							", canWrite="+fl[i].canWrite()+",fp="+fp+", dircnt="+dirct);
 				} else {
 					getFLCtrl.setThreadResultCancelled();
-					if (DEBUG_ENABLE) util.addDebugLogMsg(1,"W","Cancelled by main task.");
+					if (DEBUG_ENABLE) util.addDebugLogMsg(1,"W","File list creation cancelled by main task.");
 					break;
 				}
 			}
