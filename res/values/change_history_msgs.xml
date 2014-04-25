@@ -7,7 +7,7 @@
 &lt;body bgcolor=black text=white link=yellow &gt;
 &lt;Font size=+2 color=""#44ffff""&gt;Change history&lt;/Font&gt;
 &lt;br&gt;
-2014-xx-xx Ver1.80
+2014-04-25 Ver1.81
 &lt;br&gt;
 -Add sample and parameters when you want to start from other applications to help
 -Change Notification icon during synchronization(Android 4.x)

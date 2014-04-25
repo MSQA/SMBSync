@@ -109,13 +109,18 @@ public class ReadRemoteFilelist implements Runnable  {
 							!fn.equals(".android_secure") &&
 							!fn.equals("System Volume Information")) {
 						SmbFile tdf=new SmbFile(fl[i].getPath(),ntlmPasswordAuth);
-						SmbFile[] tfl=tdf.listFiles();
-						
-						if (readDirOnly) {
-							for (int j=0;j<tfl.length;j++)
-								if (tfl[j].isDirectory()) dirct++;
-						} else {
-							dirct=tfl.length;
+						SmbFile[] tfl=null;
+						try {
+							tfl=tdf.listFiles();
+							if (readDirOnly) {
+								for (int j=0;j<tfl.length;j++)
+									if (tfl[j].isDirectory()) dirct++;
+							} else {
+								dirct=tfl.length;
+							}
+						} catch (SmbException e) {
+							//nop
+
 						}
 					}
 					TreeFilelistItem fi=new TreeFilelistItem (
