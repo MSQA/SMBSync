@@ -9,7 +9,7 @@
 &lt;br&gt;
 2014-xx-xx Ver1.80
 &lt;br&gt;
--Add sample and parameters when you want to boot from other applications to help
+-Add sample and parameters when you want to start from other applications to help
 -Change Notification icon during synchronization(Android 4.x)
 -Add password protection for the profile to be written to external media
 -Change so as not to perform end confirmation

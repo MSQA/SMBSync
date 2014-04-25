@@ -1128,7 +1128,9 @@ public class SMBSyncMain extends FragmentActivity {
 		String p_opt=glblParms.settingLogOption;
 		glblParms.settingLogOption=
 				prefs.getString(getString(R.string.settings_log_option), "0");
-		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd_HHmmss");
+		SimpleDateFormat df=null;
+		if (glblParms.settingLogFileCreatedByStartupTime) df = new SimpleDateFormat("yyyy-MM-dd_HHmmss");
+		else df = new SimpleDateFormat("yyyy-MM-dd");
 		glblParms.settingLogMsgFilename="SMBSync_log_"+df.format(System.currentTimeMillis())+".txt";
 
 		if (!glblParms.settingLogOption.equals(p_opt)) {
