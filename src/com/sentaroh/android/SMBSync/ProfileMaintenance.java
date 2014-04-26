@@ -4916,7 +4916,7 @@ public class ProfileMaintenance {
 				"L","L-SAMP-USBDISK",ff2,df2, true, true,false,false));
 		pfl.add(new ProfileListItem(SMBSYNC_PROF_GROUP_DEFAULT, 
 				SMBSYNC_PROF_TYPE_LOCAL,"L-SAMP-LOCAL", SMBSYNC_PROF_ACTIVE, 
-				"/mnt/sdcard","DCIM", false));
+				glblParms.SMBSync_External_Root_Dir,"DCIM", false));
 		pfl.add(new ProfileListItem(SMBSYNC_PROF_GROUP_DEFAULT, 
 				SMBSYNC_PROF_TYPE_LOCAL,"L-SAMP-USBDISK", SMBSYNC_PROF_ACTIVE, 
 				"/mnt/usbdisk","usb", false));
