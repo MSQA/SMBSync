@@ -23,7 +23,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
-import static com.sentaroh.android.SMBSync.Constants.DEBUG_ENABLE;
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_SYNC_WIFI_OPTION_ADAPTER_OFF;
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_SYNC_WIFI_OPTION_ADAPTER_ON;
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_SYNC_WIFI_OPTION_CONNECTED_ANY_AP;
@@ -105,7 +104,7 @@ public class SMBSyncUtil {
 			else ret=true;
 		}
 		
-		if (DEBUG_ENABLE) addDebugLogMsg(2,"I","isRemoteDisable settingWifiOption="+glblParms.settingWifiOption+
+		addDebugLogMsg(2,"I","isRemoteDisable settingWifiOption="+glblParms.settingWifiOption+
 				", WifiConnected="+ws+", result="+ret);
 		
 		return ret;
@@ -130,7 +129,7 @@ public class SMBSyncUtil {
 				ret=true;
 			}
 		}
-		if (DEBUG_ENABLE) addDebugLogMsg(2,"I","isWifiActive WifiEnabled="+mWifi.isWifiEnabled()+
+		addDebugLogMsg(2,"I","isWifiActive WifiEnabled="+mWifi.isWifiEnabled()+
 				", settingWifiOption="+glblParms.settingWifiOption+
 				", SSID="+ssid+", result="+ret);
 		return ret;
@@ -300,9 +299,7 @@ public class SMBSyncUtil {
 					("MAIN"+"          ").substring(0,13)+logmsg);
 //				glblParms.logWriter.flush();
 		}
-		if (DEBUG_ENABLE ) {
-			if (glblParms.debugLevel>0) Log.v(DEBUG_TAG,cat+" "+mLogId+logmsg);
-		}
+		if (glblParms.debugLevel>0) Log.v(DEBUG_TAG,cat+" "+mLogId+logmsg);
 	};
 	
 	final static public void addMsgToMsglistAdapter(
@@ -363,7 +360,7 @@ public class SMBSyncUtil {
 				writeLogMsgToFile("D "+log_cat,syncProfName, "", 
 						mSbForaddDebugLogMsg1.toString());
 			}			
-			if (DEBUG_ENABLE) 
+			
 				Log.v(DEBUG_TAG,
 					buildLogCatString(mSbForaddDebugLogMsg1,log_cat,mLogId,syncProfName,"",
 							mSbForaddDebugLogMsg1.toString()));
@@ -394,7 +391,7 @@ public class SMBSyncUtil {
 						.append(logmsg);
 					writeLog(glblParms,mSbForaddDebugLogMsg2.toString());
 			}
-			if (DEBUG_ENABLE) Log.v(DEBUG_TAG,cat+" "+mLogId+logmsg);
+			Log.v(DEBUG_TAG,cat+" "+mLogId+logmsg);
 		}
 	};
 
@@ -420,7 +417,7 @@ public class SMBSyncUtil {
 	
 	@SuppressLint("SdCardPath")
 	public void openLogFile() {
-		if (DEBUG_ENABLE) addDebugLogMsg(2,"I","open log file entered. esm="+glblParms.externalStorageIsMounted);
+		addDebugLogMsg(2,"I","open log file entered. esm="+glblParms.externalStorageIsMounted);
 		if (glblParms.settingLogOption.equals("0") || glblParms.logWriter!=null ||
 				!glblParms.externalStorageIsMounted) {
 			if (glblParms.externalStorageIsMounted) manageLogFileGeneration();
@@ -485,7 +482,7 @@ public class SMBSyncUtil {
 	};
 	
 	public void closeLogFile() {
-		if (DEBUG_ENABLE) addDebugLogMsg(2,"I","close log file entered. esm="+glblParms.externalStorageIsMounted);
+		addDebugLogMsg(2,"I","close log file entered. esm="+glblParms.externalStorageIsMounted);
 		if (glblParms.logWriter!=null && glblParms.externalStorageIsMounted) {
 			synchronized(glblParms.logWriter) {
 				if (glblParms.debugLevel>=2) {
@@ -503,7 +500,7 @@ public class SMBSyncUtil {
 	
 	public boolean deleteLogFile() {
 		boolean result=false;
-		if (DEBUG_ENABLE) 
+		
 			addDebugLogMsg(2,"I","delete log file entered. esm="+glblParms.externalStorageIsMounted);
 		if (glblParms.logWriter==null && glblParms.externalStorageIsMounted) {
 			File lf = new File(glblParms.settingLogMsgDir+glblParms.settingLogMsgFilename);

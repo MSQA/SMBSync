@@ -7,6 +7,10 @@
 &lt;body bgcolor=black text=white link=yellow &gt;
 &lt;Font size=+2 color=""#44ffff""&gt;更新履歴&lt;/Font&gt;
 &lt;br&gt;
+2014-04-26 Ver1.82
+&lt;br&gt;
+-リモートプロファイル追加・編集で共有名一覧が表示されないバグを修正
+&lt;br&gt;
 2014-04-25 Ver1.81
 &lt;br&gt;
 -SyncProfileでのMaster/Targetプロファイル選択をSpinnerに変更し、各プロファイルを直接編集できるようにした

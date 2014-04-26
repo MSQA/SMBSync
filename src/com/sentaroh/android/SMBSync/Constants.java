@@ -25,7 +25,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 public class Constants {
 
-	final public static boolean DEBUG_ENABLE=true;
 	final static String APPLICATION_TAG="SMBSync";
 
 //	final public static int MAX_DLG_BOX_SIZE_WIDTH=600; 

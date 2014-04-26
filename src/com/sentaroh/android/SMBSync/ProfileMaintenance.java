@@ -23,7 +23,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
-import static com.sentaroh.android.SMBSync.Constants.DEBUG_ENABLE;
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROFILE_FILE_NAME_V0;
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROFILE_FILE_NAME_V1;
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROFILE_FILE_NAME_V2;
@@ -679,8 +678,7 @@ public class ProfileMaintenance {
 		final HashMap<Integer, String[]> spl=importedSettingParmList;
 		
 		if (spl.size()==0) {
-			if (DEBUG_ENABLE) 
-				util.addDebugLogMsg(2,"I","Import setting parms can not be not found.");
+			util.addDebugLogMsg(2,"I","Import setting parms can not be not found.");
 			return;
 		}
 		final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
@@ -689,20 +687,20 @@ public class ProfileMaintenance {
 			for (int i=0;i<spl.size();i++) {
 				if (spl.get(i)[1].equals(SMBSYNC_SETTINGS_TYPE_STRING)) {
 					prefs.edit().putString(spl.get(i)[0],spl.get(i)[2]).commit();
-					if (DEBUG_ENABLE) util.addDebugLogMsg(2,"I","Imported Settings="+
+					util.addDebugLogMsg(2,"I","Imported Settings="+
 							spl.get(i)[0]+"="+spl.get(i)[2]);
 				} else if (spl.get(i)[1].equals(SMBSYNC_SETTINGS_TYPE_BOOLEAN)) {
 					boolean b_val = false;
 					if (spl.get(i)[2].equals("false")) b_val = false;
 					else b_val = true;
 					prefs.edit().putBoolean(spl.get(i)[0],b_val).commit();
-					if (DEBUG_ENABLE) util.addDebugLogMsg(2,"I","Imported Settings="+
+					util.addDebugLogMsg(2,"I","Imported Settings="+
 							spl.get(i)[0]+"="+spl.get(i)[2]);
 				} else if (spl.get(i)[1].equals(SMBSYNC_SETTINGS_TYPE_INT)) {
 					int i_val = 0;
 					i_val = Integer.parseInt(spl.get(i)[2]);;
 					prefs.edit().putInt(spl.get(i)[0],i_val).commit();
-					if (DEBUG_ENABLE) util.addDebugLogMsg(2,"I","Imported Settings="+
+					util.addDebugLogMsg(2,"I","Imported Settings="+
 							spl.get(i)[0]+"="+spl.get(i)[2]);
 				}
 			}
@@ -757,7 +755,7 @@ public class ProfileMaintenance {
 					if (saveProfileToFile(true,fd,fp,profileAdapter,encrypt_required)) {
 						commonDlg.showCommonDialog(false,"I",
 								String.format(msgs_export_prof_success,fp),"",null);
-						if (DEBUG_ENABLE) util.addDebugLogMsg(1,"I","Profile was exported. fn="+fp);						
+						util.addDebugLogMsg(1,"I","Profile was exported. fn="+fp);						
 					} else {
 						commonDlg.showCommonDialog(false,"E",
 								String.format(msgs_export_prof_fail,fp),"",null);
@@ -775,7 +773,7 @@ public class ProfileMaintenance {
 			if (saveProfileToFile(true,fd,fp,profileAdapter,encrypt_required)) {
 				commonDlg.showCommonDialog(false,"I",
 						String.format(msgs_export_prof_success,fp),"",null);
-				if (DEBUG_ENABLE) util.addDebugLogMsg(1,"I","Profile was exported. fn="+fp);						
+				util.addDebugLogMsg(1,"I","Profile was exported. fn="+fp);						
 			} else {
 				commonDlg.showCommonDialog(false,"E",
 						String.format(msgs_export_prof_fail,fp),"",null);
@@ -4064,7 +4062,7 @@ public class ProfileMaintenance {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-        if (DEBUG_ENABLE) 
+        
         	util.addDebugLogMsg(1,"I","isIpAddrReachable Address="+address+
         								", reachable="+reachable);
 		return reachable;
@@ -4078,7 +4076,7 @@ public class ProfileMaintenance {
 	        cn = ua.firstCalledName();
 	        do {
 	            if (!cn.startsWith("*")) srv_name=cn; 
-	            if (DEBUG_ENABLE) 
+	            
 	            	util.addDebugLogMsg(1,"I","isSmbHost Address="+address+
 	            		", cn="+cn+", name="+srv_name);
 	        } while(( cn = ua.nextCalledName() ) != null );
@@ -4391,7 +4389,7 @@ public class ProfileMaintenance {
 				tc.setDisable();//disableAsyncTask();
 				btn_cancel.setText(mContext.getString(R.string.msgs_progress_dlg_canceling));
 				btn_cancel.setEnabled(false);
-				if (DEBUG_ENABLE) util.addDebugLogMsg(1,"W","Sharelist is cancelled.");
+				util.addDebugLogMsg(1,"W","Sharelist is cancelled.");
 			}
 		});
 		dialog.setOnCancelListener(new Dialog.OnCancelListener() {
@@ -4414,7 +4412,7 @@ public class ProfileMaintenance {
 					public void run() {
 						dialog.dismiss();
 						String err;
-						if (DEBUG_ENABLE) util.addDebugLogMsg(1,"I","FileListThread result="+tc.getThreadResult()+","+
+						util.addDebugLogMsg(1,"I","FileListThread result="+tc.getThreadResult()+","+
 								"msg="+tc.getThreadMessage()+", enable="+
 									tc.isEnable());
 						if (tc.isThreadResultSuccess()) {
@@ -5510,7 +5508,7 @@ public class ProfileMaintenance {
 									conf+"\t"+
 									ujlm;
 						}
-						if (DEBUG_ENABLE) util.addDebugLogMsg(9,"I","saveProfileToFile=" + pl);
+						util.addDebugLogMsg(9,"I","saveProfileToFile=" + pl);
 						if (sdcard) {
 							if (encrypt_required) {
 								String enc = 

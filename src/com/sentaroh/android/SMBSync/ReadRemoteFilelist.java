@@ -23,8 +23,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
-import static com.sentaroh.android.SMBSync.Constants.DEBUG_ENABLE;
-
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
@@ -70,11 +68,9 @@ public class ReadRemoteFilelist implements Runnable  {
 		readDirOnly=dironly;
 		readSubDirCnt=dc;
 		
-		if (DEBUG_ENABLE) {
-			util.addDebugLogMsg(1,"I","getFileList constructed. user="+user+
-					", url="+ru+", dir="+rd);
-			util.addDebugLogMsg(9,"I","getFileList constructed. pass="+pass);
-		}
+		util.addDebugLogMsg(1,"I","getFileList constructed. user="+user+
+				", url="+ru+", dir="+rd);
+		util.addDebugLogMsg(9,"I","getFileList constructed. pass="+pass);
 		setJcifsProperties(user,pass);
 	}
 	
@@ -86,7 +82,8 @@ public class ReadRemoteFilelist implements Runnable  {
 		getFLCtrl.setThreadResultSuccess();
 		getFLCtrl.setThreadMessage("");
 		
-		if (DEBUG_ENABLE) util.addDebugLogMsg(1,"I","getFileList started");
+		util.addDebugLogMsg(1,"I","getFileList started, readSubDirCnt="+readSubDirCnt+
+				", readDirOnly="+readDirOnly);
 		
 		remoteFileList.clear();
 		try {		
@@ -97,56 +94,64 @@ public class ReadRemoteFilelist implements Runnable  {
 				String fn=fl[i].getName();
 				if (fn.endsWith("/")) fn=fn.substring(0,fn.length()-1);
 				if (getFLCtrl.isEnable()) {
-					if (readSubDirCnt && fl[i].canRead() && 
-							fl[i].isDirectory() && !fn.equals("IPC$") && 
-							!fn.equals(".android_secure") &&
+					int dirct=0;
+					String fp=fl[i].getPath();
+					if (fp.endsWith("/")) fp=fp.substring(0,fp.lastIndexOf("/"));
+					fp=fp.substring(remoteUrl.length()+1,fp.length());
+					if (fp.lastIndexOf("/")>0) {
+						fp="/"+fp.substring(0,fp.lastIndexOf("/")+1);
+					} else fp="/";
+					if (fl[i].isDirectory() && 
+							fl[i].canRead() && 
+							!fn.equals("IPC$") && 
 							!fn.equals("System Volume Information")) {
-						String fp=fl[i].getPath();
-						if (fp.endsWith("/")) fp=fp.substring(0,fp.lastIndexOf("/"));
-						fp=fp.substring(remoteUrl.length()+1,fp.length());
-						if (fp.lastIndexOf("/")>0) {
-							fp="/"+fp.substring(0,fp.lastIndexOf("/")+1);
-						} else fp="/";
-						int dirct=0;
-						boolean exception_occured=false;
-						SmbFile tdf=new SmbFile(fl[i].getPath(),ntlmPasswordAuth);
-						SmbFile[] tfl=null;
-						try {
-							tfl=tdf.listFiles();
-							if (readDirOnly) {
-								for (int j=0;j<tfl.length;j++)
-									if (tfl[j].isDirectory()) dirct++;
-							} else {
-								dirct=tfl.length;
+						if (readSubDirCnt) {
+							SmbFile tdf=new SmbFile(fl[i].getPath(),ntlmPasswordAuth);
+							SmbFile[] tfl=null;
+							try {
+								tfl=tdf.listFiles();
+								if (readDirOnly) {
+									for (int j=0;j<tfl.length;j++)
+										if (tfl[j].isDirectory()) dirct++;
+								} else {
+									dirct=tfl.length;
+								}
+							} catch (SmbException e) {
 							}
-						} catch (SmbException e) {
-							exception_occured=true;
 						}
-						if (!exception_occured) {
-							TreeFilelistItem fi=new TreeFilelistItem (
-									fn,
-									"",
-									fl[i].isDirectory(),
-									fl[i].length(),
-									fl[i].lastModified(),
-									false,
-									fl[i].canRead(),
-									fl[i].canWrite(),
-									fl[i].isHidden(),
-									fp,0);
-							fi.setSubDirItemCount(dirct);
-							if (readDirOnly) {
-								if (fi.isDir()) remoteFileList.add(fi);
-							} else remoteFileList.add(fi);
+						TreeFilelistItem fi=new TreeFilelistItem (
+								fn,
+								"",
+								fl[i].isDirectory(),
+								fl[i].length(),
+								fl[i].lastModified(),
+								false,
+								fl[i].canRead(),
+								fl[i].canWrite(),
+								fl[i].isHidden(),
+								fp,0);
+						fi.setSubDirItemCount(dirct);
+						if (readDirOnly) {
+							if (fi.isDir()) {
+								remoteFileList.add(fi);
+								util.addDebugLogMsg(2,"I","filelist added :"+fn+",isDir=" +
+										fl[i].isDirectory()+", canRead="+fl[i].canRead()+
+										", canWrite="+fl[i].canWrite()+",fp="+fp+", dircnt="+dirct);
+							}
+						} else {
+							remoteFileList.add(fi);
+							util.addDebugLogMsg(2,"I","filelist added :"+fn+",isDir=" +
+									fl[i].isDirectory()+", canRead="+fl[i].canRead()+
+									", canWrite="+fl[i].canWrite()+",fp="+fp+", dircnt="+dirct);
 						}
-						if (DEBUG_ENABLE) 
-							util.addDebugLogMsg(2,"I","filelist detail="+fn+",isDir=" +
+					} else {
+						util.addDebugLogMsg(2,"I","filelist ignored :"+fn+",isDir=" +
 								fl[i].isDirectory()+", canRead="+fl[i].canRead()+
-								", canWrite="+fl[i].canWrite()+",fp="+fp+", dircnt="+dirct+", exception="+exception_occured);
+								", canWrite="+fl[i].canWrite()+",fp="+fp+", dircnt="+dirct);
 					}
 				} else {
 					getFLCtrl.setThreadResultCancelled();
-					if (DEBUG_ENABLE) util.addDebugLogMsg(1,"W","File list creation cancelled by main task.");
+					util.addDebugLogMsg(1,"W","File list creation cancelled by main task.");
 					break;
 				}
 			}
@@ -166,7 +171,7 @@ public class ReadRemoteFilelist implements Runnable  {
 			getFLCtrl.setDisable();
 		}
 			
-		if (DEBUG_ENABLE) util.addDebugLogMsg(1,"I","getFileList ended.");
+		util.addDebugLogMsg(1,"I","getFileList ended.");
 		getFLCtrl.setDisable();
 		notifyEvent.notifyToListener(true, null);
 	};

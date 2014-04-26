@@ -6,6 +6,9 @@
     <string name="msgs_dlg_title_about_change_desc" formatted="false">
 &lt;body bgcolor=black text=white link=yellow &gt;
 &lt;Font size=+2 color=""#44ffff""&gt;Change history&lt;/Font&gt;
+2014-04-26 Ver1.82
+&lt;br&gt;
+-Fixed a bug where the shared name list does not appear in the remote profile add/edit.
 &lt;br&gt;
 2014-04-25 Ver1.81
 &lt;br&gt;

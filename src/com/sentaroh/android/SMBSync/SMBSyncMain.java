@@ -23,7 +23,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
-import static com.sentaroh.android.SMBSync.Constants.DEBUG_ENABLE;
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_BG_TERM_NOTIFY_MSG_ALWAYS;
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_BG_TERM_NOTIFY_MSG_NO;
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_CONFIRM_FOR_COPY;
@@ -226,7 +225,7 @@ public class SMBSyncMain extends FragmentActivity {
 		
 		initAdapterAndView();
 
-		if (DEBUG_ENABLE) 
+		
 			util.addDebugLogMsg(1,"I","onCreate entered, "+"resartStatus="+restartStatus+
 					", isActivityForeground="+util.isActivityForeground());
 		
@@ -240,7 +239,7 @@ public class SMBSyncMain extends FragmentActivity {
 	@Override
 	protected void onStart() {
 		super.onStart();
-		if (DEBUG_ENABLE) 
+		
 			util.addDebugLogMsg(1,"I","onStart entered, "+"resartStatus="+restartStatus+
 					", isActivityForeground="+util.isActivityForeground());
 
@@ -250,7 +249,7 @@ public class SMBSyncMain extends FragmentActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		if (DEBUG_ENABLE) util.addDebugLogMsg(1,"I","onResume entered, "+"resartStatus="+restartStatus+
+		util.addDebugLogMsg(1,"I","onResume entered, "+"resartStatus="+restartStatus+
 					", isActivityForeground="+util.isActivityForeground());
 		util.setActivityIsForeground(true);
 		if (restartStatus==1) {
@@ -338,7 +337,7 @@ public class SMBSyncMain extends FragmentActivity {
 	@Override
 	protected void onRestart() {
 		super.onRestart();
-		if (DEBUG_ENABLE) 
+		
 			util.addDebugLogMsg(1,"I","onRestart entered, "+"resartStatus="+restartStatus+
 					", isActivityForeground="+util.isActivityForeground());
 	};
@@ -347,7 +346,7 @@ public class SMBSyncMain extends FragmentActivity {
 	protected void onPause() {
 		super.onPause();
 		util.setActivityIsForeground(false);
-		if (DEBUG_ENABLE) 
+		
 			util.addDebugLogMsg(1,"I","onPause entered "+
 					",currentView="+currentViewType+
 				", getChangingConfigurations="+getChangingConfigurations()+
@@ -360,7 +359,7 @@ public class SMBSyncMain extends FragmentActivity {
 	@Override
 	protected void onStop() {
 		super.onStop();
-		if (DEBUG_ENABLE) 
+		
 			util.addDebugLogMsg(1,"I","onStop entered, " +
 					", isActivityForeground="+util.isActivityForeground());
 		util.setActivityIsForeground(false);
@@ -371,7 +370,7 @@ public class SMBSyncMain extends FragmentActivity {
 	protected void onDestroy() {
 		super.onDestroy();
 		util.setActivityIsForeground(false);
-		if (DEBUG_ENABLE) 
+		
 			util.addDebugLogMsg(1,"I","onDestroy entered, " +
 					"isActivityForeground="+util.isActivityForeground()+
 					", isFinishing="+isFinishing());
@@ -396,7 +395,7 @@ public class SMBSyncMain extends FragmentActivity {
 	@Override
 	public void onConfigurationChanged(final Configuration newConfig) {
 	    super.onConfigurationChanged(newConfig);
-	    if (util!=null && DEBUG_ENABLE)
+	    if (util!=null)
 	    	util.addDebugLogMsg(1,"I","onConfigurationChanged Entered");
 	};
 
@@ -512,7 +511,7 @@ public class SMBSyncMain extends FragmentActivity {
 		    PackageInfo packageInfo = getPackageManager().getPackageInfo(packegeName, PackageManager.GET_META_DATA);
 		    packageVersionName=packageInfo.versionName;
 		} catch (NameNotFoundException e) {
-			if (DEBUG_ENABLE) 
+			
 				util.addDebugLogMsg(1,"I", "SMBSync package can not be found");        
 		}
 	};
@@ -551,7 +550,7 @@ public class SMBSyncMain extends FragmentActivity {
 	class OnTabChange implements OnTabChangeListener {
 		@Override
 		public void onTabChanged(String tabId){
-			if (DEBUG_ENABLE) 
+			
 				util.addDebugLogMsg(2,"I","onTabchanged entered. tab="+tabId+
 						",v="+currentViewType);
 			
@@ -564,7 +563,7 @@ public class SMBSyncMain extends FragmentActivity {
 				currentViewType="H";
 			}
 			
-			if (DEBUG_ENABLE) 
+			
 				util.addDebugLogMsg(2,"I","onTabchanged exited. tab="+tabId+
 						",v="+currentViewType);
 		};
@@ -849,7 +848,7 @@ public class SMBSyncMain extends FragmentActivity {
 	};
 	
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (DEBUG_ENABLE) util.addDebugLogMsg(9,"i","main onKeyDown enterd, kc="+keyCode);
+		util.addDebugLogMsg(9,"i","main onKeyDown enterd, kc="+keyCode);
 		switch (keyCode) {
 			case KeyEvent.KEYCODE_BACK:
 				if (onKeyCallBackListener!=null) {
@@ -1264,7 +1263,7 @@ public class SMBSyncMain extends FragmentActivity {
 	};
 	
 	private void listSMBSyncOption() {
-		if (DEBUG_ENABLE) util.addDebugLogMsg(1,"I","SMBSync option :"+
+		util.addDebugLogMsg(1,"I","SMBSync option :"+
 				"settings_log_level="+glblParms.debugLevel+
 				",settings_default_user="+glblParms.settingUsername+
 				",settings_default_addr="+glblParms.settingAddr+
@@ -1276,7 +1275,7 @@ public class SMBSyncMain extends FragmentActivity {
 				",settings_log_option="+glblParms.settingLogOption+
 				",settings_log_dir="+glblParms.settingLogMsgDir);
 		if (glblParms.debugLevel==9)
-			if (DEBUG_ENABLE) util.addDebugLogMsg(1,"I","settings_default_pass="+
+			util.addDebugLogMsg(1,"I","settings_default_pass="+
 					glblParms.settingPassword);
 		if (glblParms.settingAutoStart) util.addLogMsg("I",
 				getString(R.string.msgs_smbsync_main_settings_force_log_enabled));
@@ -1285,7 +1284,7 @@ public class SMBSyncMain extends FragmentActivity {
 
 	@SuppressLint("SdCardPath")
 	private void invokeLogFileBrowser() {
-		if (DEBUG_ENABLE) util.addDebugLogMsg(1,"I","Invoke log file browser.");
+		util.addDebugLogMsg(1,"I","Invoke log file browser.");
 		util.flushLogFile();
 //		enableBrowseLogFileMenu=false;
 		if (glblParms.logWriter!=null) {
@@ -1308,7 +1307,7 @@ public class SMBSyncMain extends FragmentActivity {
 	};
 	
 	private void invokeSettingsActivity() {
-		if (DEBUG_ENABLE) util.addDebugLogMsg(1,"I","Invoke Settings.");
+		util.addDebugLogMsg(1,"I","Invoke Settings.");
 		Intent intent = new Intent(this, SMBSyncSettings.class);
 		startActivityForResult(intent,0);
 	};
@@ -1316,12 +1315,12 @@ public class SMBSyncMain extends FragmentActivity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (!glblParms.settingLogOption.equals("0")) util.openLogFile();
 		if (requestCode==0) {
-			if (DEBUG_ENABLE) util.addDebugLogMsg(1,"I","Return from Settings.");
+			util.addDebugLogMsg(1,"I","Return from Settings.");
 			util.setActivityIsForeground(true);
 			applySettingParms();
 			listSMBSyncOption();
 		} else if (requestCode==1) {
-			if (DEBUG_ENABLE) util.addDebugLogMsg(1,"I","Return from browse log file.");
+			util.addDebugLogMsg(1,"I","Return from browse log file.");
 			util.setActivityIsForeground(true);
 		}
 	};
@@ -2131,15 +2130,15 @@ public class SMBSyncMain extends FragmentActivity {
 //		if (glblParms.settingScreenOnEnabled) {
 //			if (Build.VERSION.SDK_INT>=17) {
 //				getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON) ;
-//				if (DEBUG_ENABLE) 
+//				
 //					util.addDebugLogMsg(1,"I","setScreenOn set KEEP_SCREEN_ON");
 //			} else {
 //				if (!mScreenOnWakelock.isHeld()) {
-//			    	if (DEBUG_ENABLE) 
+//			    	
 //						util.addDebugLogMsg(1,"I","setScreenOn Wakelock acquired");
 //					mScreenOnWakelock.acquire();
 //				} else {
-//					if (DEBUG_ENABLE) 
+//					
 //						util.addDebugLogMsg(1,"I","setScreenOn Wakelock already acquired");
 //				}
 //			}
@@ -2150,15 +2149,15 @@ public class SMBSyncMain extends FragmentActivity {
 //		if (glblParms.settingScreenOnEnabled) {
 //			if (Build.VERSION.SDK_INT>=17) {
 //				getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON) ;
-//				if (DEBUG_ENABLE) 
+//				
 //					util.addDebugLogMsg(1,"I","clearScreenOn clear KEEP_SCREEN_ON");
 //			} else {
 //				if (mScreenOnWakelock.isHeld()) {
-//			    	if (DEBUG_ENABLE) 
+//			    	
 //						util.addDebugLogMsg(1,"I","clearScreenOn Wakelock released");
 //					mScreenOnWakelock.release();
 //				} else {
-//			    	if (DEBUG_ENABLE) 
+//			    	
 //						util.addDebugLogMsg(1,"I","clearScreenOn Wakelock already released");
 //				}
 //			}
@@ -2194,7 +2193,7 @@ public class SMBSyncMain extends FragmentActivity {
 		    	else mScreenOnWakelock.acquire(timeout);
 				util.addDebugLogMsg(1,"I","Wakelock acquired");
 			} else {
-				if (DEBUG_ENABLE) 
+				
 					util.addDebugLogMsg(1,"I","Wakelock not acquired, because Wakelock already acquired");
 			}
 		}
@@ -2348,17 +2347,17 @@ public class SMBSyncMain extends FragmentActivity {
 	private ISvcClient mSvcClient=null;
 	
 	private void openService(final NotifyEvent p_ntfy) {
-    	if (DEBUG_ENABLE) 
+    	
 			util.addDebugLogMsg(1,"I","openService entered");
         mSvcConnection = new ServiceConnection(){
     		public void onServiceConnected(ComponentName arg0, IBinder service) {
-    	    	if (DEBUG_ENABLE) util.addDebugLogMsg(1,"I","onServiceConnected entered");
+    	    	util.addDebugLogMsg(1,"I","onServiceConnected entered");
     	    	mSvcClient=ISvcClient.Stub.asInterface(service);
    	    		p_ntfy.notifyToListener(true, null);
     		}
     		public void onServiceDisconnected(ComponentName name) {
     			mSvcConnection = null;
-    	    	if (DEBUG_ENABLE) 
+    	    	
     				util.addDebugLogMsg(1,"I","onServiceDisconnected entered");
     	    	mSvcClient=null;
     	    	synchronized(tcService) {
@@ -2373,7 +2372,7 @@ public class SMBSyncMain extends FragmentActivity {
 	};
 
 	private void closeService() {
-    	if (DEBUG_ENABLE) 
+    	
 			util.addDebugLogMsg(1,"I","closeService entered");
 
     	if (mSvcConnection!=null) {
@@ -2413,7 +2412,7 @@ public class SMBSyncMain extends FragmentActivity {
 	};
 
 	private void showConfirmDialog(String fp, String method) {
-    	if (DEBUG_ENABLE) 
+    	
 			util.addDebugLogMsg(1,"I","showConfirmDialog entered");
 		final NotifyEvent ntfy=new NotifyEvent(mContext);
 		ntfy.setListener(new NotifyEventListener(){
@@ -2539,7 +2538,7 @@ public class SMBSyncMain extends FragmentActivity {
 				util.addLogMsg("I",getString(R.string.msgs_astart_expired));
 				showNotificationMsg(getString(R.string.msgs_astart_expired));
 				if (glblParms.settingAutoStart){
-					if (DEBUG_ENABLE) 
+					
 						util.addDebugLogMsg(1,"I","Auto synchronization was invoked.");
 //					saveTaskData();
 					boolean sel_prof=false;
@@ -2611,7 +2610,7 @@ public class SMBSyncMain extends FragmentActivity {
 					hndl.post(new Runnable(){
 						@Override
 						public void run() {
-							if (DEBUG_ENABLE) 
+							
 								util.addDebugLogMsg(1,"I","Auto termination was invoked.");
 							if (!glblParms.settingBgTermNotifyMsg.equals(SMBSYNC_BG_TERM_NOTIFY_MSG_NO)) {
 //								Log.v("","result code="+result_code+", result_msg="+result_msg);
@@ -2803,7 +2802,7 @@ public class SMBSyncMain extends FragmentActivity {
 				}
 			}
 		}
-		if (DEBUG_ENABLE) util.addDebugLogMsg(9,"I","alp="+mp_profname+
+		util.addDebugLogMsg(9,"I","alp="+mp_profname+
 				","+mirror_prof_master_type+
 				","+mirror_prof_target_type+
 					","+mirror_prof_type+","+remote_prof_addr+","+remote_host_name+","+remote_prof_share+
