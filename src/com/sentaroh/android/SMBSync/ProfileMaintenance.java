@@ -2543,18 +2543,19 @@ public class ProfileMaintenance {
 
 		Spinner spinner_master=(Spinner)dialog.findViewById(R.id.sync_profile_master_spinner);
 //		Spinner spinner_target=(Spinner)dialog.findViewById(R.id.sync_profile_target_spinner);
-		if (getProfileType(spinner_master.getSelectedItem().toString(),profileAdapter)
+//		String m_prof_type=spinner_master.getSelectedItem().toString().substring(0,1);
+		String m_prof_name=spinner_master.getSelectedItem().toString().substring(2);
+		if (getProfileType(m_prof_name,profileAdapter)
 				.equals("")) {
-			if (spinner_master.getSelectedItem().toString().length()==0) {
+			if (m_prof_name.length()==0) {
 				dlg_msg.setText(msgs_audit_msgs_master2);
 			} else {
 				dlg_msg.setText(String.format(
-					mContext.getString(R.string.msgs_filter_list_dlg_master_prof_not_found),
-					spinner_master.getSelectedItem().toString()));
+					mContext.getString(R.string.msgs_filter_list_dlg_master_prof_not_found), m_prof_name));
 			}
 			return;
 		}
-		setDirFilter(profileAdapter,spinner_master.getSelectedItem().toString(),n_dir_filter,ntfy);
+		setDirFilter(profileAdapter,m_prof_name,n_dir_filter,ntfy);
 	};
 	
 	public void setLocalMountPointSpinner(Spinner spinner, String prof_lmp) {
@@ -2661,8 +2662,16 @@ public class ProfileMaintenance {
 			@Override
 			public void afterTextChanged(Editable s) {
 				if (s.length()!=0) {
-					addBtn.setEnabled(true);
-					btn_ok.setEnabled(false);
+					if (isFilterExists(s.toString().trim(),filterAdapter)) {
+						String mtxt=mContext.getString(R.string.msgs_filter_list_duplicate_filter_specified);
+						dlg_msg.setText(String.format(mtxt, s.toString().trim()));
+						addBtn.setEnabled(false);
+						btn_ok.setEnabled(true);
+					} else {
+						dlg_msg.setText("");
+						addBtn.setEnabled(true);
+						btn_ok.setEnabled(false);
+					}
 				} else {
 					addBtn.setEnabled(false);
 					btn_ok.setEnabled(true);
@@ -2678,21 +2687,7 @@ public class ProfileMaintenance {
 			public void onClick(View v) {
 				dlg_msg.setText("");
 				et_filter.selectAll();
-				String newfilter=et_filter.getText().toString();
-				if (newfilter.length()==0) {
-					dlg_msg.setText(mContext.getString(R.string.msgs_filter_list_filter_not_specified));
-					return;
-				}
-//				if (newfilter.indexOf(",")>=0) {
-//					dlg_msg.setText(context.getString(R.string.msgs_filter_new_filter));
-//					et_filter.setText(newfilter.replaceAll(",", ""));
-//					return;
-//				}
-				if (isFilterExists(newfilter,filterAdapter)) {
-					String mtxt=mContext.getString(R.string.msgs_filter_list_duplicate_filter_specified);
-					dlg_msg.setText(String.format(mtxt, newfilter));
-					return;
-				}
+				String newfilter=et_filter.getText().toString().trim();
 				et_filter.setText("");
 				if (filterAdapter.getItem(0).getFilter().startsWith("---"))
 						filterAdapter.remove(filterAdapter.getItem(0));
@@ -2803,9 +2798,18 @@ public class ProfileMaintenance {
 			@Override
 			public void afterTextChanged(Editable s) {
 				if (s.length()!=0) {
-					addbtn.setEnabled(true);
-					dirbtn.setEnabled(false);
-					btn_ok.setEnabled(false);
+					if (isFilterExists(s.toString().trim(),filterAdapter)) {
+						String mtxt=mContext.getString(R.string.msgs_filter_list_duplicate_filter_specified);
+						dlg_msg.setText(String.format(mtxt, s.toString().trim()));
+						addbtn.setEnabled(false);
+						dirbtn.setEnabled(true);
+						btn_ok.setEnabled(true);
+					} else {
+						dlg_msg.setText("");
+						addbtn.setEnabled(true);
+						dirbtn.setEnabled(false);
+						btn_ok.setEnabled(false);
+					}
 				} else {
 					addbtn.setEnabled(false);
 					dirbtn.setEnabled(true);
@@ -2824,10 +2828,6 @@ public class ProfileMaintenance {
 				dlg_msg.setText("");
 				et_filter.selectAll();
 				String newfilter=et_filter.getText().toString();
-				if (newfilter.length()==0) {
-					dlg_msg.setText(mContext.getString(R.string.msgs_filter_list_filter_not_specified));
-					return;
-				}
 				if (isFilterExists(newfilter,filterAdapter)) {
 					String mtxt=mContext.getString(R.string.msgs_filter_list_duplicate_filter_specified);
 					dlg_msg.setText(String.format(mtxt, newfilter));
@@ -3021,7 +3021,7 @@ public class ProfileMaintenance {
 		((TextView)dialog.findViewById(R.id.item_select_list_dlg_title))
 			.setText(mContext.getString(R.string.msgs_filter_list_dlg_add_dir_filter));
 		((TextView)dialog.findViewById(R.id.item_select_list_dlg_subtitle))
-    		.setText(msgs_current_dir+item.getLocalMountPoint()+"/"+cdir);
+    		.setText(msgs_current_dir+" "+item.getLocalMountPoint()+"/"+cdir);
         final TextView dlg_msg=(TextView)dialog.findViewById(R.id.item_select_list_dlg_msg);
 	    final Button btn_ok=(Button)dialog.findViewById(R.id.item_select_list_dlg_ok_btn);
         dlg_msg.setVisibility(TextView.VISIBLE);
@@ -3189,7 +3189,7 @@ public class ProfileMaintenance {
 				((TextView)dialog.findViewById(R.id.item_select_list_dlg_title))
 					.setText(mContext.getString(R.string.msgs_filter_list_dlg_add_dir_filter));
 				((TextView)dialog.findViewById(R.id.item_select_list_dlg_subtitle))
-		    		.setText(msgs_current_dir+"/"+remurl+remdir);
+		    		.setText(msgs_current_dir+" "+remurl+remdir);
 		        final TextView dlg_msg=(TextView)dialog.findViewById(R.id.item_select_list_dlg_msg);
 			    final Button btn_ok=(Button)dialog.findViewById(R.id.item_select_list_dlg_ok_btn);
 		        dlg_msg.setVisibility(TextView.VISIBLE);

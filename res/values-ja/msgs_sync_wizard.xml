@@ -19,9 +19,10 @@
     <string name="msgs_sync_wizard_sync_direction_local_to_remote">ローカルからリモートに同期</string>
     <string name="msgs_sync_wizard_sync_direction_local_to_local">ローカルからローカルに同期</string>
     
-    <string name="msgs_sync_wizard_sync_audio_files">オーディオファイル</string>
-    <string name="msgs_sync_wizard_sync_image_files">イメージファイル</string>
-    <string name="msgs_sync_wizard_sync_video_files">ビデオファイル</string>
+    <string name="msgs_sync_wizard_sync_audio">オーディオファイル</string>
+    <string name="msgs_sync_wizard_sync_image">イメージファイル</string>
+    <string name="msgs_sync_wizard_sync_video">ビデオファイル</string>
+    <string name="msgs_sync_wizard_sync_desc_file_ext">下記の拡張子のファイルを処理対象とします。</string>
     <string name="msgs_sync_wizard_sync_all_files">全てのファイルを処理対象にする</string>
     <string name="msgs_sync_wizard_sync_select_processed_file">処理するファイルを選択してください</string>
     

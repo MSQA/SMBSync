@@ -19,9 +19,14 @@
     <string name="msgs_sync_wizard_sync_direction_local_to_remote">Sync from local to remote</string>
     <string name="msgs_sync_wizard_sync_direction_local_to_local">Sync from local to local</string>
     
-    <string name="msgs_sync_wizard_sync_audio_files">Audio files</string>
-    <string name="msgs_sync_wizard_sync_image_files">Image files</string>
-    <string name="msgs_sync_wizard_sync_video_files">Video files</string>
+    <string name="msgs_sync_wizard_sync_audio">Audio files</string>
+    <string name="msgs_sync_wizard_sync_image">Image files</string>
+    <string name="msgs_sync_wizard_sync_video">Video files</string>
+    <string name="msgs_sync_wizard_sync_desc_file_ext">Processed the files with the following extensions.</string>
+    <string name="msgs_sync_wizard_sync_audio_file_ext">*.aac, *.aif, *.aifc, *.aiff, *.kar, *.m3u, *.m4a, *.mid, *.midi, *.mp2, *.mp3, *.mpga, *.ra, *.ram, *.wav</string>
+    <string name="msgs_sync_wizard_sync_image_file_ext">*.bmp, *.cgm, *.djv, *.djvu, *.gif, *.ico, *.ief, *.jpe, *.jpeg, *.jpg, *.pbm, *.pgm, *.png, *.pnm, *.ppm, *.ras, *.rgb, *.svg, *.tif, *.tiff, *.wbmp, *.xbm, *.xpm, *.xwd</string>
+    <string name="msgs_sync_wizard_sync_video_file_ext">*.avi, *.m4u, *.mov, *.movie, *.mpe, *.mpeg, *.mpg, *.mxu, *.qt, *.wmv</string>
+    
     <string name="msgs_sync_wizard_sync_all_files">Process all files</string>
     <string name="msgs_sync_wizard_sync_select_processed_file">To select a file to be processed.</string>
     

@@ -122,6 +122,9 @@ public class ProfileCreationWizard {
 		final TextView dlg_msg=(TextView) dialog.findViewById(R.id.sync_wizard_dlg_msg);
 
 		final CheckBox cb_all_files=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_cb_all_files);
+		final CheckBox cb_audio=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_cb_audio);
+		final CheckBox cb_image=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_cb_image);
+		final CheckBox cb_video=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_cb_video);
 		final LinearLayout ll_sel_files=(LinearLayout)dialog.findViewById(R.id.sync_wizard_dlg_process_files_list);
 		cb_all_files.setChecked(true);
 		ll_sel_files.setVisibility(LinearLayout.GONE);
@@ -152,89 +155,26 @@ public class ProfileCreationWizard {
 			}
 		});
 		
-		mWizData.file_filter.clear();
-		final CheckBox cb_audio_mp3=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_audios_cb_mp3);
-		final CheckBox cb_audio_m4a=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_audios_cb_m4a);
-		final CheckBox cb_audio_wma=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_audios_cb_wma);
-		final CheckBox cb_audio_wav=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_audios_cb_wav);
-		final CheckBox cb_image_jpg=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_images_cb_jpg);
-		final CheckBox cb_image_png=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_images_cb_png);
-		final CheckBox cb_image_gif=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_images_cb_gif);
-		final CheckBox cb_image_tiff=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_images_cb_tiff);
-		final CheckBox cb_image_bmp=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_images_cb_bmp);
-		final CheckBox cb_video_mpg=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_videos_cb_mpg);
-		final CheckBox cb_video_wmv=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_videos_cb_wmv);
-		final CheckBox cb_video_avi=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_videos_cb_avi);
-		final CheckBox cb_video_mp4=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_videos_cb_mp4);
-
-		
-		cb_audio_mp3.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+		cb_audio.setOnCheckedChangeListener(new OnCheckedChangeListener(){
 			@Override
 			public void onCheckedChanged(CompoundButton arg0, boolean isChecked) {
 				checkFileTypeCB(dialog, isChecked, btn_next, dlg_msg);
 			}
 		});
-		cb_audio_m4a.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+		cb_image.setOnCheckedChangeListener(new OnCheckedChangeListener(){
 			@Override
 			public void onCheckedChanged(CompoundButton arg0, boolean isChecked) {
-				checkFileTypeCB(dialog, isChecked, btn_next, dlg_msg);			}
+				checkFileTypeCB(dialog, isChecked, btn_next, dlg_msg);
+			}
 		});
-		cb_audio_wma.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+		cb_video.setOnCheckedChangeListener(new OnCheckedChangeListener(){
 			@Override
 			public void onCheckedChanged(CompoundButton arg0, boolean isChecked) {
-				checkFileTypeCB(dialog, isChecked, btn_next, dlg_msg);			}
-		});
-		cb_audio_wav.setOnCheckedChangeListener(new OnCheckedChangeListener(){
-			@Override
-			public void onCheckedChanged(CompoundButton arg0, boolean isChecked) {
-				checkFileTypeCB(dialog, isChecked, btn_next, dlg_msg);			}
-		});
-		cb_image_jpg.setOnCheckedChangeListener(new OnCheckedChangeListener(){
-			@Override
-			public void onCheckedChanged(CompoundButton arg0, boolean isChecked) {
-				checkFileTypeCB(dialog, isChecked, btn_next, dlg_msg);			}
-		});
-		cb_image_png.setOnCheckedChangeListener(new OnCheckedChangeListener(){
-			@Override
-			public void onCheckedChanged(CompoundButton arg0, boolean isChecked) {
-				checkFileTypeCB(dialog, isChecked, btn_next, dlg_msg);			}
-		});
-		cb_image_gif.setOnCheckedChangeListener(new OnCheckedChangeListener(){
-			@Override
-			public void onCheckedChanged(CompoundButton arg0, boolean isChecked) {
-				checkFileTypeCB(dialog, isChecked, btn_next, dlg_msg);			}
-		});
-		cb_image_tiff.setOnCheckedChangeListener(new OnCheckedChangeListener(){
-			@Override
-			public void onCheckedChanged(CompoundButton arg0, boolean isChecked) {
-				checkFileTypeCB(dialog, isChecked, btn_next, dlg_msg);			}
-		});
-		cb_image_bmp.setOnCheckedChangeListener(new OnCheckedChangeListener(){
-			@Override
-			public void onCheckedChanged(CompoundButton arg0, boolean isChecked) {
-				checkFileTypeCB(dialog, isChecked, btn_next, dlg_msg);			}
-		});
-		cb_video_mpg.setOnCheckedChangeListener(new OnCheckedChangeListener(){
-			@Override
-			public void onCheckedChanged(CompoundButton arg0, boolean isChecked) {
-				checkFileTypeCB(dialog, isChecked, btn_next, dlg_msg);			}
-		});
-		cb_video_wmv.setOnCheckedChangeListener(new OnCheckedChangeListener(){
-			@Override
-			public void onCheckedChanged(CompoundButton arg0, boolean isChecked) {
-				checkFileTypeCB(dialog, isChecked, btn_next, dlg_msg);			}
-		});
-		cb_video_avi.setOnCheckedChangeListener(new OnCheckedChangeListener(){
-			@Override
-			public void onCheckedChanged(CompoundButton arg0, boolean isChecked) {
-				checkFileTypeCB(dialog, isChecked, btn_next, dlg_msg);			}
-		});
-		cb_video_mp4.setOnCheckedChangeListener(new OnCheckedChangeListener(){
-			@Override
-			public void onCheckedChanged(CompoundButton arg0, boolean isChecked) {
-				checkFileTypeCB(dialog, isChecked, btn_next, dlg_msg);			}
+				checkFileTypeCB(dialog, isChecked, btn_next, dlg_msg);
+			}
 		});
 		
+		mWizData.file_filter.clear();
 		dlg_msg.setText(mContext.getString(R.string.msgs_sync_wizard_specify_sync_direction));
 		
 		btn_ok.setVisibility(Button.GONE);
@@ -314,47 +254,61 @@ public class ProfileCreationWizard {
 //				mWizData.prof_name=et_prof_name.getText().toString();
 				mWizData.file_filter.clear();
 				if (!cb_all_files.isChecked()) {
-					if (cb_audio_mp3.isChecked()) {
-						mWizData.file_filter.add("I*.mp3");	
-					}
-					if (cb_audio_m4a.isChecked()) {
+					if (cb_audio.isChecked()) {
+						mWizData.file_filter.add("I*.aac");
+						mWizData.file_filter.add("I*.aif");
+						mWizData.file_filter.add("I*.aifc");
+						mWizData.file_filter.add("I*.aiff");
+						mWizData.file_filter.add("I*.kar");
+						mWizData.file_filter.add("I*.m3u");
 						mWizData.file_filter.add("I*.m4a");
-					}
-					if (cb_audio_wma.isChecked()) {
-						mWizData.file_filter.add("I*.wma");
-					}
-					if (cb_audio_wav.isChecked()) {
+						mWizData.file_filter.add("I*.mid");
+						mWizData.file_filter.add("I*.midi");
+						mWizData.file_filter.add("I*.mp2");
+						mWizData.file_filter.add("I*.mp3");
+						mWizData.file_filter.add("I*.mpga");
+						mWizData.file_filter.add("I*.ra");
+						mWizData.file_filter.add("I*.ram");
 						mWizData.file_filter.add("I*.wav");
-					}
-					if (cb_image_jpg.isChecked()) {
-						mWizData.file_filter.add("I*.jpg");
-						mWizData.file_filter.add("I*.jpeg");
-					}
-					if (cb_image_png.isChecked()) {
-						mWizData.file_filter.add("I*.png");
-					}
-					if (cb_image_gif.isChecked()) {
-						mWizData.file_filter.add("I*.gif");
-					}
-					if (cb_image_tiff.isChecked()) {
-						mWizData.file_filter.add("I*.tiff");
-						mWizData.file_filter.add("I*.tif");
-					}
-					if (cb_image_bmp.isChecked()) {
-						mWizData.file_filter.add("I*.bmp");
-					}
-					if (cb_video_mpg.isChecked()) {
-						mWizData.file_filter.add("I*.mpg");
-						mWizData.file_filter.add("I*.mpeg");
-					}
-					if (cb_video_wmv.isChecked()) {
 						mWizData.file_filter.add("I*.wma");
 					}
-					if (cb_video_avi.isChecked()) {
-						mWizData.file_filter.add("I*.avi");
+					if (cb_image.isChecked()) {
+						mWizData.file_filter.add("I*.bmp");
+						mWizData.file_filter.add("I*.cgm");
+						mWizData.file_filter.add("I*.djv");
+						mWizData.file_filter.add("I*.djvu");
+						mWizData.file_filter.add("I*.gif");
+						mWizData.file_filter.add("I*.ico");
+						mWizData.file_filter.add("I*.ief");
+						mWizData.file_filter.add("I*.jpe");
+						mWizData.file_filter.add("I*.jpeg");
+						mWizData.file_filter.add("I*.jpg");
+						mWizData.file_filter.add("I*.pbm");
+						mWizData.file_filter.add("I*.pgm");
+						mWizData.file_filter.add("I*.png");
+						mWizData.file_filter.add("I*.pnm");
+						mWizData.file_filter.add("I*.ppm");
+						mWizData.file_filter.add("I*.ras");
+						mWizData.file_filter.add("I*.rgb");
+						mWizData.file_filter.add("I*.svg");
+						mWizData.file_filter.add("I*.tif");
+						mWizData.file_filter.add("I*.tiff");
+						mWizData.file_filter.add("I*.wbmp");
+						mWizData.file_filter.add("I*.xbm");
+						mWizData.file_filter.add("I*.xpm");
+						mWizData.file_filter.add("I*.xwd");
 					}
-					if (cb_video_mp4.isChecked()) {
-						mWizData.file_filter.add("I*.mp4");
+					if (cb_video.isChecked()) {
+						mWizData.file_filter.add("I*.avi");
+						mWizData.file_filter.add("I*.m4u");
+						mWizData.file_filter.add("I*.mov");
+						mWizData.file_filter.add("I*.movie");
+						mWizData.file_filter.add("I*.mpe");
+						mWizData.file_filter.add("I*.mpeg");
+						mWizData.file_filter.add("I*.mpg");
+						mWizData.file_filter.add("I*.mxu");
+						mWizData.file_filter.add("I*.qt");
+						mWizData.file_filter.add("I*.wmv");
 					}
 					Collections.sort(mWizData.file_filter,new Comparator<String>(){
 						@Override
@@ -430,91 +384,36 @@ public class ProfileCreationWizard {
 			}
 		}
 
-	}
+	};
 	
 	private void setProcessedFileSelectCheckBoxEnabled(Dialog dialog, boolean enabled) {
-		final CheckBox cb_audio_mp3=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_audios_cb_mp3);
-		final CheckBox cb_audio_m4a=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_audios_cb_m4a);
-		final CheckBox cb_audio_wma=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_audios_cb_wma);
-		final CheckBox cb_audio_wav=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_audios_cb_wav);
-		final CheckBox cb_image_jpg=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_images_cb_jpg);
-		final CheckBox cb_image_png=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_images_cb_png);
-		final CheckBox cb_image_gif=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_images_cb_gif);
-		final CheckBox cb_image_tiff=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_images_cb_tiff);
-		final CheckBox cb_image_bmp=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_images_cb_bmp);
-		final CheckBox cb_video_mpg=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_videos_cb_mpg);
-		final CheckBox cb_video_wmv=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_videos_cb_wmv);
-		final CheckBox cb_video_avi=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_videos_cb_avi);
-		final CheckBox cb_video_mp4=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_videos_cb_mp4);
-		cb_audio_mp3.setEnabled(enabled);
-		cb_audio_m4a.setEnabled(enabled);
-		cb_audio_wma.setEnabled(enabled);
-		cb_audio_wav.setEnabled(enabled);
-		cb_image_jpg.setEnabled(enabled);
-		cb_image_png.setEnabled(enabled);
-		cb_image_gif.setEnabled(enabled);
-		cb_image_tiff.setEnabled(enabled);
-		cb_image_bmp.setEnabled(enabled);
-		cb_video_mpg.setEnabled(enabled);
-		cb_video_wmv.setEnabled(enabled);
-		cb_video_avi.setEnabled(enabled);
-		cb_video_mp4.setEnabled(enabled);
+		final CheckBox cb_audio=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_cb_audio);
+		final CheckBox cb_image=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_cb_image);
+		final CheckBox cb_video=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_cb_video);
+		cb_audio.setEnabled(enabled);
+		cb_image.setEnabled(enabled);
+		cb_video.setEnabled(enabled);
 	};
+	
 	private void setProcessedFileSelectCheckBoxChecked(Dialog dialog, boolean checked) {
-		final CheckBox cb_audio_mp3=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_audios_cb_mp3);
-		final CheckBox cb_audio_m4a=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_audios_cb_m4a);
-		final CheckBox cb_audio_wma=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_audios_cb_wma);
-		final CheckBox cb_audio_wav=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_audios_cb_wav);
-		final CheckBox cb_image_jpg=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_images_cb_jpg);
-		final CheckBox cb_image_png=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_images_cb_png);
-		final CheckBox cb_image_gif=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_images_cb_gif);
-		final CheckBox cb_image_tiff=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_images_cb_tiff);
-		final CheckBox cb_image_bmp=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_images_cb_bmp);
-		final CheckBox cb_video_mpg=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_videos_cb_mpg);
-		final CheckBox cb_video_wmv=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_videos_cb_wmv);
-		final CheckBox cb_video_avi=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_videos_cb_avi);
-		final CheckBox cb_video_mp4=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_videos_cb_mp4);
-		cb_audio_mp3.setChecked(checked);
-		cb_audio_m4a.setChecked(checked);
-		cb_audio_wma.setChecked(checked);
-		cb_audio_wav.setChecked(checked);
-		cb_image_jpg.setChecked(checked);
-		cb_image_png.setChecked(checked);
-		cb_image_gif.setChecked(checked);
-		cb_image_tiff.setChecked(checked);
-		cb_image_bmp.setChecked(checked);
-		cb_video_mpg.setChecked(checked);
-		cb_video_wmv.setChecked(checked);
-		cb_video_avi.setChecked(checked);
-		cb_video_mp4.setChecked(checked);
+		final CheckBox cb_audio=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_cb_audio);
+		final CheckBox cb_image=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_cb_image);
+		final CheckBox cb_video=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_cb_video);
+		cb_audio.setChecked(checked);
+		cb_image.setChecked(checked);
+		cb_video.setChecked(checked);
 	};
 	
 	private boolean isProcessedFileSelected(Dialog dialog) {
+		final CheckBox cb_audio=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_cb_audio);
+		final CheckBox cb_image=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_cb_image);
+		final CheckBox cb_video=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_cb_video);
 		final CheckBox cb_all_files=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_cb_all_files);
-		final CheckBox cb_audio_mp3=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_audios_cb_mp3);
-		final CheckBox cb_audio_m4a=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_audios_cb_m4a);
-		final CheckBox cb_audio_wma=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_audios_cb_wma);
-		final CheckBox cb_audio_wav=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_audios_cb_wav);
-		final CheckBox cb_image_jpg=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_images_cb_jpg);
-		final CheckBox cb_image_png=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_images_cb_png);
-		final CheckBox cb_image_gif=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_images_cb_gif);
-		final CheckBox cb_image_tiff=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_images_cb_tiff);
-		final CheckBox cb_image_bmp=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_images_cb_bmp);
-		final CheckBox cb_video_mpg=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_videos_cb_mpg);
-		final CheckBox cb_video_wmv=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_videos_cb_wmv);
-		final CheckBox cb_video_avi=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_videos_cb_avi);
-		final CheckBox cb_video_mp4=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_videos_cb_mp4);
 		boolean result=false;
 		if (cb_all_files.isChecked()) {
 			result=true;
 		} else {
-			if (cb_audio_mp3.isChecked() || cb_audio_m4a.isChecked() ||
-				cb_audio_wma.isChecked() || cb_audio_wav.isChecked() ||
-				cb_image_jpg.isChecked() || cb_image_png.isChecked() ||
-				cb_image_gif.isChecked() || cb_image_tiff.isChecked()||
-				cb_image_bmp.isChecked() || cb_video_mpg.isChecked() ||
-				cb_video_wmv.isChecked() || cb_video_avi.isChecked() ||
-				cb_video_mp4.isChecked()) {
+			if (cb_audio.isChecked() || cb_image.isChecked() || cb_video.isChecked()) {
 				result=true;
 			}
 		}

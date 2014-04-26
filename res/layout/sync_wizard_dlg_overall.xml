@@ -71,10 +71,87 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical" >
-	    <include layout="@layout/sync_wizard_dlg_overall_images"/>
-	    <include layout="@layout/sync_wizard_dlg_overall_audios"/>
-	    <include layout="@layout/sync_wizard_dlg_overall_videos" />
         
+        <include layout="@layout/divider_line1" />
+        
+	    <CheckBox
+	        android:id="@+id/sync_wizard_dlg_overall_cb_audio"
+	        style="@style/check_box_style"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:text="@string/msgs_sync_wizard_sync_audio"
+	        android:typeface="monospace" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="35dp"
+            android:layout_marginRight="5dp"
+            android:text="@string/msgs_sync_wizard_sync_desc_file_ext"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="35dp"
+            android:layout_marginRight="5dp"
+            android:text="@string/msgs_sync_wizard_sync_audio_file_ext"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <include layout="@layout/divider_line1" />
+        	    	    
+	    <CheckBox
+	        android:id="@+id/sync_wizard_dlg_overall_cb_image"
+	        style="@style/check_box_style"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="10dp"
+	        android:text="@string/msgs_sync_wizard_sync_image"
+	        android:typeface="monospace" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="35dp"
+            android:layout_marginRight="5dp"
+            android:text="@string/msgs_sync_wizard_sync_desc_file_ext"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+	    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="35dp"
+            android:layout_marginRight="5dp"
+            android:text="@string/msgs_sync_wizard_sync_image_file_ext"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <include layout="@layout/divider_line1" />
+        
+	    <CheckBox
+	        android:id="@+id/sync_wizard_dlg_overall_cb_video"
+	        style="@style/check_box_style"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="10dp"
+	        android:text="@string/msgs_sync_wizard_sync_video"
+	        android:typeface="monospace" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="35dp"
+            android:layout_marginRight="5dp"
+            android:text="@string/msgs_sync_wizard_sync_desc_file_ext"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+	    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="35dp"
+            android:layout_marginRight="5dp"
+            android:text="@string/msgs_sync_wizard_sync_video_file_ext"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+	    	    
     </LinearLayout>
     
 </LinearLayout>

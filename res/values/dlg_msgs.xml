@@ -53,7 +53,6 @@
     <string name="msgs_filter_list_dlg_dir_filter">Directory filter</string>
     <string name="msgs_filter_list_dlg_add_dir_filter">Add directory filter</string>
     <string name="msgs_filter_list_dlg_dir_list">Directory listing</string>
-    <string name="msgs_filter_list_filter_not_specified">Filter is not specified.</string>
     <string name="msgs_filter_list_filter_deleted">This entry was deleted.</string>
     <string name="msgs_filter_list_duplicate_filter_specified">Duplicate filter was specified.filter=%s</string>
     <string name="msgs_filter_list_no_filter">---Empty filter---</string>
