@@ -892,8 +892,8 @@ public class SMBSyncMain extends FragmentActivity {
 		
 		final WebView change_view=
 				(WebView)dialog.findViewById(R.id.about_dialog_change_history);
-		change_view.loadDataWithBaseURL("file:///android_asset/",
-				getString(R.string.msgs_dlg_title_about_change_desc),"text/html","UTF-8","");
+		change_view.loadUrl("file:///android_asset/"+
+				getString(R.string.msgs_dlg_title_about_change_desc));
 		change_view.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
 		change_view.getSettings().setBuiltInZoomControls(true);
 		

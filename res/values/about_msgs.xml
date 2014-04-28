@@ -5,4 +5,5 @@
     <string name="msgs_about_dlg_change_btn">Show change history</string>
     <string name="msgs_dlg_title_about">About SMBSync</string>
     <string name="msgs_dlg_title_about_func_desc">SMBSync_Desc_EN.htm</string>
+    <string name="msgs_dlg_title_about_change_desc">SMBSync_Change_EN.htm</string>
 </resources>
