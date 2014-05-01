@@ -2080,6 +2080,12 @@ public class SMBSyncMain extends FragmentActivity {
 		TabWidget tw=(TabWidget)findViewById(android.R.id.tabs);
 		tw.setEnabled(true);
 		if (Build.VERSION.SDK_INT>=11) tw.setAlpha(1.0f);
+//		mTabChildviewProf.setEnabled(true); 
+//		mTabChildviewProf.setViewAlpha(1.0f);
+//		mTabChildviewMsg.setEnabled(true);
+//		mTabChildviewMsg.setViewAlpha(1.0f);
+//		mTabChildviewHist.setEnabled(true);
+//		mTabChildviewHist.setViewAlpha(1.0f);
 		
 		unsetOnKeyCallBackListener();
 		
@@ -2092,6 +2098,12 @@ public class SMBSyncMain extends FragmentActivity {
 		TabWidget tw=(TabWidget)findViewById(android.R.id.tabs);
 		tw.setEnabled(false);
 		if (Build.VERSION.SDK_INT>=11) tw.setAlpha(0.4f);
+//		mTabChildviewProf.setEnabled(false); 
+//		mTabChildviewProf.setAlpha(0.4f);
+//		mTabChildviewMsg.setEnabled(false);
+//		mTabChildviewMsg.setViewAlpha(0.4f);
+//		mTabChildviewHist.setEnabled(false);
+//		mTabChildviewHist.setViewAlpha(0.4f);
 		
 		setOnKeyCallBackListener(new CallBackListener() {
 			private long next_issued_time=0;
@@ -3089,6 +3101,9 @@ public class SMBSyncMain extends FragmentActivity {
        public void setTabTitle(String title) {  
             tv1.setText(title);  
        }  
+       public void setViewAlpha(float alpha) {  
+           tv1.setAlpha(alpha);  
+      }  
 
     };
 }
