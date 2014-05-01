@@ -66,7 +66,8 @@ public class SMBSyncSettings extends PreferenceActivity{
 	private static PreferenceFragment mPrefFrag=null;
 	
     /** Called when the activity is first created. */
-    @Override
+    @SuppressWarnings("deprecation")
+	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (DEBUG_ENABLE) Log.v(APPLICATION_TAG,"SettingsActivity onCreate entered");
@@ -144,6 +145,7 @@ public class SMBSyncSettings extends PreferenceActivity{
     	
 	};
 
+	@SuppressWarnings("deprecation")
 	private static void initSettingValueBeforeHc(SharedPreferences shared_pref, String key_string) {
 //		Log.v("","key="+key_string);
 		initSettingValue(mPrefAct.findPreference(key_string),shared_pref,key_string);
@@ -173,6 +175,7 @@ public class SMBSyncSettings extends PreferenceActivity{
         if (DEBUG_ENABLE) Log.v(APPLICATION_TAG,"SettingsActivity onStart entered");
     };
  
+    @SuppressWarnings("deprecation")
     @Override
     public void onResume(){
         super.onResume();
@@ -205,6 +208,7 @@ public class SMBSyncSettings extends PreferenceActivity{
         return true;
     };
 
+    @SuppressWarnings("deprecation")
 	@Override  
 	protected void onPause() {  
 	    super.onPause();  
@@ -230,6 +234,7 @@ public class SMBSyncSettings extends PreferenceActivity{
 		if (DEBUG_ENABLE) Log.v(APPLICATION_TAG,"SettingsActivity onDestroy entered");
 	};
 
+	@SuppressWarnings("deprecation")
 	private static SharedPreferences.OnSharedPreferenceChangeListener listenerBeforeHc =   
 		    new SharedPreferences.OnSharedPreferenceChangeListener() {  
 		    public void onSharedPreferenceChanged(SharedPreferences shared_pref, 
@@ -382,7 +387,7 @@ public class SMBSyncSettings extends PreferenceActivity{
     	return isChecked;
 	};
 
-
+	@SuppressWarnings("deprecation")
 	private static boolean checkLogSettings(Preference pref_key, 
 			SharedPreferences shared_pref, String key_string, Context c) {
 		boolean isChecked = false;
@@ -451,6 +456,7 @@ public class SMBSyncSettings extends PreferenceActivity{
     	return isChecked;
 	};
 
+	@SuppressWarnings("deprecation")
 	private static boolean checkSmbSettings(Preference pref_key, 
 			SharedPreferences shared_pref, String key_string, Context c) {
 		boolean isChecked = false;

@@ -57,6 +57,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
@@ -160,6 +161,8 @@ public class SMBSyncMain extends FragmentActivity {
     private static Handler mUiHandler=new Handler();
 	private WifiManager.WifiLock mWifiLock=null;
 
+	private Locale mCurrentLocal=null;
+	
 	@Override  
 	protected void onSaveInstanceState(Bundle outState) {  
 		super.onSaveInstanceState(outState);
@@ -183,6 +186,8 @@ public class SMBSyncMain extends FragmentActivity {
 //		setTheme(android.R.style.Theme_Light);
 		super.onCreate(savedInstanceState);
 //		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		
+		mCurrentLocal=getResources().getConfiguration().locale;
 		
 		setContentView(R.layout.main);
 		mContext=this;
@@ -395,10 +400,38 @@ public class SMBSyncMain extends FragmentActivity {
 	@Override
 	public void onConfigurationChanged(final Configuration newConfig) {
 	    super.onConfigurationChanged(newConfig);
-	    if (util!=null)
-	    	util.addDebugLogMsg(1,"I","onConfigurationChanged Entered");
+	    if (util!=null) {
+	    	util.addDebugLogMsg(1,"I","onConfigurationChanged Entered, " ,
+	    			"New orientation="+newConfig.orientation+
+	    			", Current language=",mCurrentLocal.getLanguage(),
+	    			", New language=",newConfig.locale.getLanguage());
+	    }
+	    if (newConfig.locale.getLanguage().equals("ja")) {
+	    	if (!mCurrentLocal.getLanguage().equals("ja")) {//to ja
+	    		changeLanguageCode(newConfig);
+	    	}
+	    } else {
+	    	if (mCurrentLocal.getLanguage().equals("ja")) {//to en（Default)
+	    		changeLanguageCode(newConfig);
+	    	}
+	    }
 	};
 
+	private void changeLanguageCode(final Configuration newConfig) {
+		util.addLogMsg("I",getString(R.string.msgs_smbsync_main_language_changed));
+	    loadMsgString();
+	    refreshOptionMenu();
+		mTabChildviewProf.setTabTitle(getString(R.string.msgs_tab_name_prof));
+		mTabChildviewMsg.setTabTitle(getString(R.string.msgs_tab_name_msg));
+		mTabChildviewHist.setTabTitle(getString(R.string.msgs_tab_name_history));
+		profMaint.loadMsgString();
+		mCurrentLocal=newConfig.locale;
+		
+		commonDlg.showCommonDialog(false, "W", "", 
+				getString(R.string.msgs_smbsync_main_language_changed), null);
+		
+	};
+	
 	private void svcStartForeground() {
 		if (mSvcClient!=null) {
 			try {
@@ -516,26 +549,28 @@ public class SMBSyncMain extends FragmentActivity {
 		}
 	};
 	
+	private CustomTabContentView mTabChildviewProf=null, 
+			mTabChildviewMsg=null, mTabChildviewHist=null;
 	private void createTabView() {
 		tabHost=(TabHost)findViewById(android.R.id.tabhost);
 		tabHost.setup();
 
-		View childview2 = 
+		mTabChildviewProf = 
 			new CustomTabContentView(this,getString(R.string.msgs_tab_name_prof));
 		TabHost.TabSpec tabSpec=
-			tabHost.newTabSpec("prof").setIndicator(childview2).setContent(R.id.profile_view);
+			tabHost.newTabSpec("prof").setIndicator(mTabChildviewProf).setContent(R.id.profile_view);
 		tabHost.addTab(tabSpec);
 		
-		View childview3 = 
+		mTabChildviewMsg = 
 			new CustomTabContentView(this,getString(R.string.msgs_tab_name_msg));
 		tabSpec=
-			tabHost.newTabSpec("msg").setIndicator(childview3).setContent(R.id.message_view);
+			tabHost.newTabSpec("msg").setIndicator(mTabChildviewMsg).setContent(R.id.message_view);
 		tabHost.addTab(tabSpec);
 
-		View childview4 = 
+		mTabChildviewHist = 
 				new CustomTabContentView(this,getString(R.string.msgs_tab_name_history));
 		tabSpec=
-			tabHost.newTabSpec("hst").setIndicator(childview4).setContent(R.id.history_view);
+			tabHost.newTabSpec("hst").setIndicator(mTabChildviewHist).setContent(R.id.history_view);
 		tabHost.addTab(tabSpec);
 
 		if (restartStatus==0) tabHost.setCurrentTab(0);
@@ -3039,16 +3074,22 @@ public class SMBSyncMain extends FragmentActivity {
         LayoutInflater inflater = (LayoutInflater) getApplicationContext()  
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);  
       
+        private View childview1=null;
+        private TextView tv1=null;
         public CustomTabContentView(Context context) {  
             super(context);  
         }  
         public CustomTabContentView(Context context, String title) {  
             this(context);  
-            View childview1 = inflater.inflate(R.layout.tab_widget1, null);  
-            TextView tv1 = (TextView) childview1.findViewById(R.id.tab_widget1_textview);  
+            childview1 = inflater.inflate(R.layout.tab_widget1, null);  
+            tv1 = (TextView) childview1.findViewById(R.id.tab_widget1_textview);  
             tv1.setText(title);  
             addView(childview1);  
+       }
+       public void setTabTitle(String title) {  
+            tv1.setText(title);  
        }  
+
     };
 }
 class ActivityDataHolder implements Serializable  {

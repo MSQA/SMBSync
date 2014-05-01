@@ -5720,7 +5720,7 @@ public class ProfileMaintenance {
     
 //    private static String msgs_dlg_hardkey_back_button;
     
-	private void loadMsgString() {
+	public void loadMsgString() {
 		
 		msgs_audit_share_not_spec=mContext.getString(R.string.msgs_audit_share_not_spec);
 		msgs_audit_addr_user_not_spec=mContext.getString(R.string.msgs_audit_addr_user_not_spec);

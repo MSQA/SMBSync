@@ -36,6 +36,7 @@ import android.support.v4.app.NotificationCompat;
 
 public class NotificationUtil {
 	
+	@SuppressWarnings("deprecation")
 	static final public void initNotification(GlobalParameters gwa) {
 		gwa.notificationManager=(NotificationManager) gwa.svcContext.getSystemService(Context.NOTIFICATION_SERVICE);
 		gwa.notification=new Notification(R.drawable.ic_32_smbsync,

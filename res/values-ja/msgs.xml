@@ -57,6 +57,7 @@
     <string name="msgs_smbsync_main_restart">再起動しました。</string>
     <string name="msgs_smbsync_main_restart_msglost">再起動しましたが、メッセージを回復できませんでした。</string>
     <string name="msgs_smbsync_main_end"	>正常終了します。</string>
+    <string name="msgs_smbsync_main_language_changed">システムの言語が変更されましたが、アプリケーションに動的反映されていない個所があります。(同期実行中のメッセージやプロファイル編集画面の表示など)\n変更を完全に反映するためにはアプリケーションの再起動が必要です。(同期を実行中ならば、同期が終了してから再起動してください)</string>
     <string name="msgs_smbsync_main_settings_force_log_enabled"	>自動同期起動が有効なため、ログ記録を有効にしました。</string>
     
     <string name="msgs_create_profile_error">プロファイルリスト作成に失敗しました。ファイル=%s</string>
