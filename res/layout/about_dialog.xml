@@ -23,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="1dp"
-            android:layout_weight="0.29"
+            android:layout_weight="0.21"
             android:text="@string/msgs_about_dlg_func_btn" />
 
         <Button
