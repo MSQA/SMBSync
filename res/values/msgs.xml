@@ -142,8 +142,8 @@
 	<string name="msgs_audit_msgs_master_target">Specified master and target profile is same. Specify different profile.</string>
 	<string name="msgs_filter_new_filter">Filter has contains $s character, invalid character was removed.</string>
 				
-	<string name="msgs_menu_sync">Synchronizing</string>
-	<string name="msgs_menu_browse_logfile">Browse log file</string>
+	<string name="msgs_menu_sync">Sync</string>
+	<string name="msgs_menu_browse_logfile">Show log</string>
 	<string name="msgs_menu_export">Export profile to sdcard</string>
 	<string name="msgs_menu_last_mod_list">File last modified time</string>
 	<string name="msgs_menu_import">Import profile from sdcard</string>
