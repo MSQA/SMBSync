@@ -1036,7 +1036,7 @@ public class MirrorIO implements Runnable {
 		String cp=
 				prefs.getString(glblParms.svcContext.getString(R.string.settings_smb_perform_class), "");
 		
-		if (cp.equals("0")) {
+		if (cp.equals("0")) {//Minimum
 			settingsSmbLogLevel="0";
 			settingsSmbRcvBufSize="16644";
 			settingsSmbSndBufSize="16644";
@@ -1044,7 +1044,7 @@ public class MirrorIO implements Runnable {
 			settingsSmbMaxBuffers="";
 			settingsIoBuffers="4";
 			settingsSmbTcpNodelay="false";
-		} else if (cp.equals("1")) {
+		} else if (cp.equals("1")) {//Medium
 			settingsSmbLogLevel="0";
 			settingsSmbRcvBufSize="33288";
 			settingsSmbSndBufSize="33288";
@@ -1052,7 +1052,7 @@ public class MirrorIO implements Runnable {
 			settingsSmbMaxBuffers="100";
 			settingsIoBuffers="4";
 			settingsSmbTcpNodelay="false";
-		} else if (cp.equals("2")) {
+		} else if (cp.equals("2")) {//Large
 			settingsSmbLogLevel="0";
 			settingsSmbRcvBufSize="66576";
 			settingsSmbSndBufSize="66576";
