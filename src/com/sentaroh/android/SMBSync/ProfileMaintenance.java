@@ -2071,7 +2071,7 @@ public class ProfileMaintenance {
 								m_pli.getShare(), m_pli.getDir(),m_pli.getHostname(), "");
 					} else if (m_pli.getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
 						editProfileLocal(t_name, prof_type,
-								num, m_pli.getLocalMountPoint(), m_pli.getActive(),
+								num, m_pli.getActive(), m_pli.getLocalMountPoint(), 
 								m_pli.getDir(), "");
 					}
 				}
