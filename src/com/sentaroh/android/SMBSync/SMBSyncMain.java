@@ -89,6 +89,7 @@ import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.text.ClipboardManager;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -2012,6 +2013,7 @@ public class SMBSyncMain extends FragmentActivity {
 	private void editProfile(String prof_name, String prof_type,
 			String prof_act, int prof_num) {
 		ProfileListItem item = profileAdapter.getItem(prof_num);
+		Log.v("","host="+item.getHostname());
 		if (prof_type.equals(SMBSYNC_PROF_TYPE_REMOTE)) {
 			profMaint.editProfileRemote(prof_name, prof_type, prof_num, prof_act,
 					item.getAddr(),item.getUser(),item.getPass(),item.getShare(),

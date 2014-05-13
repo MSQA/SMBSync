@@ -5197,6 +5197,18 @@ public class ProfileMaintenance {
 		if (parm[1].equals("SETTINGS")) return; //ignore settings entry
 		
 		if (parm[1].equals(SMBSYNC_PROF_TYPE_REMOTE)) {//Remote
+			String h_addr="", h_name="";
+			if (parm[6].length()>0) {
+				if (parm[6].substring(0,1).compareTo("0")>=0 && parm[6].substring(0,1).compareTo("9")<=0) {
+					h_addr=parm[6];
+				} else {
+					h_name=parm[6];
+				}
+			} else {
+				h_addr="";
+				h_name=parm[9];
+			}
+//			Log.v("","h_addr="+h_addr+", h_name="+h_name);
 			rem.add(setRemoteProfilelistItem(
 					parm[0],//group
 					parm[2],//Name
@@ -5205,8 +5217,8 @@ public class ProfileMaintenance {
 					parm[4],//user
 					parm[5],//pass
 					parm[7],//share
-					parm[6],//address
-					parm[9],//hostname
+					h_addr,//address
+					h_name,//hostname
 					false));
 
 		} else {

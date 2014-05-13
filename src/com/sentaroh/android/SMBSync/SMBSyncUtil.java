@@ -137,6 +137,7 @@ public class SMBSyncUtil {
 	
 	public static String getLocalIpAddress() {
 		String result="";
+		boolean exit=false;
 	    try {
 	        for (Enumeration<NetworkInterface> en = 
 	        		NetworkInterface.getNetworkInterfaces();
@@ -149,12 +150,18 @@ public class SMBSyncUtil {
 //	                if (!inetAddress.isLoopbackAddress() && !(inetAddress.toString().indexOf(":")>=0)) {
 //	                    return inetAddress.getHostAddress().toString();
 //	                }
-//	            	Log.v("","ip="+inetAddress.getHostAddress());
+//	            	Log.v("","ip="+inetAddress.getHostAddress()+
+//	            			", name="+intf.getName());
 	            	if (inetAddress.isSiteLocalAddress()) {
 	                    result=inetAddress.getHostAddress();
-	                    break;
+//	                    Log.v("","result="+result+", name="+intf.getName()+"-");
+	                    if (intf.getName().equals("wlan0")) {
+	                    	exit=true;
+	                    	break;
+	                    }
 	            	}
 	            }
+	            if (exit) break;
 	        }
 	    } catch (SocketException ex) {
 	        Log.e(DEBUG_TAG, ex.toString());
