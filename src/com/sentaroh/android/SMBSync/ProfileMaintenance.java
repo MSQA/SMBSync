@@ -64,6 +64,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 
 import jcifs.UniAddress;
+import jcifs.netbios.NbtAddress;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -72,7 +73,6 @@ import android.graphics.Color;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.text.Editable;
-import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -128,7 +128,7 @@ public class ProfileMaintenance {
 		importedSettingParmList=new HashMap<Integer, String[]>();
 	
 	private String scanIpAddrSubnet;
-	private int scanIpAddrBeginAddr,scanIpAddrEndAddr, scanIpAddrTimeout=0;
+	private int scanIpAddrBeginAddr,scanIpAddrEndAddr;
 	boolean cancelIpAddressListCreation =false;
 	
 	private CommonDialog commonDlg=null;
@@ -3632,17 +3632,9 @@ public class ProfileMaintenance {
 			    	.setVisibility(TextView.GONE);
 			    final TextView dlg_msg=(TextView)dialog.findViewById(R.id.item_select_list_dlg_msg);
 	    		dlg_msg.setVisibility(TextView.VISIBLE);
-			    TextView filetext= (TextView)dialog.findViewById(R.id.item_select_list_dlg_itemtext);
-			    filetext.setText(mContext.getString(R.string.msgs_ip_address_range_dlg_timeout));
-			    filetext.setVisibility(TextView.VISIBLE);
 			    Button btnRescan=(Button)dialog.findViewById(R.id.item_select_list_dlg_ok_btn);
 			    btnRescan.setVisibility(TextView.VISIBLE);
 			    btnRescan.setText(mContext.getString(R.string.msgs_ip_address_range_dlg_rescan));
-			    
-			    final EditText toEt = (EditText)dialog.findViewById(R.id.item_select_list_dlg_itemname);
-			    toEt.setVisibility(EditText.VISIBLE);
-			    toEt.setInputType(InputType.TYPE_CLASS_NUMBER);
-			    toEt.setText(""+scanIpAddrTimeout);
 			    
 			    CommonDialog.setDlgBoxSizeLimit(dialog, true);
 			    
@@ -3675,23 +3667,17 @@ public class ProfileMaintenance {
 			    //RESCANボタンの指定
 			    btnRescan.setOnClickListener(new View.OnClickListener() {
 			        public void onClick(View v) {
-			        	String toVal=toEt.getText().toString();
-			        	if (toVal.equals("")) {
-			        		dlg_msg.setText(mContext.getString(R.string.msgs_ip_address_range_dlg_timeout_invalid));
-		        			return;
-			        	} else {
-			        		scanIpAddrTimeout = Integer.parseInt(toVal);
-			        		if (scanIpAddrTimeout<100 || scanIpAddrTimeout>2000) {
-			        			dlg_msg.setText(mContext.getString(R.string.msgs_ip_address_range_dlg_timeout_invalid));
-			        			return;
-			        		}
-			        	}
 			        	dlg_msg.setText("");
 			            ipAddressList.clear();
 			            NotifyEvent ntfy=new NotifyEvent(mContext);
 			    		ntfy.setListener(new NotifyEventListener() {
 			    			@Override
 			    			public void positiveResponse(Context c,Object[] o) {
+			    				if (ipAddressList.size()<1) {
+			    					ScanAddressResultListItem li=new ScanAddressResultListItem();
+			    					li.server_name=mContext.getString(R.string.msgs_ip_address_no_address);
+			    					ipAddressList.add(li);
+			    				}
 			    			    lv.setAdapter(new AdapterScanAddressResultList
 			    				    	(mContext, R.layout.scan_address_result_list_item, ipAddressList, ntfy_lv_click));
 			    			    lv.setScrollingCacheEnabled(false);
@@ -3746,7 +3732,6 @@ public class ProfileMaintenance {
 		dialog.setContentView(R.layout.scan_address_range_dlg);
 		TextView tvtitle=(TextView) dialog.findViewById(R.id.scan_address_range_title);
 		tvtitle.setText(R.string.msgs_ip_address_range_dlg_title);
-		final EditText toEt = (EditText) dialog.findViewById(R.id.scan_address_range_timeout);
 		final EditText baEt1 = (EditText) dialog.findViewById(R.id.scan_address_range_begin_address_o1);
 		final EditText baEt2 = (EditText) dialog.findViewById(R.id.scan_address_range_begin_address_o2);
 		final EditText baEt3 = (EditText) dialog.findViewById(R.id.scan_address_range_begin_address_o3);
@@ -3755,7 +3740,6 @@ public class ProfileMaintenance {
 		final EditText eaEt2 = (EditText) dialog.findViewById(R.id.scan_address_range_end_address_o2);
 		final EditText eaEt3 = (EditText) dialog.findViewById(R.id.scan_address_range_end_address_o3);
 		final EditText eaEt4 = (EditText) dialog.findViewById(R.id.scan_address_range_end_address_o4);
-		toEt.setText("300");
 		baEt1.setText(subnet_o1);
 		baEt2.setText(subnet_o2);
 		baEt3.setText(subnet_o3);
@@ -3804,8 +3788,6 @@ public class ProfileMaintenance {
 		btn_ok.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				if (auditScanAddressRangeValue(dialog)) {
-					toEt.selectAll();
-					String to=toEt.getText().toString();
 					baEt1.selectAll();
 					String ba1=baEt1.getText().toString();
 					baEt2.selectAll();
@@ -3819,7 +3801,6 @@ public class ProfileMaintenance {
 					scanIpAddrSubnet=ba1+"."+ba2+"."+ba3;
 					scanIpAddrBeginAddr = Integer.parseInt(ba4);
 					scanIpAddrEndAddr = Integer.parseInt(ea4);
-					scanIpAddrTimeout = Integer.parseInt(to);
 					dialog.dismiss();
 					scanRemoteIpAddress(ipAddressList,p_ntfy);
 				} else {
@@ -3886,6 +3867,8 @@ public class ProfileMaintenance {
        	new Thread(new Runnable() {
 			@Override
 			public void run() {//non UI thread
+				System.setProperty( "jcifs.netbios.retryTimeout", "300");
+				System.setProperty( "jcifs.netbios.retryCount", "1");
 				for (int i=scanIpAddrBeginAddr; i<=scanIpAddrEndAddr;i++) {
 					if (cancelIpAddressListCreation) break;
 					final int ix=i;
@@ -3895,18 +3878,26 @@ public class ProfileMaintenance {
 							tvmsg.setText(scanIpAddrSubnet+"."+ix);
 						}
 					});
-					if (isIpAddrReachable(scanIpAddrSubnet+"."+i,scanIpAddrTimeout) && 
+					if (isSmbHost(scanIpAddrSubnet+"."+i) && 
 							!curr_ip.equals(scanIpAddrSubnet+"."+i)) {
-						String srv_name=isSmbHost(scanIpAddrSubnet+"."+i);
-//						if (!srv_name.equals("")) {
-							ScanAddressResultListItem li=new ScanAddressResultListItem();
-							li.server_address=scanIpAddrSubnet+"."+i;
-							li.server_name=srv_name;
-							ipAddressList.add(li);
-//						}
+						String srv_name=getSmbHostName(scanIpAddrSubnet+"."+i);
+						ScanAddressResultListItem li=new ScanAddressResultListItem();
+						li.server_address=scanIpAddrSubnet+"."+i;
+						li.server_name=srv_name;
+						ipAddressList.add(li);
 					}
+//					if (isIpAddrReachable(scanIpAddrSubnet+"."+i,scanIpAddrTimeout) && 
+//							!curr_ip.equals(scanIpAddrSubnet+"."+i)) {
+//						String srv_name=getSmbHostName(scanIpAddrSubnet+"."+i);
+//							ScanAddressResultListItem li=new ScanAddressResultListItem();
+//							li.server_address=scanIpAddrSubnet+"."+i;
+//							li.server_name=srv_name;
+//							ipAddressList.add(li);
+//					}
 				}
 				// dismiss progress bar dialog
+				System.setProperty( "jcifs.netbios.retryTimeout", "3000");
+				System.setProperty( "jcifs.netbios.retryCount", "2");
 				handler.post(new Runnable() {// UI thread
 					@Override
 					public void run() {
@@ -3932,7 +3923,6 @@ public class ProfileMaintenance {
 		final EditText eaEt3 = (EditText) dialog.findViewById(R.id.scan_address_range_end_address_o3);
 		final EditText eaEt4 = (EditText) dialog.findViewById(R.id.scan_address_range_end_address_o4);
 		final TextView tvmsg = (TextView) dialog.findViewById(R.id.scan_address_range_msg);
-		final EditText toEt = (EditText) dialog.findViewById(R.id.scan_address_range_timeout);
 
 		baEt1.selectAll();
 		String ba1=baEt1.getText().toString();
@@ -3950,18 +3940,7 @@ public class ProfileMaintenance {
 		String ea3=eaEt3.getText().toString();
 		eaEt4.selectAll();
 		String ea4=eaEt4.getText().toString();
-		toEt.selectAll();
-		String toVal=toEt.getText().toString();
-    	if (toVal.equals("")) {
-    		tvmsg.setText(mContext.getString(R.string.msgs_ip_address_range_dlg_timeout_invalid));
-			return false;
-    	} else {
-    		scanIpAddrTimeout = Integer.parseInt(toVal);
-    		if (scanIpAddrTimeout<100 || scanIpAddrTimeout>2000) {
-    			tvmsg.setText(mContext.getString(R.string.msgs_ip_address_range_dlg_timeout_invalid));
-    			return false;
-    		}
-    	}
+		
     	tvmsg.setText("");
 		if (ba1.equals("")) {
 			tvmsg.setText(mContext.getString(R.string.msgs_ip_address_range_dlg_begin_notspecified));
@@ -4052,6 +4031,7 @@ public class ProfileMaintenance {
 		return result;
 	};
 	
+	@SuppressWarnings("unused")
 	private boolean isIpAddrReachable(String address,int timeout) {
 		boolean reachable=false;
 		try {
@@ -4068,7 +4048,19 @@ public class ProfileMaintenance {
 		return reachable;
 	};
 	
-	private String isSmbHost(String address) {
+	private boolean isSmbHost(String address) {
+		boolean result=false;
+		try {
+			NbtAddress na=NbtAddress.getByName(address);
+			result=na.isActive();
+		} catch (UnknownHostException e) {
+//			e.printStackTrace();
+		}
+    	util.addDebugLogMsg(1,"I","isSmbHost Address="+address+", result="+result);
+		return result;
+	};
+	
+	private String getSmbHostName(String address) {
 		String srv_name="";
     	try {
 			UniAddress ua = UniAddress.getByName(address);
@@ -4076,8 +4068,7 @@ public class ProfileMaintenance {
 	        cn = ua.firstCalledName();
 	        do {
 	            if (!cn.startsWith("*")) srv_name=cn; 
-	            
-	            	util.addDebugLogMsg(1,"I","isSmbHost Address="+address+
+            	util.addDebugLogMsg(1,"I","getSmbHostName Address="+address+
 	            		", cn="+cn+", name="+srv_name);
 	        } while(( cn = ua.nextCalledName() ) != null );
 			

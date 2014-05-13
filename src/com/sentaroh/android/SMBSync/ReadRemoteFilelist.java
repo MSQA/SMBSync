@@ -234,6 +234,6 @@ public class ReadRemoteFilelist implements Runnable  {
 		if (pass.length()!=0) tpass=pass;
 		ntlmPasswordAuth = 
 				new NtlmPasswordAuthentication(null, tuser, tpass);
-
+//		Log.v("","to="+System.getProperty("jcifs.netbios.retryTimeout"));
 	};
 }

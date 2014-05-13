@@ -81,7 +81,6 @@
    	<string name="msgs_ip_address_range_dlg_title">IP Address Range</string>
    	<string name="msgs_ip_address_range_dlg_begin">Begin</string>
    	<string name="msgs_ip_address_range_dlg_end">End</string>
-   	<string name="msgs_ip_address_range_dlg_timeout">Timeout(milli second)</string>
    	<string name="msgs_ip_address_range_dlg_rescan">Rescan</string>
    	
    	<string name="msgs_ip_address_range_dlg_begin_notspecified">Begin address was not specified.</string>
@@ -91,7 +90,6 @@
    	<string name="msgs_ip_address_range_dlg_begin_addr_gt_end_addr">Begin address is greater than end address.</string>
    	<string name="msgs_ip_address_range_dlg_end_range_error">End address range is must be 1 to 254.</string>
    	<string name="msgs_ip_address_range_dlg_not_private">Global address was can not be scan.</string>
-   	<string name="msgs_ip_address_range_dlg_timeout_invalid">Timeout value was must be 100 to 2000.</string>
    		
    	<string name="msgs_progress_dlg_canceling">Canceling</string>
 
