@@ -8,7 +8,6 @@
     android:layout_marginRight="5dp"
     android:orientation="horizontal"
     tools:ignore="HardcodedText,InefficientWeight" >
-
     <CheckBox
         android:id="@+id/sync_history_list_view_cb"
         style="@style/check_box_style"
@@ -17,10 +16,11 @@
         android:focusable="false"
         android:focusableInTouchMode="false"
         />
-
+    
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" 
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1" 
         android:orientation="vertical" >
 
 	    <LinearLayout
@@ -132,11 +132,10 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="10dp"
-            android:layout_weight="1"
             android:ellipsize="start"
             android:singleLine="true"
             android:text="/mnt/sdcard/SMBSync/SMBSync_log_2013-12-31.txt"
-            android:textSize="12sp" />
+            android:textSize="12sp"/>
 	
 	    <TextView
 	        android:id="@+id/sync_history_list_view_error_text"
@@ -150,4 +149,5 @@
         
     </LinearLayout>
 
+    
 </LinearLayout>
