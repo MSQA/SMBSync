@@ -4310,7 +4310,8 @@ public class ProfileMaintenance {
 	        public void onClick(View v) {
 	            String sel="";
 	            for (int i=0;i<tfa.getCount();i++) {
-	            	if (tfa.getDataItem(i).isChecked()) {
+	            	if (tfa.getDataItem(i).isChecked()  && 
+	            			!tfa.getDataItem(i).getName().equals(msgs_dir_empty)) {
 	            		if (tfa.getDataItem(i).getPath().length()==1) 
 		            		sel=tfa.getDataItem(i).getName();
 	            		else sel=tfa.getDataItem(i).getPath()
@@ -4554,6 +4555,11 @@ public class ProfileMaintenance {
 			    
 			    ((TextView)dialog.findViewById(R.id.item_select_list_dlg_subtitle))
 			    	.setText(msgs_current_dir+"/"+remurl);
+//			    if (rows.size()<1) {
+//			    	TextView dlg_msg=(TextView)dialog.findViewById(R.id.item_select_list_dlg_msg);
+//			    	dlg_msg.setText(msgs_dir_empty);
+//			    	dlg_msg.setVisibility(TextView.VISIBLE);
+//			    }
 			    final Button btn_ok=(Button)dialog.findViewById(R.id.item_select_list_dlg_ok_btn);
 //		        if (rows.size()<=2) 
 //		        	((TextView)dialog.findViewById(R.id.item_select_list_dlg_spacer))
@@ -4652,7 +4658,8 @@ public class ProfileMaintenance {
 			        public void onClick(View v) {
 			            String sel="";
 			            for (int i=0;i<tfa.getCount();i++) {
-			            	if (tfa.getDataItem(i).isChecked()) {
+			            	if (tfa.getDataItem(i).isChecked() && 
+			            			!tfa.getDataItem(i).getName().equals(msgs_dir_empty)) {
 			            		if (tfa.getDataItem(i).getPath().length()==1) 
 				            		sel=tfa.getDataItem(i).getName();
 			            		else sel=tfa.getDataItem(i).getPath()
