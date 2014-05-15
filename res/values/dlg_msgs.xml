@@ -8,7 +8,7 @@
     <string name="msgs_local_profile_dlg_active">Active</string>
     <string name="msgs_local_profile_dlg_profile">Profile Name</string>
     <string name="msgs_local_profile_dlg_directory">Directory</string>
-    <string name="msgs_local_profile_dlg_dirlist">Listing</string>
+    <string name="msgs_local_profile_dlg_dirlist">Show list</string>
     <string name="msgs_local_profile_dlg_local_mount_point">Mount Point</string>
     <string name="msgs_local_profile_dlg_local_mount_changed_confirm_title">Confirm mount point change</string>
     <string name="msgs_local_profile_dlg_local_mount_changed_confirm_msg">There is a case to be re-copied when you synchronize If you change the mount point. Are you sure you want to do the change?</string>
@@ -20,9 +20,9 @@
     <string name="msgs_remote_profile_dlg_username">User name</string>
     <string name="msgs_remote_profile_dlg_password">Password</string>
     <string name="msgs_remote_profile_dlg_share">Share</string>
-    <string name="msgs_remote_profile_dlg_sharelist">Listing</string>
+    <string name="msgs_remote_profile_dlg_sharelist">Show list</string>
     <string name="msgs_remote_profile_dlg_directory">Directory</string>
-    <string name="msgs_remote_profile_dlg_dirlist">Listing</string>
+    <string name="msgs_remote_profile_dlg_dirlist">Show list</string>
     <string name="msgs_remote_profile_dlg_addr_list">Network Scan</string>
     <string name="msgs_remote_profile_dlg_use_computer_name">Use computer name(host name)</string>
     <string name="msgs_remote_profile_dlg_use_user_pass">Use remote host userid and password</string>
@@ -30,9 +30,7 @@
     <string name="msgs_sync_profile_dlg_active">Active</string>
     <string name="msgs_sync_profile_dlg_profile">Profile Name</string>
     <string name="msgs_sync_profile_dlg_master">Master Profile</string>
-    <string name="msgs_sync_profile_dlg_mstrlist">Listing</string>
     <string name="msgs_sync_profile_dlg_target">Target Profile</string>
-    <string name="msgs_sync_profile_dlg_trgtlist">Listing</string>
     <string name="msgs_sync_profile_dlg_syncopt">Sync Option</string>
     <string name="msgs_sync_profile_dlg_syncopt_prompt">Select sync option</string>
     <string name="msgs_sync_profile_dlg_mirror">Mirror</string>
@@ -41,7 +39,7 @@
     <string name="msgs_sync_profile_dlg_filter">Filter</string>
     <string name="msgs_sync_profile_dlg_filefltr">File</string>
     <string name="msgs_sync_profile_dlg_dirfltr">Directory</string>
-    <string name="msgs_sync_profile_master_dir_cb_enable">Process files and directories immediately below master directory</string>
+    <string name="msgs_sync_profile_master_dir_cb_enable">To process the files that exist directly under the directory that is specified in the master profile.</string>
     <string name="msgs_sync_profile_confirm_required">Confirm before override copy or delete</string>
     <string name="msgs_sync_profile_last_modified_smbsync">Force determine last modified time by SMBSync method</string>
 
@@ -73,12 +71,13 @@
    	<string name="msgs_progress_spin_dlg_syncronizing">Synchronizing</string>
    	<string name="msgs_progress_spin_dlg_sync_cancel">Cancel synchronize</string>
 
-   	<string name="msgs_progress_spin_dlg_addr_listing">Scanning IP address</string>
-   	<string name="msgs_progress_spin_dlg_addr_cancel">Cancel scanning</string>
-   	<string name="msgs_ip_address_select_title">Select detected IP address</string>
+   	<string name="msgs_progress_spin_dlg_addr_listing">Network scan</string>
+   	<string name="msgs_progress_spin_dlg_addr_cancel">Cancel scan</string>
+   	<string name="msgs_ip_address_select_title">Select IP address/Hostname</string>
    	<string name="msgs_ip_address_no_address">---No IP address detected---</string>
+   	<string name="msgs_ip_address_scan_progress" formatted="false">%s, Scan %s%% Completed</string>
    	
-   	<string name="msgs_ip_address_range_dlg_title">IP Address Range</string>
+   	<string name="msgs_ip_address_range_dlg_title">Scan IP Address Range</string>
    	<string name="msgs_ip_address_range_dlg_begin">Begin</string>
    	<string name="msgs_ip_address_range_dlg_end">End</string>
    	<string name="msgs_ip_address_range_dlg_rescan">Rescan</string>

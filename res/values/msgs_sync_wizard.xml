@@ -15,9 +15,9 @@
 
     <string name="msgs_sync_wizard_sync_direction">Sync Direction</string>
     <string name="msgs_sync_wizard_sync_direction_not_selected">Not selected</string>
-    <string name="msgs_sync_wizard_sync_direction_remote_to_local">Sync from ｒemote to local</string>
-    <string name="msgs_sync_wizard_sync_direction_local_to_remote">Sync from local to remote</string>
-    <string name="msgs_sync_wizard_sync_direction_local_to_local">Sync from local to local</string>
+    <string name="msgs_sync_wizard_sync_direction_remote_to_local">Sync to the local folder from remote folder.</string>
+    <string name="msgs_sync_wizard_sync_direction_local_to_remote">Sync to the remote folder from local folder.</string>
+    <string name="msgs_sync_wizard_sync_direction_local_to_local">Sync to the local folder from local folder.</string>
     
     <string name="msgs_sync_wizard_sync_audio">Audio files</string>
     <string name="msgs_sync_wizard_sync_image">Image files</string>
@@ -37,7 +37,7 @@
 	
 	<string name="msgs_sync_wizard_specify_local_dir">Specify local directory</string>
 	
-	<string name="msgs_sync_wizard_specify_server">Specify server name or IP address</string>
+	<string name="msgs_sync_wizard_specify_server">Specify server name or IP address or press Scan Network button</string>
 	<string name="msgs_sync_wizard_specify_user_pass">Specify user and/or password</string>
 	<string name="msgs_sync_wizard_specify_remote_share">Specify remote share</string>
 	<string name="msgs_sync_wizard_specify_remote_dir">Specify remote directory</string>

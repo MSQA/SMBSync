@@ -122,7 +122,7 @@
         android:id="@+id/sync_wizard_dlg_sync_master_dir_cb"
         style="@style/check_box_style"
         android:layout_width="fill_parent"
-        android:layout_height="32dp"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="3dp"
         android:text="@string/msgs_sync_profile_master_dir_cb_enable"/>
 

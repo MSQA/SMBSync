@@ -31,6 +31,14 @@
             android:scrollHorizontally="true" />
 
     </LinearLayout>
+
+    <Button
+        android:id="@+id/sync_wizard_dlg_remote_get_addr_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="5dp"
+        android:text="@string/msgs_remote_profile_dlg_addr_list"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
     
     <CheckBox
         android:id="@+id/sync_wizard_dlg_remote_use_computer_name"
@@ -46,15 +54,6 @@
         android:layout_marginLeft="5dp"
         android:layout_marginTop="3dp"
         android:orientation="horizontal" >
-
-        <Button
-            android:id="@+id/sync_wizard_dlg_remote_get_addr_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginRight="5dp"
-            android:text="@string/msgs_remote_profile_dlg_addr_list"
-            android:textSize="12dp" />
 
         <EditText
             android:id="@+id/sync_wizard_dlg_remote_addr"
@@ -123,7 +122,7 @@
 
         <Button
             android:id="@+id/sync_wizard_dlg_remote_share_btn"
-            android:layout_width="80dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginTop="1dp"
@@ -151,7 +150,7 @@
 
         <Button
             android:id="@+id/sync_wizard_dlg_remote_dir_btn"
-            android:layout_width="80dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginTop="1dp"

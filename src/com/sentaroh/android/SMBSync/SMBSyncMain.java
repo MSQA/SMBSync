@@ -187,7 +187,7 @@ public class SMBSyncMain extends FragmentActivity {
 //		setTheme(android.R.style.Theme_Light);
 		super.onCreate(savedInstanceState);
 //		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		
+
 		mCurrentLocal=getResources().getConfiguration().locale;
 		
 		setContentView(R.layout.main);
@@ -257,6 +257,9 @@ public class SMBSyncMain extends FragmentActivity {
 		super.onResume();
 		util.addDebugLogMsg(1,"I","onResume entered, "+"resartStatus="+restartStatus+
 					", isActivityForeground="+util.isActivityForeground());
+		/* JCIFS Timeout set to default */
+		System.setProperty( "jcifs.netbios.retryTimeout", "3000");
+		
 		util.setActivityIsForeground(true);
 		if (restartStatus==1) {
 			if (!glblParms.freezeMessageViewScroll) {

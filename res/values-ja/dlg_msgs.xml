@@ -8,7 +8,7 @@
     <string name="msgs_local_profile_dlg_active">有効</string>
     <string name="msgs_local_profile_dlg_profile">プロファイル名</string>
     <string name="msgs_local_profile_dlg_directory">ディレクトリ</string>
-    <string name="msgs_local_profile_dlg_dirlist">一覧</string>
+    <string name="msgs_local_profile_dlg_dirlist">一覧表示</string>
     <string name="msgs_local_profile_dlg_local_mount_point">マウント ポイント</string>
     
     <string name="msgs_local_profile_dlg_local_mount_changed_confirm_title">マウント ポイント変更確認</string>
@@ -21,9 +21,9 @@
     <string name="msgs_remote_profile_dlg_username">ユーザー名</string>
     <string name="msgs_remote_profile_dlg_password">パスワード</string>
     <string name="msgs_remote_profile_dlg_share">共有名</string>
-    <string name="msgs_remote_profile_dlg_sharelist">一覧</string>
+    <string name="msgs_remote_profile_dlg_sharelist">一覧表示</string>
     <string name="msgs_remote_profile_dlg_directory">ディレクトリ</string>
-    <string name="msgs_remote_profile_dlg_dirlist">一覧</string>
+    <string name="msgs_remote_profile_dlg_dirlist">一覧表示</string>
     <string name="msgs_remote_profile_dlg_addr_list">ネットワークスキャン</string>
 	<string name="msgs_remote_profile_dlg_use_computer_name">コンピュータ名を使用する</string>    
 	<string name="msgs_remote_profile_dlg_use_user_pass">ユーザーID/パスワードを使用する</string>
@@ -31,9 +31,7 @@
     <string name="msgs_sync_profile_dlg_active">有効</string>
     <string name="msgs_sync_profile_dlg_profile">プロファイル名</string>
     <string name="msgs_sync_profile_dlg_master">マスター</string>
-    <string name="msgs_sync_profile_dlg_mstrlist">一覧</string>
     <string name="msgs_sync_profile_dlg_target">ターゲット</string>
-    <string name="msgs_sync_profile_dlg_trgtlist">一覧</string>
     <string name="msgs_sync_profile_dlg_syncopt">同期方式</string>
     <string name="msgs_sync_profile_dlg_syncopt_prompt">同期方式の選択</string>
     <string name="msgs_sync_profile_dlg_mirror">ミラー</string> 
@@ -42,7 +40,7 @@
     <string name="msgs_sync_profile_dlg_filter">フィルタ-</string>
     <string name="msgs_sync_profile_dlg_filefltr">ファイル</string>
     <string name="msgs_sync_profile_dlg_dirfltr">ディレクトリ</string>
-    <string name="msgs_sync_profile_master_dir_cb_enable">マスターディレクトリのファイルとディレクトリを処理</string>
+    <string name="msgs_sync_profile_master_dir_cb_enable">マスタープロファイルで指定されたディレクトリの直下に存在するファイルを処理する。</string>
     <string name="msgs_sync_profile_confirm_required">上書コピーまたは削除の前に確認する</string>
     <string name="msgs_sync_profile_last_modified_smbsync">強制的にSMBSyncで最終更新日時を取得</string>
 
@@ -73,10 +71,11 @@
    	<string name="msgs_progress_spin_dlg_syncronizing">同期処理中</string>
    	<string name="msgs_progress_spin_dlg_sync_cancel">同期処理をキャンセル</string>
    	
-   	<string name="msgs_progress_spin_dlg_addr_listing">IPアドレスのスキャン中</string>
+   	<string name="msgs_progress_spin_dlg_addr_listing">ネットワークのスキャン</string>
    	<string name="msgs_progress_spin_dlg_addr_cancel">スキャンのキャンセル</string>
-   	<string name="msgs_ip_address_select_title">検出されたIPアドレスの選択</string>
+   	<string name="msgs_ip_address_select_title">IPアドレス/名前の選択</string>
    	<string name="msgs_ip_address_no_address">---発見できませんでした---</string>
+   	<string name="msgs_ip_address_scan_progress" formatted="false">%s, スキャン %s%% 終了</string>
    	
    	<string name="msgs_ip_address_range_dlg_title">IPアドレス探索範囲</string>
    	<string name="msgs_ip_address_range_dlg_begin">開始</string>

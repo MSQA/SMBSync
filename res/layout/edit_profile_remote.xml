@@ -161,7 +161,7 @@
 
                 <Button
                     android:id="@+id/remote_profile_get_btn1"
-                    android:layout_width="80dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="1dp"
                     android:text="@string/msgs_remote_profile_dlg_sharelist" />
@@ -187,7 +187,7 @@
 
                 <Button
                     android:id="@+id/remote_profile_get_btn2"
-                    android:layout_width="80dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="1dp"
                     android:text="@string/msgs_remote_profile_dlg_dirlist" />

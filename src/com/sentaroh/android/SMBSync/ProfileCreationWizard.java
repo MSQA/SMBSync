@@ -1081,6 +1081,9 @@ public class ProfileCreationWizard {
 				}
 			}
 
+		} else {
+			cb_use_user_pass.setEnabled(false);
+			dlg_msg.setText(mContext.getString(R.string.msgs_sync_wizard_specify_server));
 		}
 	};
 
@@ -1154,6 +1157,16 @@ public class ProfileCreationWizard {
 		});
 
 		cb_master_dir.setChecked(true);
+//		cb_master_dir.setText(mContext.getString(R.string.msgs_sync_profile_master_dir_cb_enable));
+//		cb_master_dir.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+//			@Override
+//			public void onCheckedChanged(CompoundButton buttonView,
+//					boolean isChecked) {
+//				if (isChecked) cb_master_dir.setText(mContext.getString(R.string.msgs_sync_profile_master_dir_cb_enable));
+//				else cb_master_dir.setText(mContext.getString(R.string.msgs_sync_profile_master_dir_cb_disable));
+//			}
+//		});
+		
 		cb_confirm.setChecked(true);
 		cb_last_modified.setChecked(false);
 

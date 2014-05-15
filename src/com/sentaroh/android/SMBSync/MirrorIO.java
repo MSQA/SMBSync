@@ -2217,12 +2217,12 @@ public class MirrorIO implements Runnable {
 		if (out_file_exits) tmsg=msgs_mirror_prof_file_replaced;
 		else tmsg=msgs_mirror_prof_file_copied;
 		addMsgToProgDlg(false,"I",t_fn,tmsg);
-		addLogMsg("I",t_fp,tmsg);
+		if (glblParms.settingShowSyncDetailMessage) addLogMsg("I",t_fp,tmsg);
 
 		totalTransferByte+=fileReadBytes;
 		totalTransferTime+=readElapsedTime;
 		if (glblParms.debugLevel>=1) 
-			addDebugLogMsg(1,"I",fileReadBytes + " bytes transfered in ",
+			addDebugLogMsg(1,"I",t_fp+" "+fileReadBytes + " bytes transfered in ",
 				readElapsedTime+" mili seconds at "+calTransferRate(fileReadBytes,readElapsedTime));
 		return 0;
 	};
@@ -2261,11 +2261,11 @@ public class MirrorIO implements Runnable {
 		if (out_file_exits) tmsg=msgs_mirror_prof_file_replaced;
 		else tmsg=msgs_mirror_prof_file_copied;
 		addMsgToProgDlg(false,"I",t_fn,tmsg);
-		addLogMsg("I",t_fp,tmsg);
+		if (glblParms.settingShowSyncDetailMessage) addLogMsg("I",t_fp,tmsg);
 		totalTransferByte+=fileReadBytes;
 		totalTransferTime+=readElapsedTime;
 		if (glblParms.debugLevel>=1) 
-			addDebugLogMsg(1,"I",fileReadBytes + " bytes transfered in ",
+			addDebugLogMsg(1,"I",t_fp+" "+fileReadBytes + " bytes transfered in ",
 				readElapsedTime+" mili seconds at "+calTransferRate(fileReadBytes,readElapsedTime));
 		return 0;
 	};
@@ -2303,10 +2303,10 @@ public class MirrorIO implements Runnable {
 		if (out_file_exits) tmsg=msgs_mirror_prof_file_replaced;
 		else tmsg=msgs_mirror_prof_file_copied;
 		addMsgToProgDlg(false,"I",t_fn,tmsg);
-		addLogMsg("I",t_fp,tmsg);
+		if (glblParms.settingShowSyncDetailMessage) addLogMsg("I",t_fp,tmsg);
 
 		if (glblParms.debugLevel>=1) 
-			addDebugLogMsg(1,"I",fileReadBytes + " bytes transfered in "
+			addDebugLogMsg(1,"I",t_fp+" "+fileReadBytes + " bytes transfered in "
 					+ readElapsedTime + " mili seconds at "+ 
 					calTransferRate(fileReadBytes,readElapsedTime));
 		totalTransferByte+=fileReadBytes;
@@ -2950,14 +2950,16 @@ public class MirrorIO implements Runnable {
 				String t_prf="smb://"+syncRemoteAddr;
 				if (td) {
 					addMsgToProgDlg(false,"I",t_fn,msgs_mirror_prof_dir_deleted);
-					addLogMsg("I",t_dir.replace(t_prf, ""),msgs_mirror_prof_dir_deleted);
+					if (glblParms.settingShowSyncDetailMessage) 
+						addLogMsg("I",t_dir.replace(t_prf, ""),msgs_mirror_prof_dir_deleted);
 					if (glblParms.debugLevel>=1) 
 						addDebugLogMsg(1,"I",
 							"Remote directory was deleted:"+hfd.getPath().substring(0,hfd.getPath().length()-1));
 				}
 				else{ 
 					addMsgToProgDlg(false,"I",t_fn,msgs_mirror_prof_file_deleted);
-					addLogMsg("I",t_dir.replace(t_prf, ""),msgs_mirror_prof_file_deleted);
+					if (glblParms.settingShowSyncDetailMessage) 
+						addLogMsg("I",t_dir.replace(t_prf, ""),msgs_mirror_prof_file_deleted);
 					if (glblParms.debugLevel>=1) 
 						addDebugLogMsg(1,"I",
 							"Remote file was deleted:"+hfd.getPath().substring(0,hfd.getPath().length()-1));
@@ -3024,7 +3026,8 @@ public class MirrorIO implements Runnable {
 			deleteCount++;
 			if (td) {
 				addMsgToProgDlg(false,"I",lf.getName(),msgs_mirror_prof_dir_deleted);
-				addLogMsg("I",lf.getPath().replace(localUrl,""),msgs_mirror_prof_dir_deleted);
+				if (glblParms.settingShowSyncDetailMessage)  
+					addLogMsg("I",lf.getPath().replace(localUrl,""),msgs_mirror_prof_dir_deleted);
 //								lf.getPath().replace(SMBSync_External_Root_Dir,"")));
 				if (glblParms.debugLevel>=1) 
 					addDebugLogMsg(1,"I",
@@ -3034,7 +3037,8 @@ public class MirrorIO implements Runnable {
 //				Log.v("","Dir="+lf.getParent()+", path="+lf.getPath());
 				deleteMediaStoreItem(lf.getPath());
 				addMsgToProgDlg(false,"I",lf.getName(),msgs_mirror_prof_file_deleted);
-				addLogMsg("I",lf.getPath().replace(localUrl,""),msgs_mirror_prof_file_deleted);
+				if (glblParms.settingShowSyncDetailMessage)  
+					addLogMsg("I",lf.getPath().replace(localUrl,""),msgs_mirror_prof_file_deleted);
 //								lf.getPath().replace(SMBSync_External_Root_Dir,"")));
 				if (glblParms.debugLevel>=1) 
 					addDebugLogMsg(1,"I",

@@ -1375,8 +1375,18 @@ public class ProfileMaintenance {
 
 		final CheckBox cbmpd = (CheckBox)dialog.findViewById(R.id.sync_profile_master_dir_cb);
 		cbmpd.setChecked(true);
+//		cbmpd.setText(mContext.getString(R.string.msgs_sync_profile_master_dir_cb_enable));
+//		cbmpd.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+//			@Override
+//			public void onCheckedChanged(CompoundButton buttonView,
+//					boolean isChecked) {
+//				if (isChecked) cbmpd.setText(mContext.getString(R.string.msgs_sync_profile_master_dir_cb_enable));
+//				else cbmpd.setText(mContext.getString(R.string.msgs_sync_profile_master_dir_cb_disable));
+//			}
+//		});
 		if (prof_dir_filter.size()!=0) cbmpd.setEnabled(true);
-			else cbmpd.setEnabled(false);
+		else cbmpd.setEnabled(false);
+		
 		final CheckBox cbConf = (CheckBox)dialog.findViewById(R.id.sync_profile_confirm);
 		cbConf.setChecked(true);
 		final CheckBox cbLastMod = (CheckBox)dialog.findViewById(R.id.sync_profile_last_modified);
@@ -2000,6 +2010,17 @@ public class ProfileMaintenance {
 			cbmpd.setEnabled(true);
 			cbmpd.setChecked(true);
 		} else cbmpd.setEnabled(false);
+
+//		if (cbmpd.isChecked()) cbmpd.setText(mContext.getString(R.string.msgs_sync_profile_master_dir_cb_enable));
+//		else cbmpd.setText(mContext.getString(R.string.msgs_sync_profile_master_dir_cb_disable));
+//		cbmpd.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+//			@Override
+//			public void onCheckedChanged(CompoundButton buttonView,
+//					boolean isChecked) {
+//				if (isChecked) cbmpd.setText(mContext.getString(R.string.msgs_sync_profile_master_dir_cb_enable));
+//				else cbmpd.setText(mContext.getString(R.string.msgs_sync_profile_master_dir_cb_disable));
+//			}
+//		});
 
 		final Spinner spinner_master=(Spinner)dialog.findViewById(R.id.sync_profile_master_spinner);
 		final Spinner spinner_target=(Spinner)dialog.findViewById(R.id.sync_profile_target_spinner);
@@ -3631,7 +3652,7 @@ public class ProfileMaintenance {
 			    ((TextView)dialog.findViewById(R.id.item_select_list_dlg_subtitle))
 			    	.setVisibility(TextView.GONE);
 			    final TextView dlg_msg=(TextView)dialog.findViewById(R.id.item_select_list_dlg_msg);
-	    		dlg_msg.setVisibility(TextView.VISIBLE);
+	    		dlg_msg.setVisibility(TextView.GONE);
 			    Button btnRescan=(Button)dialog.findViewById(R.id.item_select_list_dlg_ok_btn);
 			    btnRescan.setVisibility(TextView.VISIBLE);
 			    btnRescan.setText(mContext.getString(R.string.msgs_ip_address_range_dlg_rescan));
@@ -3852,14 +3873,14 @@ public class ProfileMaintenance {
 			}
 		});
 		// Cancelリスナーの指定
-		dialog.setOnCancelListener(new Dialog.OnCancelListener() {
-			@Override
-			public void onCancel(DialogInterface arg0) {
-				btn_cancel.performClick();
-			}
-		});
+//		dialog.setOnCancelListener(new Dialog.OnCancelListener() {
+//			@Override
+//			public void onCancel(DialogInterface arg0) {
+//				btn_cancel.performClick();
+//			}
+//		});
 //		dialog.setOnKeyListener(new DialogOnKeyListener(context));
-//		dialog.setCancelable(false);
+		dialog.setCancelable(false);
 		if (util.isActivityForeground()) dialog.show();
 		
 		util.addDebugLogMsg(1,"I","Scan IP address ransge is "+scanIpAddrSubnet+
@@ -3867,15 +3888,18 @@ public class ProfileMaintenance {
        	new Thread(new Runnable() {
 			@Override
 			public void run() {//non UI thread
-				System.setProperty( "jcifs.netbios.retryTimeout", "300");
-				System.setProperty( "jcifs.netbios.retryCount", "1");
+				System.setProperty( "jcifs.netbios.retryTimeout", "100");
+				System.setProperty( "jcifs.netbios.retryCount", "2");
+				final String scan_prog=mContext.getString(R.string.msgs_ip_address_scan_progress);
 				for (int i=scanIpAddrBeginAddr; i<=scanIpAddrEndAddr;i++) {
 					if (cancelIpAddressListCreation) break;
 					final int ix=i;
 					handler.post(new Runnable() {// UI thread
 						@Override
 						public void run() {
-							tvmsg.setText(scanIpAddrSubnet+"."+ix);
+							int prog=(ix-scanIpAddrBeginAddr)*100/(scanIpAddrEndAddr-scanIpAddrBeginAddr);
+							String text=String.format(scan_prog, scanIpAddrSubnet+"."+ix, prog);
+							tvmsg.setText(text);
 						}
 					});
 					if (isSmbHost(scanIpAddrSubnet+"."+i) && 

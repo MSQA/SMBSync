@@ -15,9 +15,9 @@
     
     <string name="msgs_sync_wizard_sync_direction">同期方向</string>
     <string name="msgs_sync_wizard_sync_direction_not_selected">選択されていません</string>
-    <string name="msgs_sync_wizard_sync_direction_remote_to_local">リモートからローカルに同期</string>
-    <string name="msgs_sync_wizard_sync_direction_local_to_remote">ローカルからリモートに同期</string>
-    <string name="msgs_sync_wizard_sync_direction_local_to_local">ローカルからローカルに同期</string>
+    <string name="msgs_sync_wizard_sync_direction_remote_to_local">リモートからローカルに同期する</string>
+    <string name="msgs_sync_wizard_sync_direction_local_to_remote">ローカルからリモートに同期する</string>
+    <string name="msgs_sync_wizard_sync_direction_local_to_local">ローカルフォルダーからローカルフォルダーに同期する</string>
     
     <string name="msgs_sync_wizard_sync_audio">オーディオファイル</string>
     <string name="msgs_sync_wizard_sync_image">イメージファイル</string>
@@ -33,7 +33,7 @@
 	
 	<string name="msgs_sync_wizard_specify_local_dir">ローカル ディレクトリーを入力してください</string>
 	
-	<string name="msgs_sync_wizard_specify_server">サーバー名またはサーバーIPアドレスを入力してください</string>
+	<string name="msgs_sync_wizard_specify_server">サーバー名またはサーバーIPアドレスを入力してください、またはネットワークスキャンを押してください</string>
 	<string name="msgs_sync_wizard_specify_user_pass">ユーザー名およびパスワードを入力してください</string>
 	<string name="msgs_sync_wizard_specify_remote_share">リモートの共有名を入力してください</string>
 	<string name="msgs_sync_wizard_specify_remote_dir">リモート ディレクトリーを指定してください</string>
