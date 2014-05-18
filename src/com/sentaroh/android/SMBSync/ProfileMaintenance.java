@@ -1302,7 +1302,7 @@ public class ProfileMaintenance {
 		final CheckBox cb_use_hostname = (CheckBox) dialog.findViewById(R.id.remote_profile_use_computer_name);
 		final CheckBox cb_use_user_pass = (CheckBox) dialog.findViewById(R.id.remote_profile_use_user_pass);
 
-		final Button btn_ok = (Button) dialog.findViewById(R.id.remote_profile_ok);
+//		final Button btn_ok = (Button) dialog.findViewById(R.id.remote_profile_ok);
 
 		cb_use_hostname.setOnCheckedChangeListener(new OnCheckedChangeListener(){
 			@Override

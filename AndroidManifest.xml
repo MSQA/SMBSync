@@ -2,7 +2,7 @@
 <!DOCTYPE manifest>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.sentaroh.android.SMBSync"
-    android:versionCode="101"
+    android:versionCode="102"
     android:versionName="1.84" >
 
     <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="11"/>
