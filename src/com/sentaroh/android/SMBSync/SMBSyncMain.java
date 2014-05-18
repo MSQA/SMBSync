@@ -1910,7 +1910,18 @@ public class SMBSyncMain extends FragmentActivity {
 				}
 		});
 
-		ccMenu.addMenuItem(msgs_prof_cont_add_sync,R.drawable.menu_add)
+		boolean isRemoteExists=false, isLocalExists=false;
+		for (int i=0;i<profileAdapter.getCount();i++) {
+			if (profileAdapter.getItem(i).getType().equals(SMBSYNC_PROF_TYPE_REMOTE)) {
+				isRemoteExists=true;
+			} 
+			if (profileAdapter.getItem(i).getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
+				isLocalExists=true;
+			} 
+			if (isRemoteExists && isLocalExists) break;
+		}
+		if (isRemoteExists && isLocalExists) {
+			ccMenu.addMenuItem(msgs_prof_cont_add_sync,R.drawable.menu_add)
 			.setOnClickListener(new CustomContextMenuOnClickListener() {
 				@Override
 				public void onClick(CharSequence menuTitle) {
@@ -1918,6 +1929,7 @@ public class SMBSyncMain extends FragmentActivity {
 					resetAllCheckedItem();
 				}
 		});
+		}
 
 		ccMenu.addMenuItem(msgs_prof_cont_copy,R.drawable.menu_copy)
 		.setOnClickListener(new CustomContextMenuOnClickListener() {
