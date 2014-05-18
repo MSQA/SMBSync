@@ -73,9 +73,10 @@
    	
    	<string name="msgs_progress_spin_dlg_addr_listing">ネットワークのスキャン</string>
    	<string name="msgs_progress_spin_dlg_addr_cancel">スキャンのキャンセル</string>
-   	<string name="msgs_ip_address_select_title">IPアドレス/名前の選択</string>
+   	<string name="msgs_ip_address_select_title">IPアドレスまたは名前の選択</string>
    	<string name="msgs_ip_address_no_address">---発見できませんでした---</string>
    	<string name="msgs_ip_address_scan_progress" formatted="false">%s, スキャン %s%% 終了</string>
+   	<string name="msgs_ip_address_scan_found">検出したIPアドレス : \n</string>
    	
    	<string name="msgs_ip_address_range_dlg_title">IPアドレス探索範囲</string>
    	<string name="msgs_ip_address_range_dlg_begin">開始</string>

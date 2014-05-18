@@ -263,7 +263,6 @@ public class ProfileMaintenance {
 		//OK button
 		btn_ok.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				et_password.selectAll();
 				String passwd=et_password.getText().toString();
 				BufferedReader br;
 				String pl;
@@ -375,7 +374,6 @@ public class ProfileMaintenance {
 		//OK button
 		btn_ok.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				et_password.selectAll();
 				String passwd=et_password.getText().toString();
 				if ((cb_protect.isChecked() && !glblParms.settingExportedProfileEncryptRequired) ||
 						(!cb_protect.isChecked() && glblParms.settingExportedProfileEncryptRequired)) {
@@ -969,7 +967,6 @@ public class ProfileMaintenance {
 			public void onClick(View v) {
 				
 				String url=(String)spinner.getSelectedItem();
-				editdir.selectAll();
 				String p_dir=editdir.getText().toString();
 
 				NotifyEvent ntfy=new NotifyEvent(mContext);
@@ -1004,18 +1001,54 @@ public class ProfileMaintenance {
 				btn_cancel.performClick();
 			}
 		});
+		
+		final Button btn_ok = (Button) dialog.findViewById(R.id.local_profile_ok);
+		btn_ok.setEnabled(false);
+		dlg_msg.setText(msgs_audit_msgs_profilename2);
+		editname.addTextChangedListener(new TextWatcher(){
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,	int after) {}
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {}
+			@Override
+			public void afterTextChanged(Editable s) {
+				String audit_msg="";
+				if (hasInvalidChar(s.toString(),new String[]{"\t"})) {
+					audit_msg=String.format(msgs_audit_msgs_profilename1,detectedInvalidCharMsg);
+					btn_ok.setEnabled(false);
+				} else if (s.toString().length()==0) {
+					audit_msg=msgs_audit_msgs_profilename2;
+					editname.requestFocus();
+					btn_ok.setEnabled(false);
+				} else {
+					btn_ok.setEnabled(true);
+				}
+				dlg_msg.setText(audit_msg);
+			}
+		});
+		editdir.addTextChangedListener(new TextWatcher(){
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,	int after) {}
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {}
+			@Override
+			public void afterTextChanged(Editable s) {
+				String audit_msg="";
+				if (hasInvalidChar(s.toString(),new String[]{"\t"})) {
+					audit_msg=String.format(msgs_audit_msgs_local_dir,detectedInvalidCharMsg);
+				}
+				dlg_msg.setText(audit_msg);
+			}
+		});
 
 		// OKボタンの指定
-		Button btn_ok = (Button) dialog.findViewById(R.id.local_profile_ok);
 		btn_ok.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				String prof_name, prof_dir, prof_act, prof_lmp;
 				boolean audit_error = false;
 				String audit_msg="";
 				prof_lmp=glblParms.SMBSync_External_Root_Dir;
-				editdir.selectAll();
 				prof_dir = editdir.getText().toString();
-				editname.selectAll();
 				prof_name = editname.getText().toString();
 				if (hasInvalidChar(prof_dir,new String[]{"\t"})) {
 					audit_error=true;
@@ -1028,7 +1061,6 @@ public class ProfileMaintenance {
 						audit_error=true;
 						prof_dir=removeInvalidChar(prof_name);
 						audit_msg=String.format(msgs_audit_msgs_profilename1,detectedInvalidCharMsg);
-						audit_msg=msgs_audit_msgs_profilename1;
 						editname.setText(prof_name);
 					} else if (prof_name.length()==0) {
 						audit_error=true;
@@ -1109,19 +1141,6 @@ public class ProfileMaintenance {
 		final Button btnListShare = (Button) dialog.findViewById(R.id.remote_profile_get_btn1);
 		final Button btnListDir = (Button) dialog.findViewById(R.id.remote_profile_get_btn2);
 
-		cb_use_hostname.setOnCheckedChangeListener(new OnCheckedChangeListener(){
-			@Override
-			public void onCheckedChanged(CompoundButton arg0, boolean isChecked) {
-				if (isChecked) {
-					editaddr.setVisibility(EditText.GONE);
-					edithost.setVisibility(EditText.VISIBLE);
-				} else {
-					editaddr.setVisibility(EditText.VISIBLE);
-					edithost.setVisibility(EditText.GONE);
-				}
-			}
-		});
-
 		if (prof_host.equals("")) {
 			cb_use_hostname.setChecked(false);
 			editaddr.setVisibility(EditText.VISIBLE);
@@ -1142,18 +1161,6 @@ public class ProfileMaintenance {
 			edituser.setEnabled(true);
 			editpass.setEnabled(true);
 		}
-		cb_use_user_pass.setOnCheckedChangeListener(new OnCheckedChangeListener(){
-			@Override
-			public void onCheckedChanged(CompoundButton arg0, boolean isChecked) {
-				if (isChecked) {
-					edituser.setEnabled(true);
-					editpass.setEnabled(true);
-				} else {
-					edituser.setEnabled(false);
-					editpass.setEnabled(false);
-				}
-			}
-		});
 		
 		CommonDialog.setDlgBoxSizeCompact(dialog);
 		
@@ -1204,29 +1211,43 @@ public class ProfileMaintenance {
 				btn_cancel.performClick();
 			}
 		});
+
+		final Button btn_ok = (Button) dialog.findViewById(R.id.remote_profile_ok);
+		btn_ok.setEnabled(false);
+		dlg_msg.setText(msgs_audit_msgs_profilename2);
+		
+		setRemoteProfileCommonListener(dialog);
+		
+		editname.addTextChangedListener(new TextWatcher(){
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,	int after) {}
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {}
+			@Override
+			public void afterTextChanged(Editable s) {
+				if (s.length()>0) {
+					dlg_msg.setText("");
+				} else {
+					dlg_msg.setText(msgs_audit_msgs_profilename2);
+				}
+				setRemoteProfileOkBtnEnabled(dialog);
+			}
+		});
+		
 		// OKボタンの指定
-		Button btn_ok = (Button) dialog.findViewById(R.id.remote_profile_ok);
 		btn_ok.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				String prof_name, prof_user, prof_pass, prof_share, prof_dir, prof_act;
 				String prof_addr="", prof_host="";
 				
-				editaddr.selectAll();
 				prof_addr = editaddr.getText().toString();
 
-				edithost.selectAll();
 				prof_host = edithost.getText().toString();
-				edithost.selectAll();
 				prof_host = edithost.getText().toString();
-				edituser.selectAll();
 				prof_user = edituser.getText().toString();
-				editpass.selectAll();
 				prof_pass = editpass.getText().toString();
-				editshare.selectAll();
 				prof_share = editshare.getText().toString();
-				editdir.selectAll();
 				prof_dir = editdir.getText().toString();
-				editname.selectAll();
 				prof_name = editname.getText().toString();
 
 				if (!cb_use_user_pass.isChecked()) {
@@ -1236,12 +1257,12 @@ public class ProfileMaintenance {
 				
 				if (tg.isChecked()) prof_act = SMBSYNC_PROF_ACTIVE;
 					else prof_act = SMBSYNC_PROF_INACTIVE;
-				String e_msg=auditRemoteProfileField(dialog);
-				if (e_msg.length()!=0) {
-					((TextView) dialog.findViewById(R.id.remote_profile_dlg_msg))
-						.setText(e_msg);
-					return;
-				} else {
+//				String e_msg=auditRemoteProfileField(dialog);
+//				if (e_msg.length()!=0) {
+//					((TextView) dialog.findViewById(R.id.remote_profile_dlg_msg))
+//						.setText(e_msg);
+//					return;
+//				} else {
 					if (!isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_REMOTE, prof_name)) {
 						dialog.dismiss();
 						if (cb_use_hostname.isChecked()) prof_addr="";
@@ -1258,13 +1279,232 @@ public class ProfileMaintenance {
 						((TextView) dialog.findViewById(R.id.remote_profile_dlg_msg))
 						.setText(msgs_duplicate_profile);
 					}
-				}
+//				}
 			}
 		});
 //		dialog.setOnKeyListener(new DialogOnKeyListener(context));
 //		dialog.setCancelable(false);
 		dialog.show();
 
+	};
+	
+	private void setRemoteProfileCommonListener(final Dialog dialog) {
+		final TextView dlg_msg=(TextView) dialog.findViewById(R.id.remote_profile_dlg_msg);
+
+		final EditText editaddr = (EditText) dialog.findViewById(R.id.remote_profile_addr);
+		final EditText edithost = (EditText) dialog.findViewById(R.id.remote_profile_hostname);
+
+		final EditText edituser = (EditText) dialog.findViewById(R.id.remote_profile_user);
+		final EditText editpass = (EditText) dialog.findViewById(R.id.remote_profile_pass);
+		final EditText editshare = (EditText) dialog.findViewById(R.id.remote_profile_share);
+		final EditText editdir = (EditText) dialog.findViewById(R.id.remote_profile_dir);
+
+		final CheckBox cb_use_hostname = (CheckBox) dialog.findViewById(R.id.remote_profile_use_computer_name);
+		final CheckBox cb_use_user_pass = (CheckBox) dialog.findViewById(R.id.remote_profile_use_user_pass);
+
+		final Button btn_ok = (Button) dialog.findViewById(R.id.remote_profile_ok);
+
+		cb_use_hostname.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+			@Override
+			public void onCheckedChanged(CompoundButton arg0, boolean isChecked) {
+				if (isChecked) {
+					editaddr.setVisibility(EditText.GONE);
+					edithost.setVisibility(EditText.VISIBLE);
+				} else {
+					editaddr.setVisibility(EditText.VISIBLE);
+					edithost.setVisibility(EditText.GONE);
+				}
+				setRemoteProfileOkBtnEnabled(dialog);
+			}
+		});
+
+		cb_use_user_pass.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+			@Override
+			public void onCheckedChanged(CompoundButton arg0, boolean isChecked) {
+				if (isChecked) {
+					edituser.setEnabled(true);
+					editpass.setEnabled(true);
+				} else {
+					edituser.setEnabled(false);
+					editpass.setEnabled(false);
+				}
+				setRemoteProfileOkBtnEnabled(dialog);
+			}
+		});
+		editaddr.addTextChangedListener(new TextWatcher(){
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {}
+			@Override
+			public void afterTextChanged(Editable s) {
+				if (hasInvalidChar(s.toString(),new String[]{"\t"})) {
+					String new_val=removeInvalidChar(s.toString());
+					dlg_msg.setText(String.format(msgs_audit_msgs_address1,detectedInvalidCharMsg));
+					editaddr.setText(new_val);
+					editaddr.requestFocus();
+				} else if (s.length()==0) {
+					if (!cb_use_hostname.isChecked() && editaddr.getText().length()==0) {
+						dlg_msg.setText(msgs_audit_msgs_address2);
+						editaddr.requestFocus();
+					} else {
+						if (cb_use_hostname.isChecked() && edithost.getText().length()==0) {
+							dlg_msg.setText(msgs_audit_msgs_address2);
+							edithost.requestFocus();
+						}
+					}
+				}
+				setRemoteProfileOkBtnEnabled(dialog); 
+			}
+		});
+		edithost.addTextChangedListener(new TextWatcher(){
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {}
+			@Override
+			public void afterTextChanged(Editable s) {
+				if (hasInvalidChar(s.toString(),new String[]{"\t"})) {
+					String new_val=removeInvalidChar(s.toString());
+					dlg_msg.setText(String.format(msgs_audit_msgs_address1,detectedInvalidCharMsg));
+					edithost.setText(new_val);
+					edithost.requestFocus();
+				} else if (s.length()==0) {
+					if (!cb_use_hostname.isChecked() && editaddr.getText().length()==0) {
+						dlg_msg.setText(msgs_audit_msgs_address2);
+						editaddr.requestFocus();
+					} else {
+						if (cb_use_hostname.isChecked() && edithost.getText().length()==0) {
+							dlg_msg.setText(msgs_audit_msgs_address2);
+							edithost.requestFocus();
+						}
+					}
+				}
+				setRemoteProfileOkBtnEnabled(dialog);
+			}
+		});
+		edituser.addTextChangedListener(new TextWatcher(){
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {}
+			@Override
+			public void afterTextChanged(Editable s) {
+				if (hasInvalidChar(s.toString(),new String[]{"\t"})) {
+					String new_val=removeInvalidChar(s.toString());
+					dlg_msg.setText(String.format(msgs_audit_msgs_username1,detectedInvalidCharMsg));
+					editaddr.setText(new_val);
+					editaddr.requestFocus();
+				} else if (s.length()==0) {
+					if (edituser.getText().length()==0 && editpass.getText().length()==0) {
+						dlg_msg.setText(String.format(msgs_audit_msgs_user_or_pass_missing,detectedInvalidCharMsg));
+						edituser.requestFocus();
+					}
+				}
+				setRemoteProfileOkBtnEnabled(dialog);
+			}
+		});
+		editpass.addTextChangedListener(new TextWatcher(){
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {}
+			@Override
+			public void afterTextChanged(Editable s) {
+				if (hasInvalidChar(s.toString(),new String[]{"\t"})) {
+					String new_val=removeInvalidChar(s.toString());
+					dlg_msg.setText(String.format(msgs_audit_msgs_password1,detectedInvalidCharMsg));
+					editaddr.setText(new_val);
+					editaddr.requestFocus();
+				} else if (s.length()==0) {
+					if (edituser.getText().length()==0 && editpass.getText().length()==0) {
+						dlg_msg.setText(String.format(msgs_audit_msgs_user_or_pass_missing,detectedInvalidCharMsg));
+						edituser.requestFocus();
+					}
+				}
+				setRemoteProfileOkBtnEnabled(dialog);
+			}
+		});
+		editshare.addTextChangedListener(new TextWatcher(){
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {}
+			@Override
+			public void afterTextChanged(Editable s) {
+				if (hasInvalidChar(s.toString(),new String[]{"\t"})) {
+					String new_val=removeInvalidChar(s.toString());
+					dlg_msg.setText(String.format(msgs_audit_msgs_share1,detectedInvalidCharMsg));
+					editshare.setText(new_val);
+					editshare.requestFocus();
+				} else if (s.toString().length()==0) {
+					dlg_msg.setText(msgs_audit_msgs_share2);
+					editshare.requestFocus();
+				}
+				setRemoteProfileOkBtnEnabled(dialog);
+			}
+		});
+		editdir.addTextChangedListener(new TextWatcher(){
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {}
+			@Override
+			public void afterTextChanged(Editable s) {
+				if (hasInvalidChar(s.toString(),new String[]{"\t"})) {
+					String new_val=removeInvalidChar(s.toString());
+					dlg_msg.setText(String.format(msgs_audit_msgs_dir1,detectedInvalidCharMsg));
+					editdir.setText(new_val);
+				}
+			}
+		});
+	};
+	
+	private void setRemoteProfileOkBtnEnabled(Dialog dialog) {
+		final TextView dlg_msg=(TextView) dialog.findViewById(R.id.remote_profile_dlg_msg);
+
+		final EditText editaddr = (EditText) dialog.findViewById(R.id.remote_profile_addr);
+		final EditText edithost = (EditText) dialog.findViewById(R.id.remote_profile_hostname);
+
+		final EditText edituser = (EditText) dialog.findViewById(R.id.remote_profile_user);
+		final EditText editpass = (EditText) dialog.findViewById(R.id.remote_profile_pass);
+		final EditText editshare = (EditText) dialog.findViewById(R.id.remote_profile_share);
+
+		final CheckBox cb_use_hostname = (CheckBox) dialog.findViewById(R.id.remote_profile_use_computer_name);
+		final CheckBox cb_use_user_pass = (CheckBox) dialog.findViewById(R.id.remote_profile_use_user_pass);
+
+		final Button btn_ok = (Button) dialog.findViewById(R.id.remote_profile_ok);
+		btn_ok.setEnabled(false);
+		if (cb_use_hostname.isChecked()) {
+			if (edithost.getText().length()>0) {
+				dlg_msg.setText("");
+			} else {
+				dlg_msg.setText(msgs_audit_addr_user_not_spec);
+				return;
+			}
+		} else {
+			if (editaddr.getText().length()>0) {
+				dlg_msg.setText("");
+			} else {
+				dlg_msg.setText(msgs_audit_addr_user_not_spec);
+				return;
+			}
+		}
+
+		if (cb_use_user_pass.isChecked()) {
+			if (edituser.getText().length()>0 || editpass.getText().length()>0) {
+				dlg_msg.setText("");
+			} else {
+				dlg_msg.setText(msgs_audit_msgs_user_or_pass_missing);
+				return;
+			}
+		}
+
+		if (editshare.getText().length()==0) {
+			dlg_msg.setText(msgs_audit_share_not_spec);
+			return;
+		}
+		btn_ok.setEnabled(true);		
 	};
 
 	public void setSyncOptionSpinner(Spinner spinnerSyncOption, String prof_syncopt) {
@@ -1480,7 +1720,26 @@ public class ProfileMaintenance {
 			
 		});
 
-
+		final Button btn_ok = (Button) dialog.findViewById(R.id.sync_profile_ok);
+		btn_ok.setEnabled(false);
+		dlg_msg.setText(auditSyncProfileField(dialog));
+		editname.addTextChangedListener(new TextWatcher(){
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,	int after) {}
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {}
+			@Override
+			public void afterTextChanged(Editable s) {
+				String e_msg=auditSyncProfileField(dialog);
+				if (e_msg.length()!=0) {
+					dlg_msg.setText(e_msg);
+					btn_ok.setEnabled(false);
+				} else {
+					dlg_msg.setText("");
+					btn_ok.setEnabled(true);
+				} 
+			}
+		});
 		
 		// file filterボタンの指定
 		Button file_filter_btn = (Button) dialog.findViewById(R.id.sync_profile_file_filter_btn);
@@ -1514,7 +1773,7 @@ public class ProfileMaintenance {
 		});
 
 		// OKボタンの指定
-		Button btn_ok = (Button) dialog.findViewById(R.id.sync_profile_ok);
+		
 		btn_ok.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				String prof_name, prof_act, prof_master, prof_target, prof_syncopt = null;
@@ -1523,7 +1782,6 @@ public class ProfileMaintenance {
 				
 				prof_master = spinner_master.getSelectedItem().toString().substring(2);
 				prof_target = spinner_target.getSelectedItem().toString().substring(2);
-				editname.selectAll();
 				prof_name = editname.getText().toString();
 
 				String e_msg=auditSyncProfileField(dialog);
@@ -1620,7 +1878,6 @@ public class ProfileMaintenance {
 			public void onClick(View v) {
 //				String url=SMBSync_External_Root_Dir;
 				String url=(String)spinner.getSelectedItem();
-				editdir.selectAll();
 				String p_dir=editdir.getText().toString();
 				NotifyEvent ntfy=new NotifyEvent(mContext);
 				//Listen setRemoteShare response 
@@ -1663,9 +1920,7 @@ public class ProfileMaintenance {
 				boolean audit_error = false;
 				String audit_msg="";
 				prof_lmp=(String)spinner.getSelectedItem();
-				editdir.selectAll();
 				prof_dir = editdir.getText().toString();
-				editname.selectAll();
 				prof_name = editname.getText().toString();
 
 				if (hasInvalidChar(prof_dir,new String[]{"\t"})) {
@@ -1778,18 +2033,6 @@ public class ProfileMaintenance {
 		final CheckBox cb_use_hostname = (CheckBox) dialog.findViewById(R.id.remote_profile_use_computer_name);
 		final CheckBox cb_use_user_pass = (CheckBox) dialog.findViewById(R.id.remote_profile_use_user_pass);
 		
-		cb_use_hostname.setOnCheckedChangeListener(new OnCheckedChangeListener(){
-			@Override
-			public void onCheckedChanged(CompoundButton arg0, boolean isChecked) {
-				if (isChecked) {
-					editaddr.setVisibility(EditText.GONE);
-					edithost.setVisibility(EditText.VISIBLE);
-				} else {
-					editaddr.setVisibility(EditText.VISIBLE);
-					edithost.setVisibility(EditText.GONE);
-				}
-			}
-		});
 		if (prof_host.equals("")) {
 			cb_use_hostname.setChecked(false);
 			editaddr.setVisibility(EditText.VISIBLE);
@@ -1811,20 +2054,11 @@ public class ProfileMaintenance {
 			edituser.setEnabled(true);
 			editpass.setEnabled(true);
 		}
-		cb_use_user_pass.setOnCheckedChangeListener(new OnCheckedChangeListener(){
-			@Override
-			public void onCheckedChanged(CompoundButton arg0, boolean isChecked) {
-				if (isChecked) {
-					edituser.setEnabled(true);
-					editpass.setEnabled(true);
-				} else {
-					edituser.setEnabled(false);
-					editpass.setEnabled(false);
-				}
-			}
-		});
 
 		CommonDialog.setDlgBoxSizeCompact(dialog);
+
+		final Button btn_ok = (Button) dialog.findViewById(R.id.remote_profile_ok);
+		setRemoteProfileCommonListener(dialog);
 		
 		final CheckBox tg = (CheckBox) dialog.findViewById(R.id.remote_profile_active);
 		if (prof_act.equals(SMBSYNC_PROF_ACTIVE)) tg.setChecked(true);
@@ -1871,27 +2105,19 @@ public class ProfileMaintenance {
 			}
 		});
 		// OKボタンの指定
-		Button btn_ok = (Button) dialog.findViewById(R.id.remote_profile_ok);
 		btn_ok.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				String prof_name, remote_user, remote_pass, remote_share, 
 				prof_dir, prof_act = null;
 				String remote_host="",remote_addr="";
 
-				editaddr.selectAll();
-				edithost.selectAll();
 				remote_host=edithost.getText().toString();
 				remote_addr=editaddr.getText().toString();
 				
-				edituser.selectAll();
 				remote_user = edituser.getText().toString();
-				editpass.selectAll();
 				remote_pass = editpass.getText().toString();
-				editshare.selectAll();
 				remote_share = editshare.getText().toString();
-				editdir.selectAll();
 				prof_dir = editdir.getText().toString();
-				editname.selectAll();
 				prof_name = editname.getText().toString();
 				
 				if (!cb_use_user_pass.isChecked()) {
@@ -1901,12 +2127,12 @@ public class ProfileMaintenance {
 				
 				if (tg.isChecked()) prof_act = SMBSYNC_PROF_ACTIVE;
 					else prof_act = SMBSYNC_PROF_INACTIVE;
-				String e_msg=auditRemoteProfileField(dialog);
-				if (e_msg.length()!=0) {
-					((TextView) dialog.findViewById(R.id.remote_profile_dlg_msg))
-					.setText(e_msg);
-					return;
-				} else {
+//				String e_msg=auditRemoteProfileField(dialog);
+//				if (e_msg.length()!=0) {
+//					((TextView) dialog.findViewById(R.id.remote_profile_dlg_msg))
+//					.setText(e_msg);
+//					return;
+//				} else {
 					dialog.dismiss();
 					ProfileListItem item = profileAdapter.getItem(prof_num);
 					if (prof_name.equals(item.getName())||
@@ -1930,7 +2156,7 @@ public class ProfileMaintenance {
 						((TextView) dialog.findViewById(R.id.remote_profile_dlg_msg))
 						.setText(msgs_duplicate_profile);
 					}
-				}
+//				}
 			}
 		});
 //		dialog.setOnKeyListener(new DialogOnKeyListener(context));
@@ -2145,7 +2371,6 @@ public class ProfileMaintenance {
 				
 				prof_master = spinner_master.getSelectedItem().toString().substring(2);
 				prof_target = spinner_target.getSelectedItem().toString().substring(2);
-				editname.selectAll();
 				prof_name = editname.getText().toString();
 
 				String e_msg=auditSyncProfileField(dialog);
@@ -2252,7 +2477,6 @@ public class ProfileMaintenance {
 		btn_ok.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				dialog.dismiss();
-				etInput.selectAll();
 				String new_name=etInput.getText().toString();
 				int pos=profileListView.getFirstVisiblePosition();
 				int posTop=profileListView.getChildAt(0).getTop();
@@ -2344,13 +2568,9 @@ public class ProfileMaintenance {
 		final CheckBox cb_use_hostname = (CheckBox) dialog.findViewById(R.id.remote_profile_use_computer_name);
 		String remote_addr, remote_user, remote_pass,remote_host;
 		
-		editaddr.selectAll();
 		remote_addr = editaddr.getText().toString();
-		edithost.selectAll();
 		remote_host = edithost.getText().toString();
-		edituser.selectAll();
 		remote_user = edituser.getText().toString();
-		editpass.selectAll();
 		remote_pass = editpass.getText().toString();
 
 		if (remote_addr.length()<1 && remote_host.length()<1) { 
@@ -2411,16 +2631,11 @@ public class ProfileMaintenance {
 		final EditText editdir = (EditText) dialog.findViewById(R.id.remote_profile_dir);
 		final CheckBox cb_use_hostname = (CheckBox) dialog.findViewById(R.id.remote_profile_use_computer_name);
 		String remote_addr, remote_user, remote_pass,remote_share,remote_host;
-		editaddr.selectAll();
 		remote_addr = editaddr.getText().toString();
-		edithost.selectAll();
 		remote_host = edithost.getText().toString();
-		edituser.selectAll();
 		remote_user = edituser.getText().toString();
-		editpass.selectAll();
 		remote_pass = editpass.getText().toString();
 
-		editshare.selectAll();
 		remote_share = editshare.getText().toString();
 
 		if (remote_addr.length()<1 && remote_host.length()<1) {
@@ -2445,7 +2660,6 @@ public class ProfileMaintenance {
 			edituser.requestFocus();
 			return;
 		}
-		editdir.selectAll();
 		String p_dir = editdir.getText().toString();
 		
 		setSmbUserPass(remote_user,remote_pass);
@@ -2707,7 +2921,6 @@ public class ProfileMaintenance {
 		addBtn.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				dlg_msg.setText("");
-				et_filter.selectAll();
 				String newfilter=et_filter.getText().toString().trim();
 				et_filter.setText("");
 				if (filterAdapter.getItem(0).getFilter().startsWith("---"))
@@ -2847,7 +3060,6 @@ public class ProfileMaintenance {
 		addbtn.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				dlg_msg.setText("");
-				et_filter.selectAll();
 				String newfilter=et_filter.getText().toString();
 				if (isFilterExists(newfilter,filterAdapter)) {
 					String mtxt=mContext.getString(R.string.msgs_filter_list_duplicate_filter_specified);
@@ -2967,7 +3179,6 @@ public class ProfileMaintenance {
 			public void onClick(View v) {
 				TextView dlg_msg =(TextView)dialog.findViewById(R.id.filter_edit_dlg_msg);
 				
-				et_filter.selectAll();
 				String newfilter=et_filter.getText().toString();
 				if (!filter.equals(newfilter)) {
 					if (isFilterExists(newfilter,fa)) {
@@ -3391,29 +3602,42 @@ public class ProfileMaintenance {
 		
 		prof_master = spinner_master.getSelectedItem().toString().substring(2);
 		prof_target = spinner_target.getSelectedItem().toString().substring(2);
-		editname.selectAll();
 		prof_name = editname.getText().toString();
-		
-		if (hasInvalidChar(prof_master,new String[]{"\t"})) {
+
+		if (hasInvalidChar(prof_name,new String[]{"\t"})) {
 			audit_error=true;
-			prof_master=removeInvalidChar(prof_master);
-			audit_msg=String.format(msgs_audit_msgs_master1,detectedInvalidCharMsg);
-		} else if (prof_master.length()==0) {
+			prof_name=removeInvalidChar(prof_name);
+			audit_msg=String.format(msgs_audit_msgs_profilename1,detectedInvalidCharMsg);
+			editname.setText(prof_name);
+			editname.requestFocus();
+		}  else if (prof_name.length()==0) {
 			audit_error=true;
-			audit_msg=msgs_audit_msgs_master2;
-		} else if (!isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,
-				 SMBSYNC_PROF_TYPE_SYNC, prof_master)) {
-			audit_msg= String.format(
-					mContext.getString(R.string.msgs_master_profile_not_found), 
-					prof_master);
-			audit_error=true;
-		} else if (tg.isChecked() && !isProfileActive(SMBSYNC_PROF_GROUP_DEFAULT,
-				getProfileType(prof_master,profileAdapter), prof_master)) {
-			audit_msg= 
-					mContext.getString(R.string.msgs_prof_active_not_activated);
-			audit_error=true;
+			audit_msg=msgs_audit_msgs_profilename2;
+			editname.requestFocus();
 		}
 
+		if (!audit_error) {
+			if (hasInvalidChar(prof_master,new String[]{"\t"})) {
+				audit_error=true;
+				prof_master=removeInvalidChar(prof_master);
+				audit_msg=String.format(msgs_audit_msgs_master1,detectedInvalidCharMsg);
+			} else if (prof_master.length()==0) {
+				audit_error=true;
+				audit_msg=msgs_audit_msgs_master2;
+			} else if (!isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,
+					 SMBSYNC_PROF_TYPE_SYNC, prof_master)) {
+				audit_msg= String.format(
+						mContext.getString(R.string.msgs_master_profile_not_found), 
+						prof_master);
+				audit_error=true;
+			} else if (tg.isChecked() && !isProfileActive(SMBSYNC_PROF_GROUP_DEFAULT,
+					getProfileType(prof_master,profileAdapter), prof_master)) {
+				audit_msg= 
+						mContext.getString(R.string.msgs_prof_active_not_activated);
+				audit_error=true;
+			}
+		}
+		
 		if (!audit_error) {
 			if (hasInvalidChar(prof_target,new String[]{"\t"})) {
 				audit_error=true;
@@ -3437,19 +3661,6 @@ public class ProfileMaintenance {
 
 		}
 		if (!audit_error) {
-			if (hasInvalidChar(prof_name,new String[]{"\t"})) {
-				audit_error=true;
-				prof_name=removeInvalidChar(prof_name);
-				audit_msg=String.format(msgs_audit_msgs_profilename1,detectedInvalidCharMsg);
-				editname.setText(prof_name);
-				editname.requestFocus();
-			}  else if (prof_name.length()==0) {
-				audit_error=true;
-				audit_msg=msgs_audit_msgs_profilename2;
-				editname.requestFocus();
-			}
-		}
-		if (!audit_error) {
 			String m_typ=getProfileType(prof_master,profileAdapter);
 			String t_typ=getProfileType(prof_target,profileAdapter);
 			if (m_typ.equals(SMBSYNC_PROF_TYPE_REMOTE)) {
@@ -3464,111 +3675,123 @@ public class ProfileMaintenance {
 	}
 	
 	
-	private String auditRemoteProfileField(Dialog dialog) {
-		String prof_name, prof_addr, prof_user, prof_pass, prof_share, prof_dir, prof_host;
-		boolean audit_error=false;
-		String audit_msg="";
-		final EditText editaddr = (EditText) dialog.findViewById(R.id.remote_profile_addr);
-		final EditText edituser = (EditText) dialog.findViewById(R.id.remote_profile_user);
-		final EditText editpass = (EditText) dialog.findViewById(R.id.remote_profile_pass);
-		final EditText editshare = (EditText) dialog.findViewById(R.id.remote_profile_share);
-		final EditText editdir = (EditText) dialog.findViewById(R.id.remote_profile_dir);
-		final EditText editname = (EditText) dialog.findViewById(R.id.remote_profile_name);
-		final EditText edithost = (EditText) dialog.findViewById(R.id.remote_profile_hostname);
-		final CheckBox cb_use_hostname = (CheckBox) dialog.findViewById(R.id.remote_profile_use_computer_name);
-		
-		editaddr.selectAll();
-		prof_addr = editaddr.getText().toString();
-		edithost.selectAll();
-		prof_host = edithost.getText().toString();
-		edituser.selectAll();
-		prof_user = edituser.getText().toString();
-		editpass.selectAll();
-		prof_pass = editpass.getText().toString();
-		editshare.selectAll();
-		prof_share = editshare.getText().toString();
-		editdir.selectAll();
-		prof_dir = editdir.getText().toString();
-		editname.selectAll();
-		prof_name = editname.getText().toString();
-		if (hasInvalidChar(prof_addr,new String[]{"\t"})) {
-			audit_error=true;
-			prof_addr=removeInvalidChar(prof_addr);
-			audit_msg=String.format(msgs_audit_msgs_address1,detectedInvalidCharMsg);
-			editaddr.setText(prof_addr);
-			editaddr.requestFocus();
-		} else {
-			if (!cb_use_hostname.isChecked() && prof_addr.length()==0) {
-				audit_error=true;
-				audit_msg=msgs_audit_msgs_address2;
-				editaddr.requestFocus();
-			} else if (cb_use_hostname.isChecked() && prof_host.length()==0) {
-					audit_error=true;
-					audit_msg=msgs_audit_msgs_address2;
-					editaddr.requestFocus();
-			} 
-		}
-		if (!audit_error) {
-			if (hasInvalidChar(prof_user,new String[]{"\t"})) {
-				audit_error=true;
-				prof_user=removeInvalidChar(prof_user);
-				audit_msg=String.format(msgs_audit_msgs_username1,detectedInvalidCharMsg);
-				edituser.setText(prof_user);
-				edituser.requestFocus();
-			}
-//2012/02/13 USERID 無しを許可			
-//			else if (prof_user.length()==0) {
+//	private String auditRemoteProfileField(Dialog dialog) {
+//		String prof_name, prof_addr, prof_user, prof_pass, prof_share, prof_dir, prof_host;
+//		boolean audit_error=false;
+//		String audit_msg="";
+//		final EditText editaddr = (EditText) dialog.findViewById(R.id.remote_profile_addr);
+//		final EditText edituser = (EditText) dialog.findViewById(R.id.remote_profile_user);
+//		final EditText editpass = (EditText) dialog.findViewById(R.id.remote_profile_pass);
+//		final EditText editshare = (EditText) dialog.findViewById(R.id.remote_profile_share);
+//		final EditText editdir = (EditText) dialog.findViewById(R.id.remote_profile_dir);
+//		final EditText editname = (EditText) dialog.findViewById(R.id.remote_profile_name);
+//		final EditText edithost = (EditText) dialog.findViewById(R.id.remote_profile_hostname);
+//		final CheckBox cb_use_hostname = (CheckBox) dialog.findViewById(R.id.remote_profile_use_computer_name);
+//		final CheckBox cb_use_user_pass = (CheckBox) dialog.findViewById(R.id.remote_profile_use_user_pass);
+//		
+//		prof_addr = editaddr.getText().toString();
+//		prof_host = edithost.getText().toString();
+//		prof_user = edituser.getText().toString();
+//		prof_pass = editpass.getText().toString();
+//		prof_share = editshare.getText().toString();
+//		prof_dir = editdir.getText().toString();
+//		prof_name = editname.getText().toString();
+//		if (hasInvalidChar(prof_name,new String[]{"\t"})) {
+//			audit_error=true;
+//			prof_name=removeInvalidChar(prof_name);
+//			audit_msg=String.format(msgs_audit_msgs_profilename1,detectedInvalidCharMsg);
+//			editname.setText(prof_name);
+//			editdir.requestFocus();
+//		} else if (prof_name.length()==0) {
+//			audit_error=true;
+//			audit_msg=msgs_audit_msgs_profilename2;
+//			editname.requestFocus();
+//		}
+//		if (!audit_error) {
+//			if (hasInvalidChar(prof_addr,new String[]{"\t"})) {
 //				audit_error=true;
-//				audit_msg=msgs_audit_msgs_username2;
-//				edituser.requestFocus();
+//				prof_addr=removeInvalidChar(prof_addr);
+//				audit_msg=String.format(msgs_audit_msgs_address1,detectedInvalidCharMsg);
+//				editaddr.setText(prof_addr);
+//				editaddr.requestFocus();
+//			} else {
+//				if (!cb_use_hostname.isChecked() && prof_addr.length()==0) {
+//					audit_error=true;
+//					audit_msg=msgs_audit_msgs_address2;
+//					editaddr.requestFocus();
+//				} else {
+//					if (cb_use_hostname.isChecked() && prof_host.length()==0) {
+//						audit_error=true;
+//						audit_msg=msgs_audit_msgs_address2;
+//						editaddr.requestFocus();
+//					} else {
+//						audit_error=false;
+//					}
+//				}
 //			}
-		}
-		if (!audit_error) {
-			if (hasInvalidChar(prof_pass,new String[]{"\t"})) {
-				audit_error=true;
-				prof_pass=removeInvalidChar(prof_pass);
-				audit_msg=String.format(msgs_audit_msgs_password1,detectedInvalidCharMsg);
-				editpass.setText(prof_pass);
-				editpass.requestFocus();
-			}
-		}
-		if (!audit_error) {					
-			if (hasInvalidChar(prof_share,new String[]{"\t"})) {
-				audit_error=true;
-				prof_share=removeInvalidChar(prof_share);
-				audit_msg=String.format(msgs_audit_msgs_share1,detectedInvalidCharMsg);
-				editshare.setText(prof_share);
-				editshare.requestFocus();
-			} else if (prof_share.length()==0) {
-				audit_error=true;
-				audit_msg=msgs_audit_msgs_share2;
-				editshare.requestFocus();
-			}
-		}
-		if (!audit_error) {
-			if (hasInvalidChar(prof_dir,new String[]{"\t"})) {
-				audit_error=true;
-				prof_dir=removeInvalidChar(prof_dir);
-				audit_msg=String.format(msgs_audit_msgs_dir1,detectedInvalidCharMsg);
-				editdir.setText(prof_dir);
-				editdir.requestFocus();
-			}
-		}
-		if (!audit_error) {
-			if (hasInvalidChar(prof_name,new String[]{"\t"})) {
-				audit_error=true;
-				prof_name=removeInvalidChar(prof_name);
-				audit_msg=String.format(msgs_audit_msgs_profilename1,detectedInvalidCharMsg);
-				editname.setText(prof_name);
-				editdir.requestFocus();
-			} else if (prof_name.length()==0) {
-				audit_error=true;
-				audit_msg=msgs_audit_msgs_profilename2;
-				editname.requestFocus();
-			}
-		}
-		return audit_msg;
-	};
+//		}
+//		if (!audit_error) {
+//			if (cb_use_user_pass.isChecked()) {
+//				if (hasInvalidChar(prof_user,new String[]{"\t"})) {
+//					audit_error=true;
+//					prof_user=removeInvalidChar(prof_user);
+//					audit_msg=String.format(msgs_audit_msgs_username1,detectedInvalidCharMsg);
+//					edituser.setText(prof_user);
+//					edituser.requestFocus();
+//				} else {
+//					if (prof_user.equals("") && prof_pass.equals("")) {
+//						audit_error=true;
+//						audit_msg=String.format(msgs_audit_msgs_user_or_pass_missing,detectedInvalidCharMsg);
+//						edituser.requestFocus();
+//					} else {
+//						audit_error=false;
+//					}
+//				}
+//			}
+//		}
+//		if (!audit_error) {
+//			if (cb_use_user_pass.isChecked()) {
+//				if (hasInvalidChar(prof_pass,new String[]{"\t"})) {
+//					audit_error=true;
+//					prof_pass=removeInvalidChar(prof_pass);
+//					audit_msg=String.format(msgs_audit_msgs_password1,detectedInvalidCharMsg);
+//					editpass.setText(prof_pass);
+//					editpass.requestFocus();
+//				} else {
+//					if (prof_user.equals("") && prof_pass.equals("")) {
+//						audit_error=true;
+//						audit_msg=String.format(msgs_audit_msgs_user_or_pass_missing,detectedInvalidCharMsg);
+//						editpass.requestFocus();
+//					} else {
+//						audit_error=false;
+//					}
+//				}
+//			}
+//		}
+//		if (!audit_error) {					
+//			if (hasInvalidChar(prof_share,new String[]{"\t"})) {
+//				audit_error=true;
+//				prof_share=removeInvalidChar(prof_share);
+//				audit_msg=String.format(msgs_audit_msgs_share1,detectedInvalidCharMsg);
+//				editshare.setText(prof_share);
+//				editshare.requestFocus();
+//			} else if (prof_share.length()==0) {
+//				audit_error=true;
+//				audit_msg=msgs_audit_msgs_share2;
+//				editshare.requestFocus();
+//			}
+//		}
+//		if (!audit_error) {
+//			if (hasInvalidChar(prof_dir,new String[]{"\t"})) {
+//				audit_error=true;
+//				prof_dir=removeInvalidChar(prof_dir);
+//				audit_msg=String.format(msgs_audit_msgs_dir1,detectedInvalidCharMsg);
+//				editdir.setText(prof_dir);
+//				editdir.requestFocus();
+//			}
+//		}
+//		return audit_msg;
+//	};
 
 	private String detectedInvalidChar="",detectedInvalidCharMsg="";
 	private boolean hasInvalidChar(String in_text,String[] invchar) {
@@ -3761,6 +3984,9 @@ public class ProfileMaintenance {
 		final EditText eaEt2 = (EditText) dialog.findViewById(R.id.scan_address_range_end_address_o2);
 		final EditText eaEt3 = (EditText) dialog.findViewById(R.id.scan_address_range_end_address_o3);
 		final EditText eaEt4 = (EditText) dialog.findViewById(R.id.scan_address_range_end_address_o4);
+		final Button btn_cancel = (Button) dialog.findViewById(R.id.scan_address_range_btn_cancel);
+		final Button btn_ok = (Button) dialog.findViewById(R.id.scan_address_range_btn_ok);
+//		final TextView dlg_msg = (TextView) dialog.findViewById(R.id.scan_address_range_msg);
 		baEt1.setText(subnet_o1);
 		baEt2.setText(subnet_o2);
 		baEt3.setText(subnet_o3);
@@ -3801,23 +4027,40 @@ public class ProfileMaintenance {
 			public void onTextChanged(CharSequence s, int start, int before,int count) {}
 		});
 
+//		baEt4.addTextChangedListener(new TextWatcher() {
+//			@Override
+//			public void afterTextChanged(Editable s) {
+//				if (auditScanAddressRangeValue(dialog)) btn_ok.setEnabled(true);
+//				else btn_ok.setEnabled(false);
+//			}
+//			@Override
+//			public void beforeTextChanged(CharSequence s, int start, int count,int after) {}
+//			@Override
+//			public void onTextChanged(CharSequence s, int start, int before,int count) {}
+//		});
+//
+//		eaEt4.addTextChangedListener(new TextWatcher() {
+//			@Override
+//			public void afterTextChanged(Editable s) {
+//				if (auditScanAddressRangeValue(dialog)) btn_ok.setEnabled(true);
+//				else btn_ok.setEnabled(false);
+//			}
+//			@Override
+//			public void beforeTextChanged(CharSequence s, int start, int count,int after) {}
+//			@Override
+//			public void onTextChanged(CharSequence s, int start, int before,int count) {}
+//		});
+
 		
-		final Button btn_cancel = (Button) dialog.findViewById(R.id.scan_address_range_btn_cancel);
-		final Button btn_ok = (Button) dialog.findViewById(R.id.scan_address_range_btn_ok);
 		CommonDialog.setDlgBoxSizeCompact(dialog);
 		// OKボタンの指定
 		btn_ok.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				if (auditScanAddressRangeValue(dialog)) {
-					baEt1.selectAll();
 					String ba1=baEt1.getText().toString();
-					baEt2.selectAll();
 					String ba2=baEt2.getText().toString();
-					baEt3.selectAll();
 					String ba3=baEt3.getText().toString();
-					baEt4.selectAll();
 					String ba4=baEt4.getText().toString();
-					eaEt4.selectAll();
 					String ea4=eaEt4.getText().toString();
 					scanIpAddrSubnet=ba1+"."+ba2+"."+ba3;
 					scanIpAddrBeginAddr = Integer.parseInt(ba4);
@@ -3888,21 +4131,13 @@ public class ProfileMaintenance {
        	new Thread(new Runnable() {
 			@Override
 			public void run() {//non UI thread
-				System.setProperty( "jcifs.netbios.retryTimeout", "100");
-				System.setProperty( "jcifs.netbios.retryCount", "2");
+				System.setProperty("jcifs.netbios.retryTimeout", "150");
 				final String scan_prog=mContext.getString(R.string.msgs_ip_address_scan_progress);
+				final String found_title=mContext.getString(R.string.msgs_ip_address_scan_found);
 				for (int i=scanIpAddrBeginAddr; i<=scanIpAddrEndAddr;i++) {
 					if (cancelIpAddressListCreation) break;
-					final int ix=i;
-					handler.post(new Runnable() {// UI thread
-						@Override
-						public void run() {
-							int prog=(ix-scanIpAddrBeginAddr)*100/(scanIpAddrEndAddr-scanIpAddrBeginAddr);
-							String text=String.format(scan_prog, scanIpAddrSubnet+"."+ix, prog);
-							tvmsg.setText(text);
-						}
-					});
-					if (isSmbHost(scanIpAddrSubnet+"."+i) && 
+					if (isIpAddrReachable(scanIpAddrSubnet+"."+i,150) &&
+							isSmbHost(scanIpAddrSubnet+"."+i) && 
 							!curr_ip.equals(scanIpAddrSubnet+"."+i)) {
 						String srv_name=getSmbHostName(scanIpAddrSubnet+"."+i);
 						ScanAddressResultListItem li=new ScanAddressResultListItem();
@@ -3910,6 +4145,22 @@ public class ProfileMaintenance {
 						li.server_name=srv_name;
 						ipAddressList.add(li);
 					}
+					final int ix=i;
+					handler.post(new Runnable() {// UI thread
+						@Override
+						public void run() {
+							int prog=(ix-scanIpAddrBeginAddr)*100/(scanIpAddrEndAddr-scanIpAddrBeginAddr);
+							String text=String.format(scan_prog, scanIpAddrSubnet+"."+ix, prog);
+							if (ipAddressList.size()>0) {
+								String fs=found_title;
+								for (ScanAddressResultListItem li : ipAddressList) {
+									fs=fs+"    "+li.server_address+"\n";
+								}
+								tvmsg.setText(text+"\n"+fs);
+							} else tvmsg.setText(text);
+						}
+					});
+					System.setProperty("jcifs.netbios.retryTimeout", "3000");
 //					if (isIpAddrReachable(scanIpAddrSubnet+"."+i,scanIpAddrTimeout) && 
 //							!curr_ip.equals(scanIpAddrSubnet+"."+i)) {
 //						String srv_name=getSmbHostName(scanIpAddrSubnet+"."+i);
@@ -3920,8 +4171,6 @@ public class ProfileMaintenance {
 //					}
 				}
 				// dismiss progress bar dialog
-				System.setProperty( "jcifs.netbios.retryTimeout", "3000");
-				System.setProperty( "jcifs.netbios.retryCount", "2");
 				handler.post(new Runnable() {// UI thread
 					@Override
 					public void run() {
@@ -3948,21 +4197,13 @@ public class ProfileMaintenance {
 		final EditText eaEt4 = (EditText) dialog.findViewById(R.id.scan_address_range_end_address_o4);
 		final TextView tvmsg = (TextView) dialog.findViewById(R.id.scan_address_range_msg);
 
-		baEt1.selectAll();
 		String ba1=baEt1.getText().toString();
-		baEt2.selectAll();
 		String ba2=baEt2.getText().toString();
-		baEt3.selectAll();
 		String ba3=baEt3.getText().toString();
-		baEt4.selectAll();
 		String ba4=baEt4.getText().toString();
-		eaEt1.selectAll();
 		String ea1=eaEt1.getText().toString();
-		eaEt2.selectAll();
 		String ea2=eaEt2.getText().toString();
-		eaEt3.selectAll();
 		String ea3=eaEt3.getText().toString();
-		eaEt4.selectAll();
 		String ea4=eaEt4.getText().toString();
 		
     	tvmsg.setText("");
@@ -4055,9 +4296,20 @@ public class ProfileMaintenance {
 		return result;
 	};
 	
-	@SuppressWarnings("unused")
 	private boolean isIpAddrReachable(String address,int timeout) {
 		boolean reachable=false;
+//		String[] command = {"ping", "-c", "1", "-t", "10", address};
+//		try {
+//			reachable= new ProcessBuilder(command).start().waitFor() == 0;
+//		} catch (InterruptedException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		} catch (IOException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
+		
+		
 		try {
 			InetAddress ip = InetAddress.getByName(address);
 			reachable=ip.isReachable(timeout);  // Try for one tenth of a second
@@ -4067,7 +4319,7 @@ public class ProfileMaintenance {
 			e.printStackTrace();
 		}
         
-        	util.addDebugLogMsg(1,"I","isIpAddrReachable Address="+address+
+       	util.addDebugLogMsg(1,"I","isIpAddrReachable Address="+address+
         								", reachable="+reachable);
 		return reachable;
 	};
@@ -4083,6 +4335,8 @@ public class ProfileMaintenance {
     	util.addDebugLogMsg(1,"I","isSmbHost Address="+address+", result="+result);
 		return result;
 	};
+	
+
 	
 	private String getSmbHostName(String address) {
 		String srv_name="";
@@ -5741,6 +5995,7 @@ public class ProfileMaintenance {
 	private static String msgs_audit_msgs_target1	;
 	private static String msgs_audit_msgs_target2	;
 	private static String msgs_audit_msgs_username1	;
+	private static String msgs_audit_msgs_user_or_pass_missing	;
 
    	private static String msgs_filelist_error;
    	private static String msgs_filelist_cancel;
@@ -5808,6 +6063,7 @@ public class ProfileMaintenance {
 		msgs_audit_msgs_target1			=	mContext.getString(R.string.msgs_audit_msgs_target1	);
 		msgs_audit_msgs_target2			=	mContext.getString(R.string.msgs_audit_msgs_target2	);
 		msgs_audit_msgs_username1		=	mContext.getString(R.string.msgs_audit_msgs_username1	);
+		msgs_audit_msgs_user_or_pass_missing=	mContext.getString(R.string.msgs_audit_msgs_user_or_pass_missing);
 	};
 
 	public class FilterAdapterSort implements Comparator<String>{

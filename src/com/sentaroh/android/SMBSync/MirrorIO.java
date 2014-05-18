@@ -1107,6 +1107,8 @@ public class MirrorIO implements Runnable {
 //		System.setProperty("jcifs.smb.lmCompatibility", "0");
 //		System.setProperty("jcifs.smb.client.useExtendedSecurity", "false");
 //		Auth errorの回避 
+		jcifs.Config.setProperty( "jcifs.netbios.retryTimeout", "3000");
+		
 		System.setProperty("jcifs.util.loglevel", settingsSmbLogLevel);
 		System.setProperty("jcifs.smb.lmCompatibility", settingsSmbLmCompatibility);
 		System.setProperty("jcifs.smb.client.useExtendedSecurity", settingsSmbUseExtendedSecurity);
@@ -1514,13 +1516,19 @@ public class MirrorIO implements Runnable {
 				if (hf.isDirectory()) { // Directory copy
 					if (hf.canRead() && isDirectoryToBeProcessed(masterUrl.replace(mirrorIoRootDir, ""))) {
 						hf = new SmbFile(masterUrl + "/",ntlmPasswordAuth);
-						SmbFile[] children = hf.listFiles();
-						for (SmbFile element : children) {
-							String tmp = element.getName();
-							if (tmp.lastIndexOf("/")>0) tmp=tmp.substring(0,tmp.lastIndexOf("/"));
-							mirrorCopyRemoteToLocal(allcopy, masterUrl + "/"+ tmp,
-									targetUrl + "/"+ tmp, copiedFileList);
-							if (checkErrorStatus()!=0) return checkErrorStatus();
+						try {
+							SmbFile[] children = hf.listFiles();
+							for (SmbFile element : children) {
+								String tmp = element.getName();
+								if (tmp.lastIndexOf("/")>0) tmp=tmp.substring(0,tmp.lastIndexOf("/"));
+								mirrorCopyRemoteToLocal(allcopy, masterUrl + "/"+ tmp,
+										targetUrl + "/"+ tmp, copiedFileList);
+								if (checkErrorStatus()!=0) return checkErrorStatus();
+							}
+						} catch (SmbException e) {
+							if (glblParms.debugLevel>=1) 
+								addDebugLogMsg(1,"W","SmbException occured during SmbFile#listFiles(), name=", masterUrl,
+										", jcifs error=", e.getMessage());
 						}
 					}
 				} else { // file copy
@@ -1785,13 +1793,19 @@ public class MirrorIO implements Runnable {
 					if (hf.canRead() && 
 							isDirectoryToBeProcessed(masterUrl.replace(mirrorIoRootDir, ""))) {
 						hf = new SmbFile(masterUrl + "/",ntlmPasswordAuth);
-						SmbFile[] children = hf.listFiles();
-						for (SmbFile element : children) {
-							String tmp = element.getName();
-							if (tmp.lastIndexOf("/")>0) tmp=tmp.substring(0,tmp.lastIndexOf("/"));
-							mirrorMoveRemoteToLocal(allcopy, masterUrl + "/"+ tmp,
-									targetUrl + "/"+ tmp,moved_dirs);
-							if (checkErrorStatus()!=0) return checkErrorStatus();
+						try {
+							SmbFile[] children = hf.listFiles();
+							for (SmbFile element : children) {
+								String tmp = element.getName();
+								if (tmp.lastIndexOf("/")>0) tmp=tmp.substring(0,tmp.lastIndexOf("/"));
+								mirrorMoveRemoteToLocal(allcopy, masterUrl + "/"+ tmp,
+										targetUrl + "/"+ tmp,moved_dirs);
+								if (checkErrorStatus()!=0) return checkErrorStatus();
+							}
+						} catch (SmbException e) {
+							if (glblParms.debugLevel>=1) 
+								addDebugLogMsg(1,"W","SmbException occured during SmbFile#listFiles(), name=", masterUrl,
+										", jcifs error=", e.getMessage());
 						}
 					}
 				} else { // file copy
@@ -2395,6 +2409,8 @@ public class MirrorIO implements Runnable {
 		if (prefix.equals("I")) {
 			dirIncludeFilterList.add(pattern_array);
 		} else {
+//			Log.v("","filter="+filter+", conv="+convertRegExp(filter)+
+//					", comp="+Pattern.compile(convertRegExp(filter), flags));
 			dirExcludeFilterList.add(
 					Pattern.compile(convertRegExp(filter), flags));
 		}
@@ -2887,6 +2903,26 @@ public class MirrorIO implements Runnable {
 				out = out + "\\.";
 			} else if (temp.equals("?")) {
 				out = out + ".";
+			} else if (temp.equals("+")) {
+				out = out + "\\+";
+			} else if (temp.equals("{")) {
+				out = out + "\\{";
+			} else if (temp.equals("}")) {
+				out = out + "\\}";
+			} else if (temp.equals("(")) {
+				out = out + "\\(";
+			} else if (temp.equals(")")) {
+				out = out + "\\)";
+			} else if (temp.equals("[")) {
+				out = out + "\\[";
+			} else if (temp.equals("]")) {
+				out = out + "\\]";
+			} else if (temp.equals("^")) {
+				out = out + "\\^";
+			} else if (temp.equals("$")) {
+				out = out + "\\$";
+			} else if (temp.equals("[")) {
+				out = out + "\\[";
 			} else
 				out = out + temp;
 		}

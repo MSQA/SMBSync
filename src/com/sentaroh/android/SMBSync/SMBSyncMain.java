@@ -241,7 +241,7 @@ public class SMBSyncMain extends FragmentActivity {
 			profMaint=new ProfileMaintenance(util,this, profileAdapter, 
 					profileListView, commonDlg,ccMenu, glblParms);
 	};
-
+	
 	@Override
 	protected void onStart() {
 		super.onStart();
@@ -257,8 +257,6 @@ public class SMBSyncMain extends FragmentActivity {
 		super.onResume();
 		util.addDebugLogMsg(1,"I","onResume entered, "+"resartStatus="+restartStatus+
 					", isActivityForeground="+util.isActivityForeground());
-		/* JCIFS Timeout set to default */
-		System.setProperty( "jcifs.netbios.retryTimeout", "3000");
 		
 		util.setActivityIsForeground(true);
 		if (restartStatus==1) {

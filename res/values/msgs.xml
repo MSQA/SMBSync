@@ -122,25 +122,27 @@
 	<string name="msgs_target_profile_not_found">%s Target profile can not be found.</string>
 	<string name="msgs_invalid_profile_combination">Master and target profile combination is must remote-local, local-remote or local-local.</string>
 	
-	<string name="msgs_audit_share_not_spec">Missing share name.</string>
-	<string name="msgs_audit_addr_user_not_spec">Missing address or name.</string>
+	<string name="msgs_audit_share_not_spec">Specify share name.</string>
+	<string name="msgs_audit_addr_user_not_spec">Specify remote server address or name.</string>
 	<string name="msgs_audit_msgs_local_dir">Local directory has contains %s character, invalid character was removed.</string>	
-	<string name="msgs_audit_msgs_address1">Address or name has contains $s character, invalid character was removed.</string>
-	<string name="msgs_audit_msgs_address2">Address or name is not specified. Specify address or name.</string>
+	<string name="msgs_audit_msgs_address1">Remote address or name has contains $s character, invalid character was removed.</string>
+	<string name="msgs_audit_msgs_address2">Specify remote server address or name.</string>
 	<string name="msgs_audit_msgs_dir1">Directory has contains %s character, invalid character was removed.</string>
 	<string name="msgs_audit_msgs_master1">Master profile has contains $s character, invalid character was removed.</string>
-	<string name="msgs_audit_msgs_master2">Missing master profile name.</string>
+	<string name="msgs_audit_msgs_master2">Specify master profile name.</string>
 	<string name="msgs_audit_msgs_password1">Password has contains $s character, invalid character was removed.</string>
 	<string name="msgs_audit_msgs_profilename1">Profile name has contains $s character, invalid character was removed.</string>
-	<string name="msgs_audit_msgs_profilename2">Profile name is not specified. Specify profile name.</string>
+	<string name="msgs_audit_msgs_profilename2">Specify profile name.</string>
 	<string name="msgs_audit_msgs_share1">Share has contains $s character, invalid character was removed.</string>
-	<string name="msgs_audit_msgs_share2">Share name is not specified. Specify share name.</string>
-	<string name="msgs_audit_msgs_sync1">Sync profile is not specified. Specify sync profile name.</string>
+	<string name="msgs_audit_msgs_share2">Specify share name.</string>
+	<string name="msgs_audit_msgs_sync1">Specify sync profile name.</string>
 	<string name="msgs_audit_msgs_target1">Target profile has contains $s character, invalid character was removed.</string>
-	<string name="msgs_audit_msgs_target2">Target profile is no specified. Specify target profile name.</string>
+	<string name="msgs_audit_msgs_target2">Specify target profile name.</string>
 	<string name="msgs_audit_msgs_username1">User name has contains $s character, invalid character was removed.</string>
 	<string name="msgs_audit_msgs_master_target">Specified master and target profile is same. Specify different profile.</string>
 	<string name="msgs_filter_new_filter">Filter has contains $s character, invalid character was removed.</string>
+	<string name="msgs_audit_msgs_user_or_pass_missing">Please specify either or both of the user name or password.</string>		
+	
 				
 	<string name="msgs_menu_sync">Sync</string>
 	<string name="msgs_menu_browse_logfile">Show log</string>

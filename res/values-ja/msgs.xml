@@ -132,15 +132,16 @@
 	<string name="msgs_audit_msgs_master2">マスターが指定されていません。</string>
 	<string name="msgs_audit_msgs_password1">パスワードに%s文字が含まれています、無効な文字を消しました。</string>
 	<string name="msgs_audit_msgs_profilename1">プロファイル名に%s文字が含まれています、無効な文字を消しました。</string>
-	<string name="msgs_audit_msgs_profilename2">プロファイル名が指定されていません。</string>
+	<string name="msgs_audit_msgs_profilename2">プロファイル名を指定してください。</string>
 	<string name="msgs_audit_msgs_share1">共有名に%s文字が含まれています、無効な文字を消しました。</string>
-	<string name="msgs_audit_msgs_share2">共有名が指定されていません。</string>
-	<string name="msgs_audit_msgs_sync1">共有名が指定されていません。</string>
-	<string name="msgs_audit_msgs_target1">ターゲットに%s文字が含まれています、無効な文字を消しました。</string>
-	<string name="msgs_audit_msgs_target2">ターゲットが指定されていません。</string>
+	<string name="msgs_audit_msgs_share2">共有名を指定してください。</string>
+	<string name="msgs_audit_msgs_sync1">同期プロファイル名を指定してください。</string>
+	<string name="msgs_audit_msgs_target1">ターゲットプロファイル名に%s文字が含まれています、無効な文字を消しました。</string>
+	<string name="msgs_audit_msgs_target2">ターゲットプロファイル名を指定してください。</string>
 	<string name="msgs_audit_msgs_username1">ユーザー名に%s文字が含まれています、無効な文字を消しました。</string>
-	<string name="msgs_audit_msgs_master_target">マスターとターゲットが同じです、違うプロファイルを指定してください。</string>
-	<string name="msgs_filter_new_filter">フィルターに%s文字が含まれています、無効な文字を消しました。</string>				
+	<string name="msgs_audit_msgs_master_target">マスタープロファイルとターゲットプロファイルが同じです、違うプロファイルを指定してください。</string>
+	<string name="msgs_filter_new_filter">フィルターに%s文字が含まれています、無効な文字を消しました。</string>
+	<string name="msgs_audit_msgs_user_or_pass_missing">ユーザー名とパスワードの両方、または、どちらかを指定してください。</string>		
 	
 	<string name="msgs_menu_sync">同期実行</string>
 	<string name="msgs_menu_browse_logfile">ログ表示</string>

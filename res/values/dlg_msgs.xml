@@ -73,9 +73,10 @@
 
    	<string name="msgs_progress_spin_dlg_addr_listing">Network scan</string>
    	<string name="msgs_progress_spin_dlg_addr_cancel">Cancel scan</string>
-   	<string name="msgs_ip_address_select_title">Select IP address/Hostname</string>
+   	<string name="msgs_ip_address_select_title">Select IP address or Hostname</string>
    	<string name="msgs_ip_address_no_address">---No IP address detected---</string>
    	<string name="msgs_ip_address_scan_progress" formatted="false">%s, Scan %s%% Completed</string>
+   	<string name="msgs_ip_address_scan_found">Founded IP Adrress : \n</string>
    	
    	<string name="msgs_ip_address_range_dlg_title">Scan IP Address Range</string>
    	<string name="msgs_ip_address_range_dlg_begin">Begin</string>
