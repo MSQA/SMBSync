@@ -288,8 +288,9 @@ public class MirrorIO implements Runnable {
     			}
     		}
 		} catch (InterruptedException e) {
-			e.printStackTrace();
 			addLogMsg("E","","MediaScannerConnection wait error:"+e.getMessage());
+			addLogMsg("W","","InterruptedException occured");
+			printStackTraceElement(e.getStackTrace());
 			result=false;
 		}
 		return result;
@@ -1214,35 +1215,35 @@ public class MirrorIO implements Runnable {
 		} catch (MalformedURLException e) {
 			addLogMsg("E","","mirrorCopyLocalToRemote From="+masterUrl+", To="+targetUrl);
 			addLogMsg("E","",e.toString());
-			e.printStackTrace();
+			printStackTraceElement(e.getStackTrace());
 			isExceptionOccured=true;
 			tcMirror.setThreadMessage(e.getMessage());
 			return -1;
 		} catch (SmbException e) {
 			addLogMsg("E","","mirrorCopyLocalToRemote From="+masterUrl+", To="+targetUrl);
 			addLogMsg("E","",e.toString());
-			e.printStackTrace();
+			printStackTraceElement(e.getStackTrace());
 			isExceptionOccured=true;
 			tcMirror.setThreadMessage(e.getMessage());
 			return -1;
 		} catch (UnknownHostException e) {
 			addLogMsg("E","","mirrorCopyLocalToRemote From="+masterUrl+", To="+targetUrl);
 			addLogMsg("E","",e.toString());
-			e.printStackTrace();
+			printStackTraceElement(e.getStackTrace());
 			isExceptionOccured=true;
 			tcMirror.setThreadMessage(e.getMessage());
 			return -1;
 		} catch (FileNotFoundException e) {
 			addLogMsg("E","","mirrorCopyLocalToRemote From="+masterUrl+", To="+targetUrl);
 			addLogMsg("E","",e.toString());
-			e.printStackTrace();
+			printStackTraceElement(e.getStackTrace());
 			isExceptionOccured=true;
 			tcMirror.setThreadMessage(e.getMessage());
 			return -1;
 		} catch (IOException e) {
 			addLogMsg("E","","mirrorCopyLocalToRemote From="+masterUrl+", To="+targetUrl);
 			addLogMsg("E","",e.toString());
-			e.printStackTrace();
+			printStackTraceElement(e.getStackTrace());
 			isExceptionOccured=true;
 			tcMirror.setThreadMessage(e.getMessage());
 			return -1;
@@ -1250,6 +1251,12 @@ public class MirrorIO implements Runnable {
 		return 0;
 	};
 
+	private void printStackTraceElement(StackTraceElement[] ste) {
+		for (int i=0;i<ste.length;i++) {
+			addLogMsg("E","",ste[i].toString());	
+		}
+	}
+	
 	final private int mirrorDeleteRemoteFile(String masterUrl, String targetUrl) {
 		SmbFile hf;
 		File lf;
@@ -1308,14 +1315,14 @@ public class MirrorIO implements Runnable {
 		} catch (MalformedURLException e) {
 			addLogMsg("E","","mirrorDeleteRemoteFile From="+masterUrl+", To="+targetUrl);
 			addLogMsg("E","",e.toString());
-			e.printStackTrace();
+			printStackTraceElement(e.getStackTrace());
 			isExceptionOccured=true;
 			tcMirror.setThreadMessage(e.getMessage());
 			return -1;
 		} catch (SmbException e) {
 			addLogMsg("E","","mirrorDeleteRemoteFile From="+masterUrl+", To="+targetUrl);
 			addLogMsg("E","",e.toString());
-			e.printStackTrace();
+			printStackTraceElement(e.getStackTrace());
 			isExceptionOccured=true;
 			tcMirror.setThreadMessage(e.getMessage());
 			return -1;
@@ -1408,35 +1415,35 @@ public class MirrorIO implements Runnable {
 		} catch (MalformedURLException e) {
 			addLogMsg("E","","mirrorCopyLocalToRemote From="+masterUrl+", To="+targetUrl);
 			addLogMsg("E","",e.toString());
-			e.printStackTrace();
+			printStackTraceElement(e.getStackTrace());
 			isExceptionOccured=true;
 			tcMirror.setThreadMessage(e.getMessage());
 			return -1;
 		} catch (SmbException e) {
 			addLogMsg("E","","mirrorCopyLocalToRemote From="+masterUrl+", To="+targetUrl);
 			addLogMsg("E","",e.toString());
-			e.printStackTrace();
+			printStackTraceElement(e.getStackTrace());
 			isExceptionOccured=true;
 			tcMirror.setThreadMessage(e.getMessage());
 			return -1;
 		} catch (UnknownHostException e) {
 			addLogMsg("E","","mirrorCopyLocalToRemote From="+masterUrl+", To="+targetUrl);
 			addLogMsg("E","",e.toString());
-			e.printStackTrace();
+			printStackTraceElement(e.getStackTrace());
 			isExceptionOccured=true;
 			tcMirror.setThreadMessage(e.getMessage());
 			return -1;
 		} catch (FileNotFoundException e) {
 			addLogMsg("E","","mirrorCopyLocalToRemote From="+masterUrl+", To="+targetUrl);
 			addLogMsg("E","",e.toString());
-			e.printStackTrace();
+			printStackTraceElement(e.getStackTrace());
 			isExceptionOccured=true;
 			tcMirror.setThreadMessage(e.getMessage());
 			return -1;
 		} catch (IOException e) {
 			addLogMsg("E","","mirrorCopyLocalToRemote From="+masterUrl+", To="+targetUrl);
 			addLogMsg("E","",e.toString());
-			e.printStackTrace();
+			printStackTraceElement(e.getStackTrace());
 			isExceptionOccured=true;
 			tcMirror.setThreadMessage(e.getMessage());
 			return -1;
@@ -1578,35 +1585,35 @@ public class MirrorIO implements Runnable {
 		} catch (MalformedURLException e) {
 			addLogMsg("E","","mirrorCopyRemoteToLocal From="+masterUrl+", To="+targetUrl);
 			addLogMsg("E","",e.toString());
-			e.printStackTrace();
+			printStackTraceElement(e.getStackTrace());
 			isExceptionOccured=true;
 			tcMirror.setThreadMessage(e.getMessage());
 			return -1;
 		} catch (SmbException e) {
 			addLogMsg("E","","mirrorCopyRemoteToLocal From="+masterUrl+", To="+targetUrl);
 			addLogMsg("E","",e.toString());
-			e.printStackTrace();
+			printStackTraceElement(e.getStackTrace());
 			isExceptionOccured=true;
 			tcMirror.setThreadMessage(e.getMessage());
 			return -1;
 		} catch (UnknownHostException e) {
 			addLogMsg("E","","mirrorCopyRemoteToLocal From="+masterUrl+", To="+targetUrl);
 			addLogMsg("E","",e.toString());
-			e.printStackTrace();
+			printStackTraceElement(e.getStackTrace());
 			isExceptionOccured=true;
 			tcMirror.setThreadMessage(e.getMessage());
 			return -1;
 		} catch (FileNotFoundException e) {
 			addLogMsg("E","","mirrorCopyRemoteToLocal From="+masterUrl+", To="+targetUrl);
 			addLogMsg("E","",e.toString());
-			e.printStackTrace();
+			printStackTraceElement(e.getStackTrace());
 			isExceptionOccured=true;
 			tcMirror.setThreadMessage(e.getMessage());
 			return -1;
 		} catch (IOException e) {
 			addLogMsg("E","","mirrorCopyRemoteToLocal From="+masterUrl+", To="+targetUrl);
 			addLogMsg("E","",e.toString());
-			e.printStackTrace();
+			printStackTraceElement(e.getStackTrace());
 			isExceptionOccured=true;
 			tcMirror.setThreadMessage(e.getMessage());
 			return -1;
@@ -1633,9 +1640,11 @@ public class MirrorIO implements Runnable {
 					if (confirmDeleteResult>0) result=true;
 					else result=false;
 				} catch (RemoteException e) {
-					e.printStackTrace();
+					addLogMsg("E","","RemoteException occured");
+					printStackTraceElement(e.getStackTrace());
 				} catch (InterruptedException e) {
-					e.printStackTrace();
+					addLogMsg("E","","InterruptedException occured");
+					printStackTraceElement(e.getStackTrace());
 				}
 			} else {
 				if (confirmDeleteResult==SMBSYNC_CONFIRM_RESP_YESALL) result=true;
@@ -1675,9 +1684,11 @@ public class MirrorIO implements Runnable {
 						if (confirmCopyResult>0) result=true;
 						else result=false;
 					} catch (RemoteException e) {
-						e.printStackTrace();
+						addLogMsg("E","","RemoteException occured");
+						printStackTraceElement(e.getStackTrace());
 					} catch (InterruptedException e) {
-						e.printStackTrace();
+						addLogMsg("E","","InterruptedException occured");
+						printStackTraceElement(e.getStackTrace());
 					}
 				}
 			} else {
@@ -1753,14 +1764,14 @@ public class MirrorIO implements Runnable {
 		} catch (MalformedURLException e) {
 			addLogMsg("E","",e.toString());
 			addLogMsg("E","","From="+masterUrl+", To="+targetUrl);
-			e.printStackTrace();
+			printStackTraceElement(e.getStackTrace());
 			isExceptionOccured=true;
 			tcMirror.setThreadMessage(e.getMessage());
 			return -1;
 		} catch (SmbException e) {
 			addLogMsg("E","",e.toString());
 			addLogMsg("E","","From="+masterUrl+", To="+targetUrl);
-			e.printStackTrace();
+			printStackTraceElement(e.getStackTrace());
 			isExceptionOccured=true;
 			tcMirror.setThreadMessage(e.getMessage());
 			return -1;
@@ -1872,35 +1883,35 @@ public class MirrorIO implements Runnable {
 		} catch (MalformedURLException e) {
 			addLogMsg("E","",e.toString());
 			addLogMsg("E","","From="+masterUrl+", To="+targetUrl);
-			e.printStackTrace();
+			printStackTraceElement(e.getStackTrace());
 			isExceptionOccured=true;
 			tcMirror.setThreadMessage(e.getMessage());
 			return -1;
 		} catch (SmbException e) {
 			addLogMsg("E","",e.toString());
 			addLogMsg("E","","From="+masterUrl+", To="+targetUrl);
-			e.printStackTrace();
+			printStackTraceElement(e.getStackTrace());
 			isExceptionOccured=true;
 			tcMirror.setThreadMessage(e.getMessage());
 			return -1;
 		} catch (UnknownHostException e) {
 			addLogMsg("E","",e.toString());
 			addLogMsg("E","","From="+masterUrl+", To="+targetUrl);
-			e.printStackTrace();
+			printStackTraceElement(e.getStackTrace());
 			isExceptionOccured=true;
 			tcMirror.setThreadMessage(e.getMessage());
 			return -1;
 		} catch (FileNotFoundException e) {
 			addLogMsg("E","",e.toString());
 			addLogMsg("E","","From="+masterUrl+", To="+targetUrl);
-			e.printStackTrace();
+			printStackTraceElement(e.getStackTrace());
 			isExceptionOccured=true;
 			tcMirror.setThreadMessage(e.getMessage());
 			return -1;
 		} catch (IOException e) {
 			addLogMsg("E","",e.toString());
 			addLogMsg("E","","From="+masterUrl+", To="+targetUrl);
-			e.printStackTrace();
+			printStackTraceElement(e.getStackTrace());
 			isExceptionOccured=true;
 			tcMirror.setThreadMessage(e.getMessage());
 			return -1;
@@ -1990,35 +2001,35 @@ public class MirrorIO implements Runnable {
 				
 			}
 		} catch (MalformedURLException e) {
-			e.printStackTrace();
+			printStackTraceElement(e.getStackTrace());
 			addLogMsg("E","",e.toString());
 			addLogMsg("E","","From="+masterUrl+", To="+targetUrl);
 			isExceptionOccured=true;
 			tcMirror.setThreadMessage(e.getMessage());
 			return -1;
 		} catch (SmbException e) {
-			e.printStackTrace();
+			printStackTraceElement(e.getStackTrace());
 			addLogMsg("E","",e.toString());
 			addLogMsg("E","","From="+masterUrl+", To="+targetUrl);
 			isExceptionOccured=true;
 			tcMirror.setThreadMessage(e.getMessage());
 			return -1;
 		} catch (UnknownHostException e) {
-			e.printStackTrace();
+			printStackTraceElement(e.getStackTrace());
 			addLogMsg("E","",e.toString());
 			addLogMsg("E","","From="+masterUrl+", To="+targetUrl);
 			isExceptionOccured=true;
 			tcMirror.setThreadMessage(e.getMessage());
 			return -1;
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			printStackTraceElement(e.getStackTrace());
 			addLogMsg("E","",e.toString());
 			addLogMsg("E","","From="+masterUrl+", To="+targetUrl);
 			isExceptionOccured=true;
 			tcMirror.setThreadMessage(e.getMessage());
 			return -1;
 		} catch (IOException e) {
-			e.printStackTrace();
+			printStackTraceElement(e.getStackTrace());
 			addLogMsg("E","",e.toString());
 			addLogMsg("E","","From="+masterUrl+", To="+targetUrl);
 			isExceptionOccured=true;
@@ -2122,35 +2133,35 @@ public class MirrorIO implements Runnable {
 				
 			}
 		} catch (MalformedURLException e) {
-			e.printStackTrace();
+			printStackTraceElement(e.getStackTrace());
 			addLogMsg("E","",e.toString());
 			addLogMsg("E","","From="+masterUrl+", To="+targetUrl);
 			isExceptionOccured=true;
 			tcMirror.setThreadMessage(e.getMessage());
 			return -1;
 		} catch (SmbException e) {
-			e.printStackTrace();
+			printStackTraceElement(e.getStackTrace());
 			addLogMsg("E","",e.toString());
 			addLogMsg("E","","From="+masterUrl+", To="+targetUrl);
 			isExceptionOccured=true;
 			tcMirror.setThreadMessage(e.getMessage());
 			return -1;
 		} catch (UnknownHostException e) {
-			e.printStackTrace();
+			printStackTraceElement(e.getStackTrace());
 			addLogMsg("E","",e.toString());
 			addLogMsg("E","","From="+masterUrl+", To="+targetUrl);
 			isExceptionOccured=true;
 			tcMirror.setThreadMessage(e.getMessage());
 			return -1;
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			printStackTraceElement(e.getStackTrace());
 			addLogMsg("E","",e.toString());
 			addLogMsg("E","","From="+masterUrl+", To="+targetUrl);
 			isExceptionOccured=true;
 			tcMirror.setThreadMessage(e.getMessage());
 			return -1;
 		} catch (IOException e) {
-			e.printStackTrace();
+			printStackTraceElement(e.getStackTrace());
 			addLogMsg("E","",e.toString());
 			addLogMsg("E","","From="+masterUrl+", To="+targetUrl);
 			isExceptionOccured=true;
@@ -2955,7 +2966,7 @@ public class MirrorIO implements Runnable {
 		} catch (MalformedURLException e) {
 			addLogMsg("E","",e.toString());
 			addLogMsg("E","","url="+url);
-			e.printStackTrace();
+			printStackTraceElement(e.getStackTrace());
 			isExceptionOccured=true;
 			tcMirror.setThreadMessage(e.getMessage());
 			return -1;
@@ -3005,13 +3016,13 @@ public class MirrorIO implements Runnable {
 			}
 		} catch (MalformedURLException e) {
 			addLogMsg("E","",e.toString());
-			e.printStackTrace();
+			printStackTraceElement(e.getStackTrace());
 			isExceptionOccured=true;
 			tcMirror.setThreadMessage(e.getMessage());
 			return -1;
 		} catch (SmbException e) {
 			addLogMsg("E","",e.toString());
-			e.printStackTrace();
+			printStackTraceElement(e.getStackTrace());
 			isExceptionOccured=true;
 			tcMirror.setThreadMessage(e.getMessage());
 			return -1;
@@ -3035,7 +3046,7 @@ public class MirrorIO implements Runnable {
 		} catch (Exception e) {
 			addLogMsg("E","",e.toString());
 			addLogMsg("E","","url="+url);
-			e.printStackTrace();
+			printStackTraceElement(e.getStackTrace());
 			isExceptionOccured=true;
 			tcMirror.setThreadMessage(e.getMessage());
 			return -1;
@@ -3099,7 +3110,7 @@ public class MirrorIO implements Runnable {
 		} catch (Exception e) {
 			addLogMsg("E","",e.toString());
 			isExceptionOccured=true;
-			e.printStackTrace();
+			printStackTraceElement(e.getStackTrace());
 			tcMirror.setThreadMessage(e.getMessage());
 			return false;
 		}
@@ -3120,7 +3131,7 @@ public class MirrorIO implements Runnable {
 		} catch (Exception e) {
 			isExceptionOccured=true;
 			addLogMsg("E","",e.toString());
-			e.printStackTrace();
+			printStackTraceElement(e.getStackTrace());
 			tcMirror.setThreadMessage(e.getMessage());
 			return false;
 		}
