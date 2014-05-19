@@ -56,7 +56,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -1641,7 +1642,11 @@ public class ProfileMaintenance {
 		final Spinner spinner_master=(Spinner)dialog.findViewById(R.id.sync_profile_master_spinner);
 		final Spinner spinner_target=(Spinner)dialog.findViewById(R.id.sync_profile_target_spinner);
 		setSyncMasterProfileSpinner(spinner_master,"");
-		setSyncTargetProfileSpinner(spinner_target,spinner_master.getSelectedItem().toString().substring(2),"");
+		if (spinner_master.getCount()>0) {
+			setSyncTargetProfileSpinner(spinner_target,spinner_master.getSelectedItem().toString().substring(2),"");
+		} else {
+			setSyncTargetProfileSpinner(spinner_target,"","");
+		}
 //		Log.v("","add main sp_m="+spinner_master.getSelectedItem()+", sp_t="+spinner_target.getSelectedItem());
 		
 		final ImageButton ib_edit_master = (ImageButton)dialog.findViewById(R.id.sync_profile_edit_master);
@@ -1667,57 +1672,59 @@ public class ProfileMaintenance {
 		ib_edit_master.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View arg0) {
-				String m_name=spinner_master.getSelectedItem().toString().substring(2);
-				int num=-1;
-				ProfileListItem m_pli=getProfile(SMBSYNC_PROF_GROUP_DEFAULT,m_name);
-				if (m_pli!=null) {
-					for (int i=0;i<profileAdapter.getCount();i++) {
-						if (profileAdapter.getItem(i).getName().equals(m_name)) {
-							num=i;
-							break;
+				if (spinner_master.getCount()>0) {
+					String m_name=spinner_master.getSelectedItem().toString().substring(2);
+					int num=-1;
+					ProfileListItem m_pli=getProfile(SMBSYNC_PROF_GROUP_DEFAULT,m_name);
+					if (m_pli!=null) {
+						for (int i=0;i<profileAdapter.getCount();i++) {
+							if (profileAdapter.getItem(i).getName().equals(m_name)) {
+								num=i;
+								break;
+							}
 						}
-					}
-					if (m_pli.getType().equals(SMBSYNC_PROF_TYPE_REMOTE)) {
-						editProfileRemote(m_name, SMBSYNC_PROF_TYPE_REMOTE,
-								num, m_pli.getActive(), 
-								m_pli.getAddr(), m_pli.getUser(), m_pli.getPass(),
-								m_pli.getShare(), m_pli.getDir(),m_pli.getHostname(), "");
-					} else if (m_pli.getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
-						editProfileLocal(m_name, SMBSYNC_PROF_TYPE_LOCAL,
-								num, m_pli.getLocalMountPoint(), m_pli.getActive(),
-								m_pli.getDir(), "");
+						if (m_pli.getType().equals(SMBSYNC_PROF_TYPE_REMOTE)) {
+							editProfileRemote(m_name, SMBSYNC_PROF_TYPE_REMOTE,
+									num, m_pli.getActive(), 
+									m_pli.getAddr(), m_pli.getUser(), m_pli.getPass(),
+									m_pli.getShare(), m_pli.getDir(),m_pli.getHostname(), "");
+						} else if (m_pli.getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
+							editProfileLocal(m_name, SMBSYNC_PROF_TYPE_LOCAL,
+									num, m_pli.getLocalMountPoint(), m_pli.getActive(),
+									m_pli.getDir(), "");
+						}
 					}
 				}
 			}
-			
 		});
 
 		ib_edit_target.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View arg0) {
-				String t_name=spinner_target.getSelectedItem().toString().substring(2);;
-				int num=-1;
-				ProfileListItem m_pli=getProfile(SMBSYNC_PROF_GROUP_DEFAULT, t_name);
-				if (m_pli!=null) {
-					for (int i=0;i<profileAdapter.getCount();i++) {
-						if (profileAdapter.getItem(i).getName().equals(t_name)) {
-							num=i;
-							break;
+				if (spinner_target.getCount()>0) {
+					String t_name=spinner_target.getSelectedItem().toString().substring(2);;
+					int num=-1;
+					ProfileListItem m_pli=getProfile(SMBSYNC_PROF_GROUP_DEFAULT, t_name);
+					if (m_pli!=null) {
+						for (int i=0;i<profileAdapter.getCount();i++) {
+							if (profileAdapter.getItem(i).getName().equals(t_name)) {
+								num=i;
+								break;
+							}
 						}
-					}
-					if (m_pli.getType().equals(SMBSYNC_PROF_TYPE_REMOTE)) {
-						editProfileRemote(t_name, m_pli.getType(),
-								num, m_pli.getActive(), 
-								m_pli.getAddr(), m_pli.getUser(), m_pli.getPass(),
-								m_pli.getShare(), m_pli.getDir(),m_pli.getHostname(), "");
-					} else if (m_pli.getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
-						editProfileLocal(t_name, SMBSYNC_PROF_TYPE_LOCAL,
-								num, m_pli.getLocalMountPoint(), m_pli.getActive(),
-								m_pli.getDir(), "");
+						if (m_pli.getType().equals(SMBSYNC_PROF_TYPE_REMOTE)) {
+							editProfileRemote(t_name, m_pli.getType(),
+									num, m_pli.getActive(), 
+									m_pli.getAddr(), m_pli.getUser(), m_pli.getPass(),
+									m_pli.getShare(), m_pli.getDir(),m_pli.getHostname(), "");
+						} else if (m_pli.getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
+							editProfileLocal(t_name, SMBSYNC_PROF_TYPE_LOCAL,
+									num, m_pli.getLocalMountPoint(), m_pli.getActive(),
+									m_pli.getDir(), "");
+						}
 					}
 				}
 			}
-			
 		});
 
 		final Button btn_ok = (Button) dialog.findViewById(R.id.sync_profile_ok);
@@ -3592,7 +3599,7 @@ public class ProfileMaintenance {
 	};
 	
 	private String auditSyncProfileField(Dialog dialog) {
-		String prof_name, prof_master, prof_target;
+		String prof_name, prof_master="", prof_target="";
 		boolean audit_error=false;
 		String audit_msg="";
 		Spinner spinner_master=(Spinner)dialog.findViewById(R.id.sync_profile_master_spinner);
@@ -3600,8 +3607,10 @@ public class ProfileMaintenance {
 		EditText editname = (EditText) dialog.findViewById(R.id.sync_profile_name);
 		CheckBox tg = (CheckBox)dialog.findViewById(R.id.sync_profile_active);
 		
-		prof_master = spinner_master.getSelectedItem().toString().substring(2);
-		prof_target = spinner_target.getSelectedItem().toString().substring(2);
+		if (spinner_master.getCount()>0) 
+			prof_master = spinner_master.getSelectedItem().toString().substring(2);
+		if (spinner_target.getCount()>0) 
+			prof_target = spinner_target.getSelectedItem().toString().substring(2);
 		prof_name = editname.getText().toString();
 
 		if (hasInvalidChar(prof_name,new String[]{"\t"})) {
@@ -4298,26 +4307,23 @@ public class ProfileMaintenance {
 	
 	private boolean isIpAddrReachable(String address,int timeout) {
 		boolean reachable=false;
-//		String[] command = {"ping", "-c", "1", "-t", "10", address};
-//		try {
-//			reachable= new ProcessBuilder(command).start().waitFor() == 0;
-//		} catch (InterruptedException e1) {
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//		} catch (IOException e1) {
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//		}
-		
-		
-		try {
-			InetAddress ip = InetAddress.getByName(address);
-			reachable=ip.isReachable(timeout);  // Try for one tenth of a second
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+		Socket socket = new Socket();
+        try {
+            socket.bind(null);
+            socket.connect((new InetSocketAddress(address, 445)), 200);
+            reachable=true;
+            socket.close();
+        } catch (IOException e) {
+        } catch (Exception e) {
 		}
+//		try {
+//			InetAddress ip = InetAddress.getByName(address);
+//			reachable=ip.isReachable(timeout);  // Try for one tenth of a second
+//		} catch (UnknownHostException e) {
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
         
        	util.addDebugLogMsg(1,"I","isIpAddrReachable Address="+address+
         								", reachable="+reachable);

@@ -196,10 +196,10 @@ public class LocalFileLastModified {
 					public void positiveResponse(Context c, Object[] o) {
 						for (int i=0;i<lflmAdapter.getCount();i++)
 							if (lflmAdapter.getItem(i).isChecked()) {
-								ArrayList<LocalFileLastModifiedEntryItem> curr_list=
-										new ArrayList<LocalFileLastModifiedEntryItem>();
-								ArrayList<LocalFileLastModifiedEntryItem> new_list=
-										new ArrayList<LocalFileLastModifiedEntryItem>();
+								ArrayList<FileLastModifiedEntryItem> curr_list=
+										new ArrayList<FileLastModifiedEntryItem>();
+								ArrayList<FileLastModifiedEntryItem> new_list=
+										new ArrayList<FileLastModifiedEntryItem>();
 								saveLastModifiedList(lflmAdapter.getItem(i).getLocalMountPoint(),
 										curr_list, new_list);
 								lflmAdapter.getItem(i).setStatus(context.getString(R.string.msgs_local_file_modified_maint_status_init));
@@ -224,11 +224,11 @@ public class LocalFileLastModified {
 					public void positiveResponse(Context c, Object[] o) {
 						for (int i=0;i<lflmAdapter.getCount();i++)
 							if (lflmAdapter.getItem(i).isChecked()) {
-								ArrayList<LocalFileLastModifiedEntryItem> curr_list=
-										new ArrayList<LocalFileLastModifiedEntryItem>();
-								ArrayList<LocalFileLastModifiedEntryItem> new_list=
-										new ArrayList<LocalFileLastModifiedEntryItem>();
-								new_list.add(new LocalFileLastModifiedEntryItem(
+								ArrayList<FileLastModifiedEntryItem> curr_list=
+										new ArrayList<FileLastModifiedEntryItem>();
+								ArrayList<FileLastModifiedEntryItem> new_list=
+										new ArrayList<FileLastModifiedEntryItem>();
+								new_list.add(new FileLastModifiedEntryItem(
 										SMBSYNC_LOCAL_FILE_LAST_MODIFIED_WAS_FORCE_LASTEST,0,0,false));
 								saveLastModifiedList(lflmAdapter.getItem(i).getLocalMountPoint(),
 										curr_list, new_list);
@@ -291,10 +291,10 @@ public class LocalFileLastModified {
 	final static public void createLastModifiedMaintList(
 			Context context, AdapterProfileList profile_adapter,
 			ArrayList<LocalFileLastModifiedMaintListItem> maint_list) {
-		final ArrayList<LocalFileLastModifiedEntryItem> curr_list=
-				new ArrayList<LocalFileLastModifiedEntryItem>();
-		final ArrayList<LocalFileLastModifiedEntryItem> new_list=
-				new ArrayList<LocalFileLastModifiedEntryItem>();
+		final ArrayList<FileLastModifiedEntryItem> curr_list=
+				new ArrayList<FileLastModifiedEntryItem>();
+		final ArrayList<FileLastModifiedEntryItem> new_list=
+				new ArrayList<FileLastModifiedEntryItem>();
 		ArrayList<String> mpl=new ArrayList<String>();
 		
 		for (int i=0;i<profile_adapter.getCount();i++) {
@@ -410,8 +410,8 @@ public class LocalFileLastModified {
 	};
 
 	final public static boolean isCurrentListWasDifferent(
-			ArrayList<LocalFileLastModifiedEntryItem> curr_last_modified_list,
-			ArrayList<LocalFileLastModifiedEntryItem> new_last_modified_list,
+			ArrayList<FileLastModifiedEntryItem> curr_last_modified_list,
+			ArrayList<FileLastModifiedEntryItem> new_last_modified_list,
 			String fp, long l_lm, long r_lm, int timeDifferenceLimit) {
 		boolean result=false;
 		if (curr_last_modified_list.size()!=0) {
@@ -421,11 +421,11 @@ public class LocalFileLastModified {
 						curr_last_modified_list,new_last_modified_list,fp,l_lm,r_lm);
 			} else {
 				int idx=Collections.binarySearch(curr_last_modified_list, 
-						new LocalFileLastModifiedEntryItem(fp,0,0,false), 
-					new Comparator<LocalFileLastModifiedEntryItem>(){
+						new FileLastModifiedEntryItem(fp,0,0,false), 
+					new Comparator<FileLastModifiedEntryItem>(){
 					@Override
-					public int compare(LocalFileLastModifiedEntryItem ci,
-							LocalFileLastModifiedEntryItem ni) {
+					public int compare(FileLastModifiedEntryItem ci,
+							FileLastModifiedEntryItem ni) {
 						return ci.getFullFilePath().compareToIgnoreCase(ni.getFullFilePath());
 					}
 				});
@@ -456,12 +456,12 @@ public class LocalFileLastModified {
 	};
 	
 	final public static boolean isAddedListWasDifferent(
-			ArrayList<LocalFileLastModifiedEntryItem> curr_last_modified_list,
-			ArrayList<LocalFileLastModifiedEntryItem> new_last_modified_list,
+			ArrayList<FileLastModifiedEntryItem> curr_last_modified_list,
+			ArrayList<FileLastModifiedEntryItem> new_last_modified_list,
 			String fp, long l_lm, long r_lm, int timeDifferenceLimit) {
 		boolean result=true, found=false;
 		if (new_last_modified_list.size()==0) result=true;
-		else for (LocalFileLastModifiedEntryItem fli : new_last_modified_list) {
+		else for (FileLastModifiedEntryItem fli : new_last_modified_list) {
 			if (fli.getFullFilePath().equals(fp)) {
 				found=true;
 				long diff_lcl=Math.abs(fli.getLocalFileLastModified()-l_lm);
@@ -478,30 +478,30 @@ public class LocalFileLastModified {
 	};
 		
 	final public static void addLastModifiedItem(
-			ArrayList<LocalFileLastModifiedEntryItem> curr_last_modified_list,
-			ArrayList<LocalFileLastModifiedEntryItem> new_last_modified_list,
+			ArrayList<FileLastModifiedEntryItem> curr_last_modified_list,
+			ArrayList<FileLastModifiedEntryItem> new_last_modified_list,
 			String fp, long l_lm, long r_lm){
 //		Thread.dumpStack();
-		LocalFileLastModifiedEntryItem fli= new LocalFileLastModifiedEntryItem
+		FileLastModifiedEntryItem fli= new FileLastModifiedEntryItem
 				(fp,l_lm,r_lm,true);
 		new_last_modified_list.add(fli);
 	};
 	
 	final public static void deleteLastModifiedItem(
-			ArrayList<LocalFileLastModifiedEntryItem> curr_last_modified_list,
-			ArrayList<LocalFileLastModifiedEntryItem> new_last_modified_list,
+			ArrayList<FileLastModifiedEntryItem> curr_last_modified_list,
+			ArrayList<FileLastModifiedEntryItem> new_last_modified_list,
 			String fp){
 		int idx=Collections.binarySearch(curr_last_modified_list, 
-				new LocalFileLastModifiedEntryItem(fp,0,0,false), 
-			new Comparator<LocalFileLastModifiedEntryItem>(){
+				new FileLastModifiedEntryItem(fp,0,0,false), 
+			new Comparator<FileLastModifiedEntryItem>(){
 			@Override
-			public int compare(LocalFileLastModifiedEntryItem ci,
-					LocalFileLastModifiedEntryItem ni) {
+			public int compare(FileLastModifiedEntryItem ci,
+					FileLastModifiedEntryItem ni) {
 				return ci.getFullFilePath().compareToIgnoreCase(ni.getFullFilePath());
 			}
 		});
 		if (idx>=0) curr_last_modified_list.remove(idx);
-		else for (LocalFileLastModifiedEntryItem fli : new_last_modified_list) {
+		else for (FileLastModifiedEntryItem fli : new_last_modified_list) {
 			if (fli.getFullFilePath().equals(fp)) {
 				new_last_modified_list.remove(fli);
 				break;
@@ -510,17 +510,17 @@ public class LocalFileLastModified {
 	};
 	
 	final public static boolean updateLastModifiedList(
-			ArrayList<LocalFileLastModifiedEntryItem> curr_last_modified_list,
-			ArrayList<LocalFileLastModifiedEntryItem> new_last_modified_list,
+			ArrayList<FileLastModifiedEntryItem> curr_last_modified_list,
+			ArrayList<FileLastModifiedEntryItem> new_last_modified_list,
 			String targetUrl, long r_lm) {
 		boolean result=false;
 		File lf=new File(targetUrl);
 		int idx=Collections.binarySearch(curr_last_modified_list, 
-				new LocalFileLastModifiedEntryItem(targetUrl,0,0,false), 
-			new Comparator<LocalFileLastModifiedEntryItem>(){
+				new FileLastModifiedEntryItem(targetUrl,0,0,false), 
+			new Comparator<FileLastModifiedEntryItem>(){
 			@Override
-			public int compare(LocalFileLastModifiedEntryItem ci,
-					LocalFileLastModifiedEntryItem ni) {
+			public int compare(FileLastModifiedEntryItem ci,
+					FileLastModifiedEntryItem ni) {
 				return ci.getFullFilePath().compareToIgnoreCase(ni.getFullFilePath());
 			}
 		});
@@ -529,7 +529,7 @@ public class LocalFileLastModified {
 			curr_last_modified_list.get(idx).setRemoteFileLastModified(r_lm);
 			curr_last_modified_list.get(idx).setReferenced(true);
 			result=true;
-		} else for (LocalFileLastModifiedEntryItem fli : new_last_modified_list) {
+		} else for (FileLastModifiedEntryItem fli : new_last_modified_list) {
 			if (fli.getFullFilePath().equals(targetUrl)) {
 				fli.setLocalFileLastModified(lf.lastModified());
 				fli.setRemoteFileLastModified(r_lm);
@@ -561,11 +561,11 @@ public class LocalFileLastModified {
 
 	
 	final public static void saveLastModifiedList(String lmp,
-			ArrayList<LocalFileLastModifiedEntryItem> curr_last_modified_list,
-			ArrayList<LocalFileLastModifiedEntryItem> new_last_modified_list
+			ArrayList<FileLastModifiedEntryItem> curr_last_modified_list,
+			ArrayList<FileLastModifiedEntryItem> new_last_modified_list
 			) {
 //		long b_time=System.currentTimeMillis();
-		ArrayList<LocalFileLastModifiedEntryItem> save_last_modified_list=new ArrayList<LocalFileLastModifiedEntryItem>();
+		ArrayList<FileLastModifiedEntryItem> save_last_modified_list=new ArrayList<FileLastModifiedEntryItem>();
 		save_last_modified_list.addAll(curr_last_modified_list);
 		if (save_last_modified_list.size()==1 && new_last_modified_list.size()!=0 &&
 				save_last_modified_list.get(0).getFullFilePath()
@@ -575,10 +575,10 @@ public class LocalFileLastModified {
 		if (new_last_modified_list.size()!=0) {
 			save_last_modified_list.addAll(new_last_modified_list);
 			Collections.sort(save_last_modified_list, 
-				new Comparator<LocalFileLastModifiedEntryItem>(){
+				new Comparator<FileLastModifiedEntryItem>(){
 				@Override
-				public int compare(LocalFileLastModifiedEntryItem ci,
-						LocalFileLastModifiedEntryItem ni) {
+				public int compare(FileLastModifiedEntryItem ci,
+						FileLastModifiedEntryItem ni) {
 					if (!ci.getFullFilePath().equals(ni.getFullFilePath()))
 						return ci.getFullFilePath().compareToIgnoreCase(ni.getFullFilePath());
 					else {
@@ -612,7 +612,7 @@ public class LocalFileLastModified {
 	    	String new_fp="";
 //		    for (int i=0;i<save_last_modified_list.size();i++) {
 //	    		LocalFileLastModifiedEntryItem lfme=save_last_modified_list.get(i);
-		    for (LocalFileLastModifiedEntryItem lfme : save_last_modified_list) {
+		    for (FileLastModifiedEntryItem lfme : save_last_modified_list) {
 		    	new_fp=lfme.getFullFilePath();
 		    	if (!last_fp.equals(new_fp)) {
 		    		boolean f_exists=true;
@@ -698,8 +698,8 @@ public class LocalFileLastModified {
 	};
 
 	final public static boolean loadLastModifiedList(String lmp,
-			ArrayList<LocalFileLastModifiedEntryItem> curr_last_modified_list,
-			ArrayList<LocalFileLastModifiedEntryItem> new_last_modified_list
+			ArrayList<FileLastModifiedEntryItem> curr_last_modified_list,
+			ArrayList<FileLastModifiedEntryItem> new_last_modified_list
 			) {
 		boolean list_was_corrupted=false;
 		curr_last_modified_list.clear();
@@ -732,8 +732,8 @@ public class LocalFileLastModified {
 	};
 
 	final public static boolean loadLastModifiedListV3(String lmp,
-			ArrayList<LocalFileLastModifiedEntryItem> curr_last_modified_list,
-			ArrayList<LocalFileLastModifiedEntryItem> new_last_modified_list
+			ArrayList<FileLastModifiedEntryItem> curr_last_modified_list,
+			ArrayList<FileLastModifiedEntryItem> new_last_modified_list
 			) {
 		curr_last_modified_list.clear();
 		new_last_modified_list.clear();
@@ -756,7 +756,7 @@ public class LocalFileLastModified {
 		    	if (l_array!=null && l_array.length==3) {
 //			    	Log.v("","line="+l_array[0]);
 		    		if (!last_fp.equals(l_array[0])) {
-		    			curr_last_modified_list.add(new LocalFileLastModifiedEntryItem(
+		    			curr_last_modified_list.add(new FileLastModifiedEntryItem(
 		    				l_array[0], Long.valueOf(l_array[1]),Long.valueOf(l_array[2]),false));
 		    			last_fp=l_array[0];
 		    		} else {
@@ -773,8 +773,8 @@ public class LocalFileLastModified {
 	};
 
 	final public static boolean loadLastModifiedListV2(String lmp,
-			ArrayList<LocalFileLastModifiedEntryItem> curr_last_modified_list,
-			ArrayList<LocalFileLastModifiedEntryItem> new_last_modified_list
+			ArrayList<FileLastModifiedEntryItem> curr_last_modified_list,
+			ArrayList<FileLastModifiedEntryItem> new_last_modified_list
 			) {
 		curr_last_modified_list.clear();
 		new_last_modified_list.clear();
@@ -791,7 +791,7 @@ public class LocalFileLastModified {
 		    	l_array=line.split("\t");
 		    	if (l_array!=null && l_array.length==3) {
 		    		if (!last_fp.equals(l_array[0])) {
-		    			curr_last_modified_list.add(new LocalFileLastModifiedEntryItem(
+		    			curr_last_modified_list.add(new FileLastModifiedEntryItem(
 		    				l_array[0], Long.valueOf(l_array[1]),Long.valueOf(l_array[2]),false));
 		    			last_fp=l_array[0];
 		    		} else {
@@ -808,8 +808,8 @@ public class LocalFileLastModified {
 	};
 	
 	final public static boolean loadLastModifiedListV1(String prof_name, String lmp,
-			ArrayList<LocalFileLastModifiedEntryItem> curr_last_modified_list,
-			ArrayList<LocalFileLastModifiedEntryItem> new_last_modified_list
+			ArrayList<FileLastModifiedEntryItem> curr_last_modified_list,
+			ArrayList<FileLastModifiedEntryItem> new_last_modified_list
 			) {
 		boolean list_was_corrupted=false;
 		try {
@@ -825,7 +825,7 @@ public class LocalFileLastModified {
 		    	if (l_array!=null && l_array.length==3) {
 		    		if (l_array[0].startsWith(lmp)) {
 			    		if (!last_fp.equals(l_array[0])) {
-			    			curr_last_modified_list.add(new LocalFileLastModifiedEntryItem(
+			    			curr_last_modified_list.add(new FileLastModifiedEntryItem(
 			    				l_array[0], Long.valueOf(l_array[1]),Long.valueOf(l_array[2]),false));
 			    			last_fp=l_array[0];
 			    		} else {
@@ -844,13 +844,13 @@ public class LocalFileLastModified {
 	
 }
 
-class LocalFileLastModifiedEntryItem {
+class FileLastModifiedEntryItem {
 	private String full_file_path="";
 	private long local_last_modified_time=0;
 	private long remote_last_modified_time=0;
 	private boolean referenced=false;
 	
-	LocalFileLastModifiedEntryItem(String fp, long l_lm, long r_lm, boolean ref) {
+	FileLastModifiedEntryItem(String fp, long l_lm, long r_lm, boolean ref) {
 		full_file_path=fp;
 		local_last_modified_time=l_lm;
 		remote_last_modified_time=r_lm;
