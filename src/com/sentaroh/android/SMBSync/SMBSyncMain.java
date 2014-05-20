@@ -1335,7 +1335,7 @@ public class SMBSyncMain extends FragmentActivity {
 				", settingRemoteFileCopyByRename="+glblParms.settingRemoteFileCopyByRename+
 				", settings_default_user="+glblParms.settingUsername+
 				", settings_default_addr="+glblParms.settingAddr
-				);
+				); 
 		if (glblParms.debugLevel==9)
 			util.addDebugLogMsg(1,"I","settings_default_pass="+
 					glblParms.settingPassword);
