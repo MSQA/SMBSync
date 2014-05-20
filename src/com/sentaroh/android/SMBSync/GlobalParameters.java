@@ -121,4 +121,6 @@ public class GlobalParameters extends Application{
 	public static final String PB_RINGTONE_WHEN_SYNC_ENDED_ERROR="3";
 	public String settingRingtoneWhenSyncEnded=PB_RINGTONE_WHEN_SYNC_ENDED_ALWAYS;
 	
+	public boolean settingRemoteFileCopyByRename=true;
+	
 }

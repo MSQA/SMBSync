@@ -40,5 +40,10 @@
 			android:key="@string/settings_wifi_lock"
 			android:title="@string/settings_wifi_lock_title"
 			android:summary="@string/settings_wifi_lock_summary_ena" />
-	    
+
+	    <CheckBoxPreference
+			android:key="@string/settings_remote_file_copy_by_rename"
+			android:title="@string/settings_remote_file_copy_by_rename_title"
+			android:summary="@string/settings_remote_file_copy_by_rename_summary_ena" />
+	    	    	    
 </PreferenceScreen>

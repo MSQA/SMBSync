@@ -4140,12 +4140,12 @@ public class ProfileMaintenance {
        	new Thread(new Runnable() {
 			@Override
 			public void run() {//non UI thread
-				System.setProperty("jcifs.netbios.retryTimeout", "150");
+//				System.setProperty("jcifs.netbios.retryTimeout", "150");
 				final String scan_prog=mContext.getString(R.string.msgs_ip_address_scan_progress);
 				final String found_title=mContext.getString(R.string.msgs_ip_address_scan_found);
 				for (int i=scanIpAddrBeginAddr; i<=scanIpAddrEndAddr;i++) {
 					if (cancelIpAddressListCreation) break;
-					if (isIpAddrReachable(scanIpAddrSubnet+"."+i,150) &&
+					if (isIpAddrReachable(scanIpAddrSubnet+"."+i,300) &&
 							isSmbHost(scanIpAddrSubnet+"."+i) && 
 							!curr_ip.equals(scanIpAddrSubnet+"."+i)) {
 						String srv_name=getSmbHostName(scanIpAddrSubnet+"."+i);
@@ -4169,7 +4169,7 @@ public class ProfileMaintenance {
 							} else tvmsg.setText(text);
 						}
 					});
-					System.setProperty("jcifs.netbios.retryTimeout", "3000");
+//					System.setProperty("jcifs.netbios.retryTimeout", "3000");
 //					if (isIpAddrReachable(scanIpAddrSubnet+"."+i,scanIpAddrTimeout) && 
 //							!curr_ip.equals(scanIpAddrSubnet+"."+i)) {
 //						String srv_name=getSmbHostName(scanIpAddrSubnet+"."+i);
@@ -4310,7 +4310,8 @@ public class ProfileMaintenance {
 		Socket socket = new Socket();
         try {
             socket.bind(null);
-            socket.connect((new InetSocketAddress(address, 445)), 200);
+//            socket.connect((new InetSocketAddress(address, 139)), timeout);
+            socket.connect((new InetSocketAddress(address, 445)), timeout);
             reachable=true;
             socket.close();
         } catch (IOException e) {

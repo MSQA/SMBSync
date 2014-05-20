@@ -38,7 +38,11 @@
     <string name="settings_wifi_lock_summary_ena">同期中はWi-Fiロックを取得する</string>
 	<string name="settings_wifi_lock">settings_wifi_lock</string>	
     
-    <string name="settings_ui_alternate_ui_title">代替UI</string>
+    <string name="settings_remote_file_copy_by_rename_title">リモートへのコピー方法</string>
+    <string name="settings_remote_file_copy_by_rename_summary_ena">リモートへのファイルコピーでコピーが完了するまでは元のファイルが保存される</string>
+	<string name="settings_remote_file_copy_by_rename">settings_remote_file_copy_by_rename</string>	
+    
+	<string name="settings_ui_alternate_ui_title">代替UI</string>
     <string name="settings_ui_alternate_ui_summary_ena">他の項目が選択されていないときにクリックしたら編集、他の項目が選択されているときは項目を選択。</string>
 			
     <string name="settings_debug_msg_diplay_title">デバッグメッセージの表示</string>

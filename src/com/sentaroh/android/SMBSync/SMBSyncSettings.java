@@ -103,6 +103,9 @@ public class SMBSyncSettings extends PreferenceActivity{
 		initSettingValueBeforeHc(shared_pref,getString(R.string.settings_auto_term));
 		initSettingValueBeforeHc(shared_pref,getString(R.string.settings_backgroound_execution));
 		initSettingValueBeforeHc(shared_pref,getString(R.string.settings_error_option));
+		initSettingValueBeforeHc(shared_pref,getString(R.string.settings_ui_keep_screen_on));
+		initSettingValueBeforeHc(shared_pref,getString(R.string.settings_wifi_lock));
+		initSettingValueBeforeHc(shared_pref,getString(R.string.settings_remote_file_copy_by_rename));
 		
 		initSettingValueBeforeHc(shared_pref,getString(R.string.settings_debug_msg_diplay));
 		initSettingValueBeforeHc(shared_pref,getString(R.string.settings_log_option));
@@ -111,7 +114,6 @@ public class SMBSyncSettings extends PreferenceActivity{
 		initSettingValueBeforeHc(shared_pref,getString(R.string.settings_log_level));
 
 		initSettingValueBeforeHc(shared_pref,getString(R.string.settings_ui_alternate_ui));
-		initSettingValueBeforeHc(shared_pref,getString(R.string.settings_ui_keep_screen_on));
 		initSettingValueBeforeHc(shared_pref,getString(R.string.settings_suppress_warning_mixed_mp));
 		initSettingValueBeforeHc(shared_pref,getString(R.string.settings_background_termination_notification));
 
@@ -299,6 +301,8 @@ public class SMBSyncSettings extends PreferenceActivity{
 		} else if (key_string.equals(c.getString(R.string.settings_ui_keep_screen_on))) {
 			isChecked=true;
 		} else if (key_string.equals(c.getString(R.string.settings_wifi_lock))) {
+			isChecked=true;
+		} else if (key_string.equals(c.getString(R.string.settings_remote_file_copy_by_rename))) {
 			isChecked=true;
     	}
 
@@ -580,6 +584,7 @@ public class SMBSyncSettings extends PreferenceActivity{
     		initSettingValueAfterHc(shared_pref,getString(R.string.settings_error_option));
     		initSettingValueAfterHc(shared_pref,getString(R.string.settings_ui_keep_screen_on));
     		initSettingValueAfterHc(shared_pref,getString(R.string.settings_wifi_lock));
+    		initSettingValueAfterHc(shared_pref,getString(R.string.settings_remote_file_copy_by_rename));
 
         };
         

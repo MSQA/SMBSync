@@ -1203,7 +1203,10 @@ public class SMBSyncMain extends FragmentActivity {
 		
 		glblParms.settingWifiLockRequired=
 				prefs.getBoolean(getString(R.string.settings_wifi_lock), false);
-		
+
+		glblParms.settingRemoteFileCopyByRename=
+				prefs.getBoolean(getString(R.string.settings_remote_file_copy_by_rename), false);
+
 		glblParms.settingAltUiEnabled=
 				prefs.getBoolean(getString(R.string.settings_ui_alternate_ui), false);
 
@@ -1301,16 +1304,38 @@ public class SMBSyncMain extends FragmentActivity {
 	
 	private void listSMBSyncOption() {
 		util.addDebugLogMsg(1,"I","SMBSync option :"+
-				"settings_log_level="+glblParms.debugLevel+
-				",settings_default_user="+glblParms.settingUsername+
-				",settings_default_addr="+glblParms.settingAddr+
-				",settings_auto_start="+glblParms.settingAutoStart+
-				",settings_auto_term="+glblParms.settingAutoTerm+
-				",settings_error_option="+glblParms.settingErrorOption+
-				",settings_background_execution="+glblParms.settingBackgroundExecution+
-				",settings_background_termination_notification="+glblParms.settingBgTermNotifyMsg+
-				",settings_log_option="+glblParms.settingLogOption+
-				",settings_log_dir="+glblParms.settingLogMsgDir);
+				"debugLevel="+glblParms.debugLevel+
+				", settingAutoStart="+glblParms.settingAutoStart+
+				", settingAutoTerm="+glblParms.settingAutoTerm+
+				", settingErrorOption="+glblParms.settingErrorOption+
+				", settingBackgroundExecution="+glblParms.settingBackgroundExecution+
+				", settingScreenOnEnabled="+glblParms.settingScreenOnEnabled+
+				", settingWifiLockRequired="+glblParms.settingWifiLockRequired+
+				", settingWifiOption="+glblParms.settingWifiOption+
+
+				", settingAltUiEnabled="+glblParms.settingAltUiEnabled+
+				", settingDebugMsgDisplay="+glblParms.settingDebugMsgDisplay+
+				", settingMediaFiles="+glblParms.settingMediaFiles+
+				", settingScanExternalStorage="+glblParms.settingScanExternalStorage+
+				", settingBgTermNotifyMsg="+glblParms.settingBgTermNotifyMsg+
+				", settingVibrateWhenSyncEnded="+glblParms.settingVibrateWhenSyncEnded+
+				", settingRingtoneWhenSyncEnded="+glblParms.settingRingtoneWhenSyncEnded+
+				
+				", settingExitClean="+glblParms.settingExitClean+
+				
+				", settingShowSyncDetailMessage="+glblParms.settingShowSyncDetailMessage+
+				", settingLogOption="+glblParms.settingLogOption+
+				", settingLogMsgDir="+glblParms.settingLogMsgDir+
+				", settingLogFileCreatedByStartupTime="+glblParms.settingLogFileCreatedByStartupTime+
+				", settingLogMsgFilename="+glblParms.settingLogMsgFilename+
+				", settiingLogGeneration="+glblParms.settiingLogGeneration+
+				
+				", settingExportedProfileEncryptRequired="+glblParms.settingExportedProfileEncryptRequired+
+				
+				", settingRemoteFileCopyByRename="+glblParms.settingRemoteFileCopyByRename+
+				", settings_default_user="+glblParms.settingUsername+
+				", settings_default_addr="+glblParms.settingAddr
+				);
 		if (glblParms.debugLevel==9)
 			util.addDebugLogMsg(1,"I","settings_default_pass="+
 					glblParms.settingPassword);

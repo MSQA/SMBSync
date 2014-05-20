@@ -1147,7 +1147,7 @@ public class MirrorIO implements Runnable {
 	
 	final private int mirrorCopyLocalToRemote(boolean allcopy, String masterUrl,
 			String targetUrl, ArrayList<String> copiedFileList) {
-		SmbFile hf;
+		SmbFile hf = null, hf_tmp=null;
 		File lf;
 		
 		if (glblParms.debugLevel>=2) 
@@ -1155,6 +1155,7 @@ public class MirrorIO implements Runnable {
 				", target=", targetUrl);
 		if (checkErrorStatus()!=0) return checkErrorStatus();
 
+		String tmp_target="";
 		try {
 			lf = new File(masterUrl);
 			if (lf.exists()) {
@@ -1184,11 +1185,28 @@ public class MirrorIO implements Runnable {
 							if (confirmCopy(targetUrl)) {
 								long file_byte=lf.length();
 								String t_fn=lf.getName().replace("/","");
+
+								if (glblParms.settingRemoteFileCopyByRename) {
+									tmp_target=targetUrl.substring(0, targetUrl.length()-1)+".smbsync.tmp";
+									hf_tmp = new SmbFile(tmp_target,ntlmPasswordAuth);
+									if (hf_tmp.exists()) hf_tmp.delete();
+									copyFileLocalToRemote(lf,hf_tmp,file_byte,t_fn,t_fp);
+									if (checkErrorStatus()!=0) {
+										if (hf_tmp.exists()) hf_tmp.delete();
+										return checkErrorStatus();
+									}
+									hf_tmp.setLastModified(lf.lastModified());
+									
+									if (hf.exists()) hf.delete();
+									hf_tmp.renameTo(hf);
+								} else {
+									copyFileLocalToRemote(lf,hf,file_byte,t_fn,t_fp);
+									if (checkErrorStatus()!=0) {
+										return checkErrorStatus();
+									}
+									hf.setLastModified(lf.lastModified());
+								}
 								
-								copyFileLocalToRemote(lf,hf,file_byte,t_fn,t_fp);
-								if (checkErrorStatus()!=0) return checkErrorStatus();
-//								mHistoryCopiedList.add(targetUrl);
-								hf.setLastModified(lf.lastModified());
 //								updateLocalFileLastModifiedList(currentFileLastModifiedList,newFileLastModifiedList,
 //										masterUrl,hf.getLastModified());
 								copyCount++;
@@ -1225,6 +1243,12 @@ public class MirrorIO implements Runnable {
 			printStackTraceElement(e.getStackTrace());
 			isExceptionOccured=true;
 			tcMirror.setThreadMessage(e.getMessage());
+			if (!tmp_target.equals("")) {
+				try {
+					if (hf_tmp.exists()) hf_tmp.delete();
+				} catch (SmbException e1) {
+				}
+			}
 			return -1;
 		} catch (UnknownHostException e) {
 			addLogMsg("E","","mirrorCopyLocalToRemote From="+masterUrl+", To="+targetUrl);
@@ -1919,7 +1943,7 @@ public class MirrorIO implements Runnable {
 
 	final private int mirrorMoveLocalToRemote(boolean allcopy, String masterUrl,
 			String targetUrl, ArrayList<String> moved_dirs) {
-		SmbFile hf;
+		SmbFile hf=null, hf_tmp=null;
 		File lf;
 		
 		if (glblParms.debugLevel>=1) 
@@ -1927,6 +1951,8 @@ public class MirrorIO implements Runnable {
 				", target=", targetUrl);
 		if (checkErrorStatus()!=0) return checkErrorStatus();
 
+		String tmp_target="";
+		
 		try {
 			lf = new File(masterUrl);
 			if (lf.exists()) {
@@ -1955,10 +1981,28 @@ public class MirrorIO implements Runnable {
 							// copy done
 							if (confirmCopy(targetUrl)) {
 								long file_byte=lf.length();
-								copyFileLocalToRemote(lf,hf,file_byte,t_fn,t_fp);
-								if (checkErrorStatus()!=0) return checkErrorStatus();
-//								mHistoryCopiedList.add(targetUrl);
-								hf.setLastModified(lf.lastModified());
+								
+								if (glblParms.settingRemoteFileCopyByRename) {
+									tmp_target=targetUrl.substring(0, targetUrl.length()-1)+".smbsync.tmp";
+									hf_tmp = new SmbFile(tmp_target,ntlmPasswordAuth);
+									if (hf_tmp.exists()) hf_tmp.delete();
+									copyFileLocalToRemote(lf,hf_tmp,file_byte,t_fn,t_fp);
+									if (checkErrorStatus()!=0) {
+										if (hf_tmp.exists()) hf_tmp.delete();
+										return checkErrorStatus();
+									}
+									hf_tmp.setLastModified(lf.lastModified());
+									
+									if (hf.exists()) hf.delete();
+									hf_tmp.renameTo(hf);
+								} else {
+									copyFileLocalToRemote(lf,hf,file_byte,t_fn,t_fp);
+									if (checkErrorStatus()!=0) {
+										return checkErrorStatus();
+									}
+									hf.setLastModified(lf.lastModified());
+								}
+
 //								updateLocalFileLastModifiedList(currentFileLastModifiedList,newFileLastModifiedList,
 //										masterUrl,hf.getLastModified());
 								copyCount++;
@@ -2011,6 +2055,12 @@ public class MirrorIO implements Runnable {
 			addLogMsg("E","","From="+masterUrl+", To="+targetUrl);
 			isExceptionOccured=true;
 			tcMirror.setThreadMessage(e.getMessage());
+			if (!tmp_target.equals("")) {
+				try {
+					if (hf_tmp.exists()) hf_tmp.delete();
+				} catch (SmbException e1) {
+				}
+			}
 			return -1;
 		} catch (UnknownHostException e) {
 			printStackTraceElement(e.getStackTrace());
