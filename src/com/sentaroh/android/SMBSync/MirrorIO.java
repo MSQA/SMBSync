@@ -66,7 +66,6 @@ import android.os.Build;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.webkit.MimeTypeMap;
 
 import com.sentaroh.android.Utilities.DateUtil;
@@ -1189,8 +1188,8 @@ public class MirrorIO implements Runnable {
 
 								if (glblParms.settingRemoteFileCopyByRename) {
 									tmp_target=targetUrl.replace(t_fn,"SMBSync.work.tmp");
-									Log.v("","target="+targetUrl);
-									Log.v("","tmp   ="+tmp_target);
+//									Log.v("","target="+targetUrl);
+//									Log.v("","tmp   ="+tmp_target);
 //									tmp_target=targetUrl.substring(0, targetUrl.length())+".smbsync.tmp/";
 								}
 								copyFileLocalToRemote(lf,hf,file_byte,t_fn,t_fp,tmp_target);
@@ -1411,8 +1410,8 @@ public class MirrorIO implements Runnable {
 
 								if (glblParms.settingLocalFileCopyByRename) {
 									tmp_target=targetUrl.replace(t_fn,"SMBSync.work.tmp");
-									Log.v("","target="+targetUrl);
-									Log.v("","tmp   ="+tmp_target);
+//									Log.v("","target="+targetUrl);
+//									Log.v("","tmp   ="+tmp_target);
 								}
 								copyFileLocalToLocal(mf,tf,file_byte,t_fn,t_fp, tmp_target);
 								if (checkErrorStatus()!=0) return checkErrorStatus();
@@ -1581,8 +1580,8 @@ public class MirrorIO implements Runnable {
 								String t_fn =hf.getName().replace("/", "");
 								if (glblParms.settingLocalFileCopyByRename) {
 									tmp_target=targetUrl.replace(t_fn,"SMBSync.work.tmp");
-									Log.v("","target="+targetUrl);
-									Log.v("","tmp   ="+tmp_target);
+//									Log.v("","target="+targetUrl);
+//									Log.v("","tmp   ="+tmp_target);
 //									tmp_target=targetUrl.substring(0, targetUrl.length())+".smbsync.tmp/";
 								}
 								copyFileRemoteToLocal(hf,lf,file_byte,t_fn,t_fp, tmp_target);
@@ -1871,8 +1870,8 @@ public class MirrorIO implements Runnable {
 								long file_byte=hf.length();
 								if (glblParms.settingLocalFileCopyByRename) {
 									tmp_target=targetUrl.replace(t_fn,"SMBSync.work.tmp");
-									Log.v("","target="+targetUrl);
-									Log.v("","tmp   ="+tmp_target);
+//									Log.v("","target="+targetUrl);
+//									Log.v("","tmp   ="+tmp_target);
 //									tmp_target=targetUrl.substring(0, targetUrl.length())+".smbsync.tmp/";
 								}
 								copyFileRemoteToLocal(hf,lf,file_byte,t_fn,t_fp, tmp_target);
@@ -2012,8 +2011,8 @@ public class MirrorIO implements Runnable {
 								
 								if (glblParms.settingRemoteFileCopyByRename) {
 									tmp_target=targetUrl.replace(t_fn,"SMBSync.work.tmp");
-									Log.v("","target="+targetUrl);
-									Log.v("","tmp   ="+tmp_target);
+//									Log.v("","target="+targetUrl);
+//									Log.v("","tmp   ="+tmp_target);
 //									tmp_target=targetUrl.substring(0, targetUrl.length())+".smbsync.tmp/";
 								} 
 								copyFileLocalToRemote(lf,hf,file_byte,t_fn,t_fp, tmp_target);
@@ -2157,8 +2156,8 @@ public class MirrorIO implements Runnable {
 								long file_byte=mf.length();
 								if (glblParms.settingLocalFileCopyByRename) {
 									tmp_target=targetUrl.replace(t_fn,"SMBSync.work.tmp");
-									Log.v("","target="+targetUrl);
-									Log.v("","tmp   ="+tmp_target);
+//									Log.v("","target="+targetUrl);
+//									Log.v("","tmp   ="+tmp_target);
 //									tmp_target=targetUrl.substring(0, targetUrl.length())+".smbsync.tmp/";
 								}
 								copyFileLocalToLocal(mf,tf,file_byte,t_fn,t_fp,tmp_target);
