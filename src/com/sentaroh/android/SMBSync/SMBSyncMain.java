@@ -1206,7 +1206,9 @@ public class SMBSyncMain extends FragmentActivity {
 
 		glblParms.settingRemoteFileCopyByRename=
 				prefs.getBoolean(getString(R.string.settings_remote_file_copy_by_rename), false);
-
+		glblParms.settingLocalFileCopyByRename=
+				prefs.getBoolean(getString(R.string.settings_local_file_copy_by_rename), false);
+		
 		glblParms.settingAltUiEnabled=
 				prefs.getBoolean(getString(R.string.settings_ui_alternate_ui), false);
 

@@ -50,10 +50,14 @@
     <string name="settings_wifi_lock_summary_ena">Acquire Wi-Fi lock during synchronization.</string>
 	<string name="settings_wifi_lock">settings_wifi_lock</string>	
 
-    <string name="settings_remote_file_copy_by_rename_title">Method of copying to the remote</string>
-    <string name="settings_remote_file_copy_by_rename_summary_ena">The original file is saved data transfer until the complete file copy to a remote.</string>
+    <string name="settings_remote_file_copy_by_rename_title">Keep the remote destination file</string>
+    <string name="settings_remote_file_copy_by_rename_summary_ena">Keep destination file until file copy was ended.(Contents of the file will not be changed if the copy is aborted)</string>
 	<string name="settings_remote_file_copy_by_rename">settings_remote_file_copy_by_rename</string>	
-    
+
+    <string name="settings_local_file_copy_by_rename_title">Keep the local destination file</string>
+    <string name="settings_local_file_copy_by_rename_summary_ena">Keep destination file until file copy was ended.(Contents of the file will not be changed if the copy is aborted)</string>
+	<string name="settings_local_file_copy_by_rename">settings_local_file_copy_by_rename</string>	
+		
 	<string name="settings_ui_alternate_ui_title">Alternate UI for tab</string>
     <string name="settings_ui_alternate_ui_summary_ena">To edit the item if you click when the other items is not selected. To select the item if you click when the other items are selected.</string>
 	<string name="settings_ui_alternate_ui">settings_ui_alternate_ui</string>	

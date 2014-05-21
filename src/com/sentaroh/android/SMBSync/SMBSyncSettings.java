@@ -106,6 +106,7 @@ public class SMBSyncSettings extends PreferenceActivity{
 		initSettingValueBeforeHc(shared_pref,getString(R.string.settings_ui_keep_screen_on));
 		initSettingValueBeforeHc(shared_pref,getString(R.string.settings_wifi_lock));
 		initSettingValueBeforeHc(shared_pref,getString(R.string.settings_remote_file_copy_by_rename));
+		initSettingValueBeforeHc(shared_pref,getString(R.string.settings_local_file_copy_by_rename));
 		
 		initSettingValueBeforeHc(shared_pref,getString(R.string.settings_debug_msg_diplay));
 		initSettingValueBeforeHc(shared_pref,getString(R.string.settings_log_option));
@@ -303,6 +304,8 @@ public class SMBSyncSettings extends PreferenceActivity{
 		} else if (key_string.equals(c.getString(R.string.settings_wifi_lock))) {
 			isChecked=true;
 		} else if (key_string.equals(c.getString(R.string.settings_remote_file_copy_by_rename))) {
+			isChecked=true;
+		} else if (key_string.equals(c.getString(R.string.settings_local_file_copy_by_rename))) {
 			isChecked=true;
     	}
 
@@ -585,6 +588,7 @@ public class SMBSyncSettings extends PreferenceActivity{
     		initSettingValueAfterHc(shared_pref,getString(R.string.settings_ui_keep_screen_on));
     		initSettingValueAfterHc(shared_pref,getString(R.string.settings_wifi_lock));
     		initSettingValueAfterHc(shared_pref,getString(R.string.settings_remote_file_copy_by_rename));
+    		initSettingValueAfterHc(shared_pref,getString(R.string.settings_local_file_copy_by_rename));
 
         };
         

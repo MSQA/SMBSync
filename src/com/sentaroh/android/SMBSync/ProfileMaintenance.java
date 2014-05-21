@@ -5923,6 +5923,8 @@ public class ProfileMaintenance {
 		saveSettingsParmsToFileBoolean(group, pw, false, encrypt_required,cp,mContext.getString(R.string.settings_error_option));
 		saveSettingsParmsToFileBoolean(group, pw, false, encrypt_required,cp,mContext.getString(R.string.settings_ui_keep_screen_on));
 		saveSettingsParmsToFileBoolean(group, pw, false, encrypt_required,cp,mContext.getString(R.string.settings_wifi_lock));
+		saveSettingsParmsToFileBoolean(group, pw, false, encrypt_required,cp,mContext.getString(R.string.settings_remote_file_copy_by_rename));
+		saveSettingsParmsToFileBoolean(group, pw, false, encrypt_required,cp,mContext.getString(R.string.settings_local_file_copy_by_rename));
 
 		saveSettingsParmsToFileBoolean(group, pw, false, encrypt_required,cp,mContext.getString(R.string.settings_ui_keep_screen_on));
 		saveSettingsParmsToFileBoolean(group, pw, false, encrypt_required,cp,mContext.getString(R.string.settings_ui_alternate_ui));
