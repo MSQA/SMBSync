@@ -27,6 +27,10 @@
     <string name="msgs_remote_profile_dlg_addr_list">ネットワークスキャン</string>
 	<string name="msgs_remote_profile_dlg_use_computer_name">コンピュータ名を使用する</string>    
 	<string name="msgs_remote_profile_dlg_use_user_pass">ユーザーID/パスワードを使用する</string>
+	<string name="msgs_remote_profile_dlg_logon">ログオン</string>
+	<string name="msgs_remote_profile_dlg_logon_success">ログオンが正常に完了しました</string>
+	<string name="msgs_remote_profile_dlg_logon_error">ログオンエラーが発生しました</string>
+	<string name="msgs_remote_profile_dlg_logon_error_can_not_connect">指定されたIPアドレスに接続できません IP Addr=</string>
 	
     <string name="msgs_sync_profile_dlg_active">有効</string>
     <string name="msgs_sync_profile_dlg_profile">プロファイル名</string>
@@ -43,6 +47,7 @@
     <string name="msgs_sync_profile_master_dir_cb_enable">マスタープロファイルで指定されたディレクトリの直下に存在するファイルを処理する。</string>
     <string name="msgs_sync_profile_confirm_required">上書コピーまたは削除の前に確認する</string>
     <string name="msgs_sync_profile_last_modified_smbsync">強制的にSMBSyncで最終更新日時を取得</string>
+    <string name="msgs_sync_profile_not_use_last_modified_remote_file_for_diff">リモートファイルの差分ファイル判定に最終更新時間を使用しない</string>
 
     <string name="msgs_filter_list_dlg_add">追加</string>
     <string name="msgs_filter_list_dlg_delete">削除</string>
@@ -95,6 +100,8 @@
    	
    	<string name="msgs_progress_spin_dlg_filelist_getting">ファイルリスト取得中</string>
    	<string name="msgs_progress_spin_dlg_filelist_cancel">ファイルリスト取得を中断</string>
+   	
+   	<string name="msgs_progress_spin_dlg_test_logon">リモートにログオン中</string>
     
    	<string name="msgs_tab_name_prof">プロファイル</string>
    	<string name="msgs_tab_name_msg">メッセージ</string>

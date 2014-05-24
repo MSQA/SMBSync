@@ -48,6 +48,7 @@ public class Constants {
 	public final static String SMBSYNC_PROFILE_FILE_NAME_V1="profile_v1.txt";
 	public final static String SMBSYNC_PROFILE_FILE_NAME_V2="profile_v2.txt";
 	public final static String SMBSYNC_PROFILE_FILE_NAME_V3="profile_v3.txt";
+	public final static String SMBSYNC_PROFILE_FILE_NAME_V4="profile_v4.txt";
 	
 	public final static String SMBSYNC_SERIALIZABLE_FILE_NAME="serial.txt";
 	public final static String SMBSYNC_LOCAL_FILE_LAST_MODIFIED_NAME_V1=".SMBSync_lastmod_holder.";
@@ -63,6 +64,7 @@ public class Constants {
 	public final static String SMBSYNC_PROF_VER1="PROF 1";
 	public final static String SMBSYNC_PROF_VER2="PROF 2";
 	public final static String SMBSYNC_PROF_VER3="PROF 3";
+	public final static String SMBSYNC_PROF_VER4="PROF 4";
 	public final static String SMBSYNC_PROF_ENC="ENC";
 	public final static String SMBSYNC_PROF_DEC="DEC";
 	

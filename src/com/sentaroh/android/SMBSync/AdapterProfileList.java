@@ -318,6 +318,7 @@ class ProfileListItem implements Serializable,Comparable<ProfileListItem>{
 	private boolean profileMasterDirFileProcess=true;
 	private boolean profileConfirm=true;
 	private boolean profileForceLastModifiedUseSmbsync=true;
+	private boolean profileNotUsedLastModifiedForRemote=false;
 	private ArrayList<String> profileFileFilter =new ArrayList<String>();
 	private ArrayList<String> profileDirFilter =new ArrayList<String>();
 	
@@ -356,7 +357,7 @@ class ProfileListItem implements Serializable,Comparable<ProfileListItem>{
 			String pf_synctype,String pf_master_type,String pf_master_name,
 			String pf_target_type,String pf_target_name,
 			ArrayList<String> ff, ArrayList<String> df, boolean pd, boolean cnf, 
-			boolean jlm, boolean ic)
+			boolean jlm, boolean nulm_remote, boolean ic)
 	{
 		profileGroup=pfg;
 		profileType = pft;
@@ -373,7 +374,7 @@ class ProfileListItem implements Serializable,Comparable<ProfileListItem>{
 		profileConfirm=cnf;
 		profileForceLastModifiedUseSmbsync=jlm;
 		profileChk = ic;
-		
+		profileNotUsedLastModifiedForRemote=nulm_remote;
 	};
 
 	public String getGroup()	{return profileGroup;}
@@ -397,6 +398,8 @@ class ProfileListItem implements Serializable,Comparable<ProfileListItem>{
 	public boolean isConfirmRequired()	{return profileConfirm;}
 	public boolean isForceLastModifiedUseSmbsync()	{return profileForceLastModifiedUseSmbsync;}
 	public boolean isChecked()		{return profileChk;}
+	public boolean isNotUseLastModifiedForRemote() {return profileNotUsedLastModifiedForRemote;}
+	public void setNotUseLastModifiedForRemote(boolean p) {profileNotUsedLastModifiedForRemote=p;}
 	
 	public void setGroup(String p)		{profileGroup=p;}
 	public void setName(String p)		{profileName=p;}

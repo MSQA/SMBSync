@@ -89,7 +89,6 @@ import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.text.ClipboardManager;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -232,7 +231,7 @@ public class SMBSyncMain extends FragmentActivity {
 		initAdapterAndView();
 
 		
-			util.addDebugLogMsg(1,"I","onCreate entered, "+"resartStatus="+restartStatus+
+		util.addDebugLogMsg(1,"I","onCreate entered, "+"resartStatus="+restartStatus+
 					", isActivityForeground="+util.isActivityForeground());
 		
 		getApplVersionName();
@@ -395,7 +394,7 @@ public class SMBSyncMain extends FragmentActivity {
 				public void run() {
 					android.os.Process.killProcess(android.os.Process.myPid());
 				}
-			}, 500);	
+			}, 100);	
 		}
 	};
 	
@@ -2053,7 +2052,6 @@ public class SMBSyncMain extends FragmentActivity {
 	private void editProfile(String prof_name, String prof_type,
 			String prof_act, int prof_num) {
 		ProfileListItem item = profileAdapter.getItem(prof_num);
-		Log.v("","host="+item.getHostname());
 		if (prof_type.equals(SMBSYNC_PROF_TYPE_REMOTE)) {
 			profMaint.editProfileRemote(prof_name, prof_type, prof_num, prof_act,
 					item.getAddr(),item.getUser(),item.getPass(),item.getShare(),
@@ -2066,7 +2064,8 @@ public class SMBSyncMain extends FragmentActivity {
 					item.getMasterName(),item.getTargetName(),item.getSyncType(),
 					item.getFileFilter(),item.getDirFilter(),
 					item.isMasterDirFileProcess(),item.isConfirmRequired(),
-					item.isForceLastModifiedUseSmbsync(),"");
+					item.isForceLastModifiedUseSmbsync(),
+					item.isNotUseLastModifiedForRemote(), "");
 		}
 
 	};
@@ -2925,7 +2924,8 @@ public class SMBSyncMain extends FragmentActivity {
 					item.getDirFilter(),
 					item.isMasterDirFileProcess(),
 					item.isConfirmRequired(),
-					item.isForceLastModifiedUseSmbsync());
+					item.isForceLastModifiedUseSmbsync(),
+					item.isNotUseLastModifiedForRemote());
 					if (mirror_prof_master_type.equals("L") && mirror_prof_target_type.equals("L")) {
 						alp.setMasterLocalDir(master_local_dir);
 						alp.setMasterLocalMountPoint(master_local_mp);

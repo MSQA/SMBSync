@@ -114,12 +114,12 @@
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textSize="12dp" />
             </LinearLayout>
-
             <CheckBox
                 android:id="@+id/remote_profile_use_user_pass"
                 style="@style/check_box_style"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:layout_marginRight="5dp"
                 android:text="@string/msgs_remote_profile_dlg_use_user_pass" />
             
@@ -152,6 +152,13 @@
                     android:textSize="12dp" />
             </LinearLayout>
 
+            <Button
+                android:id="@+id/remote_profile_logon"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:text="@string/msgs_remote_profile_dlg_logon" />
+            
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"

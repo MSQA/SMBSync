@@ -26,6 +26,10 @@
     <string name="msgs_remote_profile_dlg_addr_list">Network Scan</string>
     <string name="msgs_remote_profile_dlg_use_computer_name">Use computer name(host name)</string>
     <string name="msgs_remote_profile_dlg_use_user_pass">Use remote host userid and password</string>
+    <string name="msgs_remote_profile_dlg_logon">Logon</string>
+	<string name="msgs_remote_profile_dlg_logon_success">Logon successfully completed</string>    
+	<string name="msgs_remote_profile_dlg_logon_error">Logon ended with error</string>
+	<string name="msgs_remote_profile_dlg_logon_error_can_not_connect">Can not connect to specified IP addr. IP Addr=</string>
     
     <string name="msgs_sync_profile_dlg_active">Active</string>
     <string name="msgs_sync_profile_dlg_profile">Profile Name</string>
@@ -41,7 +45,8 @@
     <string name="msgs_sync_profile_dlg_dirfltr">Directory</string>
     <string name="msgs_sync_profile_master_dir_cb_enable">To process the files that exist directly under the directory that is specified in the master profile.</string>
     <string name="msgs_sync_profile_confirm_required">Confirm before override copy or delete</string>
-    <string name="msgs_sync_profile_last_modified_smbsync">Force determine last modified time by SMBSync method</string>
+    <string name="msgs_sync_profile_last_modified_smbsync">Obtain the last modified date and time of the local file as SMBSync.</string>
+    <string name="msgs_sync_profile_not_use_last_modified_remote_file_for_diff">Do not use last modified time for determine file difference by remote file.</string>
 
     <string name="msgs_filter_list_dlg_add">Add</string>
     <string name="msgs_filter_list_dlg_delete">Delete</string>
@@ -95,6 +100,8 @@
 
    	<string name="msgs_progress_spin_dlg_filelist_getting">Obtaining file list</string>
    	<string name="msgs_progress_spin_dlg_filelist_cancel">Cancel</string>
+   	
+   	<string name="msgs_progress_spin_dlg_test_logon">Logon to remote</string>
    	
    	<string name="msgs_tab_name_prof">Profile</string>
    	<string name="msgs_tab_name_msg">Messages</string>

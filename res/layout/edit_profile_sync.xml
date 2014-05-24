@@ -227,7 +227,16 @@
                 android:layout_marginBottom="3dp"
                 android:text="@string/msgs_sync_profile_confirm_required"
                 android:textAppearance="?android:attr/textAppearanceSmall"/>
-
+            
+            <CheckBox
+                android:id="@+id/sync_profile_not_use_last_modified_remote_file_for_diff"
+                style="@style/check_box_style"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="3dp"
+                android:text="@string/msgs_sync_profile_not_use_last_modified_remote_file_for_diff"
+                android:textAppearance="?android:attr/textAppearanceSmall"/>
+            
             <CheckBox
                 android:id="@+id/sync_profile_last_modified"
                 style="@style/check_box_style"

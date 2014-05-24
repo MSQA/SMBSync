@@ -5,10 +5,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:ignore="SpUsage" >
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal" >
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -18,7 +20,7 @@
             android:gravity="center"
             android:text="@string/msgs_sync_wizard_title_profname"
             android:textAppearance="?android:attr/textAppearanceMedium" />
-        
+
         <EditText
             android:id="@+id/sync_wizard_dlg_remote_prof_name"
             android:layout_width="0dp"
@@ -29,7 +31,6 @@
             android:hint="@string/msgs_remote_profile_dlg_profile"
             android:inputType="text"
             android:scrollHorizontally="true" />
-
     </LinearLayout>
 
     <Button
@@ -39,7 +40,7 @@
         android:layout_marginRight="5dp"
         android:text="@string/msgs_remote_profile_dlg_addr_list"
         android:textAppearance="?android:attr/textAppearanceMedium" />
-    
+
     <CheckBox
         android:id="@+id/sync_wizard_dlg_remote_use_computer_name"
         style="@style/check_box_style"
@@ -113,6 +114,12 @@
             android:inputType="textPassword" >
         </EditText>
     </LinearLayout>
+
+    <Button
+        android:id="@+id/sync_wizard_dlg_remote_logon"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/msgs_remote_profile_dlg_logon" />
 
     <LinearLayout
         android:layout_width="fill_parent"

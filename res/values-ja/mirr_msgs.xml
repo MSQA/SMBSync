@@ -37,7 +37,9 @@
 	<string name="msgs_mirror_confirm_yesall_btn">以後全て了解</string>
 	<string name="msgs_mirror_confirm_task_cancel_btn">同期キャンセル</string>
 
-	<string name="msgs_mirror_prof_set_last_modified_failed">Java File#setLastModified()が失敗しました。同期プロファイルの最終更新日時オプションを「強制的にSMBSyncで最終更新日時を取得」に変更してください。\n%s</string>
+	<string name="msgs_mirror_prof_local_file_set_last_modified_failed">Java File#setLastModified()が失敗しました。同期プロファイルの「強制的にSMBSyncで最終更新日時を取得」有効にしてください。</string>
+	
+	<string name="msgs_mirror_prof_remote_file_set_last_modified_failed">SmbFile#setLastModified()が失敗しました。同期プロファイルの「リモートファイルの差分ファイル判定に最終更新時間を使用しない」を有効にしてください。</string>
 	
 	<string name="msgs_mirror_master_local_mount_point_not_readable">マスターのマウントポイントから読込できません。</string>
 	<string name="msgs_mirror_target_local_mount_point_not_writable">ターゲットのマウントポイントに書き込みできません。</string>

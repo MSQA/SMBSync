@@ -62,6 +62,7 @@ public class ProfileCreationWizard {
 		public boolean process_master_file_dir=true;
 		public boolean confirm_required=true;
 		public boolean use_system_last_mod=false;
+		public boolean not_use_last_mod_remote=false;
 	};
 	class WizardProfileData {
 		public String node_type="";
@@ -834,6 +835,20 @@ public class ProfileCreationWizard {
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before,int count) {}
 		});
+		
+		final Button btnLogon = (Button) dialog.findViewById(R.id.sync_wizard_dlg_remote_logon);
+		btnLogon.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				String user=null, pass=null;
+				if (cb_use_user_pass.isChecked()) {
+					if (et_remote_user.getText().length()>0) user=et_remote_user.getText().toString();
+					if (et_remote_pass.getText().length()>0) pass=et_remote_pass.getText().toString();
+				}
+				profMaint.processLogonToRemote(et_remote_hostname.getText().toString(),
+						et_remote_addr.getText().toString(),user,pass);
+			}
+		});
+
 
 		// address scanボタンの指定
 		if (util.isRemoteDisable()) btn_scan_network.setEnabled(false);
@@ -1001,7 +1016,8 @@ public class ProfileCreationWizard {
 		final Button btn_remote_dir=(Button)dialog.findViewById((R.id.sync_wizard_dlg_remote_dir_btn));
 		final EditText et_remote_dir=(EditText)dialog.findViewById((R.id.sync_wizard_dlg_remote_dir));
 		final Button btn_next=(Button)dialog.findViewById(R.id.sync_wizard_dlg_next);
-
+		final Button btnLogon = (Button) dialog.findViewById(R.id.sync_wizard_dlg_remote_logon);
+		
 		boolean nw=false;
 		if (cb_use_hostname.isChecked()) {
 			if (et_remote_hostname.getText().length()>0) nw=true;
@@ -1022,6 +1038,7 @@ public class ProfileCreationWizard {
 			if (cb_use_user_pass.isChecked()) {
 				et_remote_user.setVisibility(CheckBox.VISIBLE);
 				et_remote_pass.setVisibility(CheckBox.VISIBLE);
+				btnLogon.setVisibility(Button.VISIBLE);
 				if (et_remote_user.getText().length()>0) {
 					if (et_remote_pass.getText().length()>0) {
 						btn_remote_share.setEnabled(true);
@@ -1035,6 +1052,7 @@ public class ProfileCreationWizard {
 			} else {
 				et_remote_user.setVisibility(CheckBox.GONE);
 				et_remote_pass.setVisibility(CheckBox.GONE);
+				btnLogon.setVisibility(Button.GONE);
 				btn_remote_share.setEnabled(true);
 				et_remote_share.setEnabled(true);
 				if (et_remote_share.getText().length()>0) {
@@ -1125,7 +1143,7 @@ public class ProfileCreationWizard {
 		final CheckBox cb_master_dir=(CheckBox) dialog.findViewById(R.id.sync_wizard_dlg_sync_master_dir_cb);
 		final CheckBox cb_confirm=(CheckBox) dialog.findViewById(R.id.sync_wizard_dlg_sync_confirm);
 		final CheckBox cb_last_modified=(CheckBox) dialog.findViewById(R.id.sync_wizard_dlg_sync_last_modified);
-		
+		final CheckBox cb_not_use_last_mod_remote = (CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_not_use_last_modified_remote_file_for_diff);
 		profMaint.setSyncOptionSpinner(spinner_sync, "");
 		
 		final EditText et_sync_prof=(EditText) dialog.findViewById(R.id.sync_wizard_dlg_sync_prof_name);
@@ -1169,6 +1187,7 @@ public class ProfileCreationWizard {
 		
 		cb_confirm.setChecked(true);
 		cb_last_modified.setChecked(false);
+		cb_not_use_last_mod_remote.setChecked(false);
 
 		if (mWizData.file_filter.size()==0) tv_file_filter.setText(mContext.getString(R.string.msgs_filter_list_dlg_not_specified));
 		else {
@@ -1281,7 +1300,8 @@ public class ProfileCreationWizard {
 							mWizData.dialog_list.get(i).dismiss();
 						mWizData.confirm_required=cb_confirm.isChecked();
 						mWizData.process_master_file_dir=cb_master_dir.isChecked();
-						mWizData.use_system_last_mod=cb_last_modified.isChecked();				
+						mWizData.use_system_last_mod=cb_last_modified.isChecked();	
+						mWizData.not_use_last_mod_remote=cb_not_use_last_mod_remote.isChecked();
 						mWizData.mirror_type=spinner_sync.getSelectedItemPosition();
 						syncWizardCreateProfile(profileAdapter);
 						profileAdapter.sort();
@@ -1440,7 +1460,8 @@ public class ProfileCreationWizard {
 				mWizData.dir_filter,
 				mWizData.process_master_file_dir,
 				mWizData.confirm_required,
-				mWizData.use_system_last_mod,false);
+				mWizData.use_system_last_mod,
+				mWizData.not_use_last_mod_remote, false);
 		t_prof.add(s_pli);
 	};
 

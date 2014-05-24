@@ -5,26 +5,26 @@
     <string name="settings_sync_title">同期</string>
     
 	<string name="settings_network_wifi_option_title">無線LANオプション</string>
-	<string name="settings_network_wifi_option_summary_adapter_off">無線LANがオフでも同期を実行する</string>
-	<string name="settings_network_wifi_option_summary_adapter_on">無線LANがオンでアクセスポイントに接続していなくても同期を実行する</string>
-	<string name="settings_network_wifi_option_summary_connected_any_ap">無線LANがオンでアクセスポイントに接続しているときに同期を実行する</string>
-	<string name="settings_network_wifi_option_summary_connected_spec_ap">無線LANがオンで特定のアクセスポイントに接続しているときに同期を実行する</string>
+	<string name="settings_network_wifi_option_summary_adapter_off">無線LANがオフでも同期を実行可能にする</string>
+	<string name="settings_network_wifi_option_summary_adapter_on">無線LANがオンでアクセスポイントに接続していなくても同期を実行可能にする</string>
+	<string name="settings_network_wifi_option_summary_connected_any_ap">無線LANがオンでアクセスポイントに接続しているときに同期を実行可能にする</string>
+	<string name="settings_network_wifi_option_summary_connected_spec_ap">無線LANがオンで特定のアクセスポイントに接続しているときに同期を実行可能にする</string>
 	<string name="settings_network_wifi_option_dialog_title">無線LANオプション</string>
 	<string name="settings_network_wifi_option">settings_network_wifi_option</string>
 	<string-array name="settings_network_wifi_option_list_entries">
-	    <item>無線LANがオフでも同期を実行する</item>
-	    <item>無線LANがオンでアクセスポイントに接続していなくても同期を実行する</item>
-	    <item>無線LANがオンでアクセスポイントに接続しているときに同期を実行する</item>
+	    <item>無線LANがオフでも同期を実行可能にする</item>
+	    <item>無線LANがオンでアクセスポイントに接続していなくても同期を実行可能にする</item>
+	    <item>無線LANがオンでアクセスポイントに接続しているときに同期を実行可能にする</item>
 <!--         
-	    <item>無線LANがオンで特定のアクセスポイントに接続しているときに同期を実行する</item>
+	    <item>無線LANがオンで特定のアクセスポイントに接続しているときに同期を実行可能にする</item>
  -->        
     </string-array>
 	
     <string name="settings_auto_start_title">自動同期起動</string>
-    <string name="settings_auto_start_summary_ena">アプリケーション起動後に同期を実行</string>
+    <string name="settings_auto_start_summary_ena">アプリケーション起動後に有効な全プロファイルの同期を実行</string>
 	
     <string name="settings_auto_term_title">自動停止</string>
-	<string name="settings_auto_term_summary_ena">自動同期終了後に終了する</string>
+	<string name="settings_auto_term_summary_ena">自動同期起動による同期終了後に終了する</string>
 	
     <string name="settings_backgroound_execution_title">バックグラウンド実行</string>
 	<string name="settings_backgroound_execution_summary_ena">SMBSyncをバックグランドで実行(アプリケーションの起動後にホームスクリーンが表示されます)</string>
@@ -36,15 +36,12 @@
 		
     <string name="settings_wifi_lock_title">同期中のWi-Fiロック</string>
     <string name="settings_wifi_lock_summary_ena">同期中はWi-Fiロックを取得する</string>
-	<string name="settings_wifi_lock">settings_wifi_lock</string>	
     
     <string name="settings_remote_file_copy_by_rename_title">リモートコピー先ファイルの保存</string>
     <string name="settings_remote_file_copy_by_rename_summary_ena">リモートへのファイルコピー時にコピー完了までコピー先のファイルを保存する(コピーが中止された場合はファイルの内容は変更されません)</string>
-	<string name="settings_remote_file_copy_by_rename">settings_remote_file_copy_by_rename</string>	
 
     <string name="settings_local_file_copy_by_rename_title">ローカルコピー先ファイルの保存</string>
     <string name="settings_local_file_copy_by_rename_summary_ena">ローカルへのファイルコピー時にコピー完了までコピー先のファイルを保存する(コピーが中止された場合はファイルの内容は変更されません)</string>
-	<string name="settings_local_file_copy_by_rename">settings_local_file_copy_by_rename</string>	
 		
 	<string name="settings_ui_alternate_ui_title">代替UI</string>
     <string name="settings_ui_alternate_ui_summary_ena">他の項目が選択されていないときにクリックしたら編集、他の項目が選択されているときは項目を選択。</string>

@@ -133,6 +133,7 @@ public class MirrorIO implements Runnable {
 
 	private boolean syncMasterDirFileProcess=true, 
 			syncProfileConfirmRequired=false, syncProfileUseJavaLastModified=true;
+	private boolean syncProfileNotUseLastModifiedForRemote=false;
 	
 	private ArrayList<String> mediaStoreImageList = new ArrayList<String>();
 	private ArrayList<String> mediaStoreAudioList = new ArrayList<String>();
@@ -507,6 +508,8 @@ public class MirrorIO implements Runnable {
 			syncProfileUseJavaLastModified=
 					isSetLastModifiedFunctional(mipl.getLocalMountPoint());
 		}
+		syncProfileNotUseLastModifiedForRemote=mipl.isNotUseLastModifiedForRemote();
+		
 		if (syncRemoteDir.equals("")) {
 			remoteUrl= "smb://" + syncRemoteAddr + "/"+syncRemoteShare+syncRemoteDir;
 		}else {
@@ -581,6 +584,7 @@ public class MirrorIO implements Runnable {
 				+ ", syncMasterDirFileProcess="+syncMasterDirFileProcess
 				+ ", syncProfileConfirmRequired="+syncProfileConfirmRequired
 				+ ", syncProfileUseJavaLastModified="+syncProfileUseJavaLastModified
+				+ ", syncProfileNotUseLastModifiedForRemote="+syncProfileNotUseLastModifiedForRemote
 				+ ", fileFilter=" + mipl.getFileFilter()
 				+ ", dirFilter=" + mipl.getDirFilter());
  			addDebugLogMsg(9,"I","syncRemotePassword=" + syncRemotePassword);
@@ -1196,7 +1200,15 @@ public class MirrorIO implements Runnable {
 								if (checkErrorStatus()!=0) {
 									return checkErrorStatus();
 								}
-								hf.setLastModified(lf.lastModified());
+								try {
+									if (!syncProfileNotUseLastModifiedForRemote)
+										hf.setLastModified(lf.lastModified());
+								} catch(SmbException e) {
+									addLogMsg("W",targetUrl,
+											glblParms.svcContext.getString(R.string.msgs_mirror_prof_remote_file_set_last_modified_failed));
+									addDebugLogMsg(1,"W",targetUrl,
+											"Remote file setLastModified() failed, reason="+ e.getMessage());
+								}
 								copyCount++;
 							} else {
 								addLogMsg("W",targetUrl,msgs_mirror_confirm_copy_cancel);
@@ -1592,7 +1604,7 @@ public class MirrorIO implements Runnable {
 								if (syncProfileUseJavaLastModified) {
 									if (!lf.setLastModified(hf.lastModified())) {
 										addLogMsg("W",targetUrl,
-											glblParms.svcContext.getString(R.string.msgs_mirror_prof_set_last_modified_failed));
+											glblParms.svcContext.getString(R.string.msgs_mirror_prof_local_file_set_last_modified_failed));
 									}
 								}
 //								if (isMediaStoreDir(lf.getParent()))
@@ -2019,7 +2031,15 @@ public class MirrorIO implements Runnable {
 								if (checkErrorStatus()!=0) {
 									return checkErrorStatus();
 								}
-								hf.setLastModified(lf.lastModified());
+								try {
+									if (!syncProfileNotUseLastModifiedForRemote)
+										hf.setLastModified(lf.lastModified());
+								} catch(SmbException e) {
+									addLogMsg("W",targetUrl,
+											glblParms.svcContext.getString(R.string.msgs_mirror_prof_remote_file_set_last_modified_failed));
+									addDebugLogMsg(1,"W",targetUrl,
+											"Remote file setLastModified() failed, reason="+ e.getMessage());
+								}
 
 //								updateLocalFileLastModifiedList(currentFileLastModifiedList,newFileLastModifiedList,
 //										masterUrl,hf.getLastModified());
@@ -2692,10 +2712,11 @@ public class MirrorIO implements Runnable {
 		if (exists_diff || length_diff>0 || ac) {
 			diff=true;
 		} else {//Check lastModified()
-			if (time_diff>timeDifferenceLimit) { //LastModified was changed
+			if (!syncProfileNotUseLastModifiedForRemote) {
+				if (time_diff>timeDifferenceLimit) { //LastModified was changed
 					diff=true;
-			} else 
-				diff=false;
+				} else diff=false;
+			}
 		}
 		if (glblParms.debugLevel>=3) { 
 			addDebugLogMsg(3,"I","isFileChangedForLocalToRemote");
@@ -3367,6 +3388,7 @@ class MirrorIoParmList {
 	private boolean mp_master_dir_proc =true;
 	private boolean mp_confirm_required =true;
 	private boolean mp_force_last_modified_use_smbsync =true;
+	private boolean mp_not_use_last_modified_for_remote =false;
 	
 	public MirrorIoParmList (
 			String profname,
@@ -3386,7 +3408,8 @@ class MirrorIoParmList {
 			ArrayList<String> df,
 			boolean mdp,
 			boolean conf,
-			boolean ujlm) {
+			boolean ujlm,
+			boolean nulm_remote) {
 
 		mp_profname=profname;
 		mp_master_type=master_type;
@@ -3406,6 +3429,7 @@ class MirrorIoParmList {
 		mp_master_dir_proc=mdp;
 		mp_confirm_required=conf;
 		mp_force_last_modified_use_smbsync=ujlm;
+		mp_not_use_last_modified_for_remote=nulm_remote;
 	}
 
 	public String getProfname() { return mp_profname;}
@@ -3430,6 +3454,8 @@ class MirrorIoParmList {
 	public boolean isMasterDirFileProcessed() {return mp_master_dir_proc;}
 	public boolean isConfirmRequired() {return mp_confirm_required;}
 	public boolean isForceLastModifiedUseSmbsync() {return mp_force_last_modified_use_smbsync;}
+	public boolean isNotUseLastModifiedForRemote() {return mp_not_use_last_modified_for_remote;}
+	public void setNotUseLastModifiedForRemote(boolean p) {mp_not_use_last_modified_for_remote=p;}
 	
 	public void setProfname(String p) { mp_profname=p;}
 	public void setMasterType(String p) { mp_master_type=p;}

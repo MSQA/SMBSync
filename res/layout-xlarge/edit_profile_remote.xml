@@ -87,7 +87,7 @@
                 <Button
                     android:id="@+id/remote_profile_get_addr_btn"
                     android:layout_width="300dp"
-                    android:layout_height="60dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
                     android:text="@string/msgs_remote_profile_dlg_addr_list"
                     android:textSize="25dp" />
@@ -118,11 +118,11 @@
             <CheckBox
                 android:id="@+id/remote_profile_use_user_pass"
                 style="@style/check_box_style"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
-	            android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="@string/msgs_remote_profile_dlg_use_user_pass" />
+                android:text="@string/msgs_remote_profile_dlg_use_user_pass"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
             
             <LinearLayout
                 android:layout_width="fill_parent"
@@ -151,6 +151,13 @@
                     android:inputType="textPassword"
                     android:textAppearance="?android:attr/textAppearanceLarge" />
             </LinearLayout>
+
+            <Button
+                android:id="@+id/remote_profile_logon"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:text="@string/msgs_remote_profile_dlg_logon" />
 
             <LinearLayout
                 android:layout_width="fill_parent"
