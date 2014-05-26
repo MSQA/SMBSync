@@ -1212,7 +1212,7 @@ public class ProfileMaintenance {
 					if (editpass.getText().length()>0) pass=editpass.getText().toString();
 				}
 				processLogonToRemote(edithost.getText().toString(),
-						editaddr.getText().toString(),user,pass);
+						editaddr.getText().toString(),user,pass,null);
 			}
 		});
 
@@ -1308,7 +1308,8 @@ public class ProfileMaintenance {
 
 	};
 
-	public void processLogonToRemote(final String host, final String addr, final String user, final String pass) {
+	public void processLogonToRemote(final String host, final String addr, 
+			final String user, final String pass, final NotifyEvent p_ntfy) {
 		final ThreadCtrl tc=new ThreadCtrl();
 		tc.setEnable();
 		tc.setThreadResultSuccess();
@@ -1403,9 +1404,11 @@ public class ProfileMaintenance {
 							commonDlg.showCommonDialog(false, "E", 
 									mContext.getString(R.string.msgs_remote_profile_dlg_logon_error)
 									, err_msgx, null);
+							if (p_ntfy!=null) p_ntfy.notifyToListener(false, null);
 						} else {
 							commonDlg.showCommonDialog(false, "I", "", 
 								mContext.getString(R.string.msgs_remote_profile_dlg_logon_success), null);
+							if (p_ntfy!=null) p_ntfy.notifyToListener(true, null);
 						}
 					}
 				});
@@ -2196,6 +2199,7 @@ public class ProfileMaintenance {
 		}
 		
 		final Button btnLogon = (Button) dialog.findViewById(R.id.remote_profile_logon);
+		btnLogon.setEnabled(cb_use_user_pass.isChecked());
 		btnLogon.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				String user=null, pass=null;
@@ -2204,7 +2208,7 @@ public class ProfileMaintenance {
 					if (editpass.getText().length()>0) pass=editpass.getText().toString();
 				}
 				processLogonToRemote(edithost.getText().toString(),
-						editaddr.getText().toString(),user,pass);
+						editaddr.getText().toString(),user,pass,null);
 			}
 		});
 
@@ -2880,6 +2884,17 @@ public class ProfileMaintenance {
 		return pli;
 		
 	};
+	
+	public int getActiveSyncProfileCount(AdapterProfileList pa) {
+		int result=0;
+		for (int i=0;i<pa.getCount();i++) {
+			if (pa.getItem(i).getActive().equals(SMBSYNC_PROF_ACTIVE) && 
+					pa.getItem(i).getType().equals(SMBSYNC_PROF_TYPE_SYNC)) {
+				result++;
+			}
+		}
+		return result;
+	}
 	
 	private void processFileFilterButton(Dialog dialog,
 			final ArrayList<String> n_file_filter) {

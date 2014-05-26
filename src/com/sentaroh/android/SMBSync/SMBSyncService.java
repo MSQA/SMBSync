@@ -26,9 +26,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.IBinder;
 import android.os.RemoteException;
 
@@ -37,8 +34,6 @@ import com.sentaroh.android.Utilities.NotifyEvent.NotifyEventListener;
 import com.sentaroh.android.Utilities.ThreadCtrl;
 
 public class SMBSyncService extends Service {
-	private boolean mDebugEnabled = true;
-
 	private GlobalParameters glblParms=null;
 	
 	private SMBSyncUtil mUtil=null;
@@ -53,16 +48,15 @@ public class SMBSyncService extends Service {
 		NotificationUtil.initNotification(glblParms);
 		mUtil=new SMBSyncUtil(getApplicationContext(), "Service", glblParms);
 		
-		PackageInfo packageInfo;
-		try {
-			packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-			int flags = packageInfo.applicationInfo.flags;
-			mDebugEnabled = (flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
-
-		} catch (NameNotFoundException e) {
-			e.printStackTrace();
-		}           
-		if (mDebugEnabled) mUtil.addDebugLogMsg(1,"I","onCreate entered");
+//		PackageInfo packageInfo;
+//		try {
+//			packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+//			int flags = packageInfo.applicationInfo.flags;
+//			mDebugEnabled = (flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
+//		} catch (NameNotFoundException e) {
+//			e.printStackTrace();
+//		}           
+		mUtil.addDebugLogMsg(1,"I","onCreate entered");
 		tcMirror=new ThreadCtrl(); 
 		tcConfirm=new ThreadCtrl();
 	}
@@ -70,13 +64,13 @@ public class SMBSyncService extends Service {
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		super.onStartCommand(intent, flags, startId);
-		if (mDebugEnabled) mUtil.addDebugLogMsg(1,"I","onStartCommand entered");
+		mUtil.addDebugLogMsg(1,"I","onStartCommand entered");
 		return START_STICKY;
 	};
 	
 	@Override
 	public IBinder onBind(Intent arg0) {
-		if (mDebugEnabled) mUtil.addDebugLogMsg(1,"I","onBind entered,action="+arg0.getAction());
+		mUtil.addDebugLogMsg(1,"I","onBind entered,action="+arg0.getAction());
 //		if (arg0.getAction().equals("MessageConnection")) 
 			return mSvcClientStub;
 //		else return svcInterface;
@@ -84,14 +78,14 @@ public class SMBSyncService extends Service {
 	
 	@Override
 	public boolean onUnbind(Intent intent) {
-		if (mDebugEnabled) mUtil.addDebugLogMsg(1,"I","onUnbind entered");
+		mUtil.addDebugLogMsg(1,"I","onUnbind entered");
 		return super.onUnbind(intent);
 	};
 	
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		if (mDebugEnabled) mUtil.addDebugLogMsg(1,"I","onDestroy entered");
+		mUtil.addDebugLogMsg(1,"I","onDestroy entered");
 		mUtil.closeLogFile();
 //		glblParms.logWriter.close();
 	};

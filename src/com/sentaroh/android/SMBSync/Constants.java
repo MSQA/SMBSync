@@ -26,6 +26,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 public class Constants {
 
 	final static String APPLICATION_TAG="SMBSync";
+	
+	final static boolean BUILD_FOR_AMAZON=true; 
 
 //	final public static int MAX_DLG_BOX_SIZE_WIDTH=600; 
 //	final public static int MAX_DLG_BOX_SIZE_HEIGHT=800;

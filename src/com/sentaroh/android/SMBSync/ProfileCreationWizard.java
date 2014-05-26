@@ -78,7 +78,6 @@ public class ProfileCreationWizard {
 		public String remote_dir_name="";
 		public boolean remote_use_hostname=true;
 		public boolean remote_use_user_pass=true;
-		
 	};
 	
 	private WizardData mWizData=null;
@@ -660,7 +659,9 @@ public class ProfileCreationWizard {
 		dialog.show();
 	};
 
+	boolean remote_user_pass_verified=false;
 	private void buildRemoteProfile(final int node_pos) {
+		remote_user_pass_verified=false;
 		// カスタムダイアログの生成
 		final Dialog dialog = new Dialog(mContext);
 		mWizData.dialog_list.add(dialog);
@@ -815,6 +816,7 @@ public class ProfileCreationWizard {
 		et_remote_user.addTextChangedListener(new TextWatcher(){
 			@Override
 			public void afterTextChanged(Editable arg0) {
+				remote_user_pass_verified=false;
 				setRemoteProfileViewVisibility(dialog);
 			}
 
@@ -827,6 +829,7 @@ public class ProfileCreationWizard {
 		et_remote_pass.addTextChangedListener(new TextWatcher(){
 			@Override
 			public void afterTextChanged(Editable arg0) {
+				remote_user_pass_verified=false;
 				setRemoteProfileViewVisibility(dialog);
 			}
 
@@ -844,8 +847,21 @@ public class ProfileCreationWizard {
 					if (et_remote_user.getText().length()>0) user=et_remote_user.getText().toString();
 					if (et_remote_pass.getText().length()>0) pass=et_remote_pass.getText().toString();
 				}
+				NotifyEvent ntfy=new NotifyEvent(mContext);
+				ntfy.setListener(new NotifyEventListener(){
+					@Override
+					public void positiveResponse(Context c, Object[] o) {
+						remote_user_pass_verified=true;
+						setRemoteProfileViewVisibility(dialog);
+					}
+					@Override
+					public void negativeResponse(Context c, Object[] o) {
+						remote_user_pass_verified=false;
+						setRemoteProfileViewVisibility(dialog);
+					}
+				});
 				profMaint.processLogonToRemote(et_remote_hostname.getText().toString(),
-						et_remote_addr.getText().toString(),user,pass);
+						et_remote_addr.getText().toString(),user,pass,ntfy);
 			}
 		});
 
@@ -1063,9 +1079,13 @@ public class ProfileCreationWizard {
 			//set Next button
 			if (cb_use_user_pass.isChecked()) {
 				if (et_remote_user.getText().length()>0 && et_remote_pass.getText().length()>0) {
-					if (et_remote_share.getText().length()>0) {
-						btn_next.setEnabled(true);
-					} else btn_next.setEnabled(false);
+					if (remote_user_pass_verified) {
+						if (et_remote_share.getText().length()>0) {
+							btn_next.setEnabled(true);
+						} else btn_next.setEnabled(false);
+					} else {
+						btn_next.setEnabled(false);
+					}
 				} else btn_next.setEnabled(false);
 			} else {
 				if (et_remote_share.getText().length()>0) {
@@ -1077,13 +1097,17 @@ public class ProfileCreationWizard {
 				if (et_remote_user.getText().length()==0 || et_remote_pass.getText().length()==0) {
 					dlg_msg.setText(mContext.getString(R.string.msgs_sync_wizard_specify_user_pass));
 				} else {
-					if (et_remote_share.getText().length()==0) {
-						dlg_msg.setText(mContext.getString(R.string.msgs_sync_wizard_specify_remote_share));
+					if (!remote_user_pass_verified) {
+						dlg_msg.setText(mContext.getString(R.string.msgs_sync_wizard_logon_required));
 					} else {
-						if (et_remote_dir.getText().length()==0) {
-							dlg_msg.setText(mContext.getString(R.string.msgs_sync_wizard_specify_remote_dir));
+						if (et_remote_share.getText().length()==0) {
+							dlg_msg.setText(mContext.getString(R.string.msgs_sync_wizard_specify_remote_share));
 						} else {
-							dlg_msg.setText(mContext.getString(R.string.msgs_sync_wizard_press_next));
+							if (et_remote_dir.getText().length()==0) {
+								dlg_msg.setText(mContext.getString(R.string.msgs_sync_wizard_specify_remote_dir));
+							} else {
+								dlg_msg.setText(mContext.getString(R.string.msgs_sync_wizard_press_next));
+							}
 						}
 					}
 				}

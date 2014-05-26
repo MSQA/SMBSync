@@ -23,6 +23,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
+import static com.sentaroh.android.SMBSync.Constants.BUILD_FOR_AMAZON;
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_BG_TERM_NOTIFY_MSG_ALWAYS;
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_BG_TERM_NOTIFY_MSG_NO;
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_CONFIRM_FOR_COPY;
@@ -89,6 +90,7 @@ import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.text.ClipboardManager;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -129,6 +131,8 @@ public class SMBSyncMain extends FragmentActivity {
 	
 	private boolean isTaskTermination = false; // kill is disabled(enable is kill by onDestroy)
 	
+	private boolean isApplicationFirstTimeRunning=false;
+	
 	private AdapterProfileList profileAdapter=null;
 	private ListView profileListView;
 
@@ -153,7 +157,6 @@ public class SMBSyncMain extends FragmentActivity {
 			extraDataSpecifiedExecuteMinimum=false;
 	
 	private int restartStatus=0;
-	private boolean enableMainUi=true;
 	
 	private ServiceConnection mSvcConnection=null;
 	private ThreadCtrl tcService=null;
@@ -192,6 +195,7 @@ public class SMBSyncMain extends FragmentActivity {
 		setContentView(R.layout.main);
 		mContext=this;
 		glblParms=(GlobalParameters) getApplication();
+		glblParms.enableMainUi=true;
 		glblParms.uiHandler=new Handler();
 		glblParms.SMBSync_External_Root_Dir=LocalMountPoint.getExternalStorageDir();
 
@@ -239,6 +243,7 @@ public class SMBSyncMain extends FragmentActivity {
 		if (profMaint==null) 
 			profMaint=new ProfileMaintenance(util,this, profileAdapter, 
 					profileListView, commonDlg,ccMenu, glblParms);
+		
 	};
 	
 	@Override
@@ -287,9 +292,11 @@ public class SMBSyncMain extends FragmentActivity {
 						listSMBSyncOption();
 						if (glblParms.settingAutoStart && 
 							glblParms.externalStorageIsMounted && !util.isRemoteDisable()) {
-							autoStartDlg();
-							if (glblParms.settingBackgroundExecution) {
-								setScreenSwitchToHome();
+							if (profMaint.getActiveSyncProfileCount(profileAdapter)>0) {
+								autoStartDlg();
+								if (glblParms.settingBackgroundExecution) {
+									setScreenSwitchToHome();
+								}
 							}
 						} else {
 							NotifyEvent ntfy_nr=new NotifyEvent(mContext);
@@ -311,7 +318,15 @@ public class SMBSyncMain extends FragmentActivity {
 								commonDlg.showCommonDialog(false, "W", "", m_txt, ntfy_nr);
 								util.addLogMsg("W",m_txt);
 							} else {
-								ntfy_nr.notifyToListener(true, null);
+								if (isApplicationFirstTimeRunning) {
+									if (profileAdapter.getItem(0).getType().equals("")) {
+										ProfileCreationWizard sw=new ProfileCreationWizard(glblParms, mContext, 
+												util, profMaint, commonDlg, profileAdapter);
+										sw.wizardMain();
+									}
+								} else {
+									ntfy_nr.notifyToListener(true, null);
+								}
 							}
 						}
 					} else if (restartStatus==2) {
@@ -457,10 +472,13 @@ public class SMBSyncMain extends FragmentActivity {
 		glblParms.msgListView = (ListView) findViewById(R.id.message_view_list);
 		glblParms.msgListView.setFastScrollEnabled(true);
 		profileListView =(ListView) findViewById(R.id.profile_view_list);
-		if (glblParms.msgListAdapter==null) {
-			ArrayList<MsgListItem> tml =new ArrayList<MsgListItem>();
-			glblParms.msgListAdapter = new AdapterMessageList(this,R.layout.msg_list_item_view,tml);
-		}
+//		if (glblParms.msgListAdapter==null) {
+//			ArrayList<MsgListItem> tml =new ArrayList<MsgListItem>();
+//			glblParms.msgListAdapter = new AdapterMessageList(this,R.layout.msg_list_item_view,tml);
+//		}
+		ArrayList<MsgListItem> tml =new ArrayList<MsgListItem>();
+		glblParms.msgListAdapter = new AdapterMessageList(this,R.layout.msg_list_item_view,tml);
+		
 		glblParms.msgListView.setAdapter(glblParms.msgListAdapter);
 		glblParms.msgListView.setDrawingCacheEnabled(true);
 		glblParms.msgListView.setClickable(true);
@@ -469,13 +487,18 @@ public class SMBSyncMain extends FragmentActivity {
 		glblParms.msgListView.setSelected(true);
 		setFastScrollListener(glblParms.msgListView);
 		
-		if (profileAdapter==null) {
-			ArrayList<ProfileListItem> tml1 =new ArrayList<ProfileListItem>();
-			profileAdapter=
-					new AdapterProfileList(this, R.layout.profile_list_item_view, tml1,
-							glblParms.SMBSync_External_Root_Dir);
-			currentViewType="P";
-		}
+//		if (profileAdapter==null) {
+//			ArrayList<ProfileListItem> tml1 =new ArrayList<ProfileListItem>();
+//			profileAdapter=
+//					new AdapterProfileList(this, R.layout.profile_list_item_view, tml1,
+//							glblParms.SMBSync_External_Root_Dir);
+//			currentViewType="P";
+//		}
+		ArrayList<ProfileListItem> tml1 =new ArrayList<ProfileListItem>();
+		profileAdapter=
+				new AdapterProfileList(this, R.layout.profile_list_item_view, tml1,
+						glblParms.SMBSync_External_Root_Dir);
+		currentViewType="P";
 		profileListView.setAdapter(profileAdapter);
 		
 		historyListView=(ListView)findViewById(R.id.history_view_list);
@@ -665,7 +688,8 @@ public class SMBSyncMain extends FragmentActivity {
 		switch (item.getItemId()) {
 			case R.id.menu_top_sync:
 				if (!util.isRemoteDisable()) {
-					syncActiveProfile();
+					if (profMaint.getActiveSyncProfileCount(profileAdapter)>0) 
+						syncActiveProfile();
 				} else {
 					if (mToastNextIssuedTimeSyncOption<System.currentTimeMillis()) {
 						Toast.makeText(mContext, 
@@ -1050,7 +1074,10 @@ public class SMBSyncMain extends FragmentActivity {
 		
 		if (prefs.getString(getString(R.string.settings_log_dir), "-1").equals("-1")) {
 			
-			glblParms.sampleProfileCreateRequired=true;
+			isApplicationFirstTimeRunning=true;
+			
+			if (BUILD_FOR_AMAZON) glblParms.sampleProfileCreateRequired=false;
+			else glblParms.sampleProfileCreateRequired=true;
 			
 			prefs.edit().putString(getString(R.string.settings_log_dir),
 					glblParms.SMBSync_External_Root_Dir+"/SMBSync/").commit();
@@ -1075,7 +1102,7 @@ public class SMBSyncMain extends FragmentActivity {
 			} else {//IP V4
 //				Log.v("","c_ip="+c_ip);
 				prefs.edit().putString(getString(R.string.settings_default_addr), 
-						c_ip.substring(0,c_ip.lastIndexOf("."))+".xxx").commit();				
+						c_ip.substring(0,c_ip.lastIndexOf("."))+".001").commit();				
 			}
 
 			prefs.edit().putString(getString(R.string.settings_smb_lm_compatibility),"0").commit();
@@ -1862,6 +1889,7 @@ public class SMBSyncMain extends FragmentActivity {
 		final String i_name = item.getName();
 		
 		if (!i_type.equals("")) {
+			Log.v("","type=%"+i_type+"%");
 			if (i_act.equals(SMBSYNC_PROF_ACTIVE)) {
 				if (glblParms.externalStorageIsMounted && !util.isRemoteDisable() ) {
 					if (sync) {
@@ -1959,23 +1987,25 @@ public class SMBSyncMain extends FragmentActivity {
 			}
 		});
 
-		ccMenu.addMenuItem(msgs_prof_cont_copy,R.drawable.menu_copy)
-		.setOnClickListener(new CustomContextMenuOnClickListener() {
-			@Override
-			public void onClick(CharSequence menuTitle) {
-				profMaint.copyProfile(item);
-				resetAllCheckedItem();
-			}
-		});
+		if (!i_type.equals("")) {
+			ccMenu.addMenuItem(msgs_prof_cont_copy,R.drawable.menu_copy)
+			.setOnClickListener(new CustomContextMenuOnClickListener() {
+				@Override
+				public void onClick(CharSequence menuTitle) {
+					profMaint.copyProfile(item);
+					resetAllCheckedItem();
+				}
+			});
 
-		ccMenu.addMenuItem(msgs_prof_cont_rename,R.drawable.menu_rename)
-		.setOnClickListener(new CustomContextMenuOnClickListener() {
-			@Override
-			public void onClick(CharSequence menuTitle) {
-				profMaint.renameProfile(item);
-				resetAllCheckedItem();
-			}
-		});
+			ccMenu.addMenuItem(msgs_prof_cont_rename,R.drawable.menu_rename)
+			.setOnClickListener(new CustomContextMenuOnClickListener() {
+				@Override
+				public void onClick(CharSequence menuTitle) {
+					profMaint.renameProfile(item);
+					resetAllCheckedItem();
+				}
+			});
+		};
 
 		ccMenu.addMenuItem(String.format(msgs_prof_cont_sngl_wizard,i_name),R.drawable.ic_64_wizard)
 	  	.setOnClickListener(new CustomContextMenuOnClickListener() {
@@ -2117,7 +2147,7 @@ public class SMBSyncMain extends FragmentActivity {
 	
 	private void setUiEnabled() {
 		util.addDebugLogMsg(1,"I","setUiEnabled entered");
-		enableMainUi=true;
+		glblParms.enableMainUi=true;
 		TabWidget tw=(TabWidget)findViewById(android.R.id.tabs);
 		tw.setEnabled(true);
 		if (Build.VERSION.SDK_INT>=11) tw.setAlpha(1.0f);
@@ -2135,7 +2165,7 @@ public class SMBSyncMain extends FragmentActivity {
 	
 	private void setUiDisabled() {
 		util.addDebugLogMsg(1,"I","setUiDisabled entered");
-		enableMainUi=false;
+		glblParms.enableMainUi=false;
 		TabWidget tw=(TabWidget)findViewById(android.R.id.tabs);
 		tw.setEnabled(false);
 		if (Build.VERSION.SDK_INT>=11) tw.setAlpha(0.4f);
@@ -2165,7 +2195,7 @@ public class SMBSyncMain extends FragmentActivity {
 	};
 	
 	private boolean isUiEnabled() {
-		return enableMainUi;
+		return glblParms.enableMainUi;
 	};
 	
 	@SuppressLint("NewApi")
@@ -2445,8 +2475,7 @@ public class SMBSyncMain extends FragmentActivity {
     		}
     		public void onServiceDisconnected(ComponentName name) {
     			mSvcConnection = null;
-    	    	
-    				util.addDebugLogMsg(1,"I","onServiceDisconnected entered");
+   				util.addDebugLogMsg(1,"I","onServiceDisconnected entered");
     	    	mSvcClient=null;
     	    	synchronized(tcService) {
         	    	tcService.notify();
@@ -2461,7 +2490,7 @@ public class SMBSyncMain extends FragmentActivity {
 
 	private void closeService() {
     	
-			util.addDebugLogMsg(1,"I","closeService entered");
+		util.addDebugLogMsg(1,"I","closeService entered");
 
     	if (mSvcConnection!=null) {
     		try {
@@ -2627,7 +2656,7 @@ public class SMBSyncMain extends FragmentActivity {
 				showNotificationMsg(getString(R.string.msgs_astart_expired));
 				if (glblParms.settingAutoStart){
 					
-						util.addDebugLogMsg(1,"I","Auto synchronization was invoked.");
+					util.addDebugLogMsg(1,"I","Auto synchronization was invoked.");
 //					saveTaskData();
 					boolean sel_prof=false;
 					for (int i=0;i<profileAdapter.getCount();i++) {

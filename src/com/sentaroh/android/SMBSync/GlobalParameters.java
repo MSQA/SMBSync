@@ -50,6 +50,8 @@ public class GlobalParameters extends Application{
 	
 	public boolean activityIsForeground=true;
 	
+	public boolean enableMainUi=true;
+	
 	public Handler uiHandler=null;
 	public TextView mainViewProgressProf=null;
 	public TextView mainViewProgressFilepath=null;
