@@ -50,19 +50,19 @@
 	
 	<string name="msgs_sync_wizard_confirm_title">Do you want to create a profile?\n</string>
 	<string name="msgs_sync_wizard_confirm_profile_created">Profile was created.</string>
-	<string name="msgs_sync_wizard_confirm_list_remote_serverid">Server ID:%s</string>
+	<string name="msgs_sync_wizard_confirm_list_remote_serverid">Remote Server:%s</string>
 	<string name="msgs_sync_wizard_confirm_list_remote_userid">User name:%s</string>
 	<string name="msgs_sync_wizard_confirm_list_remote_share">Share name:%s</string>
 	<string name="msgs_sync_wizard_confirm_list_remote_directory">Directory name:%s</string>
 	<string name="msgs_sync_wizard_confirm_list_local_mount_point">Mount point:%s</string>
 	<string name="msgs_sync_wizard_confirm_list_local_directory">Directory name:%s</string>
-	<string name="msgs_sync_wizard_confirm_list_sync_prof_name">Sync profile name:%s</string>
+	<string name="del_msgs_sync_wizard_confirm_list_sync_prof_name">Sync profile name:%s</string>
 	<string name="msgs_sync_wizard_confirm_list_sync_master_name" formatted="false">Master profile name:%s\n%s</string>
 	<string name="msgs_sync_wizard_confirm_list_sync_target_name" formatted="false">Target profile name:%s\n%s</string>
-	<string name="msgs_sync_wizard_confirm_list_sync_direction">Sync direction:%s</string>
+	<string name="del_msgs_sync_wizard_confirm_list_sync_direction">Sync direction:%s</string>
 	<string name="msgs_sync_wizard_confirm_list_sync_type">Mirror type:%s</string>
-	<string name="msgs_sync_wizard_confirm_list_sync_file_filter">File filter:%s</string>
-	<string name="msgs_sync_wizard_confirm_list_sync_dir_filter">Directory filter:%s</string>
+	<string name="msgs_sync_wizard_confirm_list_sync_file_filter">File filter</string>
+	<string name="msgs_sync_wizard_confirm_list_sync_dir_filter">Directory filter</string>
 	
 		
 </resources>

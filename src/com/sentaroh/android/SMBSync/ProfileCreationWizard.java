@@ -860,8 +860,13 @@ public class ProfileCreationWizard {
 						setRemoteProfileViewVisibility(dialog);
 					}
 				});
-				profMaint.processLogonToRemote(et_remote_hostname.getText().toString(),
-						et_remote_addr.getText().toString(),user,pass,ntfy);
+				if (cb_use_hostname.isChecked()) {
+					profMaint.processLogonToRemote(et_remote_hostname.getText().toString(),
+							"",user,pass,ntfy);
+				} else {
+					profMaint.processLogonToRemote("",
+							et_remote_addr.getText().toString(),user,pass,ntfy);
+				}
 			}
 		});
 
@@ -1367,7 +1372,7 @@ public class ProfileCreationWizard {
 	};
 
 	private void confirmProfileCreation(Dialog dialog, NotifyEvent p_ntfy) {
-		String sync_prof_name=String.format(mContext.getString(R.string.msgs_sync_wizard_confirm_list_sync_prof_name),mWizData.sync_name);
+		String sync_prof_name=mWizData.sync_name;
 		String sd="";
 		if (mWizData.master_type.equals(SMBSYNC_PROF_TYPE_REMOTE) && mWizData.target_type.equals(SMBSYNC_PROF_TYPE_LOCAL)) {
 			sd=mContext.getString(R.string.msgs_sync_wizard_sync_direction_remote_to_local);
@@ -1376,7 +1381,7 @@ public class ProfileCreationWizard {
 		} else if (mWizData.master_type.equals(SMBSYNC_PROF_TYPE_LOCAL) && mWizData.target_type.equals(SMBSYNC_PROF_TYPE_LOCAL)) {
 			sd=mContext.getString(R.string.msgs_sync_wizard_sync_direction_local_to_local);
 		}
-		String sync_direction=String.format(mContext.getString(R.string.msgs_sync_wizard_confirm_list_sync_direction),sd);
+		String sync_direction=sd;
 		
 		String master="", target="";
 		if (mWizData.prof_node[0].node_type.equals(SMBSYNC_PROF_TYPE_REMOTE)) {
@@ -1401,18 +1406,24 @@ public class ProfileCreationWizard {
 		
 		final TextView tv_file_filter=(TextView) dialog.findViewById(R.id.sync_wizard_dlg_sync_file_filter);
 		final TextView tv_dir_filter=(TextView) dialog.findViewById(R.id.sync_wizard_dlg_sync_dir_filter);
-		String sync_file_filter=String.format(mContext.getString(R.string.msgs_sync_wizard_confirm_list_sync_file_filter),tv_file_filter.getText().toString());
-		String sync_dir_filter=String.format(mContext.getString(R.string.msgs_sync_wizard_confirm_list_sync_dir_filter),tv_dir_filter.getText().toString());
+		String sync_file_filter=mContext.getString(R.string.msgs_sync_wizard_confirm_list_sync_file_filter)+
+				":\n     "+tv_file_filter.getText().toString();
+		String sync_dir_filter=mContext.getString(R.string.msgs_sync_wizard_confirm_list_sync_dir_filter)+
+				":\n     "+tv_dir_filter.getText().toString();
 		
-		String sync_mpd=mContext.getString(R.string.msgs_sync_profile_master_dir_cb_enable)+":";
+		String sync_mpd=mContext.getString(R.string.msgs_sync_profile_master_dir_cb_enable)+":\n     ";
 		if (mWizData.process_master_file_dir) sync_mpd+="YES";
 		else sync_mpd+="NO";
 
-		String sync_confirm=mContext.getString(R.string.msgs_sync_profile_confirm_required)+":";
+		String sync_confirm=mContext.getString(R.string.msgs_sync_profile_confirm_required)+":\n     ";
 		if (mWizData.confirm_required) sync_confirm+="YES";
 		else sync_confirm+="NO";
 
-		String sync_last_mod=mContext.getString(R.string.msgs_sync_profile_last_modified_smbsync)+":";
+		String sync_nulm_remote=mContext.getString(R.string.msgs_sync_profile_not_use_last_modified_remote_file_for_diff)+":\n     ";
+		if (mWizData.not_use_last_mod_remote) sync_nulm_remote+="YES";
+		else sync_nulm_remote+="NO";
+
+		String sync_last_mod=mContext.getString(R.string.msgs_sync_profile_last_modified_smbsync)+":\n     ";
 		if (mWizData.use_system_last_mod) sync_last_mod+="YES";
 		else sync_last_mod+="NO";
 		
@@ -1422,6 +1433,7 @@ public class ProfileCreationWizard {
 				"\n"+sync_dir_filter+
 				"\n"+sync_mpd+
 				"\n"+sync_confirm+
+				"\n"+sync_nulm_remote+
 				"\n"+sync_last_mod;
 		
 		mCommonDlg.showCommonDialog(true, "I", 
@@ -1439,11 +1451,16 @@ public class ProfileCreationWizard {
 		String share=prof_node.remote_share_name;
 		String dir=prof_node.remote_dir_name;
 		
-		result=	"     "+String.format(mContext.getString(R.string.msgs_sync_wizard_confirm_list_remote_serverid),server_id)+"\n"+
-				"     "+String.format(mContext.getString(R.string.msgs_sync_wizard_confirm_list_remote_userid),user_id)+"\n"+
-				"     "+String.format(mContext.getString(R.string.msgs_sync_wizard_confirm_list_remote_share),share)+"\n"+
-				"     "+String.format(mContext.getString(R.string.msgs_sync_wizard_confirm_list_remote_directory),dir);
-		
+		if (prof_node.remote_use_user_pass) {
+			result=	"     "+String.format(mContext.getString(R.string.msgs_sync_wizard_confirm_list_remote_serverid),server_id)+"\n"+
+					"     "+String.format(mContext.getString(R.string.msgs_sync_wizard_confirm_list_remote_userid),user_id)+"\n"+
+					"     "+String.format(mContext.getString(R.string.msgs_sync_wizard_confirm_list_remote_share),share)+"\n"+
+					"     "+String.format(mContext.getString(R.string.msgs_sync_wizard_confirm_list_remote_directory),dir);
+		} else {
+			result=	"     "+String.format(mContext.getString(R.string.msgs_sync_wizard_confirm_list_remote_serverid),server_id)+"\n"+
+					"     "+String.format(mContext.getString(R.string.msgs_sync_wizard_confirm_list_remote_share),share)+"\n"+
+					"     "+String.format(mContext.getString(R.string.msgs_sync_wizard_confirm_list_remote_directory),dir);
+		}
 		return result;
 	};
 	
