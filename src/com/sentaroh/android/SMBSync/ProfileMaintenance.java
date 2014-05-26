@@ -1263,7 +1263,6 @@ public class ProfileMaintenance {
 				prof_addr = editaddr.getText().toString();
 
 				prof_host = edithost.getText().toString();
-				prof_host = edithost.getText().toString();
 				prof_user = edituser.getText().toString();
 				prof_pass = editpass.getText().toString();
 				prof_share = editshare.getText().toString();
@@ -1361,7 +1360,7 @@ public class ProfileMaintenance {
 						new NtlmPasswordAuthentication(null, user, pass);
 				String err_msg="";
 				if (host.equals("")) {
-					if (isIpAddrReachable(addr,300)) {
+					if (isIpAddrReachable(addr)) {
 						try {
 							UniAddress dc = UniAddress.getByName( addr );
 					        SmbSession.logon( dc, auth );
@@ -1591,6 +1590,29 @@ public class ProfileMaintenance {
 		});
 	};
 	
+	private boolean auditIpAddressValue(String in_addr) {
+		boolean result=false;
+		String[] addr=in_addr.split("\\.");
+		if (addr.length==4) {
+			boolean error=false;
+			for (int i=0;i<4;i++) {
+				try {
+					int num=Integer.parseInt(addr[i]);
+					if (num<0 || num>255) {
+						error=true;
+						break;
+					}
+				} catch(NumberFormatException e) {
+					error=true;
+					break;
+				}
+			}
+			if (!error) result=true;
+		}
+		return result;
+	}
+
+	
 	private void setRemoteProfileOkBtnEnabled(Dialog dialog) {
 		final TextView dlg_msg=(TextView) dialog.findViewById(R.id.remote_profile_dlg_msg);
 
@@ -1612,14 +1634,14 @@ public class ProfileMaintenance {
 			if (edithost.getText().length()>0) {
 				dlg_msg.setText("");
 			} else {
-				dlg_msg.setText(msgs_audit_addr_user_not_spec);
+				dlg_msg.setText(mContext.getString(R.string.msgs_audit_hostname_not_spec));
 				return;
 			}
 		} else {
-			if (editaddr.getText().length()>0) {
+			if (auditIpAddressValue(editaddr.getText().toString())) {
 				dlg_msg.setText("");
 			} else {
-				dlg_msg.setText(msgs_audit_addr_user_not_spec);
+				dlg_msg.setText(mContext.getString(R.string.msgs_audit_hostaddr_not_spec));
 				return;
 			}
 		}
@@ -2319,7 +2341,6 @@ public class ProfileMaintenance {
 //		dialog.setOnKeyListener(new DialogOnKeyListener(context));
 //		dialog.setCancelable(false);
 		dialog.show();
-
 	};
 	
 	public void editProfileSync(String prof_name, final String prof_type,
@@ -2737,7 +2758,8 @@ public class ProfileMaintenance {
 		}
 
 		if (remote_addr.length()<1 && remote_host.length()<1) { 
-			dlg_msg.setText(msgs_audit_addr_user_not_spec);
+			if (cb_use_hostname.isChecked()) dlg_msg.setText(mContext.getString(R.string.msgs_audit_hostname_not_spec));
+			else dlg_msg.setText(mContext.getString(R.string.msgs_audit_hostaddr_not_spec));
 			return;
 		}
 		if (hasInvalidChar(remote_pass,new String[]{"\t"})) {
@@ -2805,7 +2827,8 @@ public class ProfileMaintenance {
 		remote_share = editshare.getText().toString();
 
 		if (remote_addr.length()<1 && remote_host.length()<1) {
-			dlg_msg.setText(msgs_audit_addr_user_not_spec);
+			if (cb_use_hostname.isChecked()) dlg_msg.setText(mContext.getString(R.string.msgs_audit_hostname_not_spec));
+			else dlg_msg.setText(mContext.getString(R.string.msgs_audit_hostaddr_not_spec));
 			return;
 		}
 		if (remote_share.length()<1) {
@@ -4315,7 +4338,7 @@ public class ProfileMaintenance {
 				final String found_title=mContext.getString(R.string.msgs_ip_address_scan_found);
 				for (int i=scanIpAddrBeginAddr; i<=scanIpAddrEndAddr;i++) {
 					if (cancelIpAddressListCreation) break;
-					if (isIpAddrReachable(scanIpAddrSubnet+"."+i,300) &&
+					if (isIpAddrReachable(scanIpAddrSubnet+"."+i) &&
 							isSmbHost(scanIpAddrSubnet+"."+i) && 
 							!curr_ip.equals(scanIpAddrSubnet+"."+i)) {
 						String srv_name=getSmbHostName(scanIpAddrSubnet+"."+i);
@@ -4475,13 +4498,13 @@ public class ProfileMaintenance {
 		return result;
 	};
 	
-	private boolean isIpAddrReachable(String address,int timeout) {
+	private boolean isIpAddrReachable(String address) {
 		boolean reachable=false;
 		Socket socket = new Socket();
         try {
             socket.bind(null);
 //            socket.connect((new InetSocketAddress(address, 139)), timeout);
-            socket.connect((new InetSocketAddress(address, 445)), timeout);
+            socket.connect((new InetSocketAddress(address, 445)), 300);
             reachable=true;
             socket.close();
         } catch (IOException e) {
@@ -6305,7 +6328,6 @@ public class ProfileMaintenance {
     private static String msgs_create_profile_error;
     private static String msgs_save_to_profile_error;
     
-    private static String msgs_audit_addr_user_not_spec;
     private static String msgs_audit_share_not_spec;
     
 //    private static String msgs_dlg_hardkey_back_button;
@@ -6313,7 +6335,6 @@ public class ProfileMaintenance {
 	public void loadMsgString() {
 		
 		msgs_audit_share_not_spec=mContext.getString(R.string.msgs_audit_share_not_spec);
-		msgs_audit_addr_user_not_spec=mContext.getString(R.string.msgs_audit_addr_user_not_spec);
 		
 		msgs_create_profile_not_found=mContext.getString(R.string.msgs_create_profile_not_found);
 	    msgs_create_profile_error=mContext.getString(R.string.msgs_create_profile_error);

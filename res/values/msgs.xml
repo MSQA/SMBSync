@@ -123,7 +123,8 @@
 	<string name="msgs_invalid_profile_combination">Master and target profile combination is must remote-local, local-remote or local-local.</string>
 	
 	<string name="msgs_audit_share_not_spec">Specify share name.</string>
-	<string name="msgs_audit_addr_user_not_spec">Specify remote server address or name.</string>
+	<string name="msgs_audit_hostname_not_spec">Specify remote server name.</string>
+	<string name="msgs_audit_hostaddr_not_spec">Specify remote server address.</string>
 	<string name="msgs_audit_msgs_local_dir">Local directory has contains %s character, invalid character was removed.</string>	
 	<string name="msgs_audit_msgs_address1">Remote address or name has contains $s character, invalid character was removed.</string>
 	<string name="msgs_audit_msgs_address2">Specify remote server address or name.</string>

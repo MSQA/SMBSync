@@ -1038,7 +1038,25 @@ public class ProfileCreationWizard {
 		if (cb_use_hostname.isChecked()) {
 			if (et_remote_hostname.getText().length()>0) nw=true;
 		} else {
-			if (et_remote_addr.getText().length()>0) nw=true;
+			if (et_remote_addr.getText().length()>0) {
+				String[] addr=et_remote_addr.getText().toString().split("\\.");
+				if (addr.length==4) {
+					boolean error=false;
+					for (int i=0;i<4;i++) {
+						try {
+							int num=Integer.parseInt(addr[i]);
+							if (num<0 || num>255) {
+								error=true;
+								break;
+							}
+						} catch(NumberFormatException e) {
+							error=true;
+							break;
+						}
+					}
+					if (!error) nw=true;
+				}
+			}
 		}
 //		cb_use_user_pass.setEnabled(false);
 //		et_remote_user.setEnabled(false);

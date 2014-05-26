@@ -124,7 +124,9 @@
 	
 	<string name="msgs_audit_share_not_spec">共有名を入力してください。</string>
 	<string name="msgs_audit_msgs_local_dir">ディレクトリに%s文字が含まれています、無効な文字を消しました。</string>
-	<string name="msgs_audit_addr_user_not_spec">アドレスまたは名前を入力してください。</string>
+	<string name="msgs_audit_hostname_not_spec">名前を入力してください。</string>
+	<string name="msgs_audit_hostaddr_not_spec">アドレスを入力してください。</string>
+		
 	<string name="msgs_audit_msgs_address1">アドレスまたは名前に%s文字が含まれています、無効な文字を消しました。</string>
 	<string name="msgs_audit_msgs_address2">アドレスまたは名前が指定されていません。</string>
 	<string name="msgs_audit_msgs_dir1">ディレクトリに%s文字が含まれています、無効な文字を消しました。</string>
