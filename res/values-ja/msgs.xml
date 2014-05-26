@@ -8,7 +8,7 @@
     
     <string name="msgs_no_external_storage">外部メディアが使用できないため、いくつかの機能が使用できません。</string>
     
-    <string name="msgs_sync_can_not_sync_wlan_option_not_satisfied">無線LANオプションの条件が成立しないため、同期できません。</string>
+    <string name="msgs_sync_can_not_sync_wlan_option_not_satisfied">無線LANオプションの条件が成立しないため、同期できません。設定の無線LANオプションを変更してください。</string>
     
     <string name="msgs_no_profile_entry">長押しでプロファイルを追加できます</string>
     

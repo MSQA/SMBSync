@@ -23,7 +23,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
-import static com.sentaroh.android.SMBSync.Constants.BUILD_FOR_AMAZON;
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_BG_TERM_NOTIFY_MSG_ALWAYS;
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_BG_TERM_NOTIFY_MSG_NO;
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_CONFIRM_FOR_COPY;
@@ -1076,8 +1075,7 @@ public class SMBSyncMain extends FragmentActivity {
 			
 			isApplicationFirstTimeRunning=true;
 			
-			if (BUILD_FOR_AMAZON) glblParms.sampleProfileCreateRequired=false;
-			else glblParms.sampleProfileCreateRequired=true;
+			glblParms.sampleProfileCreateRequired=true;
 			
 			prefs.edit().putString(getString(R.string.settings_log_dir),
 					glblParms.SMBSync_External_Root_Dir+"/SMBSync/").commit();
