@@ -9,6 +9,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:layout_weight="0.06"
+            android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="@string/msgs_dlg_ok_btn" />
 
         <Button
@@ -18,5 +19,6 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:layout_weight="0.05"
+            android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="@string/msgs_dlg_cancel_btn" />
 </LinearLayout>

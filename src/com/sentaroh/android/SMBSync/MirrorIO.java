@@ -41,7 +41,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.math.BigDecimal;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
+import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -50,6 +53,7 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import jcifs.netbios.NbtAddress;
 import jcifs.smb.NtlmPasswordAuthentication;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
@@ -568,13 +572,30 @@ public class MirrorIO implements Runnable {
 				}
 			}
 		}
-		
+
+		if (mipl.getHostName().equals("")) {
+			if (!isIpAddrReachable(mipl.getRemoteAddr())) {
+				addLogMsg("E",mipl.getLocalMountPoint(),
+						glblParms.svcContext.getString(R.string.msgs_mirror_remote_addr_not_reachable)+
+						mipl.getRemoteAddr());
+				isSyncParmError=true;
+			}
+		} else {
+			if (resolveHostName(mipl.getHostName())==null) {
+				addLogMsg("E",mipl.getLocalMountPoint(),
+						glblParms.svcContext.getString(R.string.msgs_mirror_remote_name_not_found)+
+						mipl.getHostName());
+				isSyncParmError=true;
+			}
+		}
+
 		if (glblParms.debugLevel>=1) {
 			addDebugLogMsg(1,"I","Sync parameters: " +
 				"syncLocalToLocal="+syncLocalToLocal+
 				", syncMasterProfType="+syncMasterProfType+
 				", syncTargetProfType="+syncTargetProfType+
 				", syncType="+ syncType + ", syncProfName=" + syncProfName
+				+ ", syncRemoteAddr=" + syncRemoteAddr
 				+ ", syncRemoteShare=" + syncRemoteShare
 				+ ", syncRemoteDir=" + syncRemoteDir
 				+ ", syncLocalDir=" + syncLocalDir
@@ -592,17 +613,43 @@ public class MirrorIO implements Runnable {
 		}
 	};
 	
-//	private String resolveHostName(String hn) {
-//		String ipAddress=hn;
+	private String resolveHostName(String hn) {
+		String ipAddress=null;
+		try {
+			NbtAddress nbtAddress = NbtAddress.getByName(hn);
+			InetAddress address = nbtAddress.getInetAddress();
+			ipAddress= address.getHostAddress();
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+		addDebugLogMsg(1,"I","resolveHostName Name="+hn+", IP addr="+ipAddress);
+		return ipAddress;
+	}
+	
+	private boolean isIpAddrReachable(String address) {
+		boolean reachable=false;
+		Socket socket = new Socket();
+        try {
+            socket.bind(null);
+//            socket.connect((new InetSocketAddress(address, 139)), timeout);
+            socket.connect((new InetSocketAddress(address, 445)), 300);
+            reachable=true;
+            socket.close();
+        } catch (IOException e) {
+        } catch (Exception e) {
+		}
 //		try {
-//			NbtAddress nbtAddress = NbtAddress.getByName(hn);
-//			InetAddress address = nbtAddress.getInetAddress();
-//			ipAddress= address.getHostAddress();
+//			InetAddress ip = InetAddress.getByName(address);
+//			reachable=ip.isReachable(timeout);  // Try for one tenth of a second
 //		} catch (UnknownHostException e) {
 //			e.printStackTrace();
+//		} catch (IOException e) {
+//			e.printStackTrace();
 //		}
-//		return ipAddress;
-//	}
+        addDebugLogMsg(1,"I","isIpAddrReachable IP addr="+address+", result="+reachable);
+		return reachable;
+	};
+
 	
 	final private void doSyncMirror(MirrorIoParmList mipl) {
 		if (glblParms.debugLevel>=1) 
@@ -1237,10 +1284,12 @@ public class MirrorIO implements Runnable {
 			return -1;
 		} catch (SmbException e) {
 			addLogMsg("E","","mirrorCopyLocalToRemote From="+masterUrl+", To="+targetUrl);
-			addLogMsg("E","",e.getMessage());//e.toString());
+			String emsg="";
+			emsg=e.getMessage(); 
+			addLogMsg("E","",emsg);//e.toString());
 			printStackTraceElement(e.getStackTrace());
 			isExceptionOccured=true;
-			tcMirror.setThreadMessage(e.getMessage());
+			tcMirror.setThreadMessage(emsg);
 			if (!tmp_target.equals("")) deleteRemoteTempFile(tmp_target);
 			return -1;
 		} catch (UnknownHostException e) {
@@ -1443,32 +1492,32 @@ public class MirrorIO implements Runnable {
 				return -1;
 				
 			}
-		} catch (MalformedURLException e) {
-			addLogMsg("E","","mirrorCopyLocalToRemote From="+masterUrl+", To="+targetUrl);
-			addLogMsg("E","",e.getMessage());//e.toString());
-			printStackTraceElement(e.getStackTrace());
-			isExceptionOccured=true;
-			tcMirror.setThreadMessage(e.getMessage());
-			if (!tmp_target.equals("")) deleteLocalTempFile(tmp_target);
-			return -1;
-		} catch (SmbException e) {
-			addLogMsg("E","","mirrorCopyLocalToRemote From="+masterUrl+", To="+targetUrl);
-			addLogMsg("E","",e.getMessage());//e.toString());
-			printStackTraceElement(e.getStackTrace());
-			isExceptionOccured=true;
-			tcMirror.setThreadMessage(e.getMessage());
-			if (!tmp_target.equals("")) deleteLocalTempFile(tmp_target);
-			return -1;
-		} catch (UnknownHostException e) {
-			addLogMsg("E","","mirrorCopyLocalToRemote From="+masterUrl+", To="+targetUrl);
-			addLogMsg("E","",e.getMessage());//e.toString());
-			printStackTraceElement(e.getStackTrace());
-			isExceptionOccured=true;
-			tcMirror.setThreadMessage(e.getMessage());
-			if (!tmp_target.equals("")) deleteLocalTempFile(tmp_target);
-			return -1;
+//		} catch (MalformedURLException e) {
+//			addLogMsg("E","","mirrorCopyLocalToRemote From="+masterUrl+", To="+targetUrl);
+//			addLogMsg("E","",e.getMessage());//e.toString());
+//			printStackTraceElement(e.getStackTrace());
+//			isExceptionOccured=true;
+//			tcMirror.setThreadMessage(e.getMessage());
+//			if (!tmp_target.equals("")) deleteLocalTempFile(tmp_target);
+//			return -1;
+//		} catch (SmbException e) {
+//			addLogMsg("E","","mirrorCopyLocalToRemote From="+masterUrl+", To="+targetUrl);
+//			addLogMsg("E","",e.getMessage());//e.toString());
+//			printStackTraceElement(e.getStackTrace());
+//			isExceptionOccured=true;
+//			tcMirror.setThreadMessage(e.getMessage());
+//			if (!tmp_target.equals("")) deleteLocalTempFile(tmp_target);
+//			return -1;
+//		} catch (UnknownHostException e) {
+//			addLogMsg("E","","mirrorCopyLocalToRemote From="+masterUrl+", To="+targetUrl);
+//			addLogMsg("E","",e.getMessage());//e.toString());
+//			printStackTraceElement(e.getStackTrace());
+//			isExceptionOccured=true;
+//			tcMirror.setThreadMessage(e.getMessage());
+//			if (!tmp_target.equals("")) deleteLocalTempFile(tmp_target);
+//			return -1;
 		} catch (FileNotFoundException e) {
-			addLogMsg("E","","mirrorCopyLocalToRemote From="+masterUrl+", To="+targetUrl);
+			addLogMsg("E","","mirrorCopyLocalToLocal From="+masterUrl+", To="+targetUrl);
 			addLogMsg("E","",e.getMessage());//e.toString());
 			printStackTraceElement(e.getStackTrace());
 			isExceptionOccured=true;
@@ -1476,7 +1525,7 @@ public class MirrorIO implements Runnable {
 			if (!tmp_target.equals("")) deleteLocalTempFile(tmp_target);
 			return -1;
 		} catch (IOException e) {
-			addLogMsg("E","","mirrorCopyLocalToRemote From="+masterUrl+", To="+targetUrl);
+			addLogMsg("E","","mirrorCopyLocalToLocal From="+masterUrl+", To="+targetUrl);
 			addLogMsg("E","",e.getMessage());//e.toString());
 			printStackTraceElement(e.getStackTrace());
 			isExceptionOccured=true;
@@ -1630,10 +1679,12 @@ public class MirrorIO implements Runnable {
 			return -1;
 		} catch (SmbException e) {
 			addLogMsg("E","","mirrorCopyRemoteToLocal From="+masterUrl+", To="+targetUrl);
-			addLogMsg("E","",e.getMessage());//e.toString());
+			String emsg="";
+			emsg=e.getMessage(); 
+			addLogMsg("E","",emsg);//e.toString());
 			printStackTraceElement(e.getStackTrace());
 			isExceptionOccured=true;
-			tcMirror.setThreadMessage(e.getMessage());
+			tcMirror.setThreadMessage(emsg);
 			if (!tmp_target.equals("")) deleteLocalTempFile(tmp_target);
 			return -1;
 		} catch (UnknownHostException e) {
@@ -1934,11 +1985,13 @@ public class MirrorIO implements Runnable {
 			if (!tmp_target.equals("")) deleteLocalTempFile(tmp_target);
 			return -1;
 		} catch (SmbException e) {
-			addLogMsg("E","",e.getMessage());//e.toString());
+			String emsg="";
+			emsg=e.getMessage(); 
+			addLogMsg("E","",emsg);//e.toString());
 			addLogMsg("E","","From="+masterUrl+", To="+targetUrl);
 			printStackTraceElement(e.getStackTrace());
 			isExceptionOccured=true;
-			tcMirror.setThreadMessage(e.getMessage());
+			tcMirror.setThreadMessage(emsg);
 			if (!tmp_target.equals("")) deleteLocalTempFile(tmp_target);
 			return -1;
 		} catch (UnknownHostException e) {
@@ -2092,10 +2145,12 @@ public class MirrorIO implements Runnable {
 			return -1;
 		} catch (SmbException e) {
 			printStackTraceElement(e.getStackTrace());
-			addLogMsg("E","",e.getMessage());//e.toString());
+			String emsg="";
+			emsg=e.getMessage(); 
+			addLogMsg("E","",emsg);//e.toString());
 			addLogMsg("E","","From="+masterUrl+", To="+targetUrl);
 			isExceptionOccured=true;
-			tcMirror.setThreadMessage(e.getMessage());
+			tcMirror.setThreadMessage(emsg);
 			if (!tmp_target.equals("")) deleteRemoteTempFile(tmp_target);
 			return -1;
 		} catch (UnknownHostException e) {
@@ -2222,30 +2277,30 @@ public class MirrorIO implements Runnable {
 				return -1;
 				
 			}
-		} catch (MalformedURLException e) {
-			printStackTraceElement(e.getStackTrace());
-			addLogMsg("E","",e.getMessage());//e.toString());
-			addLogMsg("E","","From="+masterUrl+", To="+targetUrl);
-			isExceptionOccured=true;
-			tcMirror.setThreadMessage(e.getMessage());
-			if (!tmp_target.equals("")) deleteLocalTempFile(tmp_target);
-			return -1;
-		} catch (SmbException e) {
-			printStackTraceElement(e.getStackTrace());
-			addLogMsg("E","",e.getMessage());//e.toString());
-			addLogMsg("E","","From="+masterUrl+", To="+targetUrl);
-			isExceptionOccured=true;
-			tcMirror.setThreadMessage(e.getMessage());
-			if (!tmp_target.equals("")) deleteLocalTempFile(tmp_target);
-			return -1;
-		} catch (UnknownHostException e) {
-			printStackTraceElement(e.getStackTrace());
-			addLogMsg("E","",e.getMessage());//e.toString());
-			addLogMsg("E","","From="+masterUrl+", To="+targetUrl);
-			isExceptionOccured=true;
-			tcMirror.setThreadMessage(e.getMessage());
-			if (!tmp_target.equals("")) deleteLocalTempFile(tmp_target);
-			return -1;
+//		} catch (MalformedURLException e) {
+//			printStackTraceElement(e.getStackTrace());
+//			addLogMsg("E","",e.getMessage());//e.toString());
+//			addLogMsg("E","","From="+masterUrl+", To="+targetUrl);
+//			isExceptionOccured=true;
+//			tcMirror.setThreadMessage(e.getMessage());
+//			if (!tmp_target.equals("")) deleteLocalTempFile(tmp_target);
+//			return -1;
+//		} catch (SmbException e) {
+//			printStackTraceElement(e.getStackTrace());
+//			addLogMsg("E","",e.getMessage());//e.toString());
+//			addLogMsg("E","","From="+masterUrl+", To="+targetUrl);
+//			isExceptionOccured=true;
+//			tcMirror.setThreadMessage(e.getMessage());
+//			if (!tmp_target.equals("")) deleteLocalTempFile(tmp_target);
+//			return -1;
+//		} catch (UnknownHostException e) {
+//			printStackTraceElement(e.getStackTrace());
+//			addLogMsg("E","",e.getMessage());//e.toString());
+//			addLogMsg("E","","From="+masterUrl+", To="+targetUrl);
+//			isExceptionOccured=true;
+//			tcMirror.setThreadMessage(e.getMessage());
+//			if (!tmp_target.equals("")) deleteLocalTempFile(tmp_target);
+//			return -1;
 		} catch (FileNotFoundException e) {
 			printStackTraceElement(e.getStackTrace());
 			addLogMsg("E","",e.getMessage());//e.toString());

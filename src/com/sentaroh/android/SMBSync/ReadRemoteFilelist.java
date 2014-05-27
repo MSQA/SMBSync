@@ -158,17 +158,34 @@ public class ReadRemoteFilelist implements Runnable  {
 			
 		} catch (SmbException e) {
 			e.printStackTrace();
+//			Log.v("","msg="+e.getMessage());
+//			Log.v("","cause="+e.getCause());
+//			Log.v("","lmsg="+e.getLocalizedMessage());
+//			Log.v("","rcause="+e.getRootCause().toString());
+//			Log.v("",String.format("nt=%x",e.getNtStatus()));
 			util.addDebugLogMsg(1,"E",e.toString());
-			getFLCtrl.setThreadResultError();
-			if (e.getRootCause()!=null) getFLCtrl.setThreadMessage(e.getRootCause()+" "+e.getMessage());
-			else getFLCtrl.setThreadMessage(e.getMessage());
-			getFLCtrl.setDisable();
+			if (getFLCtrl.isEnable()) {
+				getFLCtrl.setThreadResultError();
+				if (e.getRootCause()!=null) getFLCtrl.setThreadMessage(e.getMessage()+"\n"+e.getRootCause().toString());
+				else getFLCtrl.setThreadMessage(e.getMessage());
+				getFLCtrl.setDisable();
+			} else {
+				getFLCtrl.setThreadResultCancelled();
+				util.addDebugLogMsg(1,"W","File list creation cancelled by main task.");
+				getFLCtrl.setDisable();
+			}
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 			util.addDebugLogMsg(1,"E",e.toString());
-			getFLCtrl.setThreadResultError();
-			getFLCtrl.setThreadMessage(e.getMessage());
-			getFLCtrl.setDisable();
+			if (getFLCtrl.isEnable()) {
+				getFLCtrl.setThreadResultError();
+				getFLCtrl.setThreadMessage(e.getMessage());
+				getFLCtrl.setDisable();
+			} else {
+				getFLCtrl.setThreadResultCancelled();
+				util.addDebugLogMsg(1,"W","File list creation cancelled by main task.");
+				getFLCtrl.setDisable();
+			}
 		}
 			
 		util.addDebugLogMsg(1,"I","getFileList ended.");

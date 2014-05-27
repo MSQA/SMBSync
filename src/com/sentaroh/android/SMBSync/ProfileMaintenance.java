@@ -220,6 +220,8 @@ public class ProfileMaintenance {
 						//NOtencrypted
 					} else if (pl.startsWith(SMBSYNC_PROF_VER3)) {
 						if (pl.startsWith(SMBSYNC_PROF_VER3+SMBSYNC_PROF_ENC)) result=true;
+					} else if (pl.startsWith(SMBSYNC_PROF_VER4)) {
+						if (pl.startsWith(SMBSYNC_PROF_VER4+SMBSYNC_PROF_ENC)) result=true;
 					}
 				}
 				br.close();
@@ -277,10 +279,15 @@ public class ProfileMaintenance {
 					br = new BufferedReader(new FileReader(fpath),8192);
 					pl = br.readLine();
 					if (pl!=null) {
+						String enc_str="";
 						if (pl.startsWith(SMBSYNC_PROF_VER3+SMBSYNC_PROF_ENC)) {
+							enc_str=pl.replace(SMBSYNC_PROF_VER3+SMBSYNC_PROF_ENC, "");
+						} else if (pl.startsWith(SMBSYNC_PROF_VER4+SMBSYNC_PROF_ENC)) {
+							enc_str=pl.replace(SMBSYNC_PROF_VER4+SMBSYNC_PROF_ENC, "");
+						}
+						if (!enc_str.equals("")) {
 							CipherParms cp=EncryptUtil.initDecryptEnv(
 									mProfilePasswordPrefix+passwd);
-							String enc_str=pl.replace(SMBSYNC_PROF_VER3+SMBSYNC_PROF_ENC, "");
 							byte[] enc_array=Base64Compat.decode(enc_str, Base64Compat.NO_WRAP);
 							String dec_str=EncryptUtil.decrypt(enc_array, cp);
 							if (!SMBSYNC_PROF_ENC.equals(dec_str)) {
@@ -1211,8 +1218,13 @@ public class ProfileMaintenance {
 					if (edituser.getText().length()>0) user=edituser.getText().toString();
 					if (editpass.getText().length()>0) pass=editpass.getText().toString();
 				}
-				processLogonToRemote(edithost.getText().toString(),
-						editaddr.getText().toString(),user,pass,null);
+				if (cb_use_hostname.isChecked()) {
+					processLogonToRemote(edithost.getText().toString(),
+							"",user,pass,null);
+				} else {
+					processLogonToRemote("",
+							editaddr.getText().toString(),user,pass,null);
+				}
 			}
 		});
 
@@ -1324,7 +1336,7 @@ public class ProfileMaintenance {
 		((TextView)dialog.findViewById(R.id.progress_spin_dlg_msg))
 			.setVisibility(TextView.GONE);
 		final Button btn_cancel = (Button) dialog.findViewById(R.id.progress_spin_dlg_btn_cancel);
-		btn_cancel.setText(R.string.msgs_progress_spin_dlg_filelist_cancel);
+		btn_cancel.setText(R.string.msgs_progress_spin_dlg_test_logon_cancel);
 		
 //		(dialog.context.findViewById(R.id.progress_spin_dlg)).setVisibility(TextView.GONE);
 //		(dialog.context.findViewById(R.id.progress_spin_dlg)).setEnabled(false);
@@ -1375,23 +1387,28 @@ public class ProfileMaintenance {
 							err_msg=e.toString();
 						}
 					} else {
-						err_msg=mContext.getString(R.string.msgs_remote_profile_dlg_logon_error_can_not_connect)
+						err_msg=mContext.getString(R.string.msgs_mirror_remote_addr_not_reachable)
 								+addr;
 					}
 				} else {
+					UniAddress dc =null;
 					try {
-						UniAddress dc = UniAddress.getByName( host );
-				        SmbSession.logon( dc, auth );
-				        util.addDebugLogMsg(1,"I","Test logon completed for host name");
+						dc = UniAddress.getByName( host );
+						try {
+					        SmbSession.logon( dc, auth );
+					        util.addDebugLogMsg(1,"I","Test logon completed for host name");
+						} catch (SmbException e) {
+							e.printStackTrace();
+							util.addDebugLogMsg(1,"I","Logon error:"+"\n"+e.toString());
+							err_msg=e.toString();
+						}
 					} catch (UnknownHostException e) {
 						e.printStackTrace();
 						util.addDebugLogMsg(1,"I","Logon error:"+"\n"+e.toString());
-						err_msg=e.toString();
-					} catch (SmbException e) {
-						e.printStackTrace();
-						util.addDebugLogMsg(1,"I","Logon error:"+"\n"+e.toString());
-						err_msg=e.toString();
+						err_msg=mContext.getString(R.string.msgs_mirror_remote_name_not_found)+
+								host;
 					}
+					
 				}
 				
 				final String err_msgx=err_msg;;
@@ -1399,15 +1416,21 @@ public class ProfileMaintenance {
 					@Override
 					public void run() {
 						dialog.dismiss();
-						if (!err_msgx.equals("")) {
-							commonDlg.showCommonDialog(false, "E", 
-									mContext.getString(R.string.msgs_remote_profile_dlg_logon_error)
-									, err_msgx, null);
-							if (p_ntfy!=null) p_ntfy.notifyToListener(false, null);
+						if (tc.isEnable()) {
+							if (!err_msgx.equals("")) {
+								commonDlg.showCommonDialog(false, "E", 
+										mContext.getString(R.string.msgs_remote_profile_dlg_logon_error)
+										, err_msgx, null);
+								if (p_ntfy!=null) p_ntfy.notifyToListener(false, null);
+							} else {
+								commonDlg.showCommonDialog(false, "I", "", 
+									mContext.getString(R.string.msgs_remote_profile_dlg_logon_success), null);
+								if (p_ntfy!=null) p_ntfy.notifyToListener(true, null);
+							}
 						} else {
 							commonDlg.showCommonDialog(false, "I", "", 
-								mContext.getString(R.string.msgs_remote_profile_dlg_logon_success), null);
-							if (p_ntfy!=null) p_ntfy.notifyToListener(true, null);
+									mContext.getString(R.string.msgs_remote_profile_dlg_logon_cancel), null);
+								if (p_ntfy!=null) p_ntfy.notifyToListener(true, null);
 						}
 					}
 				});
@@ -2229,8 +2252,13 @@ public class ProfileMaintenance {
 					if (edituser.getText().length()>0) user=edituser.getText().toString();
 					if (editpass.getText().length()>0) pass=editpass.getText().toString();
 				}
-				processLogonToRemote(edithost.getText().toString(),
-						editaddr.getText().toString(),user,pass,null);
+				if (cb_use_hostname.isChecked()) {
+					processLogonToRemote(edithost.getText().toString(),
+							"",user,pass,null);
+				} else {
+					processLogonToRemote("",
+							editaddr.getText().toString(),user,pass,null);
+				}
 			}
 		});
 
@@ -4903,11 +4931,12 @@ public class ProfileMaintenance {
 				smbUser,smbPass, ntfy, true, readSubDirCnt, glblParms));
 		tf.start();
 		
-		showDelayedProgDlg(200,dialog, tc);
-
-	}
+//		showDelayedProgDlg(200,dialog, tc);
+		dialog.show();
+	};
 	
-	private void showDelayedProgDlg(final int wt, final Dialog dialog, final ThreadCtrl tc) {
+	@SuppressWarnings("unused")
+	private void showDelayedProgDlgX(final int wt, final Dialog dialog, final ThreadCtrl tc) {
     	final Handler handler=new Handler();
 
        	new Thread(new Runnable() {

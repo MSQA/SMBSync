@@ -26,6 +26,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 import java.util.ArrayList;
 import java.util.Collections;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +35,7 @@ import android.widget.TextView;
 import com.sentaroh.android.Utilities.LocalMountPoint;
 import com.sentaroh.android.Utilities.Widget.CustomSpinnerAdapter;
 
+@SuppressLint("ViewConstructor")
 public class AdapterLocalMountPoint extends CustomSpinnerAdapter {
 
 	ArrayList<String>mpl;

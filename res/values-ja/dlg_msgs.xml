@@ -30,7 +30,7 @@
 	<string name="msgs_remote_profile_dlg_logon">ログオン</string>
 	<string name="msgs_remote_profile_dlg_logon_success">ログオンが正常に完了しました</string>
 	<string name="msgs_remote_profile_dlg_logon_error">ログオンエラーが発生しました</string>
-	<string name="msgs_remote_profile_dlg_logon_error_can_not_connect">指定されたIPアドレスに接続できません IP Addr=</string>
+	<string name="msgs_remote_profile_dlg_logon_cancel">ログオンが中止されました</string>
 	
     <string name="msgs_sync_profile_dlg_active">有効</string>
     <string name="msgs_sync_profile_dlg_profile">プロファイル名</string>
@@ -99,9 +99,10 @@
    	<string name="msgs_progress_dlg_canceling">キャンセルしています</string>
    	
    	<string name="msgs_progress_spin_dlg_filelist_getting">ファイルリスト取得中</string>
-   	<string name="msgs_progress_spin_dlg_filelist_cancel">ファイルリスト取得を中断</string>
+   	<string name="msgs_progress_spin_dlg_filelist_cancel">ファイルリスト取得を中止</string>
    	
    	<string name="msgs_progress_spin_dlg_test_logon">リモートにログオン中</string>
+   	<string name="msgs_progress_spin_dlg_test_logon_cancel">ログオンを中止</string>
     
    	<string name="msgs_tab_name_prof">プロファイル</string>
    	<string name="msgs_tab_name_msg">メッセージ</string>

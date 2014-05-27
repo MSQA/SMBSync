@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:textColor="#ff0000"
         android:text=""
-        android:textAppearance="?android:attr/textAppearanceSmall" />
+        android:textAppearance="?android:attr/textAppearanceMedium" />
     
     <EditText
         android:id="@+id/filter_edit_dlg_filter"

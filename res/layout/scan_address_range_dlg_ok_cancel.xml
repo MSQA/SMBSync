@@ -10,12 +10,14 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="@string/msgs_dlg_ok_btn" />
         <Button
             android:id="@+id/scan_address_range_btn_cancel"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="@string/msgs_dlg_cancel_btn" />
 
 </LinearLayout>

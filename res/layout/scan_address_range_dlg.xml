@@ -11,7 +11,7 @@
             android:layout_marginLeft="5dp"
             android:gravity="center"
             android:text="@string/msgs_ip_address_range_dlg_title"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
 	<include layout="@layout/divider_line1_turquoise" />
     
@@ -22,7 +22,7 @@
             android:layout_marginLeft="5dp"
             android:text=""
             android:textColor="#ff0000"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <LinearLayout
         android:layout_gravity="center"

@@ -89,7 +89,6 @@ import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.text.ClipboardManager;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -1887,7 +1886,6 @@ public class SMBSyncMain extends FragmentActivity {
 		final String i_name = item.getName();
 		
 		if (!i_type.equals("")) {
-			Log.v("","type=%"+i_type+"%");
 			if (i_act.equals(SMBSYNC_PROF_ACTIVE)) {
 				if (glblParms.externalStorageIsMounted && !util.isRemoteDisable() ) {
 					if (sync) {

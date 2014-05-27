@@ -34,7 +34,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text=""
-                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="#ffff0000" />
 
             <LinearLayout
@@ -48,6 +48,7 @@
                     style="@style/check_box_style"
                     android:layout_width="90dp"
                     android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="@string/msgs_sync_profile_dlg_active" />
 
                 <EditText
@@ -56,9 +57,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
                     android:layout_weight="1"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
                     android:hint="@string/msgs_sync_profile_dlg_profile"
-                    android:inputType="text"
-                    android:textAppearance="?android:attr/textAppearanceSmall">
+                    android:inputType="text">
 
                     <requestFocus />
                 </EditText>
@@ -72,10 +73,11 @@
 
                 <ImageButton
                     android:id="@+id/sync_profile_edit_master"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
+                    android:layout_width="60dp"
+                    android:layout_height="40dp"
                     android:layout_gravity="center_vertical"
-                    android:src="@drawable/ic_32_browse_text" />
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/menu_edit" />
 
 		        <Spinner
 		            android:id="@+id/sync_profile_master_spinner"
@@ -85,9 +87,11 @@
 		            android:layout_marginBottom="5dp"
 		            android:layout_marginLeft="1dp"
 		            android:layout_marginRight="5dp"
+		            android:layout_gravity="center_vertical"
 		            android:layout_weight="1"
+		            android:textAppearance="?android:attr/textAppearanceMedium"
 		            android:background="@drawable/spinner_color_background"
-		            android:minHeight="30dp"
+		            android:minHeight="38dp"
 		            android:paddingLeft="5dp"/>
 
             </LinearLayout>
@@ -101,10 +105,11 @@
 
                 <ImageButton
                     android:id="@+id/sync_profile_edit_target"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
+                    android:layout_width="60dp"
+                    android:layout_height="40dp"
                     android:layout_gravity="center_vertical"
-                    android:src="@drawable/ic_32_browse_text" />
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/menu_edit" />
 
 		        <Spinner
 		            android:id="@+id/sync_profile_target_spinner"
@@ -115,8 +120,10 @@
 		            android:layout_marginLeft="1dp"
 		            android:layout_marginRight="5dp"
 		            android:layout_weight="1"
+		            android:layout_gravity="center_vertical"
+		            android:textAppearance="?android:attr/textAppearanceMedium"
 		            android:background="@drawable/spinner_color_background"
-		            android:minHeight="30dp"
+		            android:minHeight="38dp"
 		            android:paddingLeft="5dp"/>
                 
             </LinearLayout>
@@ -144,8 +151,9 @@
 		            android:layout_marginLeft="5dp"
 		            android:layout_marginRight="5dp"
 		            android:layout_weight="1"
+		            android:textAppearance="?android:attr/textAppearanceMedium"
 		            android:background="@drawable/spinner_color_background"
-		            android:minHeight="30dp"
+		            android:minHeight="38dp"
 		            android:paddingLeft="5dp"/>
                 
             </LinearLayout>
@@ -161,16 +169,16 @@
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
+                android:layout_marginLeft="10dp"
                 android:orientation="horizontal">
 
                 <Button
                     android:id="@+id/sync_profile_file_filter_btn"
-                    android:layout_width="130dp"
-                    android:layout_height="40dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:gravity="center_vertical|left"
-                    android:text="@string/msgs_sync_profile_dlg_filefltr"
-                    android:textAppearance="?android:attr/textAppearanceSmall"/>
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/msgs_sync_profile_dlg_filefltr"/>
 
                 <TextView
                     android:id="@+id/sync_profile_file_filter"
@@ -180,23 +188,23 @@
                     android:ellipsize="end"
                     android:maxLines="2"
                     android:layout_gravity="center_vertical"
-                    android:text="@string/msgs_filter_list_dlg_not_specified"
-                    android:textAppearance="?android:attr/textAppearanceSmall"/>
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/msgs_filter_list_dlg_not_specified"/>
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
+                android:layout_marginLeft="10dp"
                 android:orientation="horizontal">
 
                 <Button
                     android:id="@+id/sync_profile_dir_filter_btn"
-                    android:layout_width="130dp"
-                    android:layout_height="40dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:gravity="center_vertical|left"
-                    android:text="@string/msgs_sync_profile_dlg_dirfltr"
-                    android:textAppearance="?android:attr/textAppearanceSmall" />
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/msgs_sync_profile_dlg_dirfltr"/>
 
                 <TextView
                     android:id="@+id/sync_profile_dir_filter"
@@ -206,8 +214,8 @@
                     android:ellipsize="end"
                     android:maxLines="2"
                     android:layout_gravity="center_vertical"
-                    android:text="@string/msgs_filter_list_dlg_not_specified"
-                    android:textAppearance="?android:attr/textAppearanceSmall"/>
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/msgs_filter_list_dlg_not_specified"/>
             </LinearLayout>
 
             <CheckBox
@@ -216,8 +224,8 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="3dp"
-                android:text="@string/msgs_sync_profile_master_dir_cb_enable"
-                android:textAppearance="?android:attr/textAppearanceSmall"/>
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/msgs_sync_profile_master_dir_cb_enable"/>
 
             <CheckBox
                 android:id="@+id/sync_profile_confirm"
@@ -225,8 +233,8 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="3dp"
-                android:text="@string/msgs_sync_profile_confirm_required"
-                android:textAppearance="?android:attr/textAppearanceSmall"/>
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/msgs_sync_profile_confirm_required"/>
             
             <CheckBox
                 android:id="@+id/sync_profile_not_use_last_modified_remote_file_for_diff"
@@ -234,8 +242,8 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="3dp"
-                android:text="@string/msgs_sync_profile_not_use_last_modified_remote_file_for_diff"
-                android:textAppearance="?android:attr/textAppearanceSmall"/>
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/msgs_sync_profile_not_use_last_modified_remote_file_for_diff"/>
             
             <CheckBox
                 android:id="@+id/sync_profile_last_modified"
@@ -243,8 +251,8 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="3dp"
-                android:text="@string/msgs_sync_profile_last_modified_smbsync"
-                android:textAppearance="?android:attr/textAppearanceSmall"/>
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/msgs_sync_profile_last_modified_smbsync"/>
         </LinearLayout>
     </ScrollView>
 

@@ -44,5 +44,9 @@
 	<string name="msgs_mirror_master_local_mount_point_not_readable">Master mount point can not read.</string>
 	<string name="msgs_mirror_target_local_mount_point_not_writable">Master mount point can not write.</string>
 
-	<string name="msgs_mirror_same_directory_ignored">I ignored the directory because the same directory can not be synchronized. Directory=%s</string>					
+	<string name="msgs_mirror_same_directory_ignored">I ignored the directory because the same directory can not be synchronized. Directory=%s</string>
+	
+	<string name="msgs_mirror_remote_name_not_found">Specified remote host name was not found. Host Name=</string>
+	<string name="msgs_mirror_remote_addr_not_reachable">Specified IP Address is not reachable. IP Address=</string>
+							
 </resources>

@@ -29,7 +29,7 @@
     <string name="msgs_remote_profile_dlg_logon">Logon</string>
 	<string name="msgs_remote_profile_dlg_logon_success">Logon successfully completed</string>    
 	<string name="msgs_remote_profile_dlg_logon_error">Logon ended with error</string>
-	<string name="msgs_remote_profile_dlg_logon_error_can_not_connect">Can not connect to specified IP addr. IP Addr=</string>
+	<string name="msgs_remote_profile_dlg_logon_cancel">Logon cancelled</string>
     
     <string name="msgs_sync_profile_dlg_active">Active</string>
     <string name="msgs_sync_profile_dlg_profile">Profile Name</string>
@@ -102,6 +102,7 @@
    	<string name="msgs_progress_spin_dlg_filelist_cancel">Cancel</string>
    	
    	<string name="msgs_progress_spin_dlg_test_logon">Logon to remote</string>
+   	<string name="msgs_progress_spin_dlg_test_logon_cancel">Cancel logon</string>
    	
    	<string name="msgs_tab_name_prof">Profile</string>
    	<string name="msgs_tab_name_msg">Messages</string>
