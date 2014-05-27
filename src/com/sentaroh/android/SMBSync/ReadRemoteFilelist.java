@@ -206,6 +206,7 @@ public class ReadRemoteFilelist implements Runnable  {
 				getFLCtrl.setThreadResultError();
 				if (e.getRootCause()!=null) getFLCtrl.setThreadMessage(e.getMessage()+"\n"+e.getRootCause().toString());
 				else getFLCtrl.setThreadMessage(e.getMessage());
+				util.addDebugLogMsg(1,"I",String.format("NT STATUS=%x",e.getNtStatus()));
 				getFLCtrl.setDisable();
 			} else {
 				getFLCtrl.setThreadResultCancelled();

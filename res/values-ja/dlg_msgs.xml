@@ -34,8 +34,8 @@
 	
     <string name="msgs_sync_profile_dlg_active">有効</string>
     <string name="msgs_sync_profile_dlg_profile">プロファイル名</string>
-    <string name="msgs_sync_profile_dlg_master">マスター</string>
-    <string name="msgs_sync_profile_dlg_target">ターゲット</string>
+    <string name="msgs_sync_profile_dlg_master">マスタープロファイル</string>
+    <string name="msgs_sync_profile_dlg_target">ターゲットプロファイル</string>
     <string name="msgs_sync_profile_dlg_syncopt">同期方式</string>
     <string name="msgs_sync_profile_dlg_syncopt_prompt">同期方式の選択</string>
     <string name="msgs_sync_profile_dlg_mirror">ミラー</string> 

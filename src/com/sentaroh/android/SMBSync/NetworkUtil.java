@@ -57,7 +57,9 @@ public class NetworkUtil {
             reachable=true;
             socket.close();
         } catch (IOException e) {
+        	e.printStackTrace();
         } catch (Exception e) {
+        	e.printStackTrace();
 		}
 		return reachable;
 	};

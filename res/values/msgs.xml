@@ -112,7 +112,8 @@
 	<string name="msgs_select_export_file"	>Select export file</string>
 	<string name="msgs_select_import_file"	>Select import file</string>
 	<string name="msgs_select_local_dir"	>Select local directory</string>
-	<string name="msgs_select_profile"		>Select profile</string>
+	<string name="msgs_select_master_profile">Select master profile</string>
+	<string name="msgs_select_target_profile">Select target profile</string>
 	<string name="msgs_select_remote_share"	>Select remote share</string>
 	<string name="msgs_select_remote_dir"	>Select remote directory</string>
 	<string name="msgs_sync_profile"		>Sync profile (%s)</string>

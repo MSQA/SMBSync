@@ -1691,7 +1691,7 @@ public class ProfileMaintenance {
 		final SpinnerAdapterProfileSelection adapter_spinner=new SpinnerAdapterProfileSelection(mContext, R.layout.custom_simple_spinner_item);
 		adapter_spinner.setTextColor(Color.BLACK);
 		adapter_spinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		spinner_master.setPrompt(msgs_select_profile);
+		spinner_master.setPrompt(msgs_select_master_profile);
 		spinner_master.setAdapter(adapter_spinner);
 		int pos=0,cnt=-1;
 		
@@ -1712,7 +1712,7 @@ public class ProfileMaintenance {
 		final SpinnerAdapterProfileSelection adapter_spinner=new SpinnerAdapterProfileSelection(mContext, R.layout.custom_simple_spinner_item);
 		adapter_spinner.setTextColor(Color.BLACK);
 		adapter_spinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		spinner_target.setPrompt(msgs_select_profile);
+		spinner_target.setPrompt(msgs_select_target_profile);
 		spinner_target.setAdapter(adapter_spinner);
 
 		ProfileListItem m_pli=getProfile(SMBSYNC_PROF_GROUP_DEFAULT, prof_master);
@@ -6283,7 +6283,8 @@ public class ProfileMaintenance {
 	private static String msgs_select_export_file	;
 	private static String msgs_select_import_file	;
 	private static String msgs_select_local_dir	;
-	private static String msgs_select_profile	;
+	private static String msgs_select_master_profile;
+	private static String msgs_select_target_profile;
 	private static String msgs_select_remote_share;
 	private static String msgs_select_remote_dir;
 	private static String msgs_audit_msgs_share1	;
@@ -6349,7 +6350,8 @@ public class ProfileMaintenance {
 		msgs_select_export_file			=	mContext.getString(R.string.msgs_select_export_file	);
 		msgs_select_import_file			=	mContext.getString(R.string.msgs_select_import_file	);
 		msgs_select_local_dir			=	mContext.getString(R.string.msgs_select_local_dir	);
-		msgs_select_profile				=	mContext.getString(R.string.msgs_select_profile	);
+		msgs_select_master_profile		=	mContext.getString(R.string.msgs_select_master_profile	);
+		msgs_select_target_profile		=	mContext.getString(R.string.msgs_select_target_profile	);
 		msgs_select_remote_share		=	mContext.getString(R.string.msgs_select_remote_share);
 		msgs_select_remote_dir		=	mContext.getString(R.string.msgs_select_remote_dir);
 		msgs_audit_msgs_share1			=	mContext.getString(R.string.msgs_audit_msgs_share1	);

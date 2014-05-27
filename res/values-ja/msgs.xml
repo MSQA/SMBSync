@@ -112,7 +112,8 @@
 	<string name="msgs_select_export_file"	>プロファイル書き出し先の選択</string>
 	<string name="msgs_select_import_file"	>取り込むプロファイルの選択</string>
 	<string name="msgs_select_local_dir"	>ローカルディレクトリの選択</string>
-	<string name="msgs_select_profile"		>プロファイルの選択</string>
+	<string name="msgs_select_master_profile">マスタープロファイルの選択</string>
+	<string name="msgs_select_target_profile">ターゲットプロファイルの選択</string>
 	<string name="msgs_select_remote_share"	>共有の選択</string>
 	<string name="msgs_select_remote_dir"	>リモートディレクトリの選択</string>
 	<string name="msgs_sync_profile"		>同期実行 (%s)</string>
