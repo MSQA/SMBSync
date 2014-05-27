@@ -41,10 +41,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.math.BigDecimal;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
-import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -53,7 +50,6 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import jcifs.netbios.NbtAddress;
 import jcifs.smb.NtlmPasswordAuthentication;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
@@ -574,15 +570,18 @@ public class MirrorIO implements Runnable {
 		}
 
 		if (mipl.getHostName().equals("")) {
-			if (!isIpAddrReachable(mipl.getRemoteAddr())) {
-				addLogMsg("E",mipl.getLocalMountPoint(),
+			String t_addr=mipl.getRemoteAddr();
+			String s_addr=t_addr;
+			if (t_addr.indexOf(":")>=0) s_addr=t_addr.substring(0,t_addr.indexOf(":")) ;
+			if (!isIpAddrReachable(s_addr)) {
+				addLogMsg("E","",
 						glblParms.svcContext.getString(R.string.msgs_mirror_remote_addr_not_reachable)+
-						mipl.getRemoteAddr());
+						s_addr);
 				isSyncParmError=true;
 			}
 		} else {
 			if (resolveHostName(mipl.getHostName())==null) {
-				addLogMsg("E",mipl.getLocalMountPoint(),
+				addLogMsg("E","",
 						glblParms.svcContext.getString(R.string.msgs_mirror_remote_name_not_found)+
 						mipl.getHostName());
 				isSyncParmError=true;
@@ -614,38 +613,13 @@ public class MirrorIO implements Runnable {
 	};
 	
 	private String resolveHostName(String hn) {
-		String ipAddress=null;
-		try {
-			NbtAddress nbtAddress = NbtAddress.getByName(hn);
-			InetAddress address = nbtAddress.getInetAddress();
-			ipAddress= address.getHostAddress();
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		}
+		String ipAddress=NetworkUtil.resolveSmbHostName(hn);
 		addDebugLogMsg(1,"I","resolveHostName Name="+hn+", IP addr="+ipAddress);
 		return ipAddress;
 	}
 	
 	private boolean isIpAddrReachable(String address) {
-		boolean reachable=false;
-		Socket socket = new Socket();
-        try {
-            socket.bind(null);
-//            socket.connect((new InetSocketAddress(address, 139)), timeout);
-            socket.connect((new InetSocketAddress(address, 445)), 300);
-            reachable=true;
-            socket.close();
-        } catch (IOException e) {
-        } catch (Exception e) {
-		}
-//		try {
-//			InetAddress ip = InetAddress.getByName(address);
-//			reachable=ip.isReachable(timeout);  // Try for one tenth of a second
-//		} catch (UnknownHostException e) {
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
+		boolean reachable=NetworkUtil.isIpAddrReachable(address);
         addDebugLogMsg(1,"I","isIpAddrReachable IP addr="+address+", result="+reachable);
 		return reachable;
 	};

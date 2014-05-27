@@ -58,8 +58,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.InetSocketAddress;
-import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -67,7 +65,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 
 import jcifs.UniAddress;
-import jcifs.netbios.NbtAddress;
 import jcifs.smb.NtlmPasswordAuthentication;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbSession;
@@ -1222,8 +1219,10 @@ public class ProfileMaintenance {
 					processLogonToRemote(edithost.getText().toString(),
 							"",user,pass,null);
 				} else {
-					processLogonToRemote("",
-							editaddr.getText().toString(),user,pass,null);
+					String t_addr=editaddr.getText().toString();
+					String s_addr=t_addr;
+					if (t_addr.indexOf(":")>=0) s_addr=t_addr.substring(0,t_addr.indexOf(":")) ;
+					processLogonToRemote("",s_addr,user,pass,null);
 				}
 			}
 		});
@@ -1614,26 +1613,9 @@ public class ProfileMaintenance {
 	};
 	
 	private boolean auditIpAddressValue(String in_addr) {
-		boolean result=false;
-		String[] addr=in_addr.split("\\.");
-		if (addr.length==4) {
-			boolean error=false;
-			for (int i=0;i<4;i++) {
-				try {
-					int num=Integer.parseInt(addr[i]);
-					if (num<0 || num>255) {
-						error=true;
-						break;
-					}
-				} catch(NumberFormatException e) {
-					error=true;
-					break;
-				}
-			}
-			if (!error) result=true;
-		}
+		boolean result=NetworkUtil.isValidIpAddress(in_addr);
 		return result;
-	}
+	};
 
 	
 	private void setRemoteProfileOkBtnEnabled(Dialog dialog) {
@@ -2256,8 +2238,10 @@ public class ProfileMaintenance {
 					processLogonToRemote(edithost.getText().toString(),
 							"",user,pass,null);
 				} else {
-					processLogonToRemote("",
-							editaddr.getText().toString(),user,pass,null);
+					String t_addr=editaddr.getText().toString();
+					String s_addr=t_addr;
+					if (t_addr.indexOf(":")>=0) s_addr=t_addr.substring(0,t_addr.indexOf(":")) ;
+					processLogonToRemote("",s_addr,user,pass,null);
 				}
 			}
 		});
@@ -4367,7 +4351,7 @@ public class ProfileMaintenance {
 				for (int i=scanIpAddrBeginAddr; i<=scanIpAddrEndAddr;i++) {
 					if (cancelIpAddressListCreation) break;
 					if (isIpAddrReachable(scanIpAddrSubnet+"."+i) &&
-							isSmbHost(scanIpAddrSubnet+"."+i) && 
+							isNbtAddressActive(scanIpAddrSubnet+"."+i) && 
 							!curr_ip.equals(scanIpAddrSubnet+"."+i)) {
 						String srv_name=getSmbHostName(scanIpAddrSubnet+"."+i);
 						ScanAddressResultListItem li=new ScanAddressResultListItem();
@@ -4527,60 +4511,21 @@ public class ProfileMaintenance {
 	};
 	
 	private boolean isIpAddrReachable(String address) {
-		boolean reachable=false;
-		Socket socket = new Socket();
-        try {
-            socket.bind(null);
-//            socket.connect((new InetSocketAddress(address, 139)), timeout);
-            socket.connect((new InetSocketAddress(address, 445)), 300);
-            reachable=true;
-            socket.close();
-        } catch (IOException e) {
-        } catch (Exception e) {
-		}
-//		try {
-//			InetAddress ip = InetAddress.getByName(address);
-//			reachable=ip.isReachable(timeout);  // Try for one tenth of a second
-//		} catch (UnknownHostException e) {
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-        
+		boolean reachable=NetworkUtil.isIpAddrReachable(address);
        	util.addDebugLogMsg(1,"I","isIpAddrReachable Address="+address+
         								", reachable="+reachable);
 		return reachable;
 	};
 	
-	private boolean isSmbHost(String address) {
-		boolean result=false;
-		try {
-			NbtAddress na=NbtAddress.getByName(address);
-			result=na.isActive();
-		} catch (UnknownHostException e) {
-//			e.printStackTrace();
-		}
+	private boolean isNbtAddressActive(String address) {
+		boolean result=NetworkUtil.isNbtAddressActive(address);
     	util.addDebugLogMsg(1,"I","isSmbHost Address="+address+", result="+result);
 		return result;
 	};
 	
-
-	
 	private String getSmbHostName(String address) {
-		String srv_name="";
-    	try {
-			UniAddress ua = UniAddress.getByName(address);
-			String cn;
-	        cn = ua.firstCalledName();
-	        do {
-	            if (!cn.startsWith("*")) srv_name=cn; 
-            	util.addDebugLogMsg(1,"I","getSmbHostName Address="+address+
-	            		", cn="+cn+", name="+srv_name);
-	        } while(( cn = ua.nextCalledName() ) != null );
-			
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		}
+		String srv_name=NetworkUtil.getSmbHostName(address);
+       	util.addDebugLogMsg(1,"I","getSmbHostName Address="+address+", name="+srv_name);
     	return srv_name;
  	};
 	

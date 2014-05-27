@@ -52,10 +52,12 @@ public class ReadRemoteFilelist implements Runnable  {
 	
 	private SMBSyncUtil util=null;
 	
+	private String mHostName="", mHostAddr="";
+	
 	private Context mContext=null;
 	
 	public ReadRemoteFilelist(Context c, ThreadCtrl ac, String ru, String rd, 
-			ArrayList<TreeFilelistItem> fl,String user, String pass, 
+			ArrayList<TreeFilelistItem> fl,String user, String pass,
 			NotifyEvent ne,boolean dironly, boolean dc, GlobalParameters gp) {
 		mContext=c;
 		util=new SMBSyncUtil(mContext, "FileList", gp);
@@ -67,6 +69,19 @@ public class ReadRemoteFilelist implements Runnable  {
 		
 		readDirOnly=dironly;
 		readSubDirCnt=dc;
+		
+		String t_host1=ru.replace("smb://", "");
+		String t_host11=t_host1;
+		if (t_host1.indexOf("/")>=0) t_host11=t_host1.substring(0,t_host1.indexOf("/"));
+		String t_host2=t_host11;
+		if (t_host11.indexOf(":")>=0) t_host2=t_host11.substring(0,t_host11.indexOf(":"));
+		if (NetworkUtil.isValidIpAddress(t_host2)) {
+			mHostAddr=t_host2;
+		} else {
+			mHostName=t_host2;
+		}
+		util.addDebugLogMsg(1,"I","getFileList constructed. name="+mHostName+", addr="+mHostAddr);
+		
 		
 		util.addDebugLogMsg(1,"I","getFileList constructed. user="+user+
 				", url="+ru+", dir="+rd);
@@ -82,9 +97,32 @@ public class ReadRemoteFilelist implements Runnable  {
 		getFLCtrl.setThreadResultSuccess();
 		getFLCtrl.setThreadMessage("");
 		
-		util.addDebugLogMsg(1,"I","getFileList started, readSubDirCnt="+readSubDirCnt+
-				", readDirOnly="+readDirOnly);
+		util.addDebugLogMsg(1,"I","getFileList started, readSubDirCnt="+readSubDirCnt+ ", readDirOnly="+readDirOnly);
 		
+		boolean error_exit=false;
+		if (mHostName.equals("")) {
+			if (!NetworkUtil.isIpAddrReachable(mHostAddr)) {
+				error_exit=true; 
+				getFLCtrl.setThreadResultError();
+				getFLCtrl.setThreadMessage(
+						mContext.getString(R.string.msgs_mirror_remote_addr_not_reachable)+mHostAddr);
+			}
+		} else {
+			if (NetworkUtil.resolveSmbHostName(mHostName)==null) {
+				error_exit=true;
+				getFLCtrl.setThreadResultError();
+				getFLCtrl.setThreadMessage(
+						mContext.getString(R.string.msgs_mirror_remote_name_not_found)+mHostName);
+			}
+		}
+		if (!error_exit) readFIleList();
+			
+		util.addDebugLogMsg(1,"I","getFileList ended.");
+		getFLCtrl.setDisable();
+		notifyEvent.notifyToListener(true, null);
+	};
+	
+	private void readFIleList() {
 		remoteFileList.clear();
 		try {		
 			SmbFile remoteFile = new SmbFile(remoteUrl+remoteDir,ntlmPasswordAuth);
@@ -187,11 +225,7 @@ public class ReadRemoteFilelist implements Runnable  {
 				getFLCtrl.setDisable();
 			}
 		}
-			
-		util.addDebugLogMsg(1,"I","getFileList ended.");
-		getFLCtrl.setDisable();
-		notifyEvent.notifyToListener(true, null);
-	};
+	}
 	
 	 // Default uncaught exception handler variable
     private UncaughtExceptionHandler defaultUEH;
