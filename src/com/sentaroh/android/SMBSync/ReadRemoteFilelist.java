@@ -31,8 +31,6 @@ import jcifs.smb.NtlmPasswordAuthentication;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 
 import com.sentaroh.android.Utilities.NotifyEvent;
 import com.sentaroh.android.Utilities.ThreadCtrl;
@@ -86,7 +84,12 @@ public class ReadRemoteFilelist implements Runnable  {
 		util.addDebugLogMsg(1,"I","getFileList constructed. user="+user+
 				", url="+ru+", dir="+rd);
 		util.addDebugLogMsg(9,"I","getFileList constructed. pass="+pass);
-		setJcifsProperties(user,pass);
+		
+		String tuser=null,tpass=null;
+		if (user.length()!=0) tuser=user;
+		if (pass.length()!=0) tpass=pass;
+		ntlmPasswordAuth = 
+				new NtlmPasswordAuthentication(null, tuser, tpass);
 	}
 	
 	@Override
@@ -108,7 +111,7 @@ public class ReadRemoteFilelist implements Runnable  {
 						mContext.getString(R.string.msgs_mirror_remote_addr_not_reachable)+mHostAddr);
 			}
 		} else {
-			if (NetworkUtil.resolveSmbHostName(mHostName)==null) {
+			if (NetworkUtil.getSmbHostIpAddressFromName(mHostName)==null) {
 				error_exit=true;
 				getFLCtrl.setThreadResultError();
 				getFLCtrl.setThreadMessage(
@@ -255,37 +258,4 @@ public class ReadRemoteFilelist implements Runnable  {
             }
     };
 
-	private void setJcifsProperties(String user, String pass) {
-
-//		jcifs.Config.setProperty("jcifs.util.loglevel", "9");
-//		System.setProperty("jcifs.util.loglevel", "5");
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-		String settingsSmbLogLevel=
-				prefs.getString(mContext.getString(R.string.settings_smb_log_level), "0");
-
-		String settingsSmbLmCompatibility=
-			prefs.getString(mContext.getString(R.string.settings_smb_lm_compatibility),"0");
-		boolean ues=
-			prefs.getBoolean(mContext.getString(R.string.settings_smb_use_extended_security),false);
-		String settingsSmbUseExtendedSecurity="true";
-		if (ues) settingsSmbUseExtendedSecurity="true";
-		else settingsSmbUseExtendedSecurity="false";
-
-		System.setProperty("jcifs.util.loglevel", settingsSmbLogLevel);
-		System.setProperty("jcifs.smb.lmCompatibility", settingsSmbLmCompatibility);
-		System.setProperty("jcifs.smb.client.useExtendedSecurity", settingsSmbUseExtendedSecurity);
-
-//		System.setProperty("jcifs.smb.client.tcpNoDelay","false");
-//		System.setProperty("jcifs.smb.client.rcv_buf_size", "16644");
-//		System.setProperty("jcifs.smb.client.snd_buf_size", "16644");
-//		jcifs.Config.registerSmbURLHandler();
-		
-//		Samba server(Android)
-		String tuser=null,tpass=null;
-		if (user.length()!=0) tuser=user;
-		if (pass.length()!=0) tpass=pass;
-		ntlmPasswordAuth = 
-				new NtlmPasswordAuthentication(null, tuser, tpass);
-//		Log.v("","to="+System.getProperty("jcifs.netbios.retryTimeout"));
-	};
 }

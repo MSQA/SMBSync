@@ -224,6 +224,7 @@ public class SMBSyncMain extends FragmentActivity {
 		loadMsgString();
 		initSettingsParms();
 		applySettingParms();
+		initJcifsOption();
 		
 		checkExternalStorage();
 		glblParms.SMBSync_Internal_Root_Dir=getFilesDir().toString();
@@ -1246,6 +1247,11 @@ public class SMBSyncMain extends FragmentActivity {
 				prefs.getBoolean(getString(R.string.settings_exported_profile_encryption), true);
 		
 		if (!glblParms.settingAutoStart) glblParms.settingAutoTerm=false;
+		
+		if (isJcifsOptionChanged() && restartStatus!=0) {
+			commonDlg.showCommonDialog(false,"W",
+					"",mContext.getString(R.string.msgs_smbsync_main_settings_jcifs_changed_restart),null);
+		}
 		
 //		refreshOptionMenu();
 //		
@@ -2972,7 +2978,122 @@ public class SMBSyncMain extends FragmentActivity {
 		}
 		return alp;
 	};
+	
+	final private boolean isJcifsOptionChanged() {
+		boolean result=false;
+		
+		String prevSmbLogLevel=settingsSmbLogLevel,	prevSmbRcvBufSize=settingsSmbRcvBufSize,
+				prevSmbSndBufSize=settingsSmbSndBufSize, prevSmbListSize=settingsSmbListSize,
+				prevSmbMaxBuffers=settingsSmbMaxBuffers, prevSmbTcpNodelay=settingsSmbTcpNodelay,
+				prevSmbPerfClass=settingsSmbPerfClass,
+				prevSmbLmCompatibility=settingsSmbLmCompatibility,
+				prevSmbUseExtendedSecurity=settingsSmbUseExtendedSecurity;
+		
+		initJcifsOption();
+		
+		if (settingsSmbLmCompatibility.equals(prevSmbLmCompatibility)) result=true;
+		else if (settingsSmbUseExtendedSecurity.equals(prevSmbUseExtendedSecurity)) result=true;
+		
+		if (!result) {
+			if (settingsSmbPerfClass.equals("0") || settingsSmbPerfClass.equals("1") ||
+					settingsSmbPerfClass.equals("2")) {
+				if (!settingsSmbPerfClass.equals(prevSmbPerfClass)) result=true; 
+			} else {
+				if (!settingsSmbLogLevel.equals(prevSmbLogLevel)) result=true;
+				else if (!settingsSmbRcvBufSize.equals(prevSmbRcvBufSize)) result=true;
+				else if (!settingsSmbSndBufSize.equals(prevSmbSndBufSize)) result=true;
+				else if (!settingsSmbListSize.equals(prevSmbListSize)) result=true;
+				else if (!settingsSmbMaxBuffers.equals(prevSmbMaxBuffers)) result=true;
+				else if (!settingsSmbTcpNodelay.equals(prevSmbTcpNodelay)) result=true;
+			}
+		}
+		return result;
+	};
 
+	private String settingsSmbLogLevel="0",	settingsSmbRcvBufSize="16644",
+			settingsSmbSndBufSize="16644",	settingsSmbListSize="130170",
+			settingsSmbMaxBuffers="", settingsSmbTcpNodelay="false", 
+			settingsSmbPerfClass="0",
+			settingsSmbLmCompatibility="0",settingsSmbUseExtendedSecurity="true";
+
+	final private void initJcifsOption() {
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+		settingsSmbPerfClass=prefs.getString(mContext.getString(R.string.settings_smb_perform_class), "");
+		if (settingsSmbPerfClass.equals("0")) {//Minimum
+			settingsSmbLogLevel="0";
+			settingsSmbRcvBufSize="16644";
+			settingsSmbSndBufSize="16644";
+			settingsSmbListSize="130170";
+			settingsSmbMaxBuffers="";
+			settingsSmbTcpNodelay="false";
+		} else if (settingsSmbPerfClass.equals("1")) {//Medium
+			settingsSmbLogLevel="0";
+			settingsSmbRcvBufSize="33288";
+			settingsSmbSndBufSize="33288";
+			settingsSmbListSize="130170";
+			settingsSmbMaxBuffers="100";
+			settingsSmbTcpNodelay="false";
+		} else if (settingsSmbPerfClass.equals("2")) {//Large
+			settingsSmbLogLevel="0";
+			settingsSmbRcvBufSize="66576";
+			settingsSmbSndBufSize="66576";
+			settingsSmbListSize="130170";
+			settingsSmbMaxBuffers="100";
+			settingsSmbTcpNodelay="false";
+		} else {
+			settingsSmbLogLevel=
+					prefs.getString(mContext.getString(R.string.settings_smb_log_level), "0");
+			if (settingsSmbLogLevel.length()==0) settingsSmbLogLevel="0";
+			
+			settingsSmbRcvBufSize=
+					prefs.getString(mContext.getString(R.string.settings_smb_rcv_buf_size),"66576");
+			settingsSmbSndBufSize=
+					prefs.getString(mContext.getString(R.string.settings_smb_snd_buf_size),"66576");
+			settingsSmbListSize=
+					prefs.getString(mContext.getString(R.string.settings_smb_listSize), "");
+			settingsSmbMaxBuffers=
+					prefs.getString(mContext.getString(R.string.settings_smb_maxBuffers), "100");
+			settingsSmbTcpNodelay=
+					prefs.getString(mContext.getString(R.string.settings_smb_tcp_nodelay),"false");
+		}
+			
+		settingsSmbLmCompatibility=
+			prefs.getString(mContext.getString(R.string.settings_smb_lm_compatibility),"0");
+		boolean ues=
+				prefs.getBoolean(mContext.getString(R.string.settings_smb_use_extended_security),false);
+		settingsSmbUseExtendedSecurity="";
+		if (ues) settingsSmbUseExtendedSecurity="true";
+		else settingsSmbUseExtendedSecurity="false";
+		
+		jcifs.Config.setProperty( "jcifs.netbios.retryTimeout", "3000");
+		
+		System.setProperty("jcifs.util.loglevel", settingsSmbLogLevel);
+		System.setProperty("jcifs.smb.lmCompatibility", settingsSmbLmCompatibility);
+		System.setProperty("jcifs.smb.client.useExtendedSecurity", settingsSmbUseExtendedSecurity);
+		System.setProperty("jcifs.smb.client.tcpNoDelay",settingsSmbTcpNodelay);
+        
+		if (!settingsSmbRcvBufSize.equals(""))
+			System.setProperty("jcifs.smb.client.rcv_buf_size", settingsSmbRcvBufSize);//60416 120832
+		if (!settingsSmbSndBufSize.equals(""))
+			System.setProperty("jcifs.smb.client.snd_buf_size", settingsSmbSndBufSize);//16644 120832
+        
+		if (!settingsSmbListSize.equals(""))
+			System.setProperty("jcifs.smb.client.listSize",settingsSmbListSize); //65536 1300
+		if (!settingsSmbMaxBuffers.equals(""))
+			System.setProperty("jcifs.smb.maxBuffers",settingsSmbMaxBuffers);//16 100
+		
+		if (glblParms.debugLevel>=1) 
+			util.addDebugLogMsg(1,"I","JCIFS Option : rcv_buf_size="+settingsSmbRcvBufSize+", "+
+				"snd_buf_size="+settingsSmbSndBufSize+", "+
+				"listSize="+settingsSmbListSize+", "+
+				"maxBuffres="+settingsSmbMaxBuffers+", "+
+				"tcpNodelay="+settingsSmbTcpNodelay+", "+
+				"logLevel="+settingsSmbLogLevel+", "+
+				"lmCompatibility="+settingsSmbLmCompatibility+", "+
+				"useExtendedSecurity="+settingsSmbUseExtendedSecurity);
+
+	};
+	
 	private void saveTaskData() {
 		util.addDebugLogMsg(2,"I", "saveRestartData entered");
 		

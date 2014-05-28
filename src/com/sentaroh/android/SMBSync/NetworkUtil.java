@@ -35,36 +35,40 @@ public class NetworkUtil {
 		return result;
 	}
 
-	final static public String resolveSmbHostName(String hn) {
+	final static public String getSmbHostIpAddressFromName(String hn) {
 		String ipAddress=null;
 		try {
 			NbtAddress nbtAddress = NbtAddress.getByName(hn);
 			InetAddress address = nbtAddress.getInetAddress();
 			ipAddress= address.getHostAddress();
 		} catch (UnknownHostException e) {
-			e.printStackTrace();
+//			e.printStackTrace();
 		}
 		return ipAddress;
 	}
 	
 	final static public boolean isIpAddrReachable(String address) {
+		return isIpAddrReachable(address,500);
+	};
+
+	final static public boolean isIpAddrReachable(String address, int timeout) {
 		boolean reachable=false;
 		Socket socket = new Socket();
         try {
             socket.bind(null);
 //            socket.connect((new InetSocketAddress(address, 139)), timeout);
-            socket.connect((new InetSocketAddress(address, 445)), 300);
+            socket.connect((new InetSocketAddress(address, 445)), timeout);
             reachable=true;
             socket.close();
         } catch (IOException e) {
-        	e.printStackTrace();
+//        	e.printStackTrace();
         } catch (Exception e) {
-        	e.printStackTrace();
+//        	e.printStackTrace();
 		}
 		return reachable;
 	};
 
-	final static public String getSmbHostName(String address) {
+	final static public String getSmbHostNameFromAddress(String address) {
 		String srv_name="";
     	try {
 			UniAddress ua = UniAddress.getByName(address);
@@ -77,7 +81,7 @@ public class NetworkUtil {
 	        } while(( cn = ua.nextCalledName() ) != null );
 			
 		} catch (UnknownHostException e) {
-			e.printStackTrace();
+//			e.printStackTrace();
 		}
     	return srv_name;
  	};

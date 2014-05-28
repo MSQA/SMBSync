@@ -4205,6 +4205,7 @@ public class ProfileMaintenance {
 		baEt2.setText(subnet_o2);
 		baEt3.setText(subnet_o3);
 		baEt4.setText("1");
+		baEt4.setSelection(1);
 		eaEt1.setText(subnet_o1);
 		eaEt2.setText(subnet_o2);
 		eaEt3.setText(subnet_o3);
@@ -4524,7 +4525,7 @@ public class ProfileMaintenance {
 	};
 	
 	private String getSmbHostName(String address) {
-		String srv_name=NetworkUtil.getSmbHostName(address);
+		String srv_name=NetworkUtil.getSmbHostNameFromAddress(address);
        	util.addDebugLogMsg(1,"I","getSmbHostName Address="+address+", name="+srv_name);
     	return srv_name;
  	};

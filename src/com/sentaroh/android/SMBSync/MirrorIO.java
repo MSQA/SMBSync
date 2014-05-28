@@ -121,11 +121,7 @@ public class MirrorIO implements Runnable {
 	
 	private NotifyEvent notifyEvent;
 	
-	private String settingsSmbRcvBufSize="",settingsSmbSndBufSize="",
-			settingsSmbListSize="",settingsSmbMaxBuffers="",settingsIoBuffers="",
-					settingsSmbTcpNodelay="", settingsSmbLogLevel="",
-					settingsSmbLmCompatibility="0",
-					settingsSmbUseExtendedSecurity="false"; 
+	private String settingsIoBuffers=""; 
 	
 	private String settingsMediaStoreUseLastModTime="0";
 	private boolean settingsMediaFiles,
@@ -178,7 +174,7 @@ public class MirrorIO implements Runnable {
 		
 //		SMBSync_External_Root_Dir = LocalMountPoint.getExternalStorageDir();
 		
-		setJcifsOption();
+		initIoBuffer();
 		
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(glblParms.svcContext);
 		settingsMediaStoreUseLastModTime=
@@ -354,7 +350,7 @@ public class MirrorIO implements Runnable {
 				initSyncParm(syncList.get(i));
 				if (!isSyncParmError) {
 					loadLocalFileLastModifiedList(syncList.get(i).getLocalMountPoint());
-					setJcifsProperties();
+					setJcifsAuthParm();
 					//sync 開始
 					if (LocalMountPoint.isMountPointAvailable(localUrl)) {
 						if (syncType.equals(SMBSYNC_SYNC_TYPE_MIRROR)) { // mirror
@@ -613,7 +609,7 @@ public class MirrorIO implements Runnable {
 	};
 	
 	private String resolveHostName(String hn) {
-		String ipAddress=NetworkUtil.resolveSmbHostName(hn);
+		String ipAddress=NetworkUtil.getSmbHostIpAddressFromName(hn);
 		addDebugLogMsg(1,"I","resolveHostName Name="+hn+", IP addr="+ipAddress);
 		return ipAddress;
 	}
@@ -1057,107 +1053,36 @@ public class MirrorIO implements Runnable {
 		return tfs;
 	}
 
-	final private void setJcifsOption() {
+	final private void initIoBuffer() {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(glblParms.svcContext);
 		String cp=
 				prefs.getString(glblParms.svcContext.getString(R.string.settings_smb_perform_class), "");
 		
 		if (cp.equals("0")) {//Minimum
-			settingsSmbLogLevel="0";
-			settingsSmbRcvBufSize="16644";
-			settingsSmbSndBufSize="16644";
-			settingsSmbListSize="130170";
-			settingsSmbMaxBuffers="";
 			settingsIoBuffers="4";
-			settingsSmbTcpNodelay="false";
 		} else if (cp.equals("1")) {//Medium
-			settingsSmbLogLevel="0";
-			settingsSmbRcvBufSize="33288";
-			settingsSmbSndBufSize="33288";
-			settingsSmbListSize="130170";
-			settingsSmbMaxBuffers="100";
 			settingsIoBuffers="4";
-			settingsSmbTcpNodelay="false";
 		} else if (cp.equals("2")) {//Large
-			settingsSmbLogLevel="0";
-			settingsSmbRcvBufSize="66576";
-			settingsSmbSndBufSize="66576";
-			settingsSmbListSize="130170";
-			settingsSmbMaxBuffers="100";
 			settingsIoBuffers="8";
-			settingsSmbTcpNodelay="false";
 		} else {
-			settingsSmbLogLevel=
-					prefs.getString(glblParms.svcContext.getString(R.string.settings_smb_log_level), "0");
-			if (settingsSmbLogLevel.length()==0) settingsSmbLogLevel="0";
-			
-			settingsSmbRcvBufSize=
-					prefs.getString(glblParms.svcContext.getString(R.string.settings_smb_rcv_buf_size),"66576");
-			settingsSmbSndBufSize=
-					prefs.getString(glblParms.svcContext.getString(R.string.settings_smb_snd_buf_size),"66576");
-			settingsSmbListSize=
-					prefs.getString(glblParms.svcContext.getString(R.string.settings_smb_listSize), "");
-			settingsSmbMaxBuffers=
-					prefs.getString(glblParms.svcContext.getString(R.string.settings_smb_maxBuffers), "100");
 			settingsIoBuffers=
 					prefs.getString(glblParms.svcContext.getString(R.string.settings_io_buffers), "8");
-			settingsSmbTcpNodelay=
-					prefs.getString(glblParms.svcContext.getString(R.string.settings_smb_tcp_nodelay),"false");
 		}
 			
-		settingsSmbLmCompatibility=
-			prefs.getString(glblParms.svcContext.getString(R.string.settings_smb_lm_compatibility),"0");
-		boolean ues=
-				prefs.getBoolean(glblParms.svcContext.getString(R.string.settings_smb_use_extended_security),false);
-		if (ues) settingsSmbUseExtendedSecurity="true";
-		else settingsSmbUseExtendedSecurity="false";
-
 		mirrorIoBufferSize=Integer.parseInt(settingsIoBuffers)*65536;
 		
 		if (glblParms.debugLevel>=1) 
-			addDebugLogMsg(1,"I","JCIFS Option : rcv_buf_size="+settingsSmbRcvBufSize+", "+
-				"snd_buf_size="+settingsSmbSndBufSize+", "+
-				"listSize="+settingsSmbListSize+", "+
-				"maxBuffres="+settingsSmbMaxBuffers+", "+
-				"iobuffers="+mirrorIoBufferSize+", "+
-				"tcpNodelay="+settingsSmbTcpNodelay+", "+
-				"logLevel="+settingsSmbLogLevel+", "+
-				"lmCompatibility="+settingsSmbLmCompatibility+", "+
-				"useExtendedSecurity="+settingsSmbUseExtendedSecurity);
+			addDebugLogMsg(1,"I","Io buffer size="+mirrorIoBufferSize);
 		mirrorIoBuffer = new byte[mirrorIoBufferSize];
 	};
 	
-	final private void setJcifsProperties() {
+	final private void setJcifsAuthParm() {
 
-//		System.setProperty("jcifs.util.loglevel", settingsSmbLogLevel);
-//		System.setProperty("jcifs.smb.lmCompatibility", "0");
-//		System.setProperty("jcifs.smb.client.useExtendedSecurity", "false");
-//		Auth errorの回避 
-		jcifs.Config.setProperty( "jcifs.netbios.retryTimeout", "3000");
-		
-		System.setProperty("jcifs.util.loglevel", settingsSmbLogLevel);
-		System.setProperty("jcifs.smb.lmCompatibility", settingsSmbLmCompatibility);
-		System.setProperty("jcifs.smb.client.useExtendedSecurity", settingsSmbUseExtendedSecurity);
 		String tuser=null,tpass=null;
 		if (syncRemoteUserid.length()!=0) tuser=syncRemoteUserid;
 		if (syncRemotePassword.length()!=0) tpass=syncRemotePassword;
 		ntlmPasswordAuth = 
 				new NtlmPasswordAuthentication(null, tuser, tpass);
- 
-		System.setProperty("jcifs.smb.client.tcpNoDelay",settingsSmbTcpNodelay);
-        
-		if (!settingsSmbRcvBufSize.equals(""))
-			System.setProperty("jcifs.smb.client.rcv_buf_size", settingsSmbRcvBufSize);//60416 120832
-		if (!settingsSmbSndBufSize.equals(""))
-			System.setProperty("jcifs.smb.client.snd_buf_size", settingsSmbSndBufSize);//16644 120832
-        
-		if (!settingsSmbListSize.equals(""))
-			System.setProperty("jcifs.smb.client.listSize",settingsSmbListSize); //65536 1300
-		if (!settingsSmbMaxBuffers.equals(""))
-			System.setProperty("jcifs.smb.maxBuffers",settingsSmbMaxBuffers);//16 100
-//		jcifs.Config.registerSmbURLHandler();
-		
-//		System.setProperty("jcifs.netbios.client.writeSize","65536");//1500
 	};
 
 	
