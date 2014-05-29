@@ -104,6 +104,7 @@ import com.sentaroh.android.Utilities.Base64Compat;
 import com.sentaroh.android.Utilities.EncryptUtil;
 import com.sentaroh.android.Utilities.EncryptUtil.CipherParms;
 import com.sentaroh.android.Utilities.LocalMountPoint;
+import com.sentaroh.android.Utilities.NetworkUtil;
 import com.sentaroh.android.Utilities.NotifyEvent;
 import com.sentaroh.android.Utilities.NotifyEvent.NotifyEventListener;
 import com.sentaroh.android.Utilities.ThreadCtrl;
@@ -116,8 +117,6 @@ import com.sentaroh.android.Utilities.Widget.CustomSpinnerAdapter;
 
 public class ProfileMaintenance {
 
-	private AdapterProfileList profileAdapter=null;
-	private ListView profileListView;
 	private boolean errorCreateProfileList;
 
 	private CustomContextMenu ccMenu=null;
@@ -136,28 +135,28 @@ public class ProfileMaintenance {
 	
 	private CommonDialog commonDlg=null;
 	
-	private GlobalParameters glblParms=null;
+	private GlobalParameters mGp=null;
 
 	private String mProfilePassword="";
 	private final String mProfilePasswordPrefix="*SMBSync*";
 	
 	ProfileMaintenance (SMBSyncUtil mu, Context c,  
-			AdapterProfileList pa, ListView pv,
 			CommonDialog cd, CustomContextMenu ccm, GlobalParameters gp) {
 		mContext=c;
 		
-		glblParms=gp;
+		mGp=gp;
 		
 		util=mu;
-		
-		profileAdapter=pa;
-		profileListView=pv;
 		
 		loadMsgString();
 		
 		commonDlg=cd;
 		
 		ccMenu=ccm;
+		
+		AdapterProfileList tpfa=createProfileList(false,"");
+		mGp.profileAdapter.setAllItem(tpfa.getAllItem());
+		mGp.profileAdapter.notifyDataSetChanged();
 	};
 
 	public void importProfileDlg(final String lurl, final String ldir, 
@@ -349,8 +348,8 @@ public class ProfileMaintenance {
 						et_confirm, btn_ok, dlg_msg);
 			}
 		});
-		cb_protect.setChecked(glblParms.settingExportedProfileEncryptRequired);
-		setPasswordFieldVisibility(glblParms.settingExportedProfileEncryptRequired,
+		cb_protect.setChecked(mGp.settingExportedProfileEncryptRequired);
+		setPasswordFieldVisibility(mGp.settingExportedProfileEncryptRequired,
 				et_password, et_confirm, btn_ok, dlg_msg);
 
 		et_password.setEnabled(true);
@@ -385,9 +384,9 @@ public class ProfileMaintenance {
 		btn_ok.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				String passwd=et_password.getText().toString();
-				if ((cb_protect.isChecked() && !glblParms.settingExportedProfileEncryptRequired) ||
-						(!cb_protect.isChecked() && glblParms.settingExportedProfileEncryptRequired)) {
-					glblParms.settingExportedProfileEncryptRequired=cb_protect.isChecked();
+				if ((cb_protect.isChecked() && !mGp.settingExportedProfileEncryptRequired) ||
+						(!cb_protect.isChecked() && mGp.settingExportedProfileEncryptRequired)) {
+					mGp.settingExportedProfileEncryptRequired=cb_protect.isChecked();
 					SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
 					prefs.edit().putBoolean(mContext.getString(R.string.settings_exported_profile_encryption), 
 							cb_protect.isChecked()).commit();
@@ -602,10 +601,10 @@ public class ProfileMaintenance {
 		ok_btn.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View arg0) {
-				dialog.dismiss();
-				if (cb_reset_profile.isChecked()) profileAdapter.clear();
+				if (cb_reset_profile.isChecked()) mGp.profileAdapter.clear();
 				importSelectedProfileItem(imp_list_adapt,tfl,
 						cb_import_settings.isChecked(),p_ntfy);
+				dialog.dismiss();
 			}
 		});
 		cancel_btn.setOnClickListener(new OnClickListener(){
@@ -627,7 +626,7 @@ public class ProfileMaintenance {
 		for (int i=0;i<imp_list_adapt.getCount();i++) {
 			ExportImportProfileListItem eipli=imp_list_adapt.getItem(i);
 			if (eipli.isChecked &&
-					getProfile(eipli.item_name, profileAdapter)!=null) {
+					getProfile(eipli.item_name, mGp.profileAdapter)!=null) {
 				repl_list+=eipli.item_name+"\n";
 			}
 		}
@@ -642,16 +641,16 @@ public class ProfileMaintenance {
 					ExportImportProfileListItem eipli=imp_list_adapt.getItem(i);
 					if (eipli.isChecked ) {
 						imp_list+=pfli.getName()+"\n";
-						if (getProfile(pfli.getName(), profileAdapter)!=null) {
-							for (int j=0;j<profileAdapter.getCount();j++) {
+						if (getProfile(pfli.getName(), mGp.profileAdapter)!=null) {
+							for (int j=0;j<mGp.profileAdapter.getCount();j++) {
 								ProfileListItem mpfli=tfl.getItem(j);
 								if (mpfli.getName().equals(pfli.getName())) {
-									profileAdapter.replace(pfli, j);
+									mGp.profileAdapter.replace(pfli, j);
 									break;
 								}
 							}
 						} else {
-							profileAdapter.add(pfli);
+							mGp.profileAdapter.add(pfli);
 						}
 					}
 				}
@@ -660,12 +659,14 @@ public class ProfileMaintenance {
 					restoreImportedSettingParms();
 					imp_list+=mContext.getString(R.string.msgs_export_import_profile_setting_parms)+"\n";
 				}
-				profileAdapter.sort();
-				saveProfileToFile(false,"","",profileAdapter,false);
-				if (import_settings) p_ntfy.notifyToListener(true, null);
+				if (imp_list.length()>0) imp_list+=" ";
+				mGp.profileAdapter.sort();
+				mGp.profileListView.setSelection(0);
+				saveProfileToFile(false,"","",mGp.profileAdapter,false);
 				commonDlg.showCommonDialog(false,"I",
 						mContext.getString(R.string.msgs_export_import_profile_import_success),
 						imp_list,null); 
+				if (import_settings) p_ntfy.notifyToListener(true, null);
 			}
 			@Override
 			public void negativeResponse(Context c, Object[] o) {
@@ -760,7 +761,7 @@ public class ProfileMaintenance {
 	    			String fp =profile_dir+"/"+profile_filename;
 	    			String fd =profile_dir;
 	    			
-					if (saveProfileToFile(true,fd,fp,profileAdapter,encrypt_required)) {
+					if (saveProfileToFile(true,fd,fp,mGp.profileAdapter,encrypt_required)) {
 						commonDlg.showCommonDialog(false,"I",
 								String.format(msgs_export_prof_success,fp),"",null);
 						util.addDebugLogMsg(1,"I","Profile was exported. fn="+fp);						
@@ -778,7 +779,7 @@ public class ProfileMaintenance {
 		} else {
 			String fp =profile_dir+"/"+profile_filename;
 			String fd =profile_dir;
-			if (saveProfileToFile(true,fd,fp,profileAdapter,encrypt_required)) {
+			if (saveProfileToFile(true,fd,fp,mGp.profileAdapter,encrypt_required)) {
 				commonDlg.showCommonDialog(false,"I",
 						String.format(msgs_export_prof_success,fp),"",null);
 				util.addDebugLogMsg(1,"I","Profile was exported. fn="+fp);						
@@ -804,15 +805,15 @@ public class ProfileMaintenance {
 	public void setProfileToActive() {
 		ProfileListItem item ;
 
-		int pos=profileListView.getFirstVisiblePosition();
-		int posTop=profileListView.getChildAt(0).getTop();
-		for (int i=0;i<profileAdapter.getCount();i++) {
-			item = profileAdapter.getItem(i);
+		int pos=mGp.profileListView.getFirstVisiblePosition();
+		int posTop=mGp.profileListView.getChildAt(0).getTop();
+		for (int i=0;i<mGp.profileAdapter.getCount();i++) {
+			item = mGp.profileAdapter.getItem(i);
 			if (item.isChecked()) {
 				if (!item.getType().equals(SMBSYNC_PROF_TYPE_SYNC)) {
 					item.setActive(SMBSYNC_PROF_ACTIVE);
 					item.setChecked(false);
-					profileAdapter.replace(item,i); 
+					mGp.profileAdapter.replace(item,i); 
 				} else {
 					if (isSyncProfileDisabled(item)) {
 						//Not activated
@@ -821,7 +822,7 @@ public class ProfileMaintenance {
 					} else {
 						item.setActive(SMBSYNC_PROF_ACTIVE);
 						item.setChecked(false);
-						profileAdapter.replace(item,i); 
+						mGp.profileAdapter.replace(item,i); 
 					}
 				}
 			} 
@@ -829,39 +830,39 @@ public class ProfileMaintenance {
 
 //		resolveSyncProfileRelation();
 
-		saveProfileToFile(false,"","",profileAdapter,false);
-		profileAdapter.setNotifyOnChange(true);
-		profileListView.setSelectionFromTop(pos,posTop);			
+		saveProfileToFile(false,"","",mGp.profileAdapter,false);
+		mGp.profileAdapter.setNotifyOnChange(true);
+		mGp.profileListView.setSelectionFromTop(pos,posTop);			
 	};
 	
 	public void setProfileToInactive() {
 		ProfileListItem item ;
 
-		int pos=profileListView.getFirstVisiblePosition();
-		int posTop=profileListView.getChildAt(0).getTop();
-		for (int i=0;i<profileAdapter.getCount();i++) {
-			item = profileAdapter.getItem(i);
+		int pos=mGp.profileListView.getFirstVisiblePosition();
+		int posTop=mGp.profileListView.getChildAt(0).getTop();
+		for (int i=0;i<mGp.profileAdapter.getCount();i++) {
+			item = mGp.profileAdapter.getItem(i);
 			if (item.isChecked()) {
 				item.setActive(SMBSYNC_PROF_INACTIVE);
 				item.setChecked(false);
-				profileAdapter.replace(item,i);
+				mGp.profileAdapter.replace(item,i);
 			}		
 		}
 		
 		resolveSyncProfileRelation();
 		
-		saveProfileToFile(false,"","",profileAdapter,false);
-		profileAdapter.setNotifyOnChange(true);
-		profileListView.setSelectionFromTop(pos,posTop);
+		saveProfileToFile(false,"","",mGp.profileAdapter,false);
+		mGp.profileAdapter.setNotifyOnChange(true);
+		mGp.profileListView.setSelectionFromTop(pos,posTop);
 	};
 	
 	public void deleteProfile() {
-		final int[] dpnum = new int[profileAdapter.getCount()];
+		final int[] dpnum = new int[mGp.profileAdapter.getCount()];
 		String dpmsg="";
 		
-		for (int i=0;i<profileAdapter.getCount();i++) {
-			if (profileAdapter.getItem(i).isChecked()) {
-				dpmsg=dpmsg+profileAdapter.getItem(i).getName()+"\n";
+		for (int i=0;i<mGp.profileAdapter.getCount();i++) {
+			if (mGp.profileAdapter.getItem(i).isChecked()) {
+				dpmsg=dpmsg+mGp.profileAdapter.getItem(i).getName()+"\n";
 				dpnum[i]=i;
 			} else dpnum[i]=-1;
 		}
@@ -872,25 +873,25 @@ public class ProfileMaintenance {
 			@Override
 			public void positiveResponse(Context c,Object[] o) {
 				ArrayList<ProfileListItem> dpItemList = new ArrayList<ProfileListItem>();
-				int pos=profileListView.getFirstVisiblePosition();
+				int pos=mGp.profileListView.getFirstVisiblePosition();
 				for (int i=0;i<dpnum.length;i++) {
 					if (dpnum[i]!=-1)
-						dpItemList.add(profileAdapter.getItem(dpnum[i]));
+						dpItemList.add(mGp.profileAdapter.getItem(dpnum[i]));
 				}
-				for (int i=0;i<dpItemList.size();i++) profileAdapter.remove(dpItemList.get(i));
+				for (int i=0;i<dpItemList.size();i++) mGp.profileAdapter.remove(dpItemList.get(i));
 				
 				resolveSyncProfileRelation();
 				
-				saveProfileToFile(false,"","",profileAdapter,false);
+				saveProfileToFile(false,"","",mGp.profileAdapter,false);
 				
-				if (profileAdapter.getCount()<=0) {
-					profileAdapter.add(new ProfileListItem("","",
+				if (mGp.profileAdapter.getCount()<=0) {
+					mGp.profileAdapter.add(new ProfileListItem("","",
 							mContext.getString(R.string.msgs_no_profile_entry),
 							"","",null,false));
 				}
-//				profileListView.setAdapter(profileAdapter);
-				profileAdapter.setNotifyOnChange(true);
-				profileListView.setSelection(pos);
+//				glblParms.profileListView.setAdapter(glblParms.profileAdapter);
+				mGp.profileAdapter.setNotifyOnChange(true);
+				mGp.profileListView.setSelection(pos);
 			}
 
 			@Override
@@ -900,12 +901,12 @@ public class ProfileMaintenance {
 	};
 	
 	private void resolveSyncProfileRelation() {
-		for (int i=0;i<profileAdapter.getCount();i++) {
-			ProfileListItem item=profileAdapter.getItem(i);
+		for (int i=0;i<mGp.profileAdapter.getCount();i++) {
+			ProfileListItem item=mGp.profileAdapter.getItem(i);
 			if (item.getType().equals(SMBSYNC_PROF_TYPE_SYNC)) {
 				if (isSyncProfileDisabled(item)) {
-//					profileAdapter.remove(profileAdapter.getItem(i));
-					profileAdapter.replace(item,i);
+//					glblParms.profileAdapter.remove(glblParms.profileAdapter.getItem(i));
+					mGp.profileAdapter.replace(item,i);
 				}
 
 			}
@@ -914,7 +915,7 @@ public class ProfileMaintenance {
 
 	private boolean isSyncProfileDisabled(ProfileListItem item) {
 		boolean result=false;
-		if (getProfileType(item.getMasterName(),profileAdapter).equals("")) {
+		if (getProfileType(item.getMasterName(),mGp.profileAdapter).equals("")) {
 			item.setMasterType("");
 			item.setMasterName("");
 			item.setActive(SMBSYNC_PROF_INACTIVE);
@@ -926,7 +927,7 @@ public class ProfileMaintenance {
 				result=true;
 			}
 		}
-		if (getProfileType(item.getTargetName(),profileAdapter).equals("")) {
+		if (getProfileType(item.getTargetName(),mGp.profileAdapter).equals("")) {
 			item.setTargetType("");
 			item.setTargetName("");
 			item.setActive(SMBSYNC_PROF_INACTIVE);
@@ -972,7 +973,7 @@ public class ProfileMaintenance {
 		
 		// GET_btn1ボタンの指定
 		Button btnGet1 = (Button) dialog.findViewById(R.id.local_profile_get_btn1);
-		if (!glblParms.externalStorageIsMounted) btnGet1.setEnabled(false);
+		if (!mGp.externalStorageIsMounted) btnGet1.setEnabled(false);
 		btnGet1.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				
@@ -1001,7 +1002,7 @@ public class ProfileMaintenance {
 		btn_cancel.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				dialog.dismiss();
-//				profileListView.setSelectionFromTop(currentViewPosX,currentViewPosY);
+//				glblParms.profileListView.setSelectionFromTop(currentViewPosX,currentViewPosY);
 			}
 		});
 		// Cancelリスナーの指定
@@ -1057,7 +1058,7 @@ public class ProfileMaintenance {
 				String prof_name, prof_dir, prof_act, prof_lmp;
 				boolean audit_error = false;
 				String audit_msg="";
-				prof_lmp=glblParms.SMBSync_External_Root_Dir;
+				prof_lmp=mGp.SMBSync_External_Root_Dir;
 				prof_dir = editdir.getText().toString();
 				prof_name = editname.getText().toString();
 				if (hasInvalidChar(prof_dir,new String[]{"\t"})) {
@@ -1088,20 +1089,21 @@ public class ProfileMaintenance {
 				} else {
 					if (!isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_LOCAL, prof_name)) {
 						dialog.dismiss();
-						int pos=profileListView.getFirstVisiblePosition();
-						int posTop=profileListView.getChildAt(0).getTop();
+//						int pos=glblParms.profileListView.getFirstVisiblePosition();
+//						int posTop=glblParms.profileListView.getChildAt(0).getTop();
 						updateLocalProfileItem(true,prof_name,prof_act,
 								prof_lmp, prof_dir,false,0);
-						saveProfileToFile(false,"","",profileAdapter,false);
-						AdapterProfileList tfl= createProfileList(false,"");
-						replaceProfileAdapterContent(tfl);
-						profileListView.setSelectionFromTop(pos,posTop);
+						mGp.profileAdapter.sort();
+						saveProfileToFile(false,"","",mGp.profileAdapter,false);
+//						AdapterProfileList tfl= createProfileList(false,"");
+//						replaceglblParms.profileAdapterContent(tfl);
+//						glblParms.profileListView.setSelectionFromTop(pos,posTop);
 					} else {
 						((TextView) dialog.findViewById(R.id.local_profile_dlg_msg))
 							.setText(msgs_duplicate_profile);
 						return;
 					}
-//					profileListView.setSelectionFromTop(currentViewPosX,currentViewPosY);
+//					glblParms.profileListView.setSelectionFromTop(currentViewPosX,currentViewPosY);
 				}
 			}
 		}); 
@@ -1110,16 +1112,15 @@ public class ProfileMaintenance {
 		dialog.show();
 	};
 
-	public void replaceProfileAdapterContent(AdapterProfileList tfl) {
-		profileAdapter.clear();
-		ProfileListItem item ;
-		for (int i=0;i<tfl.getCount();i++) {
-			item=tfl.getItem(i);
-			profileAdapter.add(item);
-		}
-//		profileListView.setAdapter(profileAdapter);
-		profileAdapter.setNotifyOnChange(true);
-	};
+//	public void replaceglblParms.profileAdapterContentX(AdapterProfileList tfl) {
+//		glblParms.profileAdapter.clear();
+//		ProfileListItem item ;
+//		for (int i=0;i<tfl.getCount();i++) {
+//			item=tfl.getItem(i);
+//			glblParms.profileAdapter.add(item);
+//		}
+//		glblParms.profileAdapter.setNotifyOnChange(true);
+//	};
 	
 	public void addRemoteProfile(boolean add_op,String prof_name, String prof_act,
 			String prof_addr, String prof_user, String prof_pass,
@@ -1232,7 +1233,7 @@ public class ProfileMaintenance {
 		btn_cancel.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				dialog.dismiss();
-//				profileListView.setSelectionFromTop(currentViewPosX,currentViewPosY);
+//				glblParms.profileListView.setSelectionFromTop(currentViewPosX,currentViewPosY);
 			}
 		});
 		// Cancelリスナーの指定
@@ -1297,14 +1298,16 @@ public class ProfileMaintenance {
 						dialog.dismiss();
 						if (cb_use_hostname.isChecked()) prof_addr="";
 						else prof_host="";
-						int pos=profileListView.getFirstVisiblePosition();
-						int posTop=profileListView.getChildAt(0).getTop();
+//						int pos=glblParms.profileListView.getFirstVisiblePosition();
+//						int posTop=glblParms.profileListView.getChildAt(0).getTop();
 						updateRemoteProfileItem(true, prof_name, prof_act,prof_dir,
 								prof_user,prof_pass,prof_share,prof_addr,prof_host,false,0);
-						saveProfileToFile(false,"","",profileAdapter,false);
-						AdapterProfileList tfl= createProfileList(false,"");
-						replaceProfileAdapterContent(tfl);
-						profileListView.setSelectionFromTop(pos,posTop);
+						mGp.profileAdapter.sort();
+						mGp.profileAdapter.notifyDataSetChanged();
+						saveProfileToFile(false,"","",mGp.profileAdapter,false);
+//						AdapterProfileList tfl= createProfileList(false,"");
+//						replaceglblParms.profileAdapterContent(tfl);
+//						glblParms.profileListView.setSelectionFromTop(pos,posTop);
 					} else {
 						((TextView) dialog.findViewById(R.id.remote_profile_dlg_msg))
 						.setText(msgs_duplicate_profile);
@@ -1371,7 +1374,7 @@ public class ProfileMaintenance {
 						new NtlmPasswordAuthentication(null, user, pass);
 				String err_msg="";
 				if (host.equals("")) {
-					if (isIpAddrReachable(addr)) {
+					if (isIpAddrReachable(addr, 1000)) {
 						try {
 							UniAddress dc = UniAddress.getByName( addr );
 					        SmbSession.logon( dc, auth );
@@ -1695,7 +1698,7 @@ public class ProfileMaintenance {
 		spinner_master.setAdapter(adapter_spinner);
 		int pos=0,cnt=-1;
 		
-		for (ProfileListItem pli:profileAdapter.getAllItem()) {
+		for (ProfileListItem pli:mGp.profileAdapter.getAllItem()) {
 			if (pli.getType().equals(SMBSYNC_PROF_TYPE_REMOTE) || 
 					pli.getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
 				cnt++;
@@ -1715,31 +1718,73 @@ public class ProfileMaintenance {
 		spinner_target.setPrompt(msgs_select_target_profile);
 		spinner_target.setAdapter(adapter_spinner);
 
-		ProfileListItem m_pli=getProfile(SMBSYNC_PROF_GROUP_DEFAULT, prof_master);
-		String mst_type="";
-		if (m_pli!=null) mst_type=m_pli.getType();
-		
-		int pos=0, cnt=-1;
-		
-		for (ProfileListItem pli:profileAdapter.getAllItem()) {
-			if (mst_type.equals(SMBSYNC_PROF_TYPE_REMOTE)) {
-				if (pli.getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
-					cnt++;
-					adapter_spinner.add(pli.getType()+" "+pli.getName());
-					if (prof_target.equals(pli.getName())) pos=cnt;
-				}
-			} else if (mst_type.equals(SMBSYNC_PROF_TYPE_LOCAL)) {
-				if (pli.getType().equals(SMBSYNC_PROF_TYPE_REMOTE) || 
-						pli.getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
-					if (!prof_master.equals(pli.getName())) {
+		if (!prof_master.equals("")) {
+			ProfileListItem m_pli=getProfile(SMBSYNC_PROF_GROUP_DEFAULT, prof_master);
+			String mst_type="";
+			if (m_pli!=null) mst_type=m_pli.getType();
+			
+			int pos=0, cnt=-1;
+			
+			for (ProfileListItem pli:mGp.profileAdapter.getAllItem()) {
+				if (mst_type.equals(SMBSYNC_PROF_TYPE_REMOTE)) {
+					if (pli.getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
 						cnt++;
 						adapter_spinner.add(pli.getType()+" "+pli.getName());
 						if (prof_target.equals(pli.getName())) pos=cnt;
 					}
+				} else if (mst_type.equals(SMBSYNC_PROF_TYPE_LOCAL)) {
+					if (pli.getType().equals(SMBSYNC_PROF_TYPE_REMOTE) || 
+							pli.getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
+						if (!prof_master.equals(pli.getName())) {
+							cnt++;
+							adapter_spinner.add(pli.getType()+" "+pli.getName());
+							if (prof_target.equals(pli.getName())) pos=cnt;
+						}
+					}
 				}
 			}
+			spinner_target.setSelection(pos);
+		} else {
+			if (!prof_target.equals("")) {
+				ProfileListItem t_pli=getProfile(SMBSYNC_PROF_GROUP_DEFAULT, prof_target);
+				String tgt_type="";
+				if (t_pli!=null) tgt_type=t_pli.getType();
+				int pos=0, cnt=-1;
+				
+				for (ProfileListItem pli:mGp.profileAdapter.getAllItem()) {
+					if (tgt_type.equals(SMBSYNC_PROF_TYPE_REMOTE)) {
+						if (pli.getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
+							cnt++;
+							adapter_spinner.add(pli.getType()+" "+pli.getName());
+							if (prof_target.equals(pli.getName())) pos=cnt;
+						}
+					} else if (tgt_type.equals(SMBSYNC_PROF_TYPE_LOCAL)) {
+						if (pli.getType().equals(SMBSYNC_PROF_TYPE_REMOTE) || 
+								pli.getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
+							if (!prof_master.equals(pli.getName())) {
+								cnt++;
+								adapter_spinner.add(pli.getType()+" "+pli.getName());
+								if (prof_target.equals(pli.getName())) pos=cnt;
+							}
+						}
+					}
+				}
+				spinner_target.setSelection(pos);
+			} else {
+				int pos=0, cnt=-1;
+				for (ProfileListItem pli:mGp.profileAdapter.getAllItem()) {
+					if (pli.getType().equals(SMBSYNC_PROF_TYPE_REMOTE) || 
+							pli.getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
+						if (!prof_master.equals(pli.getName())) {
+							cnt++;
+							adapter_spinner.add(pli.getType()+" "+pli.getName());
+							if (prof_target.equals(pli.getName())) pos=cnt;
+						}
+					}
+				}
+				spinner_target.setSelection(pos);
+			}
 		}
-		spinner_target.setSelection(pos);
 		adapter_spinner.notifyDataSetChanged();
 //		Log.v("","master="+prof_master+", target="+prof_target);
 //		Log.v("","set sp_t="+spinner_target.getSelectedItem());
@@ -1840,8 +1885,8 @@ public class ProfileMaintenance {
 					int num=-1;
 					ProfileListItem m_pli=getProfile(SMBSYNC_PROF_GROUP_DEFAULT,m_name);
 					if (m_pli!=null) {
-						for (int i=0;i<profileAdapter.getCount();i++) {
-							if (profileAdapter.getItem(i).getName().equals(m_name)) {
+						for (int i=0;i<mGp.profileAdapter.getCount();i++) {
+							if (mGp.profileAdapter.getItem(i).getName().equals(m_name)) {
 								num=i;
 								break;
 							}
@@ -1869,8 +1914,8 @@ public class ProfileMaintenance {
 					int num=-1;
 					ProfileListItem m_pli=getProfile(SMBSYNC_PROF_GROUP_DEFAULT, t_name);
 					if (m_pli!=null) {
-						for (int i=0;i<profileAdapter.getCount();i++) {
-							if (profileAdapter.getItem(i).getName().equals(t_name)) {
+						for (int i=0;i<mGp.profileAdapter.getCount();i++) {
+							if (mGp.profileAdapter.getItem(i).getName().equals(t_name)) {
 								num=i;
 								break;
 							}
@@ -1931,7 +1976,7 @@ public class ProfileMaintenance {
 		btn_cancel.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				dialog.dismiss();
-//				profileListView.setSelectionFromTop(currentViewPosX,currentViewPosY);
+//				glblParms.profileListView.setSelectionFromTop(currentViewPosX,currentViewPosY);
 			}
 		});
 		// Cancelリスナーの指定
@@ -1983,19 +2028,21 @@ public class ProfileMaintenance {
 				} else {
 					if (!isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_SYNC, prof_name)) {
 						dialog.dismiss();
-						int pos=profileListView.getFirstVisiblePosition();
-						int posTop=profileListView.getChildAt(0).getTop();
-						String m_typ=getProfileType(prof_master,profileAdapter);
-						String t_typ=getProfileType(prof_target,profileAdapter);
+//						int pos=glblParms.profileListView.getFirstVisiblePosition();
+//						int posTop=glblParms.profileListView.getChildAt(0).getTop();
+						String m_typ=getProfileType(prof_master,mGp.profileAdapter);
+						String t_typ=getProfileType(prof_target,mGp.profileAdapter);
 						updateSyncProfileItem(true, prof_name, prof_act,
 								prof_syncopt, m_typ,prof_master, t_typ,prof_target,
 								prof_file_filter,prof_dir_filter,prof_mpd,
 								cbConf.isChecked(),cbLastMod.isChecked(),
 								cbNotUseLastModRem.isChecked(),false,0);
-						saveProfileToFile(false,"","",profileAdapter,false);
-						AdapterProfileList tfl= createProfileList(false,"");
-						replaceProfileAdapterContent(tfl);
-						profileListView.setSelectionFromTop(pos,posTop);
+						mGp.profileAdapter.sort();
+						mGp.profileAdapter.notifyDataSetChanged();
+						saveProfileToFile(false,"","",mGp.profileAdapter,false);
+//						AdapterProfileList tfl= createProfileList(false,"");
+//						replaceglblParms.profileAdapterContent(tfl);
+//						glblParms.profileListView.setSelectionFromTop(pos,posTop);
 					} else {
 						((TextView) dialog.findViewById(R.id.sync_profile_dlg_msg))
 						.setText(msgs_duplicate_profile);
@@ -2043,7 +2090,7 @@ public class ProfileMaintenance {
 		
 		// GET_btn1ボタンの指定
 		Button btnGet1 = (Button) dialog.findViewById(R.id.local_profile_get_btn1);
-		if (!glblParms.externalStorageIsMounted) btnGet1.setEnabled(false);
+		if (!mGp.externalStorageIsMounted) btnGet1.setEnabled(false);
 		btnGet1.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 //				String url=SMBSync_External_Root_Dir;
@@ -2072,7 +2119,7 @@ public class ProfileMaintenance {
 		btn_cancel.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				dialog.dismiss();
-//				profileListView.setSelectionFromTop(currentViewPosX, currentViewPosY);
+//				glblParms.profileListView.setSelectionFromTop(currentViewPosX, currentViewPosY);
 			}
 		});
 		// Cancelリスナーの指定
@@ -2118,7 +2165,7 @@ public class ProfileMaintenance {
 						.setText(audit_msg);
 					return;
 				} else {
-					ProfileListItem item = profileAdapter.getItem(prof_num);
+					ProfileListItem item = mGp.profileAdapter.getItem(prof_num);
 					boolean lmp_changed=false;
 					if (!LocalFileLastModified.isSetLastModifiedFunctional(prof_lmp)) {
 						if (!item.getLocalMountPoint().equals(prof_lmp)) lmp_changed=true;
@@ -2139,9 +2186,10 @@ public class ProfileMaintenance {
 								updateLocalProfileItem(false,t_prof_name,t_prof_act,
 										t_prof_lmp, t_prof_dir,false,prof_num);
 								resolveSyncProfileRelation();
-								saveProfileToFile(false,"","",profileAdapter,false);
-								AdapterProfileList tfl= createProfileList(false,"");
-								replaceProfileAdapterContent(tfl);
+								saveProfileToFile(false,"","",mGp.profileAdapter,false);
+								mGp.profileAdapter.notifyDataSetChanged();
+//								AdapterProfileList tfl= createProfileList(false,"");
+//								replaceglblParms.profileAdapterContent(tfl);
 							}
 							@Override
 							public void negativeResponse(Context c, Object[] o) {}
@@ -2325,7 +2373,7 @@ public class ProfileMaintenance {
 //					return;
 //				} else {
 					dialog.dismiss();
-					ProfileListItem item = profileAdapter.getItem(prof_num);
+					ProfileListItem item = mGp.profileAdapter.getItem(prof_num);
 					if (prof_name.equals(item.getName())||
 							(!prof_name.equals(item.getName()) &&
 							 !isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,
@@ -2333,16 +2381,17 @@ public class ProfileMaintenance {
 						dialog.dismiss();
 						if (cb_use_hostname.isChecked()) remote_addr="";
 						else remote_host="";
-						int pos=profileListView.getFirstVisiblePosition();
-						int posTop=profileListView.getChildAt(0).getTop();
+//						int pos=glblParms.profileListView.getFirstVisiblePosition();
+//						int posTop=glblParms.profileListView.getChildAt(0).getTop();
 						updateRemoteProfileItem(false,prof_name,prof_act,prof_dir,
 								remote_user, remote_pass,remote_share,
 								remote_addr,remote_host,false,prof_num);
 						resolveSyncProfileRelation();
-						saveProfileToFile(false,"","",profileAdapter,false);
-						AdapterProfileList tfl= createProfileList(false,"");
-						replaceProfileAdapterContent(tfl);
-						profileListView.setSelectionFromTop(pos,posTop);
+						saveProfileToFile(false,"","",mGp.profileAdapter,false);
+						mGp.profileAdapter.notifyDataSetChanged();
+//						AdapterProfileList tfl= createProfileList(false,"");
+//						replaceglblParms.profileAdapterContent(tfl);
+//						glblParms.profileListView.setSelectionFromTop(pos,posTop);
 					} else {
 						((TextView) dialog.findViewById(R.id.remote_profile_dlg_msg))
 						.setText(msgs_duplicate_profile);
@@ -2470,8 +2519,8 @@ public class ProfileMaintenance {
 				int num=-1;
 				ProfileListItem m_pli=getProfile(SMBSYNC_PROF_GROUP_DEFAULT,m_name);
 				if (m_pli!=null) {
-					for (int i=0;i<profileAdapter.getCount();i++) {
-						if (profileAdapter.getItem(i).getName().equals(m_name)) {
+					for (int i=0;i<mGp.profileAdapter.getCount();i++) {
+						if (mGp.profileAdapter.getItem(i).getName().equals(m_name)) {
 							num=i;
 							break;
 						}
@@ -2498,8 +2547,8 @@ public class ProfileMaintenance {
 				int num=-1;
 				ProfileListItem m_pli=getProfile(SMBSYNC_PROF_GROUP_DEFAULT, t_name);
 				if (m_pli!=null) {
-					for (int i=0;i<profileAdapter.getCount();i++) {
-						if (profileAdapter.getItem(i).getName().equals(t_name)) {
+					for (int i=0;i<mGp.profileAdapter.getCount();i++) {
+						if (mGp.profileAdapter.getItem(i).getName().equals(t_name)) {
 							num=i;
 							break;
 						}
@@ -2545,7 +2594,7 @@ public class ProfileMaintenance {
 		btn_cancel.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				dialog.dismiss();
-//				profileListView.setSelectionFromTop(currentViewPosX,currentViewPosY);
+//				glblParms.profileListView.setSelectionFromTop(currentViewPosX,currentViewPosY);
 			}
 		});
 		// Cancelリスナーの指定
@@ -2590,25 +2639,26 @@ public class ProfileMaintenance {
 					dlg_msg.setText(audit_msg);
 					return;
 				} else {
-					ProfileListItem item = profileAdapter.getItem(prof_num);
+					ProfileListItem item = mGp.profileAdapter.getItem(prof_num);
 					if (prof_name.equals(item.getName())||
 							(!prof_name.equals(item.getName())&&
 							 !isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,
 									 SMBSYNC_PROF_TYPE_SYNC, prof_name))) {
 						dialog.dismiss();
-						int pos=profileListView.getFirstVisiblePosition();
-						int posTop=profileListView.getChildAt(0).getTop();
-						String m_typ=getProfileType(prof_master,profileAdapter);
-						String t_typ=getProfileType(prof_target,profileAdapter);
+//						int pos=glblParms.profileListView.getFirstVisiblePosition();
+//						int posTop=glblParms.profileListView.getChildAt(0).getTop();
+						String m_typ=getProfileType(prof_master,mGp.profileAdapter);
+						String t_typ=getProfileType(prof_target,mGp.profileAdapter);
 						updateSyncProfileItem(false,prof_name,prof_act,
 								sync_opt, m_typ,prof_master, t_typ,prof_target,
 								n_file_filter,n_dir_filter,prof_mpd,
 								cbConf.isChecked(),cbLastMod.isChecked(),
 								cbNotUseLastModRem.isChecked(), false,prof_num);
-						saveProfileToFile(false,"","",profileAdapter,false);
-						AdapterProfileList tfl= createProfileList(false,"");
-						replaceProfileAdapterContent(tfl);
-						profileListView.setSelectionFromTop(pos,posTop);
+						saveProfileToFile(false,"","",mGp.profileAdapter,false);
+						mGp.profileAdapter.notifyDataSetChanged();
+//						AdapterProfileList tfl= createProfileList(false,"");
+//						replaceglblParms.profileAdapterContent(tfl);
+//						glblParms.profileListView.setSelectionFromTop(pos,posTop);
 					} else {
 						dlg_msg.setText(msgs_duplicate_profile);
 					}
@@ -2671,11 +2721,11 @@ public class ProfileMaintenance {
 			public void onClick(View v) {
 				dialog.dismiss();
 				String new_name=etInput.getText().toString();
-				int pos=profileListView.getFirstVisiblePosition();
-				int posTop=profileListView.getChildAt(0).getTop();
+//				int pos=glblParms.profileListView.getFirstVisiblePosition();
+//				int posTop=glblParms.profileListView.getChildAt(0).getTop();
 				if (!pli.getType().equals(SMBSYNC_PROF_TYPE_SYNC)) {
-					for (int i=0;i<profileAdapter.getCount();i++) {
-						ProfileListItem tpli=profileAdapter.getItem(i);
+					for (int i=0;i<mGp.profileAdapter.getCount();i++) {
+						ProfileListItem tpli=mGp.profileAdapter.getItem(i);
 						boolean update_required=false;
 						if (tpli.getType().equals(SMBSYNC_PROF_TYPE_SYNC)) {
 							if (tpli.getMasterName().equals(pli.getName())) {
@@ -2686,21 +2736,24 @@ public class ProfileMaintenance {
 								tpli.setTargetName(new_name);
 								update_required=true;
 							}
-							if (update_required) profileAdapter.replace(tpli, i);
+							if (update_required) mGp.profileAdapter.replace(tpli, i);
 						}
 					}
 				}
-				profileAdapter.remove(pli);
+				mGp.profileAdapter.remove(pli);
 				pli.setName(new_name);
-				profileAdapter.add(pli);
+				mGp.profileAdapter.add(pli);
 
 				resolveSyncProfileRelation();
 
-				saveProfileToFile(false,"","",profileAdapter,false);
-				AdapterProfileList tfl= createProfileList(false,"");
-				replaceProfileAdapterContent(tfl);
-				profileAdapter.setNotifyOnChange(true);
-				profileListView.setSelectionFromTop(pos,posTop);
+				mGp.profileAdapter.sort();
+				mGp.profileAdapter.notifyDataSetChanged();
+
+				saveProfileToFile(false,"","",mGp.profileAdapter,false);
+//				AdapterProfileList tfl= createProfileList(false,"");
+//				replaceglblParms.profileAdapterContent(tfl);
+//				glblParms.profileAdapter.setNotifyOnChange(true);
+//				glblParms.profileListView.setSelectionFromTop(pos,posTop);
 			}
 		});
 		// CANCELボタンの指定
@@ -2910,10 +2963,10 @@ public class ProfileMaintenance {
 
 	private ProfileListItem getProfile(String group, String name) {
 		ProfileListItem pli=null;
-		for (int i=0;i<profileAdapter.getCount();i++) {
-			if (profileAdapter.getItem(i).getGroup().equals(SMBSYNC_PROF_GROUP_DEFAULT) &&
-					profileAdapter.getItem(i).getName().equals(name)) {
-				pli=profileAdapter.getItem(i);
+		for (int i=0;i<mGp.profileAdapter.getCount();i++) {
+			if (mGp.profileAdapter.getItem(i).getGroup().equals(SMBSYNC_PROF_GROUP_DEFAULT) &&
+					mGp.profileAdapter.getItem(i).getName().equals(name)) {
+				pli=mGp.profileAdapter.getItem(i);
 			}
 		}
 		return pli;
@@ -2992,7 +3045,7 @@ public class ProfileMaintenance {
 //		Spinner spinner_target=(Spinner)dialog.findViewById(R.id.sync_profile_target_spinner);
 //		String m_prof_type=spinner_master.getSelectedItem().toString().substring(0,1);
 		String m_prof_name=spinner_master.getSelectedItem().toString().substring(2);
-		if (getProfileType(m_prof_name,profileAdapter)
+		if (getProfileType(m_prof_name,mGp.profileAdapter)
 				.equals("")) {
 			if (m_prof_name.length()==0) {
 				dlg_msg.setText(msgs_audit_msgs_master2);
@@ -3002,7 +3055,7 @@ public class ProfileMaintenance {
 			}
 			return;
 		}
-		setDirFilter(profileAdapter,m_prof_name,n_dir_filter,ntfy);
+		setDirFilter(mGp.profileAdapter,m_prof_name,n_dir_filter,ntfy);
 	};
 	
 	public void setLocalMountPointSpinner(Spinner spinner, String prof_lmp) {
@@ -3045,7 +3098,7 @@ public class ProfileMaintenance {
 		if (prof==null || prof.length()==0) {
 			iv.setImageResource(R.drawable.blank);
 		} else {
-			if (getProfileType(prof,profileAdapter).equals("R")) {
+			if (getProfileType(prof,mGp.profileAdapter).equals("R")) {
 				iv.setImageResource(R.drawable.ic_32_server);
 			} else {
 				iv.setImageResource(R.drawable.ic_32_mobile);
@@ -3154,7 +3207,7 @@ public class ProfileMaintenance {
 		btn_cancel.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				dialog.dismiss();
-//				profileListView.setSelectionFromTop(currentViewPosX,currentViewPosY);
+//				glblParms.profileListView.setSelectionFromTop(currentViewPosX,currentViewPosY);
 			}
 		});
 		// Cancelリスナーの指定
@@ -3297,7 +3350,7 @@ public class ProfileMaintenance {
 		});
 		// Directoryボタンの指定
 		if (getProfileType(prof_master,prof_dapter).equals("L")) {
-			if (!glblParms.externalStorageIsMounted) dirbtn.setEnabled(false);
+			if (!mGp.externalStorageIsMounted) dirbtn.setEnabled(false);
 		} else if (getProfileType(prof_master,prof_dapter).equals("R")) {
 			if (util.isRemoteDisable()) dirbtn.setEnabled(false);
 		} else dirbtn.setEnabled(false);
@@ -3324,7 +3377,7 @@ public class ProfileMaintenance {
 		btn_cancel.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				dialog.dismiss();
-//				profileListView.setSelectionFromTop(currentViewPosX,currentViewPosY);
+//				glblParms.profileListView.setSelectionFromTop(currentViewPosX,currentViewPosY);
 			}
 		});
 		// Cancelリスナーの指定
@@ -3375,7 +3428,7 @@ public class ProfileMaintenance {
 		btn_cancel.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				dialog.dismiss();
-//				profileListView.setSelectionFromTop(currentViewPosX,currentViewPosY);
+//				glblParms.profileListView.setSelectionFromTop(currentViewPosX,currentViewPosY);
 			}
 		});
 		// Cancelリスナーの指定
@@ -3845,7 +3898,7 @@ public class ProfileMaintenance {
 						prof_master);
 				audit_error=true;
 			} else if (tg.isChecked() && !isProfileActive(SMBSYNC_PROF_GROUP_DEFAULT,
-					getProfileType(prof_master,profileAdapter), prof_master)) {
+					getProfileType(prof_master,mGp.profileAdapter), prof_master)) {
 				audit_msg= 
 						mContext.getString(R.string.msgs_prof_active_not_activated);
 				audit_error=true;
@@ -3867,7 +3920,7 @@ public class ProfileMaintenance {
 						prof_target);
 				audit_error=true;
 			} else if (tg.isChecked() && !isProfileActive(SMBSYNC_PROF_GROUP_DEFAULT,
-					getProfileType(prof_target,profileAdapter), prof_target)) {
+					getProfileType(prof_target,mGp.profileAdapter), prof_target)) {
 				audit_msg= 
 						mContext.getString(R.string.msgs_prof_active_not_activated);
 				audit_error=true;
@@ -3875,8 +3928,8 @@ public class ProfileMaintenance {
 
 		}
 		if (!audit_error) {
-			String m_typ=getProfileType(prof_master,profileAdapter);
-			String t_typ=getProfileType(prof_target,profileAdapter);
+			String m_typ=getProfileType(prof_master,mGp.profileAdapter);
+			String t_typ=getProfileType(prof_target,mGp.profileAdapter);
 			if (m_typ.equals(SMBSYNC_PROF_TYPE_REMOTE)) {
 				if (t_typ.equals(SMBSYNC_PROF_TYPE_REMOTE)) {
 					audit_error=true;
@@ -4040,8 +4093,8 @@ public class ProfileMaintenance {
 			String prof_name) {
 		boolean dup = false;
 
-		for (int i = 0; i <= profileAdapter.getCount() - 1; i++) {
-			ProfileListItem item = profileAdapter.getItem(i);
+		for (int i = 0; i <= mGp.profileAdapter.getCount() - 1; i++) {
+			ProfileListItem item = mGp.profileAdapter.getItem(i);
 			String prof_chk=item.getGroup()+item.getName();
 			if (prof_chk.equals(prof_grp+prof_name)) {
 				dup = true;
@@ -4055,12 +4108,12 @@ public class ProfileMaintenance {
 			String prof_name) {
 		boolean active = false;
 
-		for (int i = 0; i <= profileAdapter.getCount() - 1; i++) {
-			String item_key=profileAdapter.getItem(i).getGroup()+
-					profileAdapter.getItem(i).getType()+
-					profileAdapter.getItem(i).getName();
+		for (int i = 0; i <= mGp.profileAdapter.getCount() - 1; i++) {
+			String item_key=mGp.profileAdapter.getItem(i).getGroup()+
+					mGp.profileAdapter.getItem(i).getType()+
+					mGp.profileAdapter.getItem(i).getName();
 			if (item_key.equals(prof_grp+prof_type+prof_name)) {
-				if (profileAdapter.getItem(i).getActive()
+				if (mGp.profileAdapter.getItem(i).getActive()
 						.equals(SMBSYNC_PROF_INACTIVE))
 					active=false;
 				else active=true;
@@ -4512,12 +4565,19 @@ public class ProfileMaintenance {
 	};
 	
 	private boolean isIpAddrReachable(String address) {
-		boolean reachable=NetworkUtil.isIpAddrReachable(address);
+		boolean reachable=NetworkUtil.isSmbHostIpAddressReachable(address);
        	util.addDebugLogMsg(1,"I","isIpAddrReachable Address="+address+
         								", reachable="+reachable);
 		return reachable;
 	};
-	
+
+	private boolean isIpAddrReachable(String address, int timeout) {
+		boolean reachable=NetworkUtil.isSmbHostIpAddressReachable(address,timeout);
+       	util.addDebugLogMsg(1,"I","isIpAddrReachable Address="+address+
+        								", reachable="+reachable);
+		return reachable;
+	};
+
 	private boolean isNbtAddressActive(String address) {
 		boolean result=NetworkUtil.isNbtAddressActive(address);
     	util.addDebugLogMsg(1,"I","isSmbHost Address="+address+", result="+result);
@@ -4533,10 +4593,10 @@ public class ProfileMaintenance {
 //	private void setSyncMaterOrTagetProfile(
 //			boolean mp, String base_prof_name, final NotifyEvent p_ntfy) {
 //		final ArrayList<String> rows = new ArrayList<String>();
-//		String prof_type=getProfileType(base_prof_name,profileAdapter);
-//		ProfileListItem base_pli=getProfile(base_prof_name, profileAdapter);
-//		for (int i = 0; i < profileAdapter.getCount(); i++) {
-//			ProfileListItem item = profileAdapter.getItem(i);
+//		String prof_type=getProfileType(base_prof_name,glblParms.profileAdapter);
+//		ProfileListItem base_pli=getProfile(base_prof_name, glblParms.profileAdapter);
+//		for (int i = 0; i < glblParms.profileAdapter.getCount(); i++) {
+//			ProfileListItem item = glblParms.profileAdapter.getItem(i);
 //			if (!mp) {
 //				if (!item.getType().equals(SMBSYNC_PROF_TYPE_SYNC) && 
 //					item.getActive().equals(SMBSYNC_PROF_ACTIVE)) {
@@ -4874,7 +4934,7 @@ public class ProfileMaintenance {
 		});
 		
 		Thread tf = new Thread(new ReadRemoteFilelist(mContext, tc, remurl, remdir, remoteFileList,
-				smbUser,smbPass, ntfy, true, readSubDirCnt, glblParms));
+				smbUser,smbPass, ntfy, true, readSubDirCnt, mGp));
 		tf.start();
 		
 //		showDelayedProgDlg(200,dialog, tc);
@@ -5266,13 +5326,13 @@ public class ProfileMaintenance {
 			BufferedReader br;
 			String pf = SMBSYNC_PROFILE_FILE_NAME_V0; 
 			try {
-				File lf1= new File(glblParms.SMBSync_Internal_Root_Dir+"/"+
+				File lf1= new File(mGp.SMBSync_Internal_Root_Dir+"/"+
 						SMBSYNC_PROFILE_FILE_NAME_V1);
-				File lf2= new File(glblParms.SMBSync_Internal_Root_Dir+"/"+
+				File lf2= new File(mGp.SMBSync_Internal_Root_Dir+"/"+
 						SMBSYNC_PROFILE_FILE_NAME_V2);
-				File lf3= new File(glblParms.SMBSync_Internal_Root_Dir+"/"+
+				File lf3= new File(mGp.SMBSync_Internal_Root_Dir+"/"+
 						SMBSYNC_PROFILE_FILE_NAME_V3);
-				File lf4= new File(glblParms.SMBSync_Internal_Root_Dir+"/"+
+				File lf4= new File(mGp.SMBSync_Internal_Root_Dir+"/"+
 						SMBSYNC_PROFILE_FILE_NAME_V4);
 				if (lf4.exists()) pf=SMBSYNC_PROFILE_FILE_NAME_V4;
 				else if (lf3.exists()) pf=SMBSYNC_PROFILE_FILE_NAME_V3;
@@ -5280,11 +5340,11 @@ public class ProfileMaintenance {
 				else if (lf1.exists()) pf=SMBSYNC_PROFILE_FILE_NAME_V1;
 				else pf=SMBSYNC_PROFILE_FILE_NAME_V0;
 				
-				File lf= new File(glblParms.SMBSync_Internal_Root_Dir+"/"+pf);
+				File lf= new File(mGp.SMBSync_Internal_Root_Dir+"/"+pf);
 				
 				if (lf.exists()) {
 					br = new BufferedReader(
-							new FileReader(glblParms.SMBSync_Internal_Root_Dir+"/"+pf),8192); 
+							new FileReader(mGp.SMBSync_Internal_Root_Dir+"/"+pf),8192); 
 	//				InputStream in = context.openFileInput(SMBSYNC_PROFILE_FILE_NAME);
 	//				BufferedReader br = new BufferedReader(new InputStreamReader(
 	//						in, "UTF-8"));
@@ -5296,7 +5356,7 @@ public class ProfileMaintenance {
 				} else {
 					util.addDebugLogMsg(1, "W", 
 							"profile not found, empty profile list created. fn="+
-									glblParms.SMBSync_Internal_Root_Dir+"/"+pf);
+									mGp.SMBSync_Internal_Root_Dir+"/"+pf);
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -5323,10 +5383,10 @@ public class ProfileMaintenance {
 		}
 
 		if (pfl.getCount() == 0) {
-			if (glblParms.sampleProfileCreateRequired) {
+			if (mGp.sampleProfileCreateRequired) {
 				createSampleProfile(pfl);
 				saveProfileToFile(false,"","",pfl,false);
-				glblParms.sampleProfileCreateRequired=false;
+				mGp.sampleProfileCreateRequired=false;
 			} else {
 				pfl.add(new ProfileListItem("","",
 						mContext.getString(R.string.msgs_no_profile_entry),
@@ -5344,7 +5404,7 @@ public class ProfileMaintenance {
 				new ArrayList<String>(), true, true,false,false,false));
 		pfl.add(new ProfileListItem(SMBSYNC_PROF_GROUP_DEFAULT, 
 				SMBSYNC_PROF_TYPE_LOCAL,"L-SAMP-DOWNLOAD", SMBSYNC_PROF_ACTIVE, 
-				glblParms.SMBSync_External_Root_Dir,"SAMPLEDIR", false));
+				mGp.SMBSync_External_Root_Dir,"SAMPLEDIR", false));
 		pfl.add(new ProfileListItem(SMBSYNC_PROF_GROUP_DEFAULT, 
 				SMBSYNC_PROF_TYPE_REMOTE,"R-SAMP-DOWNLOAD", SMBSYNC_PROF_ACTIVE, 
 				"TESTUSER","PSWD","192.168.0.2","","SHARE", "RDIR", 
@@ -5361,7 +5421,7 @@ public class ProfileMaintenance {
 				"R","R-SAMP-UPLOAD",ff1,df1, true, true,false,false,false));
 		pfl.add(new ProfileListItem(SMBSYNC_PROF_GROUP_DEFAULT, 
 				SMBSYNC_PROF_TYPE_LOCAL,"L-SAMP-UPLOAD", SMBSYNC_PROF_ACTIVE, 
-				glblParms.SMBSync_External_Root_Dir,"DCIM", false));
+				mGp.SMBSync_External_Root_Dir,"DCIM", false));
 		pfl.add(new ProfileListItem(SMBSYNC_PROF_GROUP_DEFAULT, 
 				SMBSYNC_PROF_TYPE_REMOTE,"R-SAMP-UPLOAD", SMBSYNC_PROF_ACTIVE, 
 				"TESTUSER","PSWD","192.168.0.2","","SHARE", "DCIM", 
@@ -5373,7 +5433,7 @@ public class ProfileMaintenance {
 				"L","L-SAMP-USBDISK",ff2,df2, true, true,false,false,false));
 		pfl.add(new ProfileListItem(SMBSYNC_PROF_GROUP_DEFAULT, 
 				SMBSYNC_PROF_TYPE_LOCAL,"L-SAMP-LOCAL", SMBSYNC_PROF_ACTIVE, 
-				glblParms.SMBSync_External_Root_Dir,"DCIM", false));
+				mGp.SMBSync_External_Root_Dir,"DCIM", false));
 		pfl.add(new ProfileListItem(SMBSYNC_PROF_GROUP_DEFAULT, 
 				SMBSYNC_PROF_TYPE_LOCAL,"L-SAMP-USBDISK", SMBSYNC_PROF_ACTIVE, 
 				"/mnt/usbdisk","usb", false));
@@ -5441,7 +5501,7 @@ public class ProfileMaintenance {
 						parm[1],//Name
 						parm[2],//Active
 						parm[3],//Directory
-						glblParms.SMBSync_External_Root_Dir,
+						mGp.SMBSync_External_Root_Dir,
 						false));
 			} else if (parm[0].equals(SMBSYNC_PROF_TYPE_SYNC)) {//Sync
 				ArrayList<String> ff=new ArrayList<String>();
@@ -5512,7 +5572,7 @@ public class ProfileMaintenance {
 
 		} else {
 			if (parm[1].equals(SMBSYNC_PROF_TYPE_LOCAL)) {//Local
-				if (parm[5].equals("")) parm[5]=glblParms.SMBSync_External_Root_Dir;
+				if (parm[5].equals("")) parm[5]=mGp.SMBSync_External_Root_Dir;
 				lcl.add(setLocalProfilelistItem(
 						parm[0],//group
 						parm[2],//Name
@@ -5598,7 +5658,7 @@ public class ProfileMaintenance {
 
 		} else {
 			if (parm[1].equals(SMBSYNC_PROF_TYPE_LOCAL)) {//Local
-				if (parm[5].equals("")) parm[5]=glblParms.SMBSync_External_Root_Dir;
+				if (parm[5].equals("")) parm[5]=mGp.SMBSync_External_Root_Dir;
 				lcl.add(setLocalProfilelistItem(
 						parm[0],//group
 						parm[2],//Name
@@ -5697,7 +5757,7 @@ public class ProfileMaintenance {
 
 		} else {
 			if (parm[1].equals(SMBSYNC_PROF_TYPE_LOCAL)) {//Local
-				if (parm[5].equals("")) parm[5]=glblParms.SMBSync_External_Root_Dir;
+				if (parm[5].equals("")) parm[5]=mGp.SMBSync_External_Root_Dir;
 				lcl.add(setLocalProfilelistItem(
 						parm[0],//group
 						parm[2],//Name
@@ -5796,7 +5856,7 @@ public class ProfileMaintenance {
 
 		} else {
 			if (parm[1].equals(SMBSYNC_PROF_TYPE_LOCAL)) {//Local
-				if (parm[5].equals("")) parm[5]=glblParms.SMBSync_External_Root_Dir;
+				if (parm[5].equals("")) parm[5]=mGp.SMBSync_External_Root_Dir;
 				lcl.add(setLocalProfilelistItem(
 						parm[0],//group
 						parm[2],//Name
@@ -5886,13 +5946,13 @@ public class ProfileMaintenance {
 			ProfileListItem pfli=setSyncProfilelistItem(prof_group,prof_name,prof_act,
 					prof_syncopt,prof_master_typ,prof_master,prof_target_typ,prof_target,
 					file_filter, dir_filter,prof_mpd,prof_conf,prof_ujlm,nulm_remote,isChk);
-			profileAdapter.add(pfli);
+			mGp.profileAdapter.add(pfli);
 		} else {
-//			profileAdapter.remove(profileAdapter.getItem(pos));
+//			glblParms.profileAdapter.remove(glblParms.profileAdapter.getItem(pos));
 			ProfileListItem pfli=setSyncProfilelistItem(prof_group,prof_name,prof_act,
 					prof_syncopt,prof_master_typ,prof_master,prof_target_typ,prof_target,
 					file_filter, dir_filter, prof_mpd,prof_conf,prof_ujlm,nulm_remote,isChk);
-			profileAdapter.replace(pfli,pos);
+			mGp.profileAdapter.replace(pfli,pos);
 		}
 	};
 	
@@ -5921,11 +5981,11 @@ public class ProfileMaintenance {
 			String prof_share, String prof_addr, String prof_host, boolean isChk,int pos) {
 		String prof_group=SMBSYNC_PROF_GROUP_DEFAULT;
 		if (isAdd) {
-			profileAdapter.add(setRemoteProfilelistItem(prof_group, prof_name,prof_act,
+			mGp.profileAdapter.add(setRemoteProfilelistItem(prof_group, prof_name,prof_act,
 					prof_dir,prof_user,prof_pass,prof_share,prof_addr,prof_host,isChk));
 		} else {
-//			profileAdapter.remove(profileAdapter.getItem(pos));
-			profileAdapter.replace(setRemoteProfilelistItem(prof_group, prof_name,prof_act,
+//			glblParms.profileAdapter.remove(glblParms.profileAdapter.getItem(pos));
+			mGp.profileAdapter.replace(setRemoteProfilelistItem(prof_group, prof_name,prof_act,
 					prof_dir,prof_user,prof_pass,prof_share,prof_addr,prof_host,isChk),pos);
 		}
 
@@ -5949,11 +6009,11 @@ public class ProfileMaintenance {
 			boolean isChk,int pos) {
 		String prof_group=SMBSYNC_PROF_GROUP_DEFAULT;
 		if (isAdd) {
-			profileAdapter.add(setLocalProfilelistItem(prof_group,prof_name,
+			mGp.profileAdapter.add(setLocalProfilelistItem(prof_group,prof_name,
 					prof_act, prof_dir, prof_lmp, isChk));
 		} else {
-//			profileAdapter.remove(profileAdapter.getItem(pos));
-			profileAdapter.replace(
+//			glblParms.profileAdapter.remove(glblParms.profileAdapter.getItem(pos));
+			mGp.profileAdapter.replace(
 					setLocalProfilelistItem(prof_group,prof_name,prof_act,
 							prof_dir, prof_lmp, isChk),pos);
 		}
@@ -6010,8 +6070,8 @@ public class ProfileMaintenance {
 //						Context.MODE_PRIVATE);
 //				pw = new PrintWriter(new OutputStreamWriter(out, "UTF-8"));
 //				ofp=SMBSYNC_PROFILE_FILE_NAME;
-				ofp=glblParms.SMBSync_Internal_Root_Dir+"/"+SMBSYNC_PROFILE_FILE_NAME_V4;
-				File lf=new File(glblParms.SMBSync_Internal_Root_Dir);
+				ofp=mGp.SMBSync_Internal_Root_Dir+"/"+SMBSYNC_PROFILE_FILE_NAME_V4;
+				File lf=new File(mGp.SMBSync_Internal_Root_Dir);
 				if (!lf.exists()) lf.mkdir();
 				bw =new BufferedWriter(new FileWriter(ofp),8192);
 				pw = new PrintWriter(bw);

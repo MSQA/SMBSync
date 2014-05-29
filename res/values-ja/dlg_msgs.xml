@@ -47,7 +47,7 @@
     <string name="msgs_sync_profile_master_dir_cb_enable">マスタープロファイルで指定されたディレクトリの直下に存在するファイルを処理する</string>
     <string name="msgs_sync_profile_confirm_required">上書コピーまたは削除の前に確認する</string>
     <string name="msgs_sync_profile_last_modified_smbsync">強制的にSMBSyncで最終更新日時を取得</string>
-    <string name="msgs_sync_profile_not_use_last_modified_remote_file_for_diff">リモートファイルの差分ファイル判定に最終更新時間を使用しない</string>
+    <string name="msgs_sync_profile_not_set_remote_file_last_modified">リモートファイルの最終更新時刻をローカルファイルに合わせない</string>
 
     <string name="msgs_filter_list_dlg_add">追加</string>
     <string name="msgs_filter_list_dlg_delete">削除</string>

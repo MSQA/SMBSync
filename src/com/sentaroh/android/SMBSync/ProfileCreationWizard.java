@@ -1419,7 +1419,7 @@ public class ProfileCreationWizard {
 		if (mWizData.confirm_required) sync_confirm+="YES";
 		else sync_confirm+="NO";
 
-		String sync_nulm_remote=mContext.getString(R.string.msgs_sync_profile_not_use_last_modified_remote_file_for_diff)+":\n     ";
+		String sync_nulm_remote=mContext.getString(R.string.msgs_sync_profile_not_set_remote_file_last_modified)+":\n     ";
 		if (mWizData.not_use_last_mod_remote) sync_nulm_remote+="YES";
 		else sync_nulm_remote+="NO";
 

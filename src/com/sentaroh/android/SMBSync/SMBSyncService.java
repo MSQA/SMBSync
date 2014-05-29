@@ -87,6 +87,7 @@ public class SMBSyncService extends Service {
 		super.onDestroy();
 		mUtil.addDebugLogMsg(1,"I","onDestroy entered");
 		mUtil.closeLogFile();
+		android.os.Process.killProcess(android.os.Process.myPid());
 //		glblParms.logWriter.close();
 	};
     

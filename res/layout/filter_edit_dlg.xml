@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:text="@string/msgs_filter_edit_dlg_title"
         android:layout_gravity="center"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
 	<include layout="@layout/divider_line1_turquoise" />
     

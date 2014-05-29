@@ -70,6 +70,7 @@ import android.webkit.MimeTypeMap;
 
 import com.sentaroh.android.Utilities.DateUtil;
 import com.sentaroh.android.Utilities.LocalMountPoint;
+import com.sentaroh.android.Utilities.NetworkUtil;
 import com.sentaroh.android.Utilities.NotifyEvent;
 import com.sentaroh.android.Utilities.ThreadCtrl;
 
@@ -615,7 +616,7 @@ public class MirrorIO implements Runnable {
 	}
 	
 	private boolean isIpAddrReachable(String address) {
-		boolean reachable=NetworkUtil.isIpAddrReachable(address);
+		boolean reachable=NetworkUtil.isSmbHostIpAddressReachable(address,3000);
         addDebugLogMsg(1,"I","isIpAddrReachable IP addr="+address+", result="+reachable);
 		return reachable;
 	};

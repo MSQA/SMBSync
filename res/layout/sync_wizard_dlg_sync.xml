@@ -139,7 +139,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="3dp"
-        android:text="@string/msgs_sync_profile_not_use_last_modified_remote_file_for_diff"
+        android:text="@string/msgs_sync_profile_not_set_remote_file_last_modified"
         />
     
     <CheckBox

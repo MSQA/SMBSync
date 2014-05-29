@@ -14,7 +14,7 @@
         android:layout_height="32dp"
         android:layout_marginLeft="5dp"
         android:gravity="center"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
 	<include layout="@layout/divider_line1_turquoise" />
     

@@ -32,6 +32,7 @@ import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 import android.content.Context;
 
+import com.sentaroh.android.Utilities.NetworkUtil;
 import com.sentaroh.android.Utilities.NotifyEvent;
 import com.sentaroh.android.Utilities.ThreadCtrl;
 import com.sentaroh.android.Utilities.TreeFilelist.TreeFilelistItem;
@@ -104,7 +105,7 @@ public class ReadRemoteFilelist implements Runnable  {
 		
 		boolean error_exit=false;
 		if (mHostName.equals("")) {
-			if (!NetworkUtil.isIpAddrReachable(mHostAddr)) {
+			if (!NetworkUtil.isSmbHostIpAddressReachable(mHostAddr,3000)) {
 				error_exit=true; 
 				getFLCtrl.setThreadResultError();
 				getFLCtrl.setThreadMessage(

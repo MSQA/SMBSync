@@ -56,6 +56,10 @@ public class GlobalParameters extends Application{
 	public TextView mainViewProgressProf=null;
 	public TextView mainViewProgressFilepath=null;
 	public TextView mainViewProgressMessage=null;
+	
+	public AdapterProfileList profileAdapter=null;
+	public ListView profileListView=null;
+
 	public AdapterMessageList msgListAdapter=null;
 	public ListView msgListView=null;
 	
@@ -110,6 +114,7 @@ public class GlobalParameters extends Application{
 	public String settingLogMsgFilename="SMBSync_log_yyyy-mm-dd.txt";
 	public int settiingLogGeneration=1;
 	public boolean settingExportedProfileEncryptRequired=true;
+//	public boolean settingInternalProfileEncryptRequired=true;
 	
 	public static final String VIBRATE_WHEN_SYNC_ENDED_NONE="0";
 	public static final String VIBRATE_WHEN_SYNC_ENDED_ALWAYS="1";
