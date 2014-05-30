@@ -76,17 +76,14 @@
    	<string name="msgs_progress_spin_dlg_syncronizing">同期処理中</string>
    	<string name="msgs_progress_spin_dlg_sync_cancel">同期処理をキャンセル</string>
    	
-   	<string name="msgs_progress_spin_dlg_addr_listing">ネットワークのスキャン</string>
-   	<string name="msgs_progress_spin_dlg_addr_cancel">スキャンのキャンセル</string>
-   	<string name="msgs_ip_address_select_title">IPアドレスまたは名前の選択</string>
-   	<string name="msgs_ip_address_no_address">---発見できませんでした---</string>
+   	<string name="msgs_progress_spin_dlg_addr_cancel">スキャン中止</string>
+   	<string name="msgs_scan_ip_address_select_title">リモートネットワークのスキャン</string>
+	<string name="msgs_scan_ip_address_scan_btn">スキャン</string>   	
+   	<string name="msgs_ip_address_no_address">---検出されませんでした---</string>
    	<string name="msgs_ip_address_scan_progress" formatted="false">%s, スキャン %s%% 終了</string>
-   	<string name="msgs_ip_address_scan_found">検出したIPアドレス : \n</string>
    	
-   	<string name="msgs_ip_address_range_dlg_title">IPアドレス探索範囲</string>
    	<string name="msgs_ip_address_range_dlg_begin">開始</string>
    	<string name="msgs_ip_address_range_dlg_end">終了</string>
-   	<string name="msgs_ip_address_range_dlg_rescan">再スキャン</string>
    	
    	<string name="msgs_ip_address_range_dlg_begin_notspecified">開始アドレスが指定されていません。</string>
    	<string name="msgs_ip_address_range_dlg_addr_range_error">アドレスは0から255の範囲で指定してください。</string>

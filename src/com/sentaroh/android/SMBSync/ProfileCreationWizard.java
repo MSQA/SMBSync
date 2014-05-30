@@ -893,7 +893,7 @@ public class ProfileCreationWizard {
 						dlg_msg.setText("");
 					}
 				});
-				profMaint.setRemoteAddr(ntfy);
+				profMaint.scanRemoteNetworkDlg(ntfy);
 			}
 		});
 		

@@ -42,6 +42,7 @@ public class AdapterScanAddressResultList extends ArrayAdapter<ScanAddressResult
 	private int mResourceId=0;
 	private Context mContext;
 	private NotifyEvent mNtfyEvent=null;
+	private boolean mButtonEnabled=true;
 	
 	public AdapterScanAddressResultList(Context context, int resource,
 			ArrayList<ScanAddressResultListItem> objects, NotifyEvent ntfy) {
@@ -50,6 +51,11 @@ public class AdapterScanAddressResultList extends ArrayAdapter<ScanAddressResult
 		mResourceId=resource;
 		mContext=context;
 		mNtfyEvent=ntfy;
+	}
+	
+	public void setButtonEnabled(boolean p) {
+		mButtonEnabled=p;
+		notifyDataSetChanged();
 	}
 
 	@Override
@@ -75,6 +81,8 @@ public class AdapterScanAddressResultList extends ArrayAdapter<ScanAddressResult
         	} else {
         		holder.tv_addr.setVisibility(Button.VISIBLE);
         	}
+       		holder.tv_name.setEnabled(mButtonEnabled);	
+       		holder.tv_addr.setEnabled(mButtonEnabled);
         	if (o.server_name.equals("")) holder.tv_name.setEnabled(false);
         	holder.tv_name.setOnClickListener(new OnClickListener(){
 				@Override

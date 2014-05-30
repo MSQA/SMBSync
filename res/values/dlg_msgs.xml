@@ -76,17 +76,14 @@
    	<string name="msgs_progress_spin_dlg_syncronizing">Synchronizing</string>
    	<string name="msgs_progress_spin_dlg_sync_cancel">Cancel synchronize</string>
 
-   	<string name="msgs_progress_spin_dlg_addr_listing">Network scan</string>
    	<string name="msgs_progress_spin_dlg_addr_cancel">Cancel scan</string>
-   	<string name="msgs_ip_address_select_title">Select IP address or Hostname</string>
+   	<string name="msgs_scan_ip_address_select_title">Scan remote network</string>
+	<string name="msgs_scan_ip_address_scan_btn">Scan</string>   	
    	<string name="msgs_ip_address_no_address">---No IP address detected---</string>
    	<string name="msgs_ip_address_scan_progress" formatted="false">%s, Scan %s%% Completed</string>
-   	<string name="msgs_ip_address_scan_found">Founded IP Adrress : \n</string>
    	
-   	<string name="msgs_ip_address_range_dlg_title">Scan IP Address Range</string>
    	<string name="msgs_ip_address_range_dlg_begin">Begin</string>
    	<string name="msgs_ip_address_range_dlg_end">End</string>
-   	<string name="msgs_ip_address_range_dlg_rescan">Rescan</string>
    	
    	<string name="msgs_ip_address_range_dlg_begin_notspecified">Begin address was not specified.</string>
    	<string name="msgs_ip_address_range_dlg_addr_range_error">Address range is must be 0 to 255.</string>
