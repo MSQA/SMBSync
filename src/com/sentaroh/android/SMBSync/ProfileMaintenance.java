@@ -1370,11 +1370,10 @@ public class ProfileMaintenance {
 			public void run() {
 				util.addDebugLogMsg(1,"I","Test logon started, host="+host+", addr="+addr+
 						", user="+user);
-				NtlmPasswordAuthentication auth = 
-						new NtlmPasswordAuthentication(null, user, pass);
+				NtlmPasswordAuthentication auth=new NtlmPasswordAuthentication(null, user, pass);
 				String err_msg="";
 				if (host.equals("")) {
-					if (isIpAddrReachable(addr, 1000)) {
+					if (isIpAddrReachable(addr, 5000)) {
 						try {
 							UniAddress dc = UniAddress.getByName( addr );
 					        SmbSession.logon( dc, auth );
@@ -1385,11 +1384,14 @@ public class ProfileMaintenance {
 							err_msg=e.toString();
 						} catch (SmbException e) {
 							e.printStackTrace();
-							util.addDebugLogMsg(1,"I","Logon error:"+"\n"+e.toString());
-							err_msg=e.toString();
+							String[] emsg=
+									NetworkUtil.analyzeNtStatusCode(
+											e, mContext, "smb://"+addr+"/", user);
+							util.addDebugLogMsg(1,"I","Logon error:"+"\n"+emsg[0]);
+							err_msg=emsg[0];
 						}
 					} else {
-						err_msg=mContext.getString(R.string.msgs_mirror_remote_addr_not_reachable)
+						err_msg=mContext.getString(R.string.msgs_mirror_remote_addr_not_connected)
 								+addr;
 					}
 				} else {
@@ -1401,8 +1403,11 @@ public class ProfileMaintenance {
 					        util.addDebugLogMsg(1,"I","Test logon completed for host name");
 						} catch (SmbException e) {
 							e.printStackTrace();
-							util.addDebugLogMsg(1,"I","Logon error:"+"\n"+e.toString());
-							err_msg=e.toString();
+							String[] emsg=
+									NetworkUtil.analyzeNtStatusCode(
+											e, mContext, "smb://"+addr+"/", user);
+							util.addDebugLogMsg(1,"I","Logon error:"+"\n"+emsg[0]);
+							err_msg=emsg[0];
 						}
 					} catch (UnknownHostException e) {
 						e.printStackTrace();

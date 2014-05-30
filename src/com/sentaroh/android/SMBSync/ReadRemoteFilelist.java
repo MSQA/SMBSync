@@ -105,11 +105,11 @@ public class ReadRemoteFilelist implements Runnable  {
 		
 		boolean error_exit=false;
 		if (mHostName.equals("")) {
-			if (!NetworkUtil.isSmbHostIpAddressReachable(mHostAddr,3000)) {
+			if (!isIpAddrReachable(mHostAddr)) {
 				error_exit=true; 
 				getFLCtrl.setThreadResultError();
 				getFLCtrl.setThreadMessage(
-						mContext.getString(R.string.msgs_mirror_remote_addr_not_reachable)+mHostAddr);
+						mContext.getString(R.string.msgs_mirror_remote_addr_not_connected)+mHostAddr);
 			}
 		} else {
 			if (NetworkUtil.getSmbHostIpAddressFromName(mHostName)==null) {
@@ -126,6 +126,17 @@ public class ReadRemoteFilelist implements Runnable  {
 		notifyEvent.notifyToListener(true, null);
 	};
 	
+	private boolean isIpAddrReachable(String address) {
+		boolean reachable=false;
+		for (int i=0;i<5;i++) {
+			if (NetworkUtil.isSmbHostIpAddressReachable(address, 1500)) {
+				reachable=true;
+				break;
+			}
+		}
+		return reachable;
+	};
+
 	private void readFIleList() {
 		remoteFileList.clear();
 		try {		
@@ -200,17 +211,12 @@ public class ReadRemoteFilelist implements Runnable  {
 			
 		} catch (SmbException e) {
 			e.printStackTrace();
-//			Log.v("","msg="+e.getMessage());
-//			Log.v("","cause="+e.getCause());
-//			Log.v("","lmsg="+e.getLocalizedMessage());
-//			Log.v("","rcause="+e.getRootCause().toString());
-//			Log.v("",String.format("nt=%x",e.getNtStatus()));
 			util.addDebugLogMsg(1,"E",e.toString());
 			if (getFLCtrl.isEnable()) {
 				getFLCtrl.setThreadResultError();
-				if (e.getRootCause()!=null) getFLCtrl.setThreadMessage(e.getMessage()+"\n"+e.getRootCause().toString());
-				else getFLCtrl.setThreadMessage(e.getMessage());
-				util.addDebugLogMsg(1,"I",String.format("NT STATUS=%x",e.getNtStatus()));
+				String[] e_msg=NetworkUtil.analyzeNtStatusCode(e, mContext, 
+						remoteUrl+remoteDir,ntlmPasswordAuth.getUsername());
+				getFLCtrl.setThreadMessage(e_msg[0]);
 				getFLCtrl.setDisable();
 			} else {
 				getFLCtrl.setThreadResultCancelled();
