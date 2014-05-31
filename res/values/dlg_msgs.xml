@@ -80,7 +80,7 @@
    	<string name="msgs_scan_ip_address_select_title">Scan remote network</string>
 	<string name="msgs_scan_ip_address_scan_btn">Scan</string>   	
    	<string name="msgs_ip_address_no_address">---No IP address detected---</string>
-   	<string name="msgs_ip_address_scan_progress" formatted="false">%s, Scan %s%% Completed</string>
+   	<string name="msgs_ip_address_scan_progress">Remote network scan is %s%% Completed</string>
    	
    	<string name="msgs_ip_address_range_dlg_begin">Begin</string>
    	<string name="msgs_ip_address_range_dlg_end">End</string>

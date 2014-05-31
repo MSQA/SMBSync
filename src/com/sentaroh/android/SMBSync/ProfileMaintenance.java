@@ -74,6 +74,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -4304,6 +4305,7 @@ public class ProfileMaintenance {
 
 	};
 
+	private int mScanCompleteCount=0, mScanAddrCount=0;
 	private void scanRemoteNetwork(
 			final Dialog dialog,
 			final ListView lv_ipaddr,
@@ -4312,7 +4314,6 @@ public class ProfileMaintenance {
 			final String subnet, final int begin_addr, final int end_addr,
 			final NotifyEvent p_ntfy) {
 		final Handler handler=new Handler();
-		final String curr_ip=SMBSyncUtil.getLocalIpAddress();
 		final ThreadCtrl tc=new ThreadCtrl();
 		final LinearLayout ll_addr=(LinearLayout) dialog.findViewById(R.id.scan_remote_ntwk_scan_address);
 		final LinearLayout ll_prog=(LinearLayout) dialog.findViewById(R.id.scan_remote_ntwk_progress);
@@ -4341,71 +4342,144 @@ public class ProfileMaintenance {
 		});
 		if (util.isActivityForeground()) dialog.show();
 		
-		util.addDebugLogMsg(1,"I","Scan IP address ransge is "+subnet+
-				"."+begin_addr+" - "+end_addr);
+		util.addDebugLogMsg(1,"I","Scan IP address ransge is "+subnet+ "."+begin_addr+" - "+end_addr);
+		
+		final String scan_prog=mContext.getString(R.string.msgs_ip_address_scan_progress);
+		String p_txt=String.format(scan_prog,0);
+		tvmsg.setText(p_txt);
+
        	new Thread(new Runnable() {
 			@Override
 			public void run() {//non UI thread
-//				System.setProperty("jcifs.netbios.retryTimeout", "150");
-				final String scan_prog=mContext.getString(R.string.msgs_ip_address_scan_progress);
-				for (int i=begin_addr; i<=end_addr;i++) {
+				mScanCompleteCount=0;
+				mScanAddrCount=end_addr-begin_addr+1;
+				int scan_thread=30;
+				for (int i=begin_addr; i<=end_addr;i+=scan_thread) {
 					if (!tc.isEnable()) break;
-					final int ix=i;
+					boolean scan_end=false;
+					for (int j=i;j<(i+scan_thread);j++) {
+						if (j<=end_addr) {
+							startRemoteNetworkScanThread(handler, tc, dialog, p_ntfy,
+									lv_ipaddr, adap, tvmsg, subnet+"."+j,ipAddressList);
+						} else {
+							scan_end=true;
+						}
+					}
+					if (!scan_end) {
+						for (int wc=0;wc<100;wc++) {
+							if (!tc.isEnable()) break;
+							SystemClock.sleep(30);
+						}
+					}
+				}
+				if (!tc.isEnable()) {
 					handler.post(new Runnable() {// UI thread
 						@Override
 						public void run() {
-							int prog=(ix-begin_addr)*100/(end_addr-begin_addr);
-							String text=String.format(scan_prog, subnet+"."+ix, prog);
-							tvmsg.setText(text);
+							closeScanRemoteNetworkProgressDlg(dialog, p_ntfy, lv_ipaddr, adap, tvmsg);
 						}
 					});
-					if (isIpAddrReachable(subnet+"."+i) &&
-							isNbtAddressActive(subnet+"."+i) && 
-							!curr_ip.equals(subnet+"."+i)) {
-						String srv_name=getSmbHostName(subnet+"."+i);
-						ScanAddressResultListItem li=new ScanAddressResultListItem();
-						li.server_address=subnet+"."+i;
-						li.server_name=srv_name;
-						ipAddressList.add(li);
-						handler.post(new Runnable() {// UI thread
-							@Override
-							public void run() {
-								lv_ipaddr.setSelection(lv_ipaddr.getCount());
-								adap.notifyDataSetChanged();
-							}
-						});
-					}
-//					System.setProperty("jcifs.netbios.retryTimeout", "3000");
-//					if (isIpAddrReachable(subnet+"."+i,scanIpAddrTimeout) && 
-//							!curr_ip.equals(subnet+"."+i)) {
-//						String srv_name=getSmbHostName(subnet+"."+i);
-//							ScanAddressResultListItem li=new ScanAddressResultListItem();
-//							li.server_address=subnet+"."+i;
-//							li.server_name=srv_name;
-//							ipAddressList.add(li);
-//					}
 				}
-				// dismiss progress bar dialog
-				handler.post(new Runnable() {// UI thread
-					@Override
-					public void run() {
-						ll_addr.setVisibility(LinearLayout.VISIBLE);
-						ll_prog.setVisibility(LinearLayout.GONE);
-						btn_scan.setEnabled(true);
-						btn_cancel.setEnabled(true);
-						adap.setButtonEnabled(true);
-					    dialog.setOnKeyListener(null);
-					    dialog.setCancelable(true);
-						if (p_ntfy!=null)
-							p_ntfy.notifyToListener(true, null);
-					}
-				});
 			}
 		})
        	.start();
 	};
 
+	private void closeScanRemoteNetworkProgressDlg(
+			final Dialog dialog,
+			final NotifyEvent p_ntfy,
+			final ListView lv_ipaddr,
+			final AdapterScanAddressResultList adap,
+			final TextView tvmsg) {
+		final LinearLayout ll_addr=(LinearLayout) dialog.findViewById(R.id.scan_remote_ntwk_scan_address);
+		final LinearLayout ll_prog=(LinearLayout) dialog.findViewById(R.id.scan_remote_ntwk_progress);
+		final Button btn_scan = (Button) dialog.findViewById(R.id.scan_remote_ntwk_btn_ok);
+		final Button btn_cancel = (Button) dialog.findViewById(R.id.scan_remote_ntwk_btn_cancel);
+		ll_addr.setVisibility(LinearLayout.VISIBLE);
+		ll_prog.setVisibility(LinearLayout.GONE);
+		btn_scan.setEnabled(true);
+		btn_cancel.setEnabled(true);
+		adap.setButtonEnabled(true);
+	    dialog.setOnKeyListener(null);
+	    dialog.setCancelable(true);
+		if (p_ntfy!=null) p_ntfy.notifyToListener(true, null);
+		
+	};
 	
+	private void startRemoteNetworkScanThread(final Handler handler,
+			final ThreadCtrl tc,
+			final Dialog dialog,
+			final NotifyEvent p_ntfy,
+			final ListView lv_ipaddr,
+			final AdapterScanAddressResultList adap,
+			final TextView tvmsg,
+			final String addr,
+			final ArrayList<ScanAddressResultListItem> ipAddressList) {
+		final String scan_prog=mContext.getString(R.string.msgs_ip_address_scan_progress);
+		Thread th=new Thread(new Runnable() {
+			@Override
+			public void run() {
+				if (isIpAddrReachable(addr)) {
+					mScanCompleteCount++;
+					String srv_name=getSmbHostName(addr);
+					ScanAddressResultListItem li=new ScanAddressResultListItem();
+					li.server_address=addr;
+					li.server_name=srv_name;
+					ipAddressList.add(li);
+					Collections.sort(ipAddressList, new Comparator<ScanAddressResultListItem>(){
+						@Override
+						public int compare(ScanAddressResultListItem lhs,
+								ScanAddressResultListItem rhs) {
+							return lhs.server_address.compareTo(rhs.server_address);
+						}
+					});
+				} else {
+					mScanCompleteCount++;
+				}
+				handler.post(new Runnable() {// UI thread
+					@Override
+					public void run() {
+						synchronized(lv_ipaddr) {
+							lv_ipaddr.setSelection(lv_ipaddr.getCount());
+							adap.notifyDataSetChanged();
+							String p_txt=String.format(scan_prog, 
+									(mScanCompleteCount*100)/mScanAddrCount);
+							tvmsg.setText(p_txt);
+							
+							if (mScanCompleteCount==mScanAddrCount) {
+								closeScanRemoteNetworkProgressDlg(dialog, p_ntfy, lv_ipaddr, adap, tvmsg);
+							}
+						}
+					}
+				});
+			}
+       	});
+       	th.start();
+	};
+
+	private boolean isIpAddrReachable(String address) {
+		boolean reachable=false;
+//		reachable=NetworkUtil.ping(address);
+		if (!NetworkUtil.isIpAddressAndPortConnected(address,139,5000)) {
+			reachable=NetworkUtil.isIpAddressAndPortConnected(address,445,5000);
+		} else reachable=true;
+		util.addDebugLogMsg(2,"I","isIpAddrReachable Address="+address+", reachable="+reachable);
+		return reachable;
+	};
+
+	@SuppressWarnings("unused")
+	private boolean isNbtAddressActive(String address) {
+		boolean result=NetworkUtil.isNbtAddressActive(address);
+    	util.addDebugLogMsg(1,"I","isSmbHost Address="+address+", result="+result);
+		return result;
+	};
+	
+	private String getSmbHostName(String address) {
+		String srv_name=NetworkUtil.getSmbHostNameFromAddress(address);
+       	util.addDebugLogMsg(1,"I","getSmbHostName Address="+address+", name="+srv_name);
+    	return srv_name;
+ 	};
+
 	private boolean auditScanAddressRangeValue(Dialog dialog) {
 		boolean result=false;
 		final EditText baEt1 = (EditText) dialog.findViewById(R.id.scan_remote_ntwk_begin_address_o1);
@@ -4516,35 +4590,6 @@ public class ProfileMaintenance {
 		
 		return result;
 	};
-	
-	private boolean isIpAddrReachable(String address) {
-		boolean reachable=false;
-		reachable=NetworkUtil.ping(address);
-		int rc=0;
-//		for (int i=0;i<1;i++) {
-//			rc++;
-//			if (NetworkUtil.isIpAddressAndPortConnected(address,139,500)) {
-//				reachable=true;
-//				break;
-//			}
-////			SystemClock.sleep(50);
-//		}
-       	util.addDebugLogMsg(1,"I","isIpAddrReachable Address="+address+
-        								", reachable="+reachable+", retry count="+rc);
-		return reachable;
-	};
-
-	private boolean isNbtAddressActive(String address) {
-		boolean result=NetworkUtil.isNbtAddressActive(address);
-    	util.addDebugLogMsg(1,"I","isSmbHost Address="+address+", result="+result);
-		return result;
-	};
-	
-	private String getSmbHostName(String address) {
-		String srv_name=NetworkUtil.getSmbHostNameFromAddress(address);
-       	util.addDebugLogMsg(1,"I","getSmbHostName Address="+address+", name="+srv_name);
-    	return srv_name;
- 	};
 	
 //	private void setSyncMaterOrTagetProfile(
 //			boolean mp, String base_prof_name, final NotifyEvent p_ntfy) {

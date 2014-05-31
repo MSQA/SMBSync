@@ -24,6 +24,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 */
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -56,7 +58,18 @@ public class AdapterScanAddressResultList extends ArrayAdapter<ScanAddressResult
 	public void setButtonEnabled(boolean p) {
 		mButtonEnabled=p;
 		notifyDataSetChanged();
-	}
+	};
+	
+	public void sort() {
+		Collections.sort(mResultList, new Comparator<ScanAddressResultListItem>(){
+			@Override
+			public int compare(ScanAddressResultListItem lhs,
+					ScanAddressResultListItem rhs) {
+				return lhs.server_address.compareTo(rhs.server_address);
+			}
+		});
+		notifyDataSetChanged();
+	};
 
 	@Override
     public View getView(final int position, View convertView, final ViewGroup parent) {

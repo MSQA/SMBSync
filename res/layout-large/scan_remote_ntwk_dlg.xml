@@ -93,7 +93,7 @@
 
             <EditText
                 android:id="@+id/scan_remote_ntwk_begin_address_o4"
-                android:layout_width="53dp"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:inputType="number"
@@ -166,7 +166,7 @@
 
             <EditText
                 android:id="@+id/scan_remote_ntwk_end_address_o4"
-                android:layout_width="53dp"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:inputType="number" />
