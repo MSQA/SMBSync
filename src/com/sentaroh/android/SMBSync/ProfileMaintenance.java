@@ -4359,7 +4359,7 @@ public class ProfileMaintenance {
 							tvmsg.setText(text);
 						}
 					});
-					if (isIpAddrReachableWithRetry(subnet+"."+i) &&
+					if (isIpAddrReachable(subnet+"."+i) &&
 							isNbtAddressActive(subnet+"."+i) && 
 							!curr_ip.equals(subnet+"."+i)) {
 						String srv_name=getSmbHostName(subnet+"."+i);
@@ -4517,13 +4517,13 @@ public class ProfileMaintenance {
 		return result;
 	};
 	
-	private boolean isIpAddrReachableWithRetry(String address) {
+	private boolean isIpAddrReachable(String address) {
 		boolean reachable=false;
 		reachable=NetworkUtil.ping(address);
 		int rc=0;
 //		for (int i=0;i<1;i++) {
 //			rc++;
-//			if (NetworkUtil.isSmbHostIpAddressReachable(address,500)) {
+//			if (NetworkUtil.isIpAddressAndPortConnected(address,139,500)) {
 //				reachable=true;
 //				break;
 //			}
