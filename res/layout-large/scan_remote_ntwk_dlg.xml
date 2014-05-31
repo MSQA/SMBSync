@@ -39,7 +39,7 @@
             android:layout_marginRight="5dp" >
 
             <TextView
-                android:layout_width="40dp"
+                android:layout_width="60dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
                 android:text="@string/msgs_ip_address_range_dlg_begin"
@@ -107,7 +107,7 @@
             android:layout_marginRight="5dp" >
 
             <TextView
-                android:layout_width="40dp"
+                android:layout_width="60dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
                 android:text="@string/msgs_ip_address_range_dlg_end"

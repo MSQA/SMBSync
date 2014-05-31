@@ -81,13 +81,11 @@ public class AdapterScanAddressResultList extends ArrayAdapter<ScanAddressResult
         	} else {
         		holder.tv_addr.setVisibility(Button.VISIBLE);
         	}
-       		holder.tv_name.setEnabled(mButtonEnabled);	
-       		holder.tv_addr.setEnabled(mButtonEnabled);
         	if (o.server_name.equals("")) holder.tv_name.setEnabled(false);
         	holder.tv_name.setOnClickListener(new OnClickListener(){
 				@Override
 				public void onClick(View arg0) {
-					if (o.server_name.startsWith("---"))  return;
+					if (o.server_name.startsWith("---") || !mButtonEnabled)  return;
 					mNtfyEvent.notifyToListener(true, new String[]{"N",o.server_name});
 				}
         	});
@@ -95,7 +93,7 @@ public class AdapterScanAddressResultList extends ArrayAdapter<ScanAddressResult
         	holder.tv_addr.setOnClickListener(new OnClickListener(){
 				@Override
 				public void onClick(View arg0) {
-					if (o.server_name.startsWith("---"))  return;
+					if (o.server_name.startsWith("---") || !mButtonEnabled)  return;
 					mNtfyEvent.notifyToListener(true, new String[]{"A",o.server_address});
 				}
         	});

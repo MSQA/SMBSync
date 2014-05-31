@@ -128,12 +128,13 @@ public class ReadRemoteFilelist implements Runnable  {
 	
 	private boolean isIpAddrReachable(String address) {
 		boolean reachable=false;
-		for (int i=0;i<5;i++) {
-			if (NetworkUtil.isNbtAddressActive(address)) {
-				reachable=true;
-				break;
-			}
-		}
+		reachable=NetworkUtil.isNbtAddressActive(address);
+//		for (int i=0;i<5;i++) {
+//			if (NetworkUtil.isNbtAddressActive(address)) {
+//				reachable=true;
+//				break;
+//			}
+//		}
 		return reachable;
 	};
 

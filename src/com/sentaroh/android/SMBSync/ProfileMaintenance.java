@@ -74,7 +74,6 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Handler;
-import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -4351,6 +4350,15 @@ public class ProfileMaintenance {
 				final String scan_prog=mContext.getString(R.string.msgs_ip_address_scan_progress);
 				for (int i=begin_addr; i<=end_addr;i++) {
 					if (!tc.isEnable()) break;
+					final int ix=i;
+					handler.post(new Runnable() {// UI thread
+						@Override
+						public void run() {
+							int prog=(ix-begin_addr)*100/(end_addr-begin_addr);
+							String text=String.format(scan_prog, subnet+"."+ix, prog);
+							tvmsg.setText(text);
+						}
+					});
 					if (isIpAddrReachableWithRetry(subnet+"."+i) &&
 							isNbtAddressActive(subnet+"."+i) && 
 							!curr_ip.equals(subnet+"."+i)) {
@@ -4359,18 +4367,14 @@ public class ProfileMaintenance {
 						li.server_address=subnet+"."+i;
 						li.server_name=srv_name;
 						ipAddressList.add(li);
+						handler.post(new Runnable() {// UI thread
+							@Override
+							public void run() {
+								lv_ipaddr.setSelection(lv_ipaddr.getCount());
+								adap.notifyDataSetChanged();
+							}
+						});
 					}
-					final int ix=i;
-					handler.post(new Runnable() {// UI thread
-						@Override
-						public void run() {
-							int prog=(ix-begin_addr)*100/(end_addr-begin_addr);
-							String text=String.format(scan_prog, subnet+"."+ix, prog);
-							tvmsg.setText(text);
-							lv_ipaddr.setSelection(lv_ipaddr.getCount());
-							adap.notifyDataSetChanged();
-						}
-					});
 //					System.setProperty("jcifs.netbios.retryTimeout", "3000");
 //					if (isIpAddrReachable(subnet+"."+i,scanIpAddrTimeout) && 
 //							!curr_ip.equals(subnet+"."+i)) {
@@ -4513,35 +4517,20 @@ public class ProfileMaintenance {
 		return result;
 	};
 	
-	@SuppressWarnings("unused")
-	private boolean isIpAddrReachable(String address) {
-		boolean reachable=NetworkUtil.isSmbHostIpAddressReachable(address);
-       	util.addDebugLogMsg(1,"I","isIpAddrReachable Address="+address+
-        								", reachable="+reachable);
-		return reachable;
-	};
-
 	private boolean isIpAddrReachableWithRetry(String address) {
 		boolean reachable=false;
+		reachable=NetworkUtil.ping(address);
 		int rc=0;
-		for (int i=0;i<1;i++) {
-			rc++;
-			if (NetworkUtil.isSmbHostIpAddressReachable(address,300)) {
-				reachable=true;
-				break;
-			}
-			SystemClock.sleep(50);
-		}
+//		for (int i=0;i<1;i++) {
+//			rc++;
+//			if (NetworkUtil.isSmbHostIpAddressReachable(address,500)) {
+//				reachable=true;
+//				break;
+//			}
+////			SystemClock.sleep(50);
+//		}
        	util.addDebugLogMsg(1,"I","isIpAddrReachable Address="+address+
         								", reachable="+reachable+", retry count="+rc);
-		return reachable;
-	};
-
-	@SuppressWarnings("unused")
-	private boolean isIpAddrReachable(String address, int timeout) {
-		boolean reachable=NetworkUtil.isSmbHostIpAddressReachable(address,timeout);
-       	util.addDebugLogMsg(1,"I","isIpAddrReachable Address="+address+
-        								", reachable="+reachable);
 		return reachable;
 	};
 
