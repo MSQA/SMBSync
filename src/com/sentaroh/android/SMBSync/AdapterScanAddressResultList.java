@@ -39,7 +39,6 @@ import com.sentaroh.android.Utilities.NotifyEvent;
 
 public class AdapterScanAddressResultList extends ArrayAdapter<ScanAddressResultListItem>{
 
-	@SuppressWarnings("unused")
 	private ArrayList<ScanAddressResultListItem>mResultList=null;
 	private int mResourceId=0;
 	private Context mContext;
