@@ -74,6 +74,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -1088,6 +1089,8 @@ public class ProfileMaintenance {
 						dialog.dismiss();
 //						int pos=glblParms.profileListView.getFirstVisiblePosition();
 //						int posTop=glblParms.profileListView.getChildAt(0).getTop();
+						if (mGp.profileAdapter.getItem(0).getType().equals(""))
+							mGp.profileAdapter.remove(0);
 						updateLocalProfileItem(true,prof_name,prof_act,
 								prof_lmp, prof_dir,false,0);
 						mGp.profileAdapter.sort();
@@ -1297,6 +1300,8 @@ public class ProfileMaintenance {
 						else prof_host="";
 //						int pos=glblParms.profileListView.getFirstVisiblePosition();
 //						int posTop=glblParms.profileListView.getChildAt(0).getTop();
+						if (mGp.profileAdapter.getItem(0).getType().equals(""))
+							mGp.profileAdapter.remove(0);
 						updateRemoteProfileItem(true, prof_name, prof_act,prof_dir,
 								prof_user,prof_pass,prof_share,prof_addr,prof_host,false,0);
 						mGp.profileAdapter.sort();
@@ -1370,7 +1375,7 @@ public class ProfileMaintenance {
 				NtlmPasswordAuthentication auth=new NtlmPasswordAuthentication(null, user, pass);
 				String err_msg="";
 				if (host.equals("")) {
-					if (isIpAddrReachable(addr, 5000)) {
+					if (NetworkUtil.isNbtAddressActive(addr)) {
 						try {
 							UniAddress dc = UniAddress.getByName( addr );
 					        SmbSession.logon( dc, auth );
@@ -1967,6 +1972,8 @@ public class ProfileMaintenance {
 		});
 		// directory filterボタンの指定
 		Button dir_filter_btn = (Button) dialog.findViewById(R.id.sync_profile_dir_filter_btn);
+		if (spinner_master.getCount()>0) dir_filter_btn.setEnabled(true);
+		else dir_filter_btn.setEnabled(false);
 		dir_filter_btn.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				processDirectoryFilterButton(dialog, prof_dir_filter);
@@ -2032,6 +2039,8 @@ public class ProfileMaintenance {
 						dialog.dismiss();
 //						int pos=glblParms.profileListView.getFirstVisiblePosition();
 //						int posTop=glblParms.profileListView.getChildAt(0).getTop();
+						if (mGp.profileAdapter.getItem(0).getType().equals(""))
+							mGp.profileAdapter.remove(0);
 						String m_typ=getProfileType(prof_master,mGp.profileAdapter);
 						String t_typ=getProfileType(prof_target,mGp.profileAdapter);
 						updateSyncProfileItem(true, prof_name, prof_act,
@@ -2580,6 +2589,8 @@ public class ProfileMaintenance {
 		});
 		// directory filterボタンの指定
 		Button dir_filter_btn = (Button) dialog.findViewById(R.id.sync_profile_dir_filter_btn);
+		if (spinner_master.getCount()>0) dir_filter_btn.setEnabled(true);
+		else dir_filter_btn.setEnabled(false);
 		dir_filter_btn.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				processDirectoryFilterButton(dialog, n_dir_filter);
@@ -4310,6 +4321,7 @@ public class ProfileMaintenance {
 		final Button btn_scan = (Button) dialog.findViewById(R.id.scan_remote_ntwk_btn_ok);
 		final Button btn_cancel = (Button) dialog.findViewById(R.id.scan_remote_ntwk_btn_cancel);
 		final Button scan_cancel = (Button) dialog.findViewById(R.id.scan_remote_ntwk_progress_cancel);
+		tvmsg.setText("");
 		scan_cancel.setText(R.string.msgs_progress_spin_dlg_addr_cancel);
 		ll_addr.setVisibility(LinearLayout.GONE);
 		ll_prog.setVisibility(LinearLayout.VISIBLE);
@@ -4512,18 +4524,20 @@ public class ProfileMaintenance {
 	private boolean isIpAddrReachableWithRetry(String address) {
 		boolean reachable=false;
 		int rc=0;
-		for (int i=0;i<2;i++) {
+		for (int i=0;i<1;i++) {
 			rc++;
 			if (NetworkUtil.isSmbHostIpAddressReachable(address,300)) {
 				reachable=true;
 				break;
 			}
+			SystemClock.sleep(50);
 		}
        	util.addDebugLogMsg(1,"I","isIpAddrReachable Address="+address+
         								", reachable="+reachable+", retry count="+rc);
 		return reachable;
 	};
 
+	@SuppressWarnings("unused")
 	private boolean isIpAddrReachable(String address, int timeout) {
 		boolean reachable=NetworkUtil.isSmbHostIpAddressReachable(address,timeout);
        	util.addDebugLogMsg(1,"I","isIpAddrReachable Address="+address+

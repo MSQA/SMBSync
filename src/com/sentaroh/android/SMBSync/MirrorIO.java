@@ -618,7 +618,7 @@ public class MirrorIO implements Runnable {
 	private boolean isIpAddrReachable(String address) {
 		boolean reachable=false;
 		for (int i=0;i<5;i++) {
-			if (NetworkUtil.isSmbHostIpAddressReachable(address, 1500)) {
+			if (NetworkUtil.isNbtAddressActive(address)) {
 				reachable=true;
 				break;
 			}
