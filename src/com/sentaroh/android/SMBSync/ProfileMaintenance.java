@@ -1709,11 +1709,12 @@ public class ProfileMaintenance {
 			if (pli.getType().equals(SMBSYNC_PROF_TYPE_REMOTE) || 
 					pli.getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
 				cnt++;
+//				Log.v("","master added="+pli.getName());
 				adapter_spinner.add(pli.getType()+" "+pli.getName());
 				if (prof_master.equals(pli.getName())) pos=cnt;
 			}
 		}
-		
+//		Log.v("","set master master="+prof_master+", pos="+pos);
 		spinner_master.setSelection(pos);
 		adapter_spinner.notifyDataSetChanged();
 	};
@@ -1740,12 +1741,19 @@ public class ProfileMaintenance {
 						if (prof_target.equals(pli.getName())) pos=cnt;
 					}
 				} else if (mst_type.equals(SMBSYNC_PROF_TYPE_LOCAL)) {
-					if (pli.getType().equals(SMBSYNC_PROF_TYPE_REMOTE) || 
-							pli.getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
+					if (pli.getType().equals(SMBSYNC_PROF_TYPE_REMOTE)) {
+						cnt++;
+						adapter_spinner.add(pli.getType()+" "+pli.getName());
+						if (prof_target.equals(pli.getName())) pos=cnt;
+					} else {
 						if (!prof_master.equals(pli.getName())) {
-							cnt++;
-							adapter_spinner.add(pli.getType()+" "+pli.getName());
-							if (prof_target.equals(pli.getName())) pos=cnt;
+							String m_path=m_pli.getLocalMountPoint()+"/"+m_pli.getDir();
+							String t_path=pli.getLocalMountPoint()+"/"+pli.getDir();
+							if (!m_path.equals(t_path)) {
+								cnt++;
+								adapter_spinner.add(pli.getType()+" "+pli.getName());
+								if (prof_target.equals(pli.getName())) pos=cnt;
+							}
 						}
 					}
 				}
@@ -1862,6 +1870,22 @@ public class ProfileMaintenance {
 		} else {
 			setSyncTargetProfileSpinner(spinner_target,"","");
 		}
+		
+		final Button swap_master_target = (Button)dialog.findViewById(R.id.sync_profile_edit_change_master_and_target);
+		if (spinner_master.getCount()>0 && spinner_target.getCount()>0) swap_master_target.setEnabled(true);
+		else swap_master_target.setEnabled(false);
+		swap_master_target .setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View arg0) {
+				String mst=spinner_target.getSelectedItem().toString().substring(2);
+				String tgt=spinner_master.getSelectedItem().toString().substring(2);;
+				setSyncMasterProfileSpinner(spinner_master,mst);
+				setSyncTargetProfileSpinner(spinner_target,mst,tgt);
+				setMasterProfileEditButtonListener(dialog, mst);
+				setTargetProfileEditButtonListener(dialog, tgt);
+			}
+		});
+
 //		Log.v("","add main sp_m="+spinner_master.getSelectedItem()+", sp_t="+spinner_target.getSelectedItem());
 		
 		final ImageButton ib_edit_master = (ImageButton)dialog.findViewById(R.id.sync_profile_edit_master);
@@ -1905,7 +1929,7 @@ public class ProfileMaintenance {
 									m_pli.getShare(), m_pli.getDir(),m_pli.getHostname(), "");
 						} else if (m_pli.getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
 							editProfileLocal(m_name, SMBSYNC_PROF_TYPE_LOCAL,
-									num, m_pli.getLocalMountPoint(), m_pli.getActive(),
+									num, m_pli.getActive(), m_pli.getLocalMountPoint(), 
 									m_pli.getDir(), "");
 						}
 					}
@@ -1934,7 +1958,7 @@ public class ProfileMaintenance {
 									m_pli.getShare(), m_pli.getDir(),m_pli.getHostname(), "");
 						} else if (m_pli.getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
 							editProfileLocal(t_name, SMBSYNC_PROF_TYPE_LOCAL,
-									num, m_pli.getLocalMountPoint(), m_pli.getActive(),
+									num, m_pli.getActive(), m_pli.getLocalMountPoint(), 
 									m_pli.getDir(), "");
 						}
 					}
@@ -2543,12 +2567,27 @@ public class ProfileMaintenance {
 								m_pli.getShare(), m_pli.getDir(),m_pli.getHostname(), "");
 					} else if (m_pli.getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
 						editProfileLocal(m_name, prof_type,
-								num, m_pli.getLocalMountPoint(), m_pli.getActive(),
+								num, m_pli.getActive(), m_pli.getLocalMountPoint(), 
 								m_pli.getDir(), "");
 					}
 				}
 			}
 			
+		});
+
+		final Button swap_master_target = (Button)dialog.findViewById(R.id.sync_profile_edit_change_master_and_target);
+		if (spinner_master.getCount()>0 && spinner_target.getCount()>0) swap_master_target.setEnabled(true);
+		else swap_master_target.setEnabled(false);
+		swap_master_target .setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View arg0) {
+				String mst=spinner_target.getSelectedItem().toString().substring(2);
+				String tgt=spinner_master.getSelectedItem().toString().substring(2);;
+				setSyncMasterProfileSpinner(spinner_master,mst);
+				setSyncTargetProfileSpinner(spinner_target,mst,tgt);
+				setMasterProfileEditButtonListener(dialog, mst);
+				setTargetProfileEditButtonListener(dialog, tgt);
+			}
 		});
 
 		ib_edit_target.setOnClickListener(new OnClickListener(){

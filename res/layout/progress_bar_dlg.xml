@@ -41,7 +41,7 @@
         android:layout_marginTop="5dp"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="@string/msgs_progress_bar_dlg_aterm_cancel" />
 
 </LinearLayout>

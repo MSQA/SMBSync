@@ -532,20 +532,48 @@ public class MirrorIO implements Runnable {
 
 // Check local directory access		
 		if (syncMasterProfType.equals("L") && syncTargetProfType.equals("L")) {
-			File lf=new File(mipl.getMasterLocalMountPoint());
-			boolean ex=lf.exists();
-			boolean cr=lf.canRead();
+			File m_lf=new File(mipl.getMasterLocalMountPoint());
+			boolean ex=m_lf.exists();
+			boolean cr=m_lf.canRead();
 			if (!ex || (ex && !cr)) {
 				addLogMsg("E",mipl.getMasterLocalMountPoint(),msgs_mirror_master_local_mount_point_not_readable);
 				isSyncParmError=true;
 			}
-			lf=new File(mipl.getTargetLocalMountPoint());
-			ex=lf.exists();
-			boolean cw=lf.canWrite();
+					
+			File t_lf=new File(mipl.getTargetLocalMountPoint());
+			ex=t_lf.exists();
+			boolean cw=t_lf.canWrite();
 			if (!ex || (ex && !cw)) {
 				addLogMsg("E",mipl.getTargetLocalMountPoint(),msgs_mirror_target_local_mount_point_not_writable);
 				isSyncParmError=true;
 			}
+			try {
+				File t_out=new File(mipl.getTargetLocalMountPoint()+"/SMBSync.work.tmp");
+				if (t_out.exists()) t_out.delete();
+				if (t_out.createNewFile()) {
+					File m_out=new File(mipl.getMasterLocalMountPoint()+"/SMBSync.work.tmp");
+					if (m_out.lastModified()==t_out.lastModified()) {
+						//Same physical dir
+						if (mipl.getMasterLocalDir().equals(mipl.getTargetLocalDir())) {
+							addLogMsg("E",mipl.getLocalMountPoint(),
+									String.format(msgs_mirror_physcal_access_to_same_dir,
+											mipl.getMasterLocalMountPoint(),
+											mipl.getTargetLocalMountPoint()));
+							isSyncParmError=true;
+						}
+					}
+					t_out.delete();
+				} else {
+					//Create error
+					addLogMsg("E",mipl.getLocalMountPoint(),
+							String.format(msgs_mirror_physcal_access_check_create_error,
+									mipl.getTargetLocalMountPoint()));
+					isSyncParmError=true;
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
 		} else {
 			if (syncMasterProfType.equals("L")) {
 				File lf=new File(mipl.getLocalMountPoint());
@@ -1173,10 +1201,11 @@ public class MirrorIO implements Runnable {
 				}
 			} else {
 				if (glblParms.debugLevel>=1) 
-					addDebugLogMsg(1,"W","Local file ", masterUrl,
+					addDebugLogMsg(1,"E","Local file ", masterUrl,
 							" was not copied, because file/dir not existed.");
-				addLogMsg("I",masterUrl,msgs_mirror_prof_master_not_found );
+				addLogMsg("E",masterUrl,msgs_mirror_prof_master_not_found );
 				tcMirror.setThreadMessage(msgs_mirror_prof_master_not_found+","+masterUrl);
+				isExceptionOccured=true;
 				return -1;
 				
 			}
@@ -1393,10 +1422,11 @@ public class MirrorIO implements Runnable {
 				}
 			} else {
 				if (glblParms.debugLevel>=1) 
-					addDebugLogMsg(1,"W","Local file ", masterUrl,
+					addDebugLogMsg(1,"E","Local file ", masterUrl,
 							" was not copied, because file/dir not existed.");
-				addLogMsg("I",masterUrl,msgs_mirror_prof_master_not_found );
+				addLogMsg("E",masterUrl,msgs_mirror_prof_master_not_found );
 				tcMirror.setThreadMessage(msgs_mirror_prof_master_not_found+","+masterUrl);
+				isExceptionOccured=true;
 				return -1;
 				
 			}
@@ -1575,6 +1605,7 @@ public class MirrorIO implements Runnable {
 							" was not copied, because file/dir not found");
 				addMsgToProgDlg(true,"E",masterUrl,msgs_mirror_prof_master_not_found);
 				tcMirror.setThreadMessage(msgs_mirror_prof_master_not_found+","+masterUrl);
+				isExceptionOccured=true;
 				return -1;
 			}
 		} catch (MalformedURLException e) {
@@ -1883,6 +1914,7 @@ public class MirrorIO implements Runnable {
 							" was not copied, because file/dir not found");
 				addMsgToProgDlg(true,"E",masterUrl,msgs_mirror_prof_master_not_found);
 				tcMirror.setThreadMessage(msgs_mirror_prof_master_not_found+","+masterUrl);
+				isExceptionOccured=true;
 				return -1;
 				
 			}
@@ -2040,8 +2072,9 @@ public class MirrorIO implements Runnable {
 				if (glblParms.debugLevel>=1) 
 					addDebugLogMsg(1,"E","Local file ", masterUrl,
 							" was not copied, because file/dir not existed.");
-				addLogMsg("I",masterUrl,msgs_mirror_prof_master_not_found);
+				addLogMsg("E",masterUrl,msgs_mirror_prof_master_not_found);
 				tcMirror.setThreadMessage(msgs_mirror_prof_master_not_found+","+masterUrl);
+				isExceptionOccured=true;
 				return -1;
 				
 			}
@@ -2182,8 +2215,9 @@ public class MirrorIO implements Runnable {
 				if (glblParms.debugLevel>=1) 
 					addDebugLogMsg(1,"E","Local file ", masterUrl,
 							" was not copied, because file/dir not existed.");
-				addLogMsg("I",masterUrl,msgs_mirror_prof_master_not_found);
+				addLogMsg("E",masterUrl,msgs_mirror_prof_master_not_found);
 				tcMirror.setThreadMessage(msgs_mirror_prof_master_not_found+","+masterUrl);
+				isExceptionOccured=true;
 				return -1;
 				
 			}
@@ -3288,6 +3322,8 @@ public class MirrorIO implements Runnable {
 	static private String msgs_mirror_task_result_cancel;
 	static private String msgs_mirror_master_local_mount_point_not_readable;
 	static private String msgs_mirror_target_local_mount_point_not_writable;
+	static private String msgs_mirror_physcal_access_to_same_dir;
+	static private String msgs_mirror_physcal_access_check_create_error;
 	static private String msgs_mirror_same_directory_ignored;
 	
 	static private void loadMsgString(GlobalParameters glblParms) {
@@ -3324,6 +3360,8 @@ public class MirrorIO implements Runnable {
 		
 		msgs_mirror_master_local_mount_point_not_readable=glblParms.svcContext.getString(R.string.msgs_mirror_master_local_mount_point_not_readable);
 		msgs_mirror_target_local_mount_point_not_writable=glblParms.svcContext.getString(R.string.msgs_mirror_target_local_mount_point_not_writable);
+		msgs_mirror_physcal_access_to_same_dir=glblParms.svcContext.getString(R.string.msgs_mirror_physcal_access_to_same_dir);
+		msgs_mirror_physcal_access_check_create_error=glblParms.svcContext.getString(R.string.msgs_mirror_physcal_access_check_create_error);
 		
 		msgs_mirror_same_directory_ignored=glblParms.svcContext.getString(R.string.msgs_mirror_same_directory_ignored);
 		

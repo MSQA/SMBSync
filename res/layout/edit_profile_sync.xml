@@ -65,6 +65,13 @@
                 </EditText>
             </LinearLayout>
 
+            <Button
+                android:id="@+id/sync_profile_edit_change_master_and_target"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/msgs_sync_profile_dlg_change_master_and_target" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

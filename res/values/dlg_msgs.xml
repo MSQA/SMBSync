@@ -33,6 +33,7 @@
     
     <string name="msgs_sync_profile_dlg_active">Active</string>
     <string name="msgs_sync_profile_dlg_profile">Profile Name</string>
+    <string name="msgs_sync_profile_dlg_change_master_and_target">Swap the target and master profile</string>
     <string name="msgs_sync_profile_dlg_master">Master Profile</string>
     <string name="msgs_sync_profile_dlg_target">Target Profile</string>
     <string name="msgs_sync_profile_dlg_syncopt">Sync Option</string>
