@@ -307,6 +307,7 @@ class ProfileListItem implements Serializable,Comparable<ProfileListItem>{
 	private String profileShare="";
 	private String profileAddr="";
 	private String profileHostname="";
+	private String profilePort="";
 	private String profileUser="";
 	private String profilePass="";
 	private String profileSyncType="";
@@ -338,7 +339,7 @@ class ProfileListItem implements Serializable,Comparable<ProfileListItem>{
 	// constructor for remote profile
 	public ProfileListItem(String pfg, String pft,String pfn, String pfa, 
 			String pf_user,String pf_pass,String pf_addr, String pf_hostname, 
-			String pf_share, String pf_dir, boolean ic)
+			String pf_port, String pf_share, String pf_dir, boolean ic)
 	{
 		profileGroup=pfg;
 		profileType = pft;
@@ -349,6 +350,7 @@ class ProfileListItem implements Serializable,Comparable<ProfileListItem>{
 		profilePass=pf_pass;
 		profileShare=pf_share;
 		profileAddr=pf_addr;
+		profilePort=pf_port;
 		profileHostname=pf_hostname;
 		profileChk = ic;
 	};
@@ -386,6 +388,7 @@ class ProfileListItem implements Serializable,Comparable<ProfileListItem>{
 	public String getShare()	{return profileShare;}
 	public String getDir()		{return profileDir;}
 	public String getAddr()		{return profileAddr;}
+	public String getPort()		{return profilePort;}
 	public String getHostname()	{return profileHostname;}
 	public String getSyncType()	{return profileSyncType;}
 	public String getMasterType(){return profileMasterType;}
@@ -410,6 +413,7 @@ class ProfileListItem implements Serializable,Comparable<ProfileListItem>{
 	public void setShare(String p)	    {profileShare=p;}
 	public void setDir(String p)		{profileDir=p;}
 	public void setAddr(String p)		{profileAddr=p;}
+	public void setPort(String p)		{profilePort=p;}
 	public void setHostname(String p)	{profileHostname=p;}
 	public void setSyncType(String p)	{profileSyncType=p;}
 	public void setMasterType(String p) {profileMasterType=p;}

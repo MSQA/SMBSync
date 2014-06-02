@@ -92,6 +92,7 @@ public class MirrorIO implements Runnable {
 	private String mirrorIoRootDir="";
 	
 	private String syncRemoteAddr;
+	private String syncRemotePort="";
 	private String syncRemoteShare;
 	private String syncRemoteDir;
 	private String syncLocalDir;
@@ -507,10 +508,12 @@ public class MirrorIO implements Runnable {
 		}
 		syncProfileNotUseLastModifiedForRemote=mipl.isNotUseLastModifiedForRemote();
 		
+		if (!mipl.getRemotePort().equals("")) syncRemotePort=":"+mipl.getRemotePort();
+		
 		if (syncRemoteDir.equals("")) {
-			remoteUrl= "smb://" + syncRemoteAddr + "/"+syncRemoteShare+syncRemoteDir;
+			remoteUrl= "smb://"+syncRemoteAddr+"/"+syncRemoteShare+syncRemoteDir;
 		}else {
-			remoteUrl= "smb://" + syncRemoteAddr + "/"+syncRemoteShare+"/"+syncRemoteDir;
+			remoteUrl= "smb://"+syncRemoteAddr+"/"+syncRemoteShare+"/"+syncRemoteDir;
 		}
 		remoteMasterDir=remoteUrl;
 //		if (syncLocalDir.equals("")) {
@@ -620,6 +623,7 @@ public class MirrorIO implements Runnable {
 				", syncTargetProfType="+syncTargetProfType+
 				", syncType="+ syncType + ", syncProfName=" + syncProfName
 				+ ", syncRemoteAddr=" + syncRemoteAddr
+				+ ", syncRemotePort=" + syncRemotePort
 				+ ", syncRemoteShare=" + syncRemoteShare
 				+ ", syncRemoteDir=" + syncRemoteDir
 				+ ", syncLocalDir=" + syncLocalDir
@@ -3377,6 +3381,7 @@ class MirrorIoParmList {
 	private String mp_mirror_type="";
 	private String mp_remote_addr="";
 	private String mp_remote_host="";
+	private String mp_remote_port="";
 	private String mp_remote_share="";
 	private String mp_remote_dir="";
 	private String mp_local_dir="";
@@ -3402,6 +3407,7 @@ class MirrorIoParmList {
 			String type,
 			String addr,
 			String host,
+			String port,
 			String share,
 			String r_dir,
 			String lmp,
@@ -3422,6 +3428,7 @@ class MirrorIoParmList {
 		mp_mirror_type=type;
 		mp_remote_addr=addr;
 		mp_remote_host=host;
+		mp_remote_port=port;
 		mp_remote_share=share;
 		mp_remote_dir=r_dir;
 		mp_local_mount_point=lmp;
@@ -3444,6 +3451,7 @@ class MirrorIoParmList {
 	public String getRemoteAddr() { return mp_remote_addr;}
 	public String getHostName()   { return mp_remote_host;}
 	public String getRemoteShare() { return mp_remote_share;}
+	public String getRemotePort() { return mp_remote_port;}
 	public String getRemoteDir() { return mp_remote_dir;}
 	public String getLocalDir() { return mp_local_dir;}
 	public String getLocalMountPoint() { return mp_local_mount_point;}
@@ -3469,6 +3477,7 @@ class MirrorIoParmList {
 	public void setRemoteAddr(String p) { mp_remote_addr=p;}
 	public void setHostName(String p)   { mp_remote_host=p;}
 	public void setRemoteShare(String p) { mp_remote_share=p;}
+	public void setRemotePort(String p) { mp_remote_port=p;}
 	public void setRemoteDir(String p) { mp_remote_dir=p;}
 	public void setLocalDir(String p) { mp_local_dir=p;}
 	public void setLocalMountPoint(String p) { mp_local_mount_point=p;}

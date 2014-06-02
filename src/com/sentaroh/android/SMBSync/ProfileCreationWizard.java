@@ -76,6 +76,7 @@ public class ProfileCreationWizard {
 		public String remote_user_pass="";
 		public String remote_share_name="";
 		public String remote_dir_name="";
+		public String remote_port="";
 		public boolean remote_use_hostname=true;
 		public boolean remote_use_user_pass=true;
 	};
@@ -1498,6 +1499,7 @@ public class ProfileCreationWizard {
 						mWizData.prof_node[i].remote_user_pass,
 						mWizData.prof_node[i].remote_host_ipaddr,
 						mWizData.prof_node[i].remote_host_name,
+						mWizData.prof_node[i].remote_port,
 						mWizData.prof_node[i].remote_share_name,
 						mWizData.prof_node[i].remote_dir_name,false);
 				t_prof.add(r_pli);

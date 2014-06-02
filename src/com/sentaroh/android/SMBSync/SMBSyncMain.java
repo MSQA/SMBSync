@@ -1960,7 +1960,7 @@ public class SMBSyncMain extends FragmentActivity {
 				public void onClick(CharSequence menuTitle) {
 					profMaint.addRemoteProfile(true, "",SMBSYNC_PROF_ACTIVE,
 							mGp.settingAddr,mGp.settingUsername,
-							mGp.settingPassword,"","","","");
+							mGp.settingPassword,"","","","","");
 					resetAllCheckedItem();
 				}
 		});
@@ -2084,7 +2084,7 @@ public class SMBSyncMain extends FragmentActivity {
 		if (prof_type.equals(SMBSYNC_PROF_TYPE_REMOTE)) {
 			profMaint.editProfileRemote(prof_name, prof_type, prof_num, prof_act,
 					item.getAddr(),item.getUser(),item.getPass(),item.getShare(),
-					item.getDir(),item.getHostname(),"");
+					item.getDir(),item.getHostname(),item.getPort(), "");
 		} else if (prof_type.equals(SMBSYNC_PROF_TYPE_LOCAL)) {
 			profMaint.editProfileLocal(prof_name, prof_type, prof_num, prof_act,
 					item.getLocalMountPoint(),item.getDir(),"");
@@ -2861,6 +2861,7 @@ public class SMBSyncMain extends FragmentActivity {
 		String mp_profname, mp_master_name, mp_target_name;
 		String local_prof_lmp="";
 		String remote_host_name="";
+		String remote_host_port="";
 
 		String master_local_dir="", master_local_mp="";
 		String target_local_dir="", target_local_mp="";
@@ -2885,6 +2886,7 @@ public class SMBSyncMain extends FragmentActivity {
 				} else {
 					remote_prof_addr = item_master.getAddr();
 					remote_host_name = item_master.getHostname();
+					remote_host_port = item_master.getPort();
 					remote_prof_share = item_master.getShare();
 					remote_prof_userid = item_master.getUser();
 					remote_prof_pass = item_master.getPass();
@@ -2907,6 +2909,7 @@ public class SMBSyncMain extends FragmentActivity {
 				} else {
 					remote_prof_addr = item_target.getAddr();
 					remote_host_name = item_target.getHostname();
+					remote_host_port = item_target.getPort();
 					remote_prof_share = item_target.getShare();
 					remote_prof_userid = item_target.getUser();
 					remote_prof_pass = item_target.getPass();
@@ -2921,7 +2924,8 @@ public class SMBSyncMain extends FragmentActivity {
 		util.addDebugLogMsg(9,"I","alp="+mp_profname+
 				","+mirror_prof_master_type+
 				","+mirror_prof_target_type+
-					","+mirror_prof_type+","+remote_prof_addr+","+remote_host_name+","+remote_prof_share+
+					","+mirror_prof_type+","+remote_prof_addr+","+remote_host_name+
+					","+remote_host_port+","+remote_prof_share+
 					","+remote_prof_dir+","+remote_prof_userid+","+remote_prof_pass+
 					","+local_prof_lmp+","+local_prof_dir+
 					","+master_local_mp+","+master_local_dir+
@@ -2942,6 +2946,7 @@ public class SMBSyncMain extends FragmentActivity {
 					mirror_prof_type,
 					remote_prof_addr,
 					remote_host_name,
+					remote_host_port,
 					remote_prof_share,
 					remote_prof_dir,
 					local_prof_lmp,

@@ -31,6 +31,8 @@
 	<string name="msgs_remote_profile_dlg_logon_success">ログオンが正常に完了しました</string>
 	<string name="msgs_remote_profile_dlg_logon_error">ログオンエラーが発生しました</string>
 	<string name="msgs_remote_profile_dlg_logon_cancel">ログオンが中止されました</string>
+	<string name="msgs_remote_profile_dlg_port">ポート番号</string>
+	<string name="msgs_remote_profile_dlg_use_port_number">ポート番号を指定する</string>
 	
     <string name="msgs_sync_profile_dlg_active">有効</string>
     <string name="msgs_sync_profile_dlg_profile">プロファイル名</string>
@@ -79,8 +81,11 @@
    	
    	<string name="msgs_progress_spin_dlg_addr_cancel">スキャン中止</string>
    	<string name="msgs_scan_ip_address_select_title">リモートネットワークのスキャン</string>
-	<string name="msgs_scan_ip_address_scan_btn">スキャン</string>   	
-   	<string name="msgs_ip_address_no_address">---検出されませんでした---</string>
+	<string name="msgs_scan_ip_address_scan_btn">スキャン</string>
+	<string name="msgs_scan_ip_address_press_scan_btn">IPアドレスを指定して、スキャンボタンを押してください。</string>
+	<string name="msgs_scan_ip_address_not_detected">リモートSMBホストが検知できませんでした。</string>
+	<string name="msgs_scan_ip_address_select_detected_host">検知結果のIPアドレスかホスト名をタップして選択してください。</string>
+	<string name="msgs_scan_ip_address_scan_result_title">検知結果</string>
    	<string name="msgs_ip_address_scan_progress">リモートネットワーク スキャンが%s%% 終了</string>
    	
    	<string name="msgs_ip_address_range_dlg_begin">開始</string>
