@@ -4345,6 +4345,7 @@ public class ProfileMaintenance {
 	};
 
 	private int mScanCompleteCount=0, mScanAddrCount=0;
+	private String mLockScanCompleteCount="";
 	private void scanRemoteNetwork(
 			final Dialog dialog,
 			final ListView lv_ipaddr,
@@ -4405,7 +4406,7 @@ public class ProfileMaintenance {
 						}
 					}
 					if (!scan_end) {
-						for (int wc=0;wc<100;wc++) {
+						for (int wc=0;wc<210;wc++) {
 							if (!tc.isEnable()) break;
 							SystemClock.sleep(30);
 						}
@@ -4418,6 +4419,13 @@ public class ProfileMaintenance {
 							closeScanRemoteNetworkProgressDlg(dialog, p_ntfy, lv_ipaddr, adap, tvmsg);
 						}
 					});
+				} else {
+					handler.postDelayed(new Runnable() {// UI thread
+						@Override
+						public void run() {
+							closeScanRemoteNetworkProgressDlg(dialog, p_ntfy, lv_ipaddr, adap, tvmsg);
+						}
+					},10000);
 				}
 			}
 		})
@@ -4459,33 +4467,37 @@ public class ProfileMaintenance {
 			@Override
 			public void run() {
 				if (isIpAddrReachable(addr)) {
-					mScanCompleteCount++;
-					String srv_name=getSmbHostName(addr);
-					ScanAddressResultListItem li=new ScanAddressResultListItem();
-					li.server_address=addr;
-					li.server_name=srv_name;
-					ipAddressList.add(li);
-					Collections.sort(ipAddressList, new Comparator<ScanAddressResultListItem>(){
-						@Override
-						public int compare(ScanAddressResultListItem lhs,
-								ScanAddressResultListItem rhs) {
-							return lhs.server_address.compareTo(rhs.server_address);
-						}
-					});
+					synchronized(mLockScanCompleteCount) {
+						mScanCompleteCount++;
+						String srv_name=getSmbHostName(addr);
+						ScanAddressResultListItem li=new ScanAddressResultListItem();
+						li.server_address=addr;
+						li.server_name=srv_name;
+						ipAddressList.add(li);
+						Collections.sort(ipAddressList, new Comparator<ScanAddressResultListItem>(){
+							@Override
+							public int compare(ScanAddressResultListItem lhs,
+									ScanAddressResultListItem rhs) {
+								return lhs.server_address.compareTo(rhs.server_address);
+							}
+						});
+					}
 				} else {
-					mScanCompleteCount++;
+					synchronized(mLockScanCompleteCount) {
+						mScanCompleteCount++;
+					}
 				}
 				handler.post(new Runnable() {// UI thread
 					@Override
 					public void run() {
-						synchronized(lv_ipaddr) {
+						synchronized(mLockScanCompleteCount) {
 							lv_ipaddr.setSelection(lv_ipaddr.getCount());
 							adap.notifyDataSetChanged();
 							String p_txt=String.format(scan_prog, 
 									(mScanCompleteCount*100)/mScanAddrCount);
 							tvmsg.setText(p_txt);
 							
-							if (mScanCompleteCount==mScanAddrCount) {
+							if (mScanCompleteCount>=mScanAddrCount) {
 								closeScanRemoteNetworkProgressDlg(dialog, p_ntfy, lv_ipaddr, adap, tvmsg);
 							}
 						}
@@ -4499,8 +4511,8 @@ public class ProfileMaintenance {
 	private boolean isIpAddrReachable(String address) {
 		boolean reachable=false;
 //		reachable=NetworkUtil.ping(address);
-		if (!NetworkUtil.isIpAddressAndPortConnected(address,139,5000)) {
-			reachable=NetworkUtil.isIpAddressAndPortConnected(address,445,5000);
+		if (!NetworkUtil.isIpAddressAndPortConnected(address,139,3000)) {
+			reachable=NetworkUtil.isIpAddressAndPortConnected(address,445,3000);
 		} else reachable=true;
 		util.addDebugLogMsg(2,"I","isIpAddrReachable Address="+address+", reachable="+reachable);
 		return reachable;
