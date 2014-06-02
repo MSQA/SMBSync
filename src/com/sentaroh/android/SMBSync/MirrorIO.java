@@ -1919,42 +1919,42 @@ public class MirrorIO implements Runnable {
 				
 			}
 		} catch (MalformedURLException e) {
-			addLogMsg("E","",e.getMessage());//e.toString());
 			addLogMsg("E","","From="+masterUrl+", To="+targetUrl);
+			addLogMsg("E","",e.getMessage());//e.toString());
 			printStackTraceElement(e.getStackTrace());
 			isExceptionOccured=true;
 			tcMirror.setThreadMessage(e.getMessage());
 			if (!tmp_target.equals("")) deleteLocalTempFile(tmp_target);
 			return -1;
 		} catch (SmbException e) {
+			addLogMsg("E","","From="+masterUrl+", To="+targetUrl);
 			String[] e_msg=NetworkUtil.analyzeNtStatusCode(e, glblParms.svcContext, 
 					masterUrl,ntlmPasswordAuth.getUsername());
 			addLogMsg("E","",e_msg[0]);//e.toString());
-			addLogMsg("E","","From="+masterUrl+", To="+targetUrl);
 			printStackTraceElement(e.getStackTrace());
 			isExceptionOccured=true;
 			tcMirror.setThreadMessage(e_msg[0]);
 			if (!tmp_target.equals("")) deleteLocalTempFile(tmp_target);
 			return -1;
 		} catch (UnknownHostException e) {
-			addLogMsg("E","",e.getMessage());//e.toString());
 			addLogMsg("E","","From="+masterUrl+", To="+targetUrl);
+			addLogMsg("E","",e.getMessage());//e.toString());
 			printStackTraceElement(e.getStackTrace());
 			isExceptionOccured=true;
 			tcMirror.setThreadMessage(e.getMessage());
 			if (!tmp_target.equals("")) deleteLocalTempFile(tmp_target);
 			return -1;
 		} catch (FileNotFoundException e) {
-			addLogMsg("E","",e.getMessage());//e.toString());
 			addLogMsg("E","","From="+masterUrl+", To="+targetUrl);
+			addLogMsg("E","",e.getMessage());//e.toString());
 			printStackTraceElement(e.getStackTrace());
 			isExceptionOccured=true;
 			tcMirror.setThreadMessage(e.getMessage());
 			if (!tmp_target.equals("")) deleteLocalTempFile(tmp_target);
 			return -1;
 		} catch (IOException e) {
-			addLogMsg("E","",e.getMessage());//e.toString());
 			addLogMsg("E","","From="+masterUrl+", To="+targetUrl);
+			addLogMsg("E","",e.getMessage());//e.toString());
 			printStackTraceElement(e.getStackTrace());
 			isExceptionOccured=true;
 			tcMirror.setThreadMessage(e.getMessage());
@@ -2080,42 +2080,42 @@ public class MirrorIO implements Runnable {
 			}
 		} catch (MalformedURLException e) {
 			printStackTraceElement(e.getStackTrace());
-			addLogMsg("E","",e.getMessage());//e.toString());
 			addLogMsg("E","","From="+masterUrl+", To="+targetUrl);
+			addLogMsg("E","",e.getMessage());//e.toString());
 			isExceptionOccured=true;
 			tcMirror.setThreadMessage(e.getMessage());
 			if (!tmp_target.equals("")) deleteRemoteTempFile(tmp_target);
 			return -1;
 		} catch (SmbException e) {
 			printStackTraceElement(e.getStackTrace());
+			addLogMsg("E","","From="+masterUrl+", To="+targetUrl);
 			String[] e_msg=NetworkUtil.analyzeNtStatusCode(e, glblParms.svcContext, 
 					targetUrl,ntlmPasswordAuth.getUsername());
 			addLogMsg("E","",e_msg[0]);//e.toString());
-			addLogMsg("E","","From="+masterUrl+", To="+targetUrl);
 			isExceptionOccured=true;
 			tcMirror.setThreadMessage(e_msg[0]);
 			if (!tmp_target.equals("")) deleteRemoteTempFile(tmp_target);
 			return -1;
 		} catch (UnknownHostException e) {
 			printStackTraceElement(e.getStackTrace());
-			addLogMsg("E","",e.getMessage());//e.toString());
 			addLogMsg("E","","From="+masterUrl+", To="+targetUrl);
+			addLogMsg("E","",e.getMessage());//e.toString());
 			isExceptionOccured=true;
 			tcMirror.setThreadMessage(e.getMessage());
 			if (!tmp_target.equals("")) deleteRemoteTempFile(tmp_target);
 			return -1;
 		} catch (FileNotFoundException e) {
 			printStackTraceElement(e.getStackTrace());
-			addLogMsg("E","",e.getMessage());//e.toString());
 			addLogMsg("E","","From="+masterUrl+", To="+targetUrl);
+			addLogMsg("E","",e.getMessage());//e.toString());
 			isExceptionOccured=true;
 			tcMirror.setThreadMessage(e.getMessage());
 			if (!tmp_target.equals("")) deleteRemoteTempFile(tmp_target);
 			return -1;
 		} catch (IOException e) {
 			printStackTraceElement(e.getStackTrace());
-			addLogMsg("E","",e.getMessage());//e.toString());
 			addLogMsg("E","","From="+masterUrl+", To="+targetUrl);
+			addLogMsg("E","",e.getMessage());//e.toString());
 			isExceptionOccured=true;
 			tcMirror.setThreadMessage(e.getMessage());
 			if (!tmp_target.equals("")) deleteRemoteTempFile(tmp_target);
