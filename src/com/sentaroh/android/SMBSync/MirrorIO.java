@@ -815,51 +815,57 @@ public class MirrorIO implements Runnable {
 	final private void buildMediaStoreDirList() {
 		String [] proj = new String[] {MediaStore.MediaColumns.DATA};
     	ContentResolver resolver = glblParms.svcContext.getContentResolver();
+        String c_m_d="";
     	//build image
         Cursor ci = resolver.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI ,
         		proj ,null ,null ,"_data");
-        String c_m_d="";
-        while( ci.moveToNext() ){
-        	String data=ci.getString( ci.getColumnIndex(MediaStore.MediaColumns.DATA ));
-        	if (data.lastIndexOf("/")>=1) {
-	        	String t_dir=data.substring(0,data.lastIndexOf("/"));
-	        	if  (!c_m_d.equals(t_dir)) {
-	        		mediaStoreImageList.add(t_dir);
-	        		c_m_d=t_dir;
-	        	}
-        	}
+        if (ci!=null) {
+            while( ci.moveToNext() ){
+            	String data=ci.getString( ci.getColumnIndex(MediaStore.MediaColumns.DATA ));
+            	if (data.lastIndexOf("/")>=1) {
+    	        	String t_dir=data.substring(0,data.lastIndexOf("/"));
+    	        	if  (!c_m_d.equals(t_dir)) {
+    	        		mediaStoreImageList.add(t_dir);
+    	        		c_m_d=t_dir;
+    	        	}
+            	}
+            }
+            ci.close();
         }
-        ci.close();
     	//build audio
         Cursor ca = resolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI ,
         		proj ,null ,null ,"_data");
         c_m_d="";
-        while( ca.moveToNext() ){
-        	String data=ca.getString( ca.getColumnIndex(MediaStore.MediaColumns.DATA ));
-        	if (data.lastIndexOf("/")>=1) {
-	        	String t_dir=data.substring(0,data.lastIndexOf("/"));
-	        	if  (!c_m_d.equals(t_dir)) {
-	        		mediaStoreAudioList.add(t_dir);
-	        		c_m_d=t_dir;
-	        	}
-        	}
+        if (ca!=null) {
+            while( ca.moveToNext() ){
+            	String data=ca.getString( ca.getColumnIndex(MediaStore.MediaColumns.DATA ));
+            	if (data.lastIndexOf("/")>=1) {
+    	        	String t_dir=data.substring(0,data.lastIndexOf("/"));
+    	        	if  (!c_m_d.equals(t_dir)) {
+    	        		mediaStoreAudioList.add(t_dir);
+    	        		c_m_d=t_dir;
+    	        	}
+            	}
+            }
+            ca.close();
         }
-        ca.close();
     	//build video
         Cursor cv = resolver.query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
         		proj ,null ,null ,"_data");
         c_m_d="";
-        while( cv.moveToNext() ){
-        	String data=cv.getString( cv.getColumnIndex(MediaStore.MediaColumns.DATA ));
-        	if (data.lastIndexOf("/")>=1) {
-	        	String t_dir=data.substring(0,data.lastIndexOf("/"));
-	        	if  (!c_m_d.equals(t_dir)) {
-	        		mediaStoreVideoList.add(t_dir);
-	        		c_m_d=t_dir;
-	        	}
-        	}
+        if (cv!=null) {
+            while( cv.moveToNext() ){
+            	String data=cv.getString( cv.getColumnIndex(MediaStore.MediaColumns.DATA ));
+            	if (data.lastIndexOf("/")>=1) {
+    	        	String t_dir=data.substring(0,data.lastIndexOf("/"));
+    	        	if  (!c_m_d.equals(t_dir)) {
+    	        		mediaStoreVideoList.add(t_dir);
+    	        		c_m_d=t_dir;
+    	        	}
+            	}
+            }
+            cv.close();
         }
-        cv.close();
 
         //build Files(Document)
 //        if(Build.VERSION.SDK_INT >= 11) {

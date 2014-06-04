@@ -103,6 +103,7 @@ public class GlobalParameters extends Application{
 	public String settingWifiOption=SMBSYNC_SYNC_WIFI_OPTION_CONNECTED_ANY_AP;
 	public boolean settingAltUiEnabled=true;
 	public boolean settingShowSyncDetailMessage=true;
+	public boolean settingShowRemotePortOption=true;
 	public String settingLogOption="0";
 	public String settingLogMsgDir="/SMBSync/";
 	

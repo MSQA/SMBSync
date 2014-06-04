@@ -62,18 +62,14 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.net.MalformedURLException;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 
-import jcifs.UniAddress;
-import jcifs.smb.NtStatus;
 import jcifs.smb.NtlmPasswordAuthentication;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
-import jcifs.smb.SmbSession;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -84,7 +80,6 @@ import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -1393,63 +1388,24 @@ public class ProfileMaintenance {
 //		dialog.setCancelable(false);
 //		dialog.show(); showDelayedProgDlgで表示
 
-		final Handler hndl=new Handler();
-		
 		Thread th=new Thread() {
 			@Override
 			public void run() {
 				util.addDebugLogMsg(1,"I","Test logon started, host="+host+", addr="+addr+
 						", port="+port+", user="+user);
 				NtlmPasswordAuthentication auth=new NtlmPasswordAuthentication(null, user, pass);
-				String err_msg="";
-				if (host.equals("")) {
-					boolean reachable=false;
-					if (port.equals("")) {
-						if (NetworkUtil.isIpAddressAndPortConnected(addr,139,3500) ||
-								NetworkUtil.isIpAddressAndPortConnected(addr,445,3500)) {
-							reachable=true;
-						}
-					} else {
-						reachable=NetworkUtil.isIpAddressAndPortConnected(addr,
-								Integer.parseInt(port),3500);
-					}
-					if (reachable) {
-						String[] emsg=testAuth(auth,addr,port);
-						if (emsg!=null) {//Logon error
-							util.addDebugLogMsg(1,"I","Logon error:"+"\n"+emsg[0]);
-							err_msg=emsg[0];
-						} else {
-					        util.addDebugLogMsg(1,"I","Test logon completed for IP address");
-						}
-					} else {
-						if (port.equals("")) {
-							err_msg=String.format(mContext.getString(R.string.msgs_mirror_remote_addr_not_connected)
-									,addr);
-						} else {
-							err_msg=String.format(mContext.getString(R.string.msgs_mirror_remote_addr_not_connected_with_port)
-									,addr,port);
-						}
-					}
-				} else {
-					String[] emsg=testAuth(auth,host,port);
-					if (emsg!=null) {//Logon error
-						util.addDebugLogMsg(1,"I","Logon error:"+"\n"+emsg[0]);
-						err_msg=emsg[0];
-					} else {
-						util.addDebugLogMsg(1,"I","Test logon completed for host name");
-					}
-				}
 				
-				final String err_msgx=err_msg;
-				hndl.post(new Runnable(){
+				NotifyEvent ntfy=new NotifyEvent(mContext);
+				ntfy.setListener(new NotifyEventListener(){
 					@Override
-					public void run() {
+					public void positiveResponse(Context c, Object[] o) {
 						dialog.dismiss();
+						String err_msg=(String)o[0];
 						if (tc.isEnable()) {
-							if (!err_msgx.equals("")) {
+							if (err_msg!=null) {
 								commonDlg.showCommonDialog(false, "E", 
 										mContext.getString(R.string.msgs_remote_profile_dlg_logon_error)
-										, err_msgx, null);
+										, err_msg, null);
 								if (p_ntfy!=null) p_ntfy.notifyToListener(false, null);
 							} else {
 								commonDlg.showCommonDialog(false, "I", "", 
@@ -1462,7 +1418,43 @@ public class ProfileMaintenance {
 								if (p_ntfy!=null) p_ntfy.notifyToListener(true, null);
 						}
 					}
+
+					@Override
+					public void negativeResponse(Context c, Object[] o) {}					
 				});
+				
+				if (host.equals("")) {
+					boolean reachable=false;
+					if (port.equals("")) {
+						if (NetworkUtil.isIpAddressAndPortConnected(addr,139,3500) ||
+								NetworkUtil.isIpAddressAndPortConnected(addr,445,3500)) {
+							reachable=true;
+						}
+					} else {
+						reachable=NetworkUtil.isIpAddressAndPortConnected(addr,
+								Integer.parseInt(port),3500);
+					}
+					if (reachable) {
+						testAuth(auth,addr,port,ntfy);
+					} else {
+						String unreachble_msg="";
+						if (port.equals("")) {
+							unreachble_msg=String.format(mContext.getString(R.string.msgs_mirror_remote_addr_not_connected)
+									,addr);
+						} else {
+							unreachble_msg=String.format(mContext.getString(R.string.msgs_mirror_remote_addr_not_connected_with_port)
+									,addr,port);
+						}
+						ntfy.notifyToListener(true, new Object[]{unreachble_msg});
+					}
+				} else {
+					if (NetworkUtil.getSmbHostIpAddressFromName(host)!=null) testAuth(auth,host,port,ntfy);
+					else {
+						String unreachble_msg="";
+						unreachble_msg=mContext.getString(R.string.msgs_mirror_remote_name_not_found)+host;
+						ntfy.notifyToListener(true, new Object[]{unreachble_msg});
+					}
+				}
 			}
 		};
 		th.start();
@@ -1487,13 +1479,13 @@ public class ProfileMaintenance {
             				":"+st[i].getLineNumber()+")";
             	}
     			String end_msg=ex.toString()+st_msg;
-    			ntfy.notifyToListener(false, new Object[] {end_msg});
+    			ntfy.notifyToListener(true, new Object[] {end_msg});
                 // re-throw critical exception further to the os (important)
 //                defaultUEH.uncaughtException(thread, ex);
             }
         });
 
-		String[] err_msg=null;
+		String err_msg=null;
 		SmbFile sf=null;
 		SmbFile[] lf=null;
 		String url="";
@@ -1506,8 +1498,8 @@ public class ProfileMaintenance {
 		try {
 			sf=new SmbFile(url,auth);
 			lf=sf.listFiles();
-			String aa=null;
-			aa.length();
+//			String aa=null;
+//			aa.length();
 		} catch(SmbException e) {
 //			if (e.getNtStatus()==NtStatus.NT_STATUS_LOGON_FAILURE ||
 //					e.getNtStatus()==NtStatus.NT_STATUS_ACCOUNT_RESTRICTION ||
@@ -1516,12 +1508,13 @@ public class ProfileMaintenance {
 //					e.getNtStatus()==NtStatus.NT_STATUS_PASSWORD_EXPIRED ||
 //					e.getNtStatus()==NtStatus.NT_STATUS_ACCOUNT_DISABLED) {
 //			}
-			err_msg=NetworkUtil.analyzeNtStatusCode(e, mContext, url, auth.getUsername());
+			String[] e_msg=NetworkUtil.analyzeNtStatusCode(e, mContext, url, auth.getUsername());
+			err_msg=e_msg[0];
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
 		Thread.currentThread().setUncaughtExceptionHandler(defaultUEH);
-		ntfy.notifyToListener(true, err_msg);
+		ntfy.notifyToListener(true, new Object[] {err_msg});
 	};
 	
 	private void setRemoteProfileCommonListener(final Dialog dialog) {
@@ -1541,9 +1534,16 @@ public class ProfileMaintenance {
 		final CheckBox cb_use_port_number = (CheckBox) dialog.findViewById(R.id.remote_profile_use_port_number);
 		final EditText editport = (EditText) dialog.findViewById(R.id.remote_profile_port);
 
+		
 //		final Button btn_logon = (Button) dialog.findViewById(R.id.remote_profile_logon);
 //		final Button btn_ok = (Button) dialog.findViewById(R.id.remote_profile_ok);
-
+		final LinearLayout ll_port = (LinearLayout) dialog.findViewById(R.id.remote_profile_port_option);
+		if (mGp.settingShowRemotePortOption) {
+			ll_port.setVisibility(LinearLayout.VISIBLE);
+		} else {
+			ll_port.setVisibility(LinearLayout.GONE);
+		}
+		
 		cb_use_hostname.setOnCheckedChangeListener(new OnCheckedChangeListener(){
 			@Override
 			public void onCheckedChanged(CompoundButton arg0, boolean isChecked) {
@@ -4369,6 +4369,14 @@ public class ProfileMaintenance {
 		final CheckBox cb_use_port_number = (CheckBox) dialog.findViewById(R.id.scan_remote_ntwk_use_port);
 		final EditText et_port_number = (EditText) dialog.findViewById(R.id.scan_remote_ntwk_port_number);
 
+		final LinearLayout ll_port=(LinearLayout) dialog.findViewById(R.id.scan_remote_ntwk_port_option);
+		if (mGp.settingShowRemotePortOption) {
+			ll_port.setVisibility(LinearLayout.VISIBLE);
+		} else {
+			ll_port.setVisibility(LinearLayout.GONE);
+		}
+		
+		
 	    CommonDialog.setDlgBoxSizeLimit(dialog, true);
 	    
 	    if (port_number.equals("")) {

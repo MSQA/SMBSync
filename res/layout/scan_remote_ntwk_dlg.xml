@@ -104,6 +104,7 @@
                 android:maxLength="3" />
         </LinearLayout>
         <LinearLayout
+            android:id="@+id/scan_remote_ntwk_port_option"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
