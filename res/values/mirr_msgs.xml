@@ -50,6 +50,7 @@
 	<string name="msgs_mirror_same_directory_ignored">I ignored the directory because the same directory can not be synchronized. Directory=%s</string>
 	
 	<string name="msgs_mirror_remote_name_not_found">Specified remote SMB host name was not found. Hostname=</string>
-	<string name="msgs_mirror_remote_addr_not_connected">Can not be connecting to specified remote SMB host. IP Address=</string>
+	<string name="msgs_mirror_remote_addr_not_connected">Can not be connecting to specified remote SMB host. IP Address=%s</string>
+	<string name="msgs_mirror_remote_addr_not_connected_with_port" formatted="false">Can not be connecting to specified remote SMB host. IP Address=%s, Port=%s</string>
 							
 </resources>

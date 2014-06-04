@@ -863,10 +863,10 @@ public class ProfileCreationWizard {
 				});
 				if (cb_use_hostname.isChecked()) {
 					profMaint.processLogonToRemote(et_remote_hostname.getText().toString(),
-							"",user,pass,ntfy);
+							"","",user,pass,ntfy);
 				} else {
 					profMaint.processLogonToRemote("",
-							et_remote_addr.getText().toString(),user,pass,ntfy);
+							et_remote_addr.getText().toString(),"",user,pass,ntfy);
 				}
 			}
 		});

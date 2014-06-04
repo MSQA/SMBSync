@@ -115,7 +115,7 @@ public class ReadRemoteFilelist implements Runnable  {
 					error_exit=true; 
 					getFLCtrl.setThreadResultError();
 					getFLCtrl.setThreadMessage(
-							mContext.getString(R.string.msgs_mirror_remote_addr_not_connected)+mHostAddr);
+							String.format(mContext.getString(R.string.msgs_mirror_remote_addr_not_connected),mHostAddr));
 				}
 			} else {
 				if (!SMBSyncUtil.isSmbHostAddressConnected(mHostAddr,
@@ -123,7 +123,8 @@ public class ReadRemoteFilelist implements Runnable  {
 					error_exit=true; 
 					getFLCtrl.setThreadResultError();
 					getFLCtrl.setThreadMessage(
-							mContext.getString(R.string.msgs_mirror_remote_addr_not_connected)+mHostAddr);
+							String.format(mContext.getString(R.string.msgs_mirror_remote_addr_not_connected_with_port),
+									mHostAddr,mHostPort));
 				}
 			}
 		} else {

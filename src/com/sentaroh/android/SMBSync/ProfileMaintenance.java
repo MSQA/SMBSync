@@ -23,8 +23,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
-import static com.sentaroh.android.SMBSync.Constants.BUILD_FOR_AMAZON;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROFILE_FILE_NAME_V0;
+import static com.sentaroh.android.SMBSync.Constants.*;
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROFILE_FILE_NAME_V1;
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROFILE_FILE_NAME_V2;
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROFILE_FILE_NAME_V3;
@@ -61,6 +60,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.Thread.UncaughtExceptionHandler;
+import java.net.MalformedURLException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -68,8 +69,10 @@ import java.util.Comparator;
 import java.util.HashMap;
 
 import jcifs.UniAddress;
+import jcifs.smb.NtStatus;
 import jcifs.smb.NtlmPasswordAuthentication;
 import jcifs.smb.SmbException;
+import jcifs.smb.SmbFile;
 import jcifs.smb.SmbSession;
 import android.app.Dialog;
 import android.content.Context;
@@ -1235,14 +1238,17 @@ public class ProfileMaintenance {
 					if (edituser.getText().length()>0) user=edituser.getText().toString();
 					if (editpass.getText().length()>0) pass=editpass.getText().toString();
 				}
+				String port="";
+				if (cb_use_port_number.isChecked()) port=editport.getText().toString();
 				if (cb_use_hostname.isChecked()) {
 					processLogonToRemote(edithost.getText().toString(),
-							"",user,pass,null);
+							"", port, user,pass,null);
 				} else {
 					String t_addr=editaddr.getText().toString();
 					String s_addr=t_addr;
 					if (t_addr.indexOf(":")>=0) s_addr=t_addr.substring(0,t_addr.indexOf(":")) ;
-					processLogonToRemote("",s_addr,user,pass,null);
+					processLogonToRemote("",s_addr,
+							port, user,pass,null);
 				}
 			}
 		});
@@ -1345,7 +1351,7 @@ public class ProfileMaintenance {
 
 	};
 
-	public void processLogonToRemote(final String host, final String addr, 
+	public void processLogonToRemote(final String host, final String addr, final String port, 
 			final String user, final String pass, final NotifyEvent p_ntfy) {
 		final ThreadCtrl tc=new ThreadCtrl();
 		tc.setEnable();
@@ -1393,57 +1399,48 @@ public class ProfileMaintenance {
 			@Override
 			public void run() {
 				util.addDebugLogMsg(1,"I","Test logon started, host="+host+", addr="+addr+
-						", user="+user);
+						", port="+port+", user="+user);
 				NtlmPasswordAuthentication auth=new NtlmPasswordAuthentication(null, user, pass);
 				String err_msg="";
 				if (host.equals("")) {
-					if (NetworkUtil.isIpAddressAndPortConnected(addr,139,3500) ||
-							NetworkUtil.isIpAddressAndPortConnected(addr,445,3500)) {
-						try {
-							UniAddress dc = UniAddress.getByName( addr );
-					        SmbSession.logon( dc, auth );
-					        util.addDebugLogMsg(1,"I","Test logon completed for IP address");
-						} catch (UnknownHostException e) {
-							e.printStackTrace();
-							util.addDebugLogMsg(1,"I","Logon error:"+"\n"+e.toString());
-							err_msg=e.toString();
-						} catch (SmbException e) {
-							e.printStackTrace();
-							String[] emsg=
-									NetworkUtil.analyzeNtStatusCode(
-											e, mContext, "smb://"+addr+"/", user);
-							util.addDebugLogMsg(1,"I","Logon error:"+"\n"+emsg[0]);
-							err_msg=emsg[0];
+					boolean reachable=false;
+					if (port.equals("")) {
+						if (NetworkUtil.isIpAddressAndPortConnected(addr,139,3500) ||
+								NetworkUtil.isIpAddressAndPortConnected(addr,445,3500)) {
+							reachable=true;
 						}
 					} else {
-						err_msg=mContext.getString(R.string.msgs_mirror_remote_addr_not_connected)
-								+addr;
+						reachable=NetworkUtil.isIpAddressAndPortConnected(addr,
+								Integer.parseInt(port),3500);
 					}
-				} else {
-					UniAddress dc =null;
-					try {
-						dc = UniAddress.getByName( host );
-						try {
-					        SmbSession.logon( dc, auth );
-					        util.addDebugLogMsg(1,"I","Test logon completed for host name");
-						} catch (SmbException e) {
-							e.printStackTrace();
-							String[] emsg=
-									NetworkUtil.analyzeNtStatusCode(
-											e, mContext, "smb://"+addr+"/", user);
+					if (reachable) {
+						String[] emsg=testAuth(auth,addr,port);
+						if (emsg!=null) {//Logon error
 							util.addDebugLogMsg(1,"I","Logon error:"+"\n"+emsg[0]);
 							err_msg=emsg[0];
+						} else {
+					        util.addDebugLogMsg(1,"I","Test logon completed for IP address");
 						}
-					} catch (UnknownHostException e) {
-						e.printStackTrace();
-						util.addDebugLogMsg(1,"I","Logon error:"+"\n"+e.toString());
-						err_msg=mContext.getString(R.string.msgs_mirror_remote_name_not_found)+
-								host;
+					} else {
+						if (port.equals("")) {
+							err_msg=String.format(mContext.getString(R.string.msgs_mirror_remote_addr_not_connected)
+									,addr);
+						} else {
+							err_msg=String.format(mContext.getString(R.string.msgs_mirror_remote_addr_not_connected_with_port)
+									,addr,port);
+						}
 					}
-					
+				} else {
+					String[] emsg=testAuth(auth,host,port);
+					if (emsg!=null) {//Logon error
+						util.addDebugLogMsg(1,"I","Logon error:"+"\n"+emsg[0]);
+						err_msg=emsg[0];
+					} else {
+						util.addDebugLogMsg(1,"I","Test logon completed for host name");
+					}
 				}
 				
-				final String err_msgx=err_msg;;
+				final String err_msgx=err_msg;
 				hndl.post(new Runnable(){
 					@Override
 					public void run() {
@@ -1470,6 +1467,61 @@ public class ProfileMaintenance {
 		};
 		th.start();
 		dialog.show();
+	};
+	
+	@SuppressWarnings("unused")
+	private void testAuth(NtlmPasswordAuthentication auth, String addr, String port,
+			final NotifyEvent ntfy) {
+		final UncaughtExceptionHandler defaultUEH = 
+				Thread.currentThread().getUncaughtExceptionHandler();
+        Thread.currentThread().setUncaughtExceptionHandler( new Thread.UncaughtExceptionHandler() {
+            @Override
+            public void uncaughtException(Thread thread, Throwable ex) {
+            	Thread.currentThread().setUncaughtExceptionHandler(defaultUEH);
+            	ex.printStackTrace();
+            	StackTraceElement[] st=ex.getStackTrace();
+            	String st_msg="";
+            	for (int i=0;i<st.length;i++) {
+            		st_msg+="\n at "+st[i].getClassName()+"."+
+            				st[i].getMethodName()+"("+st[i].getFileName()+
+            				":"+st[i].getLineNumber()+")";
+            	}
+    			String end_msg=ex.toString()+st_msg;
+    			ntfy.notifyToListener(false, new Object[] {end_msg});
+                // re-throw critical exception further to the os (important)
+//                defaultUEH.uncaughtException(thread, ex);
+            }
+        });
+
+		String[] err_msg=null;
+		SmbFile sf=null;
+		SmbFile[] lf=null;
+		String url="";
+		if (port.equals("")) {
+			url="smb://"+addr+"/";
+		} else {
+			url="smb://"+addr+":"+port+"/";
+		}
+//		Log.v("","url="+url);
+		try {
+			sf=new SmbFile(url,auth);
+			lf=sf.listFiles();
+			String aa=null;
+			aa.length();
+		} catch(SmbException e) {
+//			if (e.getNtStatus()==NtStatus.NT_STATUS_LOGON_FAILURE ||
+//					e.getNtStatus()==NtStatus.NT_STATUS_ACCOUNT_RESTRICTION ||
+//					e.getNtStatus()==NtStatus.NT_STATUS_INVALID_LOGON_HOURS ||
+//					e.getNtStatus()==NtStatus.NT_STATUS_INVALID_WORKSTATION ||
+//					e.getNtStatus()==NtStatus.NT_STATUS_PASSWORD_EXPIRED ||
+//					e.getNtStatus()==NtStatus.NT_STATUS_ACCOUNT_DISABLED) {
+//			}
+			err_msg=NetworkUtil.analyzeNtStatusCode(e, mContext, url, auth.getUsername());
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+		Thread.currentThread().setUncaughtExceptionHandler(defaultUEH);
+		ntfy.notifyToListener(true, err_msg);
 	};
 	
 	private void setRemoteProfileCommonListener(final Dialog dialog) {
@@ -1653,8 +1705,19 @@ public class ProfileMaintenance {
 					boolean isChecked) {
 				if (isChecked) editport.setEnabled(true);
 				else editport.setEnabled(false);
+				setRemoteProfileOkBtnEnabled(dialog);
 			}
 			
+		});
+		editport.addTextChangedListener(new TextWatcher(){
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {}
+			@Override
+			public void afterTextChanged(Editable s) {
+				setRemoteProfileOkBtnEnabled(dialog);
+			}
 		});
 	};
 	
@@ -1677,6 +1740,9 @@ public class ProfileMaintenance {
 		final CheckBox cb_use_hostname = (CheckBox) dialog.findViewById(R.id.remote_profile_use_computer_name);
 		final CheckBox cb_use_user_pass = (CheckBox) dialog.findViewById(R.id.remote_profile_use_user_pass);
 
+		final CheckBox cb_use_port_number = (CheckBox) dialog.findViewById(R.id.remote_profile_use_port_number);
+		final EditText editport = (EditText) dialog.findViewById(R.id.remote_profile_port);
+		
 		final Button btn_logon = (Button) dialog.findViewById(R.id.remote_profile_logon);
 		final Button btn_ok = (Button) dialog.findViewById(R.id.remote_profile_ok);
 		btn_ok.setEnabled(false);
@@ -1702,6 +1768,16 @@ public class ProfileMaintenance {
 				dlg_msg.setText("");
 			} else {
 				dlg_msg.setText(msgs_audit_msgs_user_or_pass_missing);
+				return;
+			}
+		}
+		
+		if (cb_use_port_number.isChecked()) {
+			if (editport.getText().length()>0) {
+				dlg_msg.setText("");
+			} else {
+				dlg_msg.setText(mContext.getString(R.string.msgs_audit_hostport_not_spec));
+				btn_logon.setEnabled(false);
 				return;
 			}
 		}
@@ -2356,7 +2432,6 @@ public class ProfileMaintenance {
 			editport.setText("");
 			editport.setEnabled(false);
 		}
-		Log.v("","port="+prof_port);
 		
 		final Button btnLogon = (Button) dialog.findViewById(R.id.remote_profile_logon);
 		btnLogon.setEnabled(cb_use_user_pass.isChecked());
@@ -2367,14 +2442,17 @@ public class ProfileMaintenance {
 					if (edituser.getText().length()>0) user=edituser.getText().toString();
 					if (editpass.getText().length()>0) pass=editpass.getText().toString();
 				}
+				String port="";
+				if (cb_use_port_number.isChecked()) port=editport.getText().toString();
 				if (cb_use_hostname.isChecked()) {
 					processLogonToRemote(edithost.getText().toString(),
-							"",user,pass,null);
+							"", port, user,pass,null);
 				} else {
 					String t_addr=editaddr.getText().toString();
 					String s_addr=t_addr;
 					if (t_addr.indexOf(":")>=0) s_addr=t_addr.substring(0,t_addr.indexOf(":")) ;
-					processLogonToRemote("",s_addr,user,pass,null);
+					processLogonToRemote("",s_addr,
+							port, user,pass,null);
 				}
 			}
 		});
@@ -2964,6 +3042,10 @@ public class ProfileMaintenance {
 		String h_port="";
 		if (cb_use_port_number.isChecked()) {
 			if (editport.getText().length()>0) h_port=":"+editport.getText().toString();
+			else {
+				dlg_msg.setText(mContext.getString(R.string.msgs_audit_hostport_not_spec));
+				return;
+			}
 		}
 		String remurl="smb://"+t_url+h_port+"/";
 		NotifyEvent ntfy=new NotifyEvent(mContext);
@@ -3044,6 +3126,10 @@ public class ProfileMaintenance {
 		String h_port="";
 		if (cb_use_port_number.isChecked()) {
 			if (editport.getText().length()>0) h_port=":"+editport.getText().toString();
+			else {
+				dlg_msg.setText(mContext.getString(R.string.msgs_audit_hostport_not_spec));
+				return;
+			}
 		}
 		String remurl="smb://"+t_url+h_port+"/"+remote_share+"/";
 		NotifyEvent ntfy=new NotifyEvent(mContext);
