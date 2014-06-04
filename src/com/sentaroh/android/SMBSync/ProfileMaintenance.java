@@ -23,6 +23,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
+import static com.sentaroh.android.SMBSync.Constants.BUILD_FOR_AMAZON;
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROFILE_FILE_NAME_V0;
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROFILE_FILE_NAME_V1;
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROFILE_FILE_NAME_V2;
@@ -1396,7 +1397,8 @@ public class ProfileMaintenance {
 				NtlmPasswordAuthentication auth=new NtlmPasswordAuthentication(null, user, pass);
 				String err_msg="";
 				if (host.equals("")) {
-					if (NetworkUtil.isNbtAddressActive(addr)) {
+					if (NetworkUtil.isIpAddressAndPortConnected(addr,139,3500) ||
+							NetworkUtil.isIpAddressAndPortConnected(addr,445,3500)) {
 						try {
 							UniAddress dc = UniAddress.getByName( addr );
 					        SmbSession.logon( dc, auth );
@@ -2887,6 +2889,8 @@ public class ProfileMaintenance {
 		final EditText editaddr = (EditText) dialog.findViewById(R.id.remote_profile_addr);
 		final EditText edithost = (EditText) dialog.findViewById(R.id.remote_profile_hostname);
 		final CheckBox cb_use_hostname = (CheckBox) dialog.findViewById(R.id.remote_profile_use_computer_name);
+		final CheckBox cb_use_port_number = (CheckBox) dialog.findViewById(R.id.remote_profile_use_port_number);
+		final EditText editport = (EditText) dialog.findViewById(R.id.remote_profile_port);
 		NotifyEvent ntfy=new NotifyEvent(mContext);
 		//Listen setRemoteShare response 
 		ntfy.setListener(new NotifyEventListener() {
@@ -2907,7 +2911,9 @@ public class ProfileMaintenance {
 			}
 			
 		});
-		scanRemoteNetworkDlg(ntfy);
+		String port_num="";
+		if (cb_use_port_number.isChecked()) port_num=editport.getText().toString();
+		scanRemoteNetworkDlg(ntfy,port_num);
 	};
 
 	private void processRemoteShareButton(Dialog dialog) {
@@ -2920,6 +2926,8 @@ public class ProfileMaintenance {
 		final EditText edithost = (EditText) dialog.findViewById(R.id.remote_profile_hostname);
 		final CheckBox cb_use_hostname = (CheckBox) dialog.findViewById(R.id.remote_profile_use_computer_name);
 		final CheckBox cb_use_userpass = (CheckBox) dialog.findViewById(R.id.remote_profile_use_user_pass);
+		final EditText editport = (EditText) dialog.findViewById(R.id.remote_profile_port);
+		final CheckBox cb_use_port_number = (CheckBox) dialog.findViewById(R.id.remote_profile_use_port_number);
 		String remote_addr, remote_user="", remote_pass="",remote_host;
 		
 		remote_addr = editaddr.getText().toString();
@@ -2953,7 +2961,11 @@ public class ProfileMaintenance {
 		String t_url="";
 		if (cb_use_hostname.isChecked()) t_url=remote_host;
 		else t_url=remote_addr;
-		String remurl="smb://"+t_url+"/";
+		String h_port="";
+		if (cb_use_port_number.isChecked()) {
+			if (editport.getText().length()>0) h_port=":"+editport.getText().toString();
+		}
+		String remurl="smb://"+t_url+h_port+"/";
 		NotifyEvent ntfy=new NotifyEvent(mContext);
 		//Listen setRemoteShare response 
 		ntfy.setListener(new NotifyEventListener() {
@@ -2988,6 +3000,8 @@ public class ProfileMaintenance {
 		final EditText editdir = (EditText) dialog.findViewById(R.id.remote_profile_dir);
 		final CheckBox cb_use_hostname = (CheckBox) dialog.findViewById(R.id.remote_profile_use_computer_name);
 		final CheckBox cb_use_userpass = (CheckBox) dialog.findViewById(R.id.remote_profile_use_user_pass);
+		final EditText editport = (EditText) dialog.findViewById(R.id.remote_profile_port);
+		final CheckBox cb_use_port_number = (CheckBox) dialog.findViewById(R.id.remote_profile_use_port_number);
 		String remote_addr, remote_user="", remote_pass="",remote_share,remote_host;
 		remote_addr = editaddr.getText().toString();
 		remote_host = edithost.getText().toString();
@@ -3027,7 +3041,11 @@ public class ProfileMaintenance {
 		String t_url="";
 		if (cb_use_hostname.isChecked()) t_url=remote_host;
 		else t_url=remote_addr;
-		String remurl="smb://"+t_url+"/"+remote_share+"/";
+		String h_port="";
+		if (cb_use_port_number.isChecked()) {
+			if (editport.getText().length()>0) h_port=":"+editport.getText().toString();
+		}
+		String remurl="smb://"+t_url+h_port+"/"+remote_share+"/";
 		NotifyEvent ntfy=new NotifyEvent(mContext);
 		//Listen setRemoteShare response 
 		ntfy.setListener(new NotifyEventListener() {
@@ -3769,7 +3787,9 @@ public class ProfileMaintenance {
 		String t_remurl="";
 		if (item.getHostname().equals("")) t_remurl=item.getAddr();
 		else t_remurl=item.getHostname();
-		final String remurl="smb://"+t_remurl+"/"+item.getShare();
+		String h_port="";
+		if (!item.getPass().equals("")) h_port=":"+item.getPort();
+		final String remurl="smb://"+t_remurl+h_port+"/"+item.getShare();
 		final String remdir="/"+item.getDir()+"/";
 
 		NotifyEvent ntfy=new NotifyEvent(mContext);
@@ -4229,7 +4249,7 @@ public class ProfileMaintenance {
 		return active;
 	};
 
-	public void scanRemoteNetworkDlg(final NotifyEvent p_ntfy) {
+	public void scanRemoteNetworkDlg(final NotifyEvent p_ntfy, String port_number) {
 		//カスタムダイアログの生成
 	    final Dialog dialog=new Dialog(mContext);
 	    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -4259,8 +4279,27 @@ public class ProfileMaintenance {
 		baEt4.setSelection(1);
 		eaEt4.setText("254");
 		baEt4.requestFocus();
+		
+		final CheckBox cb_use_port_number = (CheckBox) dialog.findViewById(R.id.scan_remote_ntwk_use_port);
+		final EditText et_port_number = (EditText) dialog.findViewById(R.id.scan_remote_ntwk_port_number);
 
 	    CommonDialog.setDlgBoxSizeLimit(dialog, true);
+	    
+	    if (port_number.equals("")) {
+		    et_port_number.setEnabled(false);
+		    cb_use_port_number.setChecked(false);
+	    } else {
+		    et_port_number.setEnabled(true);
+		    et_port_number.setText(port_number);
+		    cb_use_port_number.setChecked(true);
+	    }
+	    cb_use_port_number.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				et_port_number.setEnabled(isChecked);
+			}
+	    });
 	    
 	    final NotifyEvent ntfy_lv_click=new NotifyEvent(mContext);
 	    ntfy_lv_click.setListener(new NotifyEventListener(){
@@ -4360,6 +4399,10 @@ public class ProfileMaintenance {
 		final Button btn_scan = (Button) dialog.findViewById(R.id.scan_remote_ntwk_btn_ok);
 		final Button btn_cancel = (Button) dialog.findViewById(R.id.scan_remote_ntwk_btn_cancel);
 		final Button scan_cancel = (Button) dialog.findViewById(R.id.scan_remote_ntwk_progress_cancel);
+		
+		final CheckBox cb_use_port_number = (CheckBox) dialog.findViewById(R.id.scan_remote_ntwk_use_port);
+		final EditText et_port_number = (EditText) dialog.findViewById(R.id.scan_remote_ntwk_port_number);
+
 		tvmsg.setText("");
 		scan_cancel.setText(R.string.msgs_progress_spin_dlg_addr_cancel);
 		ll_addr.setVisibility(LinearLayout.GONE);
@@ -4393,13 +4436,15 @@ public class ProfileMaintenance {
 				mScanCompleteCount=0;
 				mScanAddrCount=end_addr-begin_addr+1;
 				int scan_thread=30;
+				String scan_port="";
+				if (cb_use_port_number.isChecked()) scan_port=et_port_number.getText().toString();
 				for (int i=begin_addr; i<=end_addr;i+=scan_thread) {
 					if (!tc.isEnable()) break;
 					boolean scan_end=false;
 					for (int j=i;j<(i+scan_thread);j++) {
 						if (j<=end_addr) {
 							startRemoteNetworkScanThread(handler, tc, dialog, p_ntfy,
-									lv_ipaddr, adap, tvmsg, subnet+"."+j,ipAddressList);
+									lv_ipaddr, adap, tvmsg, subnet+"."+j,ipAddressList, scan_port);
 						} else {
 							scan_end=true;
 						}
@@ -4460,12 +4505,13 @@ public class ProfileMaintenance {
 			final AdapterScanAddressResultList adap,
 			final TextView tvmsg,
 			final String addr,
-			final ArrayList<ScanAddressResultListItem> ipAddressList) {
+			final ArrayList<ScanAddressResultListItem> ipAddressList,
+			final String scan_port) {
 		final String scan_prog=mContext.getString(R.string.msgs_ip_address_scan_progress);
 		Thread th=new Thread(new Runnable() {
 			@Override
 			public void run() {
-				if (isIpAddrReachable(addr)) {
+				if (isIpAddrReachable(addr,scan_port)) {
 					synchronized(mLockScanCompleteCount) {
 						mScanCompleteCount++;
 						String srv_name=getSmbHostName(addr);
@@ -4507,22 +4553,28 @@ public class ProfileMaintenance {
        	th.start();
 	};
 
-	private boolean isIpAddrReachable(String address) {
+	private boolean isIpAddrReachable(String address, String scan_port) {
 		boolean reachable=false;
 //		reachable=NetworkUtil.ping(address);
-		if (!NetworkUtil.isIpAddressAndPortConnected(address,139,3000)) {
-			reachable=NetworkUtil.isIpAddressAndPortConnected(address,445,3000);
-		} else reachable=true;
-		util.addDebugLogMsg(2,"I","isIpAddrReachable Address="+address+", reachable="+reachable);
+		if (scan_port.equals("")) {
+			if (!NetworkUtil.isIpAddressAndPortConnected(address,139,3000)) {
+				reachable=NetworkUtil.isIpAddressAndPortConnected(address,445,3000);
+			} else reachable=true;
+		} else {
+			reachable=NetworkUtil.isIpAddressAndPortConnected(address,
+					Integer.parseInt(scan_port),3000);
+		}
+		util.addDebugLogMsg(2,"I","isIpAddrReachable Address="+address+
+				", port="+scan_port+", reachable="+reachable);
 		return reachable;
 	};
 
-	@SuppressWarnings("unused")
-	private boolean isNbtAddressActive(String address) {
-		boolean result=NetworkUtil.isNbtAddressActive(address);
-    	util.addDebugLogMsg(1,"I","isSmbHost Address="+address+", result="+result);
-		return result;
-	};
+//	@SuppressWarnings("unused")
+//	private boolean isNbtAddressActive(String address) {
+//		boolean result=NetworkUtil.isNbtAddressActive(address);
+//    	util.addDebugLogMsg(1,"I","isSmbHost Address="+address+", result="+result);
+//		return result;
+//	};
 	
 	private String getSmbHostName(String address) {
 		String srv_name=NetworkUtil.getSmbHostNameFromAddress(address);
@@ -5422,14 +5474,21 @@ public class ProfileMaintenance {
 		}
 
 		if (pfl.getCount() == 0) {
-			if (mGp.sampleProfileCreateRequired) {
-				createSampleProfile(pfl);
-				saveProfileToFile(false,"","",pfl,false);
-				mGp.sampleProfileCreateRequired=false;
-			} else {
+			if (BUILD_FOR_AMAZON) {
+				//アマゾン用はサンプルプロファイルを作成しない
 				pfl.add(new ProfileListItem("","",
 						mContext.getString(R.string.msgs_no_profile_entry),
 						"","",null,false));
+			} else {
+				if (mGp.sampleProfileCreateRequired) {
+					createSampleProfile(pfl);
+					saveProfileToFile(false,"","",pfl,false);
+					mGp.sampleProfileCreateRequired=false;
+				} else {
+					pfl.add(new ProfileListItem("","",
+							mContext.getString(R.string.msgs_no_profile_entry),
+							"","",null,false));
+				}
 			}
 		}
 		return pfl;

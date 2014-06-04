@@ -2,7 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content" >
+    android:layout_height="wrap_content" 
+    android:layout_marginRight="5dp"
+    android:layout_marginLeft="5dp"
+    >
 
         <Button
             android:id="@+id/item_select_list_dlg_ok_btn"

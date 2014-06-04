@@ -894,7 +894,7 @@ public class ProfileCreationWizard {
 						dlg_msg.setText("");
 					}
 				});
-				profMaint.scanRemoteNetworkDlg(ntfy);
+				profMaint.scanRemoteNetworkDlg(ntfy,"");
 			}
 		});
 		

@@ -30,6 +30,8 @@ public class Constants {
 //	final public static int MAX_DLG_BOX_SIZE_WIDTH=600; 
 //	final public static int MAX_DLG_BOX_SIZE_HEIGHT=800;
 	
+	public final static boolean BUILD_FOR_AMAZON=true;
+	
 	public static final String SMBSYNC_CONFIRM_FOR_COPY="Copy";
 	public static final String SMBSYNC_CONFIRM_FOR_DELETE="Delete";
 	public static final int SMBSYNC_CONFIRM_RESP_YES = 1;

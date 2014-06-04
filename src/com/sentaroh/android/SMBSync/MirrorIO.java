@@ -508,12 +508,17 @@ public class MirrorIO implements Runnable {
 		}
 		syncProfileNotUseLastModifiedForRemote=mipl.isNotUseLastModifiedForRemote();
 		
-		if (!mipl.getRemotePort().equals("")) syncRemotePort=":"+mipl.getRemotePort();
+		syncRemotePort="";
+		String sep="";
+		if (!mipl.getRemotePort().equals("")) {
+			sep=":";
+			syncRemotePort=mipl.getRemotePort();
+		}
 		
 		if (syncRemoteDir.equals("")) {
-			remoteUrl= "smb://"+syncRemoteAddr+"/"+syncRemoteShare+syncRemoteDir;
+			remoteUrl= "smb://"+syncRemoteAddr+sep+syncRemotePort+"/"+syncRemoteShare+syncRemoteDir;
 		}else {
-			remoteUrl= "smb://"+syncRemoteAddr+"/"+syncRemoteShare+"/"+syncRemoteDir;
+			remoteUrl= "smb://"+syncRemoteAddr+sep+syncRemotePort+"/"+syncRemoteShare+"/"+syncRemoteDir;
 		}
 		remoteMasterDir=remoteUrl;
 //		if (syncLocalDir.equals("")) {
@@ -598,14 +603,21 @@ public class MirrorIO implements Runnable {
 		}
 
 		if (mipl.getHostName().equals("")) {
-			String t_addr=mipl.getRemoteAddr();
-			String s_addr=t_addr;
-			if (t_addr.indexOf(":")>=0) s_addr=t_addr.substring(0,t_addr.indexOf(":")) ;
-			if (!isIpAddrReachable(s_addr)) {
-				addLogMsg("E","",
-						glblParms.svcContext.getString(R.string.msgs_mirror_remote_addr_not_connected)+
-						s_addr);
-				isSyncParmError=true;
+			if (mipl.getRemotePort().length()>0) {//Check for report port specified
+				if (!SMBSyncUtil.isSmbHostAddressConnected(mipl.getRemoteAddr(),
+						Integer.parseInt(mipl.getRemotePort()))) {
+					addLogMsg("E","",
+							glblParms.svcContext.getString(R.string.msgs_mirror_remote_addr_not_connected)+
+							mipl.getRemoteAddr());
+					isSyncParmError=true;
+				}
+			} else {//Check for default report port
+				if (!SMBSyncUtil.isSmbHostAddressConnected(mipl.getRemoteAddr())) {
+					addLogMsg("E","",
+							glblParms.svcContext.getString(R.string.msgs_mirror_remote_addr_not_connected)+
+							mipl.getRemoteAddr());
+					isSyncParmError=true;
+				}
 			}
 		} else {
 			if (resolveHostName(mipl.getHostName())==null) {
@@ -647,19 +659,6 @@ public class MirrorIO implements Runnable {
 		return ipAddress;
 	}
 	
-	private boolean isIpAddrReachable(String address) {
-		boolean reachable=false;
-		reachable=NetworkUtil.isNbtAddressActive(address);
-//		for (int i=0;i<5;i++) {
-//			if (NetworkUtil.isNbtAddressActive(address)) {
-//				reachable=true;
-//				break;
-//			}
-//		}
-        addDebugLogMsg(1,"I","isIpAddrReachable IP addr="+address+", result="+reachable);
-		return reachable;
-	};
-
 	final private void doSyncMirror(MirrorIoParmList mipl) {
 		if (glblParms.debugLevel>=1) 
 			addDebugLogMsg(1,"I","doSyncMirror entered ",
@@ -1168,7 +1167,7 @@ public class MirrorIO implements Runnable {
 						copiedFileList.add(masterUrl);
 						lf = new File(masterUrl);
 						hf = new SmbFile(targetUrl,ntlmPasswordAuth);
-						String t_fp=masterUrl.replace(localUrl, "");
+//						String t_fp=masterUrl;//.replace(localUrl, "");
 						if (isFileChangedForLocalToRemote(masterUrl,lf,hf,allcopy)) { 
 							// copy was done
 							if (confirmCopy(targetUrl)) {
@@ -1178,7 +1177,7 @@ public class MirrorIO implements Runnable {
 								if (glblParms.settingRemoteFileCopyByRename) {
 									tmp_target=makeTempFilePath(targetUrl);
 								}
-								copyFileLocalToRemote(lf,hf,file_byte,t_fn,t_fp,tmp_target);
+								copyFileLocalToRemote(lf,hf,file_byte,t_fn,masterUrl,tmp_target);
 								if (checkErrorStatus()!=0) {
 									return checkErrorStatus();
 								}
@@ -1400,7 +1399,7 @@ public class MirrorIO implements Runnable {
 						copiedFileList.add(masterUrl);
 						mf = new File(masterUrl);
 						tf = new File(targetUrl);
-						String t_fp=masterUrl.replace(localUrl, "");
+//						String t_fp=masterUrl;//.replace(localUrl, "");
 						if (isFileChanged(targetUrl,tf,mf,allcopy)) {							
 							// copy was done
 							if (confirmCopy(targetUrl)) {
@@ -1410,7 +1409,7 @@ public class MirrorIO implements Runnable {
 								if (glblParms.settingLocalFileCopyByRename) {
 									tmp_target=makeTempFilePath(targetUrl);
 								}
-								copyFileLocalToLocal(mf,tf,file_byte,t_fn,t_fp, tmp_target);
+								copyFileLocalToLocal(mf,tf,file_byte,t_fn,masterUrl, tmp_target);
 								if (checkErrorStatus()!=0) return checkErrorStatus();
 								tf.setLastModified(mf.lastModified());
 								updateLocalFileLastModifiedList(currentFileLastModifiedList,newFileLastModifiedList,
@@ -1570,8 +1569,8 @@ public class MirrorIO implements Runnable {
 						createLocalDir(targetUrl,null,masterUrl);
 						copiedFileList.add(masterUrl);
 						lf = new File(targetUrl);
-						String t_fp=masterUrl.replace("smb://"+syncRemoteAddr, "");
-						if (isFileChanged(t_fp,lf,hf,allcopy)) {
+//						String t_fp=masterUrl;//.replace("smb://"+syncRemoteAddr, "");
+						if (isFileChanged(masterUrl,lf,hf,allcopy)) {
 							// copy 
 							if (confirmCopy(targetUrl)) {
 								long file_byte=hf.length();
@@ -1579,7 +1578,7 @@ public class MirrorIO implements Runnable {
 								if (glblParms.settingLocalFileCopyByRename) {
 									tmp_target=makeTempFilePath(targetUrl);
 								}
-								copyFileRemoteToLocal(hf,lf,file_byte,t_fn,t_fp, tmp_target);
+								copyFileRemoteToLocal(hf,lf,file_byte,t_fn,masterUrl, tmp_target);
 								updateLocalFileLastModifiedList(currentFileLastModifiedList,newFileLastModifiedList,
 										targetUrl,hf.getLastModified());
 								if (checkErrorStatus()!=0) return checkErrorStatus();
@@ -1863,15 +1862,15 @@ public class MirrorIO implements Runnable {
 						createLocalDir(targetUrl,moved_dirs,masterUrl);
 						lf = new File(targetUrl);
 						String t_fn=hf.getName().replace("/", "");
-						String t_fp=masterUrl.replace("smb://"+syncRemoteAddr, "");
-						if (isFileChanged(t_fp,lf,hf,allcopy)) {
+//						String t_fp=masterUrl;//.replace("smb://"+syncRemoteAddr, "");
+						if (isFileChanged(masterUrl,lf,hf,allcopy)) {
 							// copy
 							if (confirmCopy(targetUrl)) {
 								long file_byte=hf.length();
 								if (glblParms.settingLocalFileCopyByRename) {
 									tmp_target=makeTempFilePath(targetUrl);
 								}
-								copyFileRemoteToLocal(hf,lf,file_byte,t_fn,t_fp, tmp_target);
+								copyFileRemoteToLocal(hf,lf,file_byte,t_fn,masterUrl, tmp_target);
 								updateLocalFileLastModifiedList(currentFileLastModifiedList,newFileLastModifiedList,
 										targetUrl,hf.lastModified());
 								if (checkErrorStatus()!=0) return checkErrorStatus();
@@ -2019,7 +2018,7 @@ public class MirrorIO implements Runnable {
 						hf = new SmbFile(targetUrl,ntlmPasswordAuth);
 						String t_fn=lf.getName().replace("/","");
 //						String t_fp=masterUrl.replace(SMBSync_External_Root_Dir, "");
-						String t_fp=masterUrl.replace(localUrl, "");
+//						String t_fp=masterUrl;//.replace(localUrl, "");
 						if (isFileChangedForLocalToRemote(masterUrl,lf,hf,allcopy)) {
 							// copy done
 							if (confirmCopy(targetUrl)) {
@@ -2028,7 +2027,7 @@ public class MirrorIO implements Runnable {
 								if (glblParms.settingRemoteFileCopyByRename) {
 									tmp_target=makeTempFilePath(targetUrl);
 								} 
-								copyFileLocalToRemote(lf,hf,file_byte,t_fn,t_fp, tmp_target);
+								copyFileLocalToRemote(lf,hf,file_byte,t_fn,masterUrl, tmp_target);
 								if (checkErrorStatus()!=0) {
 									return checkErrorStatus();
 								}
@@ -2172,7 +2171,7 @@ public class MirrorIO implements Runnable {
 						tf = new File(targetUrl);
 						String t_fn=mf.getName().replace("/","");
 //						String t_fp=masterUrl.replace(SMBSync_External_Root_Dir, "");
-						String t_fp=masterUrl.replace(localUrl, "");
+//						String t_fp=masterUrl;//.replace(localUrl, "");
 //						if (isFileChanged(masterUrl,mf,tf,allcopy)) {
 						if (isFileChanged(targetUrl,tf,mf,allcopy)) {							
 							// copy done
@@ -2181,7 +2180,7 @@ public class MirrorIO implements Runnable {
 								if (glblParms.settingLocalFileCopyByRename) {
 									tmp_target=makeTempFilePath(targetUrl);
 								}
-								copyFileLocalToLocal(mf,tf,file_byte,t_fn,t_fp,tmp_target);
+								copyFileLocalToLocal(mf,tf,file_byte,t_fn,masterUrl,tmp_target);
 								if (checkErrorStatus()!=0) return checkErrorStatus();
 //								mHistoryCopiedList.add(targetUrl);
 								tf.setLastModified(mf.lastModified());
@@ -2283,7 +2282,8 @@ public class MirrorIO implements Runnable {
 		if (!hf.exists()) {
 			hf.mkdirs();
 			if (moved_dirs!=null) addMovedDirList(moved_dirs,master_dir);
-			addLogMsg("I",target_dir,msgs_mirror_prof_dir_create);
+			if (glblParms.settingShowSyncDetailMessage)  
+				addLogMsg("I",target_dir,msgs_mirror_prof_dir_create);
 		}
 		return result;
 	};
@@ -2301,7 +2301,8 @@ public class MirrorIO implements Runnable {
 		if (!lf.exists()) {
 			lf.mkdirs();
 			if (moved_dirs!=null) addMovedDirList(moved_dirs,master_dir + "/");
-			addLogMsg("I",target_dir,msgs_mirror_prof_dir_create);
+			if (glblParms.settingShowSyncDetailMessage)  
+				addLogMsg("I",target_dir,msgs_mirror_prof_dir_create);
 			result=true;
 		}
 		return result;
@@ -3134,11 +3135,11 @@ public class MirrorIO implements Runnable {
 				SmbFile hfd = new SmbFile(t_dir+"/",ntlmPasswordAuth);
 				boolean td=hfd.isDirectory();
 				hfd.delete();
-				String t_prf="smb://"+syncRemoteAddr;
+//				String t_prf="smb://"+syncRemoteAddr;
 				if (td) {
 					addMsgToProgDlg(false,"I",t_fn,msgs_mirror_prof_dir_deleted);
 					if (glblParms.settingShowSyncDetailMessage) 
-						addLogMsg("I",t_dir.replace(t_prf, ""),msgs_mirror_prof_dir_deleted);
+						addLogMsg("I",t_dir,msgs_mirror_prof_dir_deleted);
 					if (glblParms.debugLevel>=1) 
 						addDebugLogMsg(1,"I",
 							"Remote directory was deleted:"+hfd.getPath().substring(0,hfd.getPath().length()-1));
@@ -3146,7 +3147,7 @@ public class MirrorIO implements Runnable {
 				else{ 
 					addMsgToProgDlg(false,"I",t_fn,msgs_mirror_prof_file_deleted);
 					if (glblParms.settingShowSyncDetailMessage) 
-						addLogMsg("I",t_dir.replace(t_prf, ""),msgs_mirror_prof_file_deleted);
+						addLogMsg("I",t_dir,msgs_mirror_prof_file_deleted);
 					if (glblParms.debugLevel>=1) 
 						addDebugLogMsg(1,"I",
 							"Remote file was deleted:"+hfd.getPath().substring(0,hfd.getPath().length()-1));

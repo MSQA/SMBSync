@@ -24,14 +24,14 @@
     <string name="msgs_remote_profile_dlg_sharelist">一覧表示</string>
     <string name="msgs_remote_profile_dlg_directory">ディレクトリ</string>
     <string name="msgs_remote_profile_dlg_dirlist">一覧表示</string>
-    <string name="msgs_remote_profile_dlg_addr_list">ネットワークスキャン</string>
+    <string name="msgs_remote_profile_dlg_addr_list">スキャン</string>
 	<string name="msgs_remote_profile_dlg_use_computer_name">コンピュータ名を使用する</string>    
 	<string name="msgs_remote_profile_dlg_use_user_pass">ユーザーID/パスワードを使用する</string>
 	<string name="msgs_remote_profile_dlg_logon">ログオン</string>
 	<string name="msgs_remote_profile_dlg_logon_success">ログオンが正常に完了しました</string>
 	<string name="msgs_remote_profile_dlg_logon_error">ログオンエラーが発生しました</string>
 	<string name="msgs_remote_profile_dlg_logon_cancel">ログオンが中止されました</string>
-	<string name="msgs_remote_profile_dlg_port">ポート番号</string>
+	<string name="msgs_remote_profile_dlg_port">ポート</string>
 	<string name="msgs_remote_profile_dlg_use_port_number">ポート番号を指定する</string>
 	
     <string name="msgs_sync_profile_dlg_active">有効</string>

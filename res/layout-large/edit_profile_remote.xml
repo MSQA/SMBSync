@@ -71,31 +71,20 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >
+
 	            <CheckBox
 	                android:id="@+id/remote_profile_use_computer_name"
 	                style="@style/check_box_style"
 	                android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"
-	                android:layout_weight="1.0"
 	                android:textAppearance="?android:attr/textAppearanceMedium"
 	                android:text="@string/msgs_remote_profile_dlg_use_computer_name" />
-            
-            </LinearLayout>
-            
-            
-            
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="3dp"
-                android:orientation="horizontal" >
-	            <Button
+				<Button
 	                android:id="@+id/remote_profile_get_addr_btn"
 	                android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"
 	                android:text="@string/msgs_remote_profile_dlg_addr_list"
-	                android:textAppearance="?android:attr/textAppearanceMedium" />
-                
+	                android:textAppearance="?android:attr/textAppearanceMedium" />	            
                 <EditText
                     android:id="@+id/remote_profile_addr"
                     android:layout_width="0dp"
@@ -157,28 +146,30 @@
 
                 <EditText
                     android:id="@+id/remote_profile_user"
-                    android:layout_width="145dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:hint="@string/msgs_remote_profile_dlg_username"
                     android:inputType="text"/>
 
                 <EditText
                     android:id="@+id/remote_profile_pass"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:hint="@string/msgs_remote_profile_dlg_password"
                     android:inputType="textPassword"/>
+	            <Button
+	                android:id="@+id/remote_profile_logon"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_weight="1"
+	                android:textAppearance="?android:attr/textAppearanceMedium"
+	                android:text="@string/msgs_remote_profile_dlg_logon" />
+                
             </LinearLayout>
-
-            <Button
-                android:id="@+id/remote_profile_logon"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/msgs_remote_profile_dlg_logon" />
             
             <LinearLayout
                 android:layout_width="fill_parent"

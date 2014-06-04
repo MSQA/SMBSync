@@ -55,6 +55,7 @@ import android.util.Log;
 
 import com.sentaroh.android.Utilities.DateUtil;
 import com.sentaroh.android.Utilities.MiscUtil;
+import com.sentaroh.android.Utilities.NetworkUtil;
 
 @SuppressLint("SimpleDateFormat")
 public class SMBSyncUtil {
@@ -135,6 +136,20 @@ public class SMBSyncUtil {
 		return ret;
 	};
 	
+	public static boolean isSmbHostAddressConnected(String addr) {
+		boolean result=false;
+		if (NetworkUtil.isIpAddressAndPortConnected(addr,139,3500) || 
+				NetworkUtil.isIpAddressAndPortConnected(addr,445,3500)) result=true;
+		return result;
+	};
+	
+	public static boolean isSmbHostAddressConnected(String addr, int port) {
+		boolean result=false;
+		result=NetworkUtil.isIpAddressAndPortConnected(addr,port,3500);
+		Log.v("","addr="+addr+", port="+port+", result="+result);
+		return result;
+	};
+
 	public static String getLocalIpAddress() {
 		String result="";
 		boolean exit=false;

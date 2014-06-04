@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginRight="5dp"
+    android:layout_marginLeft="5dp"
     android:orientation="horizontal"
     tools:ignore="ButtonStyle" >
 
@@ -10,7 +12,6 @@
         android:id="@+id/remote_profile_cancel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginRight="5dp"
         android:layout_weight="1.0"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="@string/msgs_dlg_cancel_btn" />
@@ -19,7 +20,6 @@
         android:id="@+id/remote_profile_ok"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
         android:layout_weight="1.0"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="@string/msgs_dlg_ok_btn" />

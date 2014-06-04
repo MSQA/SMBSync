@@ -23,14 +23,14 @@
     <string name="msgs_remote_profile_dlg_sharelist">Show list</string>
     <string name="msgs_remote_profile_dlg_directory">Directory</string>
     <string name="msgs_remote_profile_dlg_dirlist">Show list</string>
-    <string name="msgs_remote_profile_dlg_addr_list">Network Scan</string>
-    <string name="msgs_remote_profile_dlg_use_computer_name">Use computer name(host name)</string>
+    <string name="msgs_remote_profile_dlg_addr_list">Scan</string>
+    <string name="msgs_remote_profile_dlg_use_computer_name">Use computer name</string>
     <string name="msgs_remote_profile_dlg_use_user_pass">Use remote host userid and password</string>
     <string name="msgs_remote_profile_dlg_logon">Logon</string>
 	<string name="msgs_remote_profile_dlg_logon_success">Logon successfully completed</string>    
 	<string name="msgs_remote_profile_dlg_logon_error">Logon ended with error</string>
 	<string name="msgs_remote_profile_dlg_logon_cancel">Logon cancelled</string>
-	<string name="msgs_remote_profile_dlg_port">Port number</string>
+	<string name="msgs_remote_profile_dlg_port">Port</string>
 	<string name="msgs_remote_profile_dlg_use_port_number">Use port number</string>
     
     <string name="msgs_sync_profile_dlg_active">Active</string>

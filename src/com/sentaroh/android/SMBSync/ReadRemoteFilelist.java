@@ -51,7 +51,7 @@ public class ReadRemoteFilelist implements Runnable  {
 	
 	private SMBSyncUtil util=null;
 	
-	private String mHostName="", mHostAddr="";
+	private String mHostName="", mHostAddr="", mHostPort="";
 	
 	private Context mContext=null;
 	
@@ -73,13 +73,18 @@ public class ReadRemoteFilelist implements Runnable  {
 		String t_host11=t_host1;
 		if (t_host1.indexOf("/")>=0) t_host11=t_host1.substring(0,t_host1.indexOf("/"));
 		String t_host2=t_host11;
-		if (t_host11.indexOf(":")>=0) t_host2=t_host11.substring(0,t_host11.indexOf(":"));
+		mHostPort="";
+		if (t_host11.indexOf(":")>=0) {
+			t_host2=t_host11.substring(0,t_host11.indexOf(":"));
+			mHostPort=t_host11.replace(t_host2+":","");
+		}
 		if (NetworkUtil.isValidIpAddress(t_host2)) {
 			mHostAddr=t_host2;
 		} else {
 			mHostName=t_host2;
 		}
-		util.addDebugLogMsg(1,"I","getFileList constructed. name="+mHostName+", addr="+mHostAddr);
+		util.addDebugLogMsg(1,"I","getFileList constructed. name="+mHostName+
+				", addr="+mHostAddr+", port="+mHostPort);
 		
 		
 		util.addDebugLogMsg(1,"I","getFileList constructed. user="+user+
@@ -105,11 +110,21 @@ public class ReadRemoteFilelist implements Runnable  {
 		
 		boolean error_exit=false;
 		if (mHostName.equals("")) {
-			if (!isIpAddrReachable(mHostAddr)) {
-				error_exit=true; 
-				getFLCtrl.setThreadResultError();
-				getFLCtrl.setThreadMessage(
-						mContext.getString(R.string.msgs_mirror_remote_addr_not_connected)+mHostAddr);
+			if (mHostPort.equals("")) {
+				if (!SMBSyncUtil.isSmbHostAddressConnected(mHostAddr)) {
+					error_exit=true; 
+					getFLCtrl.setThreadResultError();
+					getFLCtrl.setThreadMessage(
+							mContext.getString(R.string.msgs_mirror_remote_addr_not_connected)+mHostAddr);
+				}
+			} else {
+				if (!SMBSyncUtil.isSmbHostAddressConnected(mHostAddr,
+						Integer.parseInt(mHostPort))) {
+					error_exit=true; 
+					getFLCtrl.setThreadResultError();
+					getFLCtrl.setThreadMessage(
+							mContext.getString(R.string.msgs_mirror_remote_addr_not_connected)+mHostAddr);
+				}
 			}
 		} else {
 			if (NetworkUtil.getSmbHostIpAddressFromName(mHostName)==null) {
@@ -126,18 +141,6 @@ public class ReadRemoteFilelist implements Runnable  {
 		notifyEvent.notifyToListener(true, null);
 	};
 	
-	private boolean isIpAddrReachable(String address) {
-		boolean reachable=false;
-		reachable=NetworkUtil.isNbtAddressActive(address);
-//		for (int i=0;i<5;i++) {
-//			if (NetworkUtil.isNbtAddressActive(address)) {
-//				reachable=true;
-//				break;
-//			}
-//		}
-		return reachable;
-	};
-
 	private void readFIleList() {
 		remoteFileList.clear();
 		try {		
@@ -211,7 +214,7 @@ public class ReadRemoteFilelist implements Runnable  {
 			}
 			
 		} catch (SmbException e) {
-			e.printStackTrace();
+//			e.printStackTrace();
 			util.addDebugLogMsg(1,"E",e.toString());
 			if (getFLCtrl.isEnable()) {
 				getFLCtrl.setThreadResultError();
@@ -225,7 +228,7 @@ public class ReadRemoteFilelist implements Runnable  {
 				getFLCtrl.setDisable();
 			}
 		} catch (MalformedURLException e) {
-			e.printStackTrace();
+//			e.printStackTrace();
 			util.addDebugLogMsg(1,"E",e.toString());
 			if (getFLCtrl.isEnable()) {
 				getFLCtrl.setThreadResultError();
