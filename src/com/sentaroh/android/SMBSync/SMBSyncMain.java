@@ -1097,7 +1097,7 @@ public class SMBSyncMain extends FragmentActivity {
 			} else {//IP V4
 //				Log.v("","c_ip="+c_ip);
 				prefs.edit().putString(getString(R.string.settings_default_addr), 
-						c_ip.substring(0,c_ip.lastIndexOf("."))+".001").commit();				
+						c_ip.substring(0,c_ip.lastIndexOf("."))+".2").commit();				
 			}
 
 			prefs.edit().putString(getString(R.string.settings_smb_lm_compatibility),"0").commit();
