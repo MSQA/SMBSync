@@ -1437,6 +1437,7 @@ public class ProfileMaintenance {
 					if (reachable) {
 						testAuth(auth,addr,port,ntfy);
 					} else {
+						util.addDebugLogMsg(1,"I","Test logon failed, remote server not connected");
 						String unreachble_msg="";
 						if (port.equals("")) {
 							unreachble_msg=String.format(mContext.getString(R.string.msgs_mirror_remote_addr_not_connected)
@@ -1450,6 +1451,7 @@ public class ProfileMaintenance {
 				} else {
 					if (NetworkUtil.getSmbHostIpAddressFromName(host)!=null) testAuth(auth,host,port,ntfy);
 					else {
+						util.addDebugLogMsg(1,"I","Test logon failed, remote server not connected");
 						String unreachble_msg="";
 						unreachble_msg=mContext.getString(R.string.msgs_mirror_remote_name_not_found)+host;
 						ntfy.notifyToListener(true, new Object[]{unreachble_msg});
@@ -1490,16 +1492,25 @@ public class ProfileMaintenance {
 		SmbFile[] lf=null;
 		String url="";
 		if (port.equals("")) {
-			url="smb://"+addr+"/";
+			url="smb://"+addr+"/IPC$/";
 		} else {
-			url="smb://"+addr+":"+port+"/";
+			url="smb://"+addr+":"+port+"/IPC$/";
 		}
 //		Log.v("","url="+url);
 		try {
 			sf=new SmbFile(url,auth);
-			lf=sf.listFiles();
+			sf.connect();
+//			sf.getSecurity();
+//			lf=sf.listFiles();
+//			if (lf!=null) {
+//				for (int i=0;i<lf.length;i++) {
+//					Log.v("","name="+lf[i].getName()+", share="+lf[i].getShare());
+//				}
+//			}
 //			String aa=null;
 //			aa.length();
+			util.addDebugLogMsg(1,"I","Test logon completed, host="+addr+
+					", port="+port+", user="+auth.getUsername());
 		} catch(SmbException e) {
 //			if (e.getNtStatus()==NtStatus.NT_STATUS_LOGON_FAILURE ||
 //					e.getNtStatus()==NtStatus.NT_STATUS_ACCOUNT_RESTRICTION ||
@@ -1510,7 +1521,10 @@ public class ProfileMaintenance {
 //			}
 			String[] e_msg=NetworkUtil.analyzeNtStatusCode(e, mContext, url, auth.getUsername());
 			err_msg=e_msg[0];
+			util.addDebugLogMsg(1,"I","Test logon failed."+"\n"+err_msg);
 		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		Thread.currentThread().setUncaughtExceptionHandler(defaultUEH);
