@@ -73,7 +73,7 @@
 	<string name="msgs_clear_log_message"	>ログメッセージのクリア</string>
 	<string name="msgs_current_dir"			>現ディレクトリ:</string>
 	<string name="msgs_delete_following_profile">下記プロファイルを削除します。</string>
-	<string name="msgs_duplicate_profile"	>プロファイルが重複しています</string>
+	<string name="msgs_duplicate_profile"	>プロファイル名が重複しています</string>
 	<string name="msgs_edit_local_profile"	>ローカルプロファイルの編集</string>
 
 	<string name="msgs_prof_cont_mult"		>複数選択</string>

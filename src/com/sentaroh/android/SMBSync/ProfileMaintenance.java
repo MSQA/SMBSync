@@ -1020,6 +1020,7 @@ public class ProfileMaintenance {
 		final Button btn_ok = (Button) dialog.findViewById(R.id.local_profile_ok);
 		btn_ok.setEnabled(false);
 		dlg_msg.setText(msgs_audit_msgs_profilename2);
+		
 		editname.addTextChangedListener(new TextWatcher(){
 			@Override
 			public void beforeTextChanged(CharSequence s, int start, int count,	int after) {}
@@ -1027,18 +1028,23 @@ public class ProfileMaintenance {
 			public void onTextChanged(CharSequence s, int start, int before, int count) {}
 			@Override
 			public void afterTextChanged(Editable s) {
-				String audit_msg="";
-				if (hasInvalidChar(s.toString(),new String[]{"\t"})) {
-					audit_msg=String.format(msgs_audit_msgs_profilename1,detectedInvalidCharMsg);
-					btn_ok.setEnabled(false);
-				} else if (s.toString().length()==0) {
-					audit_msg=msgs_audit_msgs_profilename2;
-					editname.requestFocus();
-					btn_ok.setEnabled(false);
+				if (!isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_LOCAL, s.toString())) {
+					String audit_msg="";
+					if (hasInvalidChar(s.toString(),new String[]{"\t"})) {
+						audit_msg=String.format(msgs_audit_msgs_profilename1,detectedInvalidCharMsg);
+						btn_ok.setEnabled(false);
+					} else if (s.toString().length()==0) {
+						audit_msg=msgs_audit_msgs_profilename2;
+						editname.requestFocus();
+						btn_ok.setEnabled(false);
+					} else {
+						btn_ok.setEnabled(true);
+					}
+					dlg_msg.setText(audit_msg);
 				} else {
-					btn_ok.setEnabled(true);
+					dlg_msg.setText(msgs_duplicate_profile);
+					btn_ok.setEnabled(false);
 				}
-				dlg_msg.setText(audit_msg);
 			}
 		});
 		editdir.addTextChangedListener(new TextWatcher(){
@@ -1277,10 +1283,22 @@ public class ProfileMaintenance {
 			public void onTextChanged(CharSequence s, int start, int before, int count) {}
 			@Override
 			public void afterTextChanged(Editable s) {
-				if (s.length()>0) {
-					dlg_msg.setText("");
+				if (!isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_REMOTE, s.toString())) {
+					String audit_msg="";
+					if (hasInvalidChar(s.toString(),new String[]{"\t"})) {
+						audit_msg=String.format(msgs_audit_msgs_profilename1,detectedInvalidCharMsg);
+						btn_ok.setEnabled(false);
+					} else if (s.toString().length()==0) {
+						audit_msg=msgs_audit_msgs_profilename2;
+						editname.requestFocus();
+						btn_ok.setEnabled(false);
+					} else {
+						btn_ok.setEnabled(true);
+					}
+					dlg_msg.setText(audit_msg);
 				} else {
-					dlg_msg.setText(msgs_audit_msgs_profilename2);
+					dlg_msg.setText(msgs_duplicate_profile);
+					btn_ok.setEnabled(false);
 				}
 				setRemoteProfileOkBtnEnabled(dialog);
 			}
@@ -2096,7 +2114,7 @@ public class ProfileMaintenance {
 
 		final Button btn_ok = (Button) dialog.findViewById(R.id.sync_profile_ok);
 		btn_ok.setEnabled(false);
-		dlg_msg.setText(auditSyncProfileField(dialog));
+		dlg_msg.setText(msgs_audit_msgs_profilename2);
 		editname.addTextChangedListener(new TextWatcher(){
 			@Override
 			public void beforeTextChanged(CharSequence s, int start, int count,	int after) {}
@@ -2104,14 +2122,19 @@ public class ProfileMaintenance {
 			public void onTextChanged(CharSequence s, int start, int before, int count) {}
 			@Override
 			public void afterTextChanged(Editable s) {
-				String e_msg=auditSyncProfileField(dialog);
-				if (e_msg.length()!=0) {
-					dlg_msg.setText(e_msg);
-					btn_ok.setEnabled(false);
+				if (!isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_SYNC, s.toString())) {
+					String e_msg=auditSyncProfileField(dialog);
+					if (e_msg.length()!=0) {
+						dlg_msg.setText(e_msg);
+						btn_ok.setEnabled(false);
+					} else {
+						dlg_msg.setText("");
+						btn_ok.setEnabled(true);
+					} 
 				} else {
-					dlg_msg.setText("");
-					btn_ok.setEnabled(true);
-				} 
+					dlg_msg.setText(msgs_duplicate_profile);
+					btn_ok.setEnabled(false);
+				}
 			}
 		});
 		
@@ -2149,74 +2172,90 @@ public class ProfileMaintenance {
 		});
 
 		// OKボタンの指定
-		
 		btn_ok.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				String prof_name, prof_act, prof_master, prof_target, prof_syncopt = null;
-				boolean audit_error = false;
-				String audit_msg="";
-				
-				prof_master = spinner_master.getSelectedItem().toString().substring(2);
-				prof_target = spinner_target.getSelectedItem().toString().substring(2);
-				prof_name = editname.getText().toString();
-
-				String e_msg=auditSyncProfileField(dialog);
-				if (e_msg.length()!=0) {
-					audit_msg=e_msg;
-					audit_error=true;
-				} else if (e_msg.length()==0 && prof_master.equals(prof_target)) {
-						audit_error=true;
-						audit_msg=msgs_audit_msgs_master_target;
-				} 
-
-				CheckBox tg = (CheckBox) dialog.findViewById(R.id.sync_profile_active);
-				if (tg.isChecked()) prof_act = SMBSYNC_PROF_ACTIVE;
-					else prof_act = SMBSYNC_PROF_INACTIVE;
-
-				int syncopt=spinnerSyncOption.getSelectedItemPosition();
-				if (syncopt==0) prof_syncopt = SMBSYNC_SYNC_TYPE_MIRROR;
-				else if (syncopt==1) prof_syncopt = SMBSYNC_SYNC_TYPE_COPY;
-				else if (syncopt==2) prof_syncopt = SMBSYNC_SYNC_TYPE_MOVE;
-				else prof_syncopt = SMBSYNC_SYNC_TYPE_COPY;
-
-				Boolean prof_mpd=true;
-				if (!cbmpd.isChecked())prof_mpd=false; 
-
-				if (audit_error) {
-					((TextView) dialog.findViewById(R.id.sync_profile_dlg_msg))
-						.setText(audit_msg);
-					return;
-				} else {
-					if (!isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_SYNC, prof_name)) {
-						dialog.dismiss();
-//						int pos=glblParms.profileListView.getFirstVisiblePosition();
-//						int posTop=glblParms.profileListView.getChildAt(0).getTop();
-						if (mGp.profileAdapter.getItem(0).getType().equals(""))
-							mGp.profileAdapter.remove(0);
-						String m_typ=getProfileType(prof_master,mGp.profileAdapter);
-						String t_typ=getProfileType(prof_target,mGp.profileAdapter);
-						updateSyncProfileItem(true, prof_name, prof_act,
-								prof_syncopt, m_typ,prof_master, t_typ,prof_target,
-								prof_file_filter,prof_dir_filter,prof_mpd,
-								cbConf.isChecked(),cbLastMod.isChecked(),
-								cbNotUseLastModRem.isChecked(),false,0);
-						mGp.profileAdapter.sort();
-						mGp.profileAdapter.notifyDataSetChanged();
-						saveProfileToFile(false,"","",mGp.profileAdapter,false);
-//						AdapterProfileList tfl= createProfileList(false,"");
-//						replaceglblParms.profileAdapterContent(tfl);
-//						glblParms.profileListView.setSelectionFromTop(pos,posTop);
-					} else {
-						((TextView) dialog.findViewById(R.id.sync_profile_dlg_msg))
-						.setText(msgs_duplicate_profile);
-					}
-				}
+				if (saveSyncProfile(dialog, prof_file_filter, prof_dir_filter,0)) 
+					dialog.dismiss();
 			}
 		});
 //		dialog.setOnKeyListener(new DialogOnKeyListener(context));
 //		dialog.setCancelable(false);
 		dialog.show();
 
+	};
+	
+	private boolean saveSyncProfile(Dialog dialog,
+			final ArrayList<String> prof_file_filter, 
+			final ArrayList<String> prof_dir_filter,
+			int prof_pos) {
+		
+//		final TextView dlg_title=(TextView) dialog.findViewById(R.id.sync_profile_dlg_title);
+		final TextView dlg_msg=(TextView) dialog.findViewById(R.id.sync_profile_dlg_msg);
+//		final TextView dlg_file_filter=(TextView) dialog.findViewById(R.id.sync_profile_file_filter);
+//		final TextView dlg_dir_filter=(TextView) dialog.findViewById(R.id.sync_profile_dir_filter);
+		final EditText editname = (EditText)dialog.findViewById(R.id.sync_profile_name);
+		final Spinner spinnerSyncOption=(Spinner)dialog.findViewById(R.id.sync_profile_sync_option);
+		final CheckBox cbmpd = (CheckBox)dialog.findViewById(R.id.sync_profile_master_dir_cb);
+		final CheckBox cbConf = (CheckBox)dialog.findViewById(R.id.sync_profile_confirm);
+		final CheckBox cbLastMod = (CheckBox)dialog.findViewById(R.id.sync_profile_last_modified);
+		final CheckBox cbNotUseLastModRem = (CheckBox)dialog.findViewById(R.id.sync_profile_not_use_last_modified_remote_file_for_diff);
+		final CheckBox tg = (CheckBox)dialog.findViewById(R.id.sync_profile_active);
+		final Spinner spinner_master=(Spinner)dialog.findViewById(R.id.sync_profile_master_spinner);
+		final Spinner spinner_target=(Spinner)dialog.findViewById(R.id.sync_profile_target_spinner);
+//		final Button swap_master_target = (Button)dialog.findViewById(R.id.sync_profile_edit_change_master_and_target);
+//		final ImageButton ib_edit_master = (ImageButton)dialog.findViewById(R.id.sync_profile_edit_master);
+//		final ImageButton ib_edit_target = (ImageButton)dialog.findViewById(R.id.sync_profile_edit_target);
+//		final Button btn_ok = (Button) dialog.findViewById(R.id.sync_profile_ok);
+//		Button file_filter_btn = (Button) dialog.findViewById(R.id.sync_profile_file_filter_btn);
+//		Button dir_filter_btn = (Button) dialog.findViewById(R.id.sync_profile_dir_filter_btn);
+//		final Button btn_cancel = (Button) dialog.findViewById(R.id.sync_profile_cancel);
+		
+		String prof_name, prof_act, prof_master, prof_target, prof_syncopt = null;
+		boolean profile_saved = true;
+		String audit_msg="";
+		
+		prof_master = spinner_master.getSelectedItem().toString().substring(2);
+		prof_target = spinner_target.getSelectedItem().toString().substring(2);
+		prof_name = editname.getText().toString();
+
+		String e_msg=auditSyncProfileField(dialog);
+		if (e_msg.length()!=0) {
+			audit_msg=e_msg;
+			profile_saved=false;
+		} else if (e_msg.length()==0 && prof_master.equals(prof_target)) {
+				profile_saved=false;
+				audit_msg=msgs_audit_msgs_master_target;
+		} 
+
+		if (tg.isChecked()) prof_act = SMBSYNC_PROF_ACTIVE;
+			else prof_act = SMBSYNC_PROF_INACTIVE;
+
+		int syncopt=spinnerSyncOption.getSelectedItemPosition();
+		if (syncopt==0) prof_syncopt = SMBSYNC_SYNC_TYPE_MIRROR;
+		else if (syncopt==1) prof_syncopt = SMBSYNC_SYNC_TYPE_COPY;
+		else if (syncopt==2) prof_syncopt = SMBSYNC_SYNC_TYPE_MOVE;
+		else prof_syncopt = SMBSYNC_SYNC_TYPE_COPY;
+
+		Boolean prof_mpd=true;
+		if (!cbmpd.isChecked())prof_mpd=false; 
+
+		if (!profile_saved) {
+			dlg_msg.setText(audit_msg);
+		} else {
+			if (mGp.profileAdapter.getItem(0).getType().equals(""))
+				mGp.profileAdapter.remove(0);
+			String m_typ=getProfileType(prof_master,mGp.profileAdapter);
+			String t_typ=getProfileType(prof_target,mGp.profileAdapter);
+			updateSyncProfileItem(prof_name, prof_act,
+					prof_syncopt, m_typ,prof_master, t_typ,prof_target,
+					prof_file_filter,prof_dir_filter,prof_mpd,
+					cbConf.isChecked(),cbLastMod.isChecked(),
+					cbNotUseLastModRem.isChecked(),false,prof_pos);
+			mGp.profileAdapter.sort();
+			mGp.profileAdapter.notifyDataSetChanged();
+			saveProfileToFile(false,"","",mGp.profileAdapter,false);
+		}
+		return profile_saved;
 	};
 	
 	public void editProfileLocal(String prof_name, final String prof_type,
@@ -2808,61 +2847,8 @@ public class ProfileMaintenance {
 		Button btn_ok = (Button) dialog.findViewById(R.id.sync_profile_ok);
 		btn_ok.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				String prof_name, prof_act, prof_master, prof_target, sync_opt = null,audit_msg="";
-				boolean audit_error=false;
-				
-				prof_master = spinner_master.getSelectedItem().toString().substring(2);
-				prof_target = spinner_target.getSelectedItem().toString().substring(2);
-				prof_name = editname.getText().toString();
-
-				String e_msg=auditSyncProfileField(dialog);
-				if (e_msg.length()!=0) {
-					audit_msg=e_msg;
-					audit_error=true;
-				} else if (e_msg.length()==0 && prof_master.equals(prof_target)) {
-						audit_error=true;
-						audit_msg=msgs_audit_msgs_master_target;
-				} 
-				if (tg.isChecked()) prof_act = SMBSYNC_PROF_ACTIVE;
-					else prof_act = SMBSYNC_PROF_INACTIVE;
-
-				int syncopt=spinnerSyncOption.getSelectedItemPosition();
-				if (syncopt==0) sync_opt = SMBSYNC_SYNC_TYPE_MIRROR;
-				else if (syncopt==1) sync_opt = SMBSYNC_SYNC_TYPE_COPY;
-				else if (syncopt==2) sync_opt = SMBSYNC_SYNC_TYPE_MOVE;
-				else sync_opt = SMBSYNC_SYNC_TYPE_COPY;
-
-				Boolean prof_mpd=true;
-				if (!cbmpd.isChecked())prof_mpd=false; 
-				
-				if (audit_error) {
-					dlg_msg.setText(audit_msg);
-					return;
-				} else {
-					ProfileListItem item = mGp.profileAdapter.getItem(prof_num);
-					if (prof_name.equals(item.getName())||
-							(!prof_name.equals(item.getName())&&
-							 !isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,
-									 SMBSYNC_PROF_TYPE_SYNC, prof_name))) {
-						dialog.dismiss();
-//						int pos=glblParms.profileListView.getFirstVisiblePosition();
-//						int posTop=glblParms.profileListView.getChildAt(0).getTop();
-						String m_typ=getProfileType(prof_master,mGp.profileAdapter);
-						String t_typ=getProfileType(prof_target,mGp.profileAdapter);
-						updateSyncProfileItem(false,prof_name,prof_act,
-								sync_opt, m_typ,prof_master, t_typ,prof_target,
-								n_file_filter,n_dir_filter,prof_mpd,
-								cbConf.isChecked(),cbLastMod.isChecked(),
-								cbNotUseLastModRem.isChecked(), false,prof_num);
-						saveProfileToFile(false,"","",mGp.profileAdapter,false);
-						mGp.profileAdapter.notifyDataSetChanged();
-//						AdapterProfileList tfl= createProfileList(false,"");
-//						replaceglblParms.profileAdapterContent(tfl);
-//						glblParms.profileListView.setSelectionFromTop(pos,posTop);
-					} else {
-						dlg_msg.setText(msgs_duplicate_profile);
-					}
-				}
+				if (saveSyncProfile(dialog, n_file_filter, n_dir_filter,prof_num)) 
+					dialog.dismiss();
 			}
 		});
 //		dialog.setOnKeyListener(new DialogOnKeyListener(context));
@@ -6254,14 +6240,16 @@ public class ProfileMaintenance {
 		return out;
 	};
 
-	private void updateSyncProfileItem(boolean isAdd, String prof_name, 
+	private void updateSyncProfileItem(String prof_name, 
 			String prof_act,String prof_syncopt, String prof_master_typ,String prof_master,
 			String prof_target_typ,String prof_target, 
 			ArrayList<String> file_filter, ArrayList<String> dir_filter,
 			boolean prof_mpd, boolean prof_conf, boolean prof_ujlm, boolean nulm_remote,
 			boolean isChk, int pos) {
 		String prof_group=SMBSYNC_PROF_GROUP_DEFAULT;
-		if (isAdd) {
+		boolean isExists=isProfileExists(prof_group,
+				 SMBSYNC_PROF_TYPE_SYNC, prof_name);
+		if (!isExists) {
 			ProfileListItem pfli=setSyncProfilelistItem(prof_group,prof_name,prof_act,
 					prof_syncopt,prof_master_typ,prof_master,prof_target_typ,prof_target,
 					file_filter, dir_filter,prof_mpd,prof_conf,prof_ujlm,nulm_remote,isChk);
@@ -6297,7 +6285,8 @@ public class ProfileMaintenance {
 
 	private void updateRemoteProfileItem(boolean isAdd, String prof_name, 
 			String prof_act,String prof_dir, String prof_user, String prof_pass, 
-			String prof_share, String prof_addr, String prof_host, String prof_port,boolean isChk,int pos) {
+			String prof_share, String prof_addr, String prof_host, String prof_port,
+			boolean isChk,int pos) {
 		String prof_group=SMBSYNC_PROF_GROUP_DEFAULT;
 		if (isAdd) {
 			mGp.profileAdapter.add(setRemoteProfilelistItem(prof_group, prof_name,prof_act,

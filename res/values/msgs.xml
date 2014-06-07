@@ -71,8 +71,8 @@
 	<string name="msgs_active_sync_prof_not_found">Active sync profile can not be found.</string>
 	<string name="msgs_clear_log_message"	>Clear log messages</string>
 	<string name="msgs_current_dir"			>Current dir:</string>
-	<string name="msgs_delete_following_profile">Delete following profile(s)</string>
-	<string name="msgs_duplicate_profile"	>Duplicate profile found</string>
+	<string name="msgs_delete_following_profile">Delete the following profile(s)</string>
+	<string name="msgs_duplicate_profile"	>The profile name is duplicated</string>
 	<string name="msgs_edit_local_profile"	>Edit local profile</string>
 
 	<string name="msgs_prof_cont_mult"		>Multiple selection</string>

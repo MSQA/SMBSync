@@ -21,6 +21,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.50"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="@string/msgs_dlg_ok_btn" />
+            android:text="@string/msgs_dlg_save_btn" />
         
 </LinearLayout>

@@ -4,6 +4,7 @@
     <string name="msgs_terminate_application">SMBSyncを終了しますか？</string>
     
     <string name="msgs_dlg_ok_btn">了解</string>
+    <string name="msgs_dlg_save_btn">保存</string>
     <string name="msgs_dlg_cancel_btn">キャンセル</string>
     <string name="msgs_local_profile_dlg_active">有効</string>
     <string name="msgs_local_profile_dlg_profile">プロファイル名</string>
@@ -36,7 +37,8 @@
 	
     <string name="msgs_sync_profile_dlg_active">有効</string>
     <string name="msgs_sync_profile_dlg_profile">プロファイル名</string>
-    <string name="msgs_sync_profile_dlg_change_master_and_target">マスターとターゲットプロファイルを入れ替える</string>
+    <string name="msgs_sync_profile_dlg_change_master_and_target">マスターとターゲットを入れ替える</string>
+    <string name="msgs_sync_profile_dlg_save_and_sync">保存して同期する</string>
     <string name="msgs_sync_profile_dlg_master">マスタープロファイル</string>
     <string name="msgs_sync_profile_dlg_target">ターゲットプロファイル</string>
     <string name="msgs_sync_profile_dlg_syncopt">同期方式</string>
