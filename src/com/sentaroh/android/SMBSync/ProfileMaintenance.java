@@ -794,7 +794,7 @@ public class ProfileMaintenance {
 		}
 	};
 	
-	public void setProfileChecked(boolean chk, AdapterProfileList pa, 
+	public void setProfileToChecked(boolean chk, AdapterProfileList pa, 
 			ProfileListItem item, int no) {
 		
 		if (chk) {
@@ -998,7 +998,7 @@ public class ProfileMaintenance {
 					}
 					
 				});
-				setLocalDir(url,"",p_dir,ntfy);
+				selectLocalDirDlg(url,"",p_dir,ntfy);
 			}
 		});
 		// CANCELボタンの指定
@@ -1103,7 +1103,7 @@ public class ProfileMaintenance {
 //						int posTop=glblParms.profileListView.getChildAt(0).getTop();
 						if (mGp.profileAdapter.getItem(0).getType().equals(""))
 							mGp.profileAdapter.remove(0);
-						updateLocalProfileItem(true,prof_name,prof_act,
+						updateLocalProfileAdapter(true,prof_name,prof_act,
 								prof_lmp, prof_dir,false,0);
 						mGp.profileAdapter.sort();
 						saveProfileToFile(false,"","",mGp.profileAdapter,false);
@@ -1212,21 +1212,21 @@ public class ProfileMaintenance {
 		if (util.isRemoteDisable()) btnAddr.setEnabled(false);
 		btnAddr.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				processIpAddressScanButton(dialog);
+				ipAddressScanButtonDlg(dialog);
 			}
 		});
 		
 		if (util.isRemoteDisable()) btnListShare.setEnabled(false);
 		btnListShare.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				processRemoteShareButton(dialog);
+				invokeSelectRemoteShareDlg(dialog);
 			}
 		});
 		
 		if (util.isRemoteDisable()) btnListDir.setEnabled(false);
 		btnListDir.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				processRemoteDirectoryButton(dialog);
+				selectRemoteDirectory(dialog);
 			}
 		});
 		
@@ -1242,13 +1242,13 @@ public class ProfileMaintenance {
 				String port="";
 				if (cb_use_port_number.isChecked()) port=editport.getText().toString();
 				if (cb_use_hostname.isChecked()) {
-					processLogonToRemote(edithost.getText().toString(),
+					logonToRemoteDlg(edithost.getText().toString(),
 							"", port, user,pass,null);
 				} else {
 					String t_addr=editaddr.getText().toString();
 					String s_addr=t_addr;
 					if (t_addr.indexOf(":")>=0) s_addr=t_addr.substring(0,t_addr.indexOf(":")) ;
-					processLogonToRemote("",s_addr,
+					logonToRemoteDlg("",s_addr,
 							port, user,pass,null);
 				}
 			}
@@ -1342,7 +1342,7 @@ public class ProfileMaintenance {
 //						int posTop=glblParms.profileListView.getChildAt(0).getTop();
 						if (mGp.profileAdapter.getItem(0).getType().equals(""))
 							mGp.profileAdapter.remove(0);
-						updateRemoteProfileItem(true, prof_name, prof_act,prof_dir,
+						updateRemoteProfileAdapter(true, prof_name, prof_act,prof_dir,
 								prof_user,prof_pass,prof_share,prof_addr,prof_host,
 								remote_port, false,0);
 						mGp.profileAdapter.sort();
@@ -1364,7 +1364,7 @@ public class ProfileMaintenance {
 
 	};
 
-	public void processLogonToRemote(final String host, final String addr, final String port, 
+	public void logonToRemoteDlg(final String host, final String addr, final String port, 
 			final String user, final String pass, final NotifyEvent p_ntfy) {
 		final ThreadCtrl tc=new ThreadCtrl();
 		tc.setEnable();
@@ -1482,8 +1482,8 @@ public class ProfileMaintenance {
 	};
 	
 	@SuppressWarnings("unused")
-	private void testAuth(NtlmPasswordAuthentication auth, String addr, String port,
-			final NotifyEvent ntfy) {
+	private void testAuth(final NtlmPasswordAuthentication auth, 
+			final String host, String port, final NotifyEvent ntfy) {
 		final UncaughtExceptionHandler defaultUEH = 
 				Thread.currentThread().getUncaughtExceptionHandler();
         Thread.currentThread().setUncaughtExceptionHandler( new Thread.UncaughtExceptionHandler() {
@@ -1510,9 +1510,9 @@ public class ProfileMaintenance {
 		SmbFile[] lf=null;
 		String url="";
 		if (port.equals("")) {
-			url="smb://"+addr+"/IPC$/";
+			url="smb://"+host+"/IPC$/";
 		} else {
-			url="smb://"+addr+":"+port+"/IPC$/";
+			url="smb://"+host+":"+port+"/IPC$/";
 		}
 //		Log.v("","url="+url);
 		try {
@@ -1527,7 +1527,7 @@ public class ProfileMaintenance {
 //			}
 //			String aa=null;
 //			aa.length();
-			util.addDebugLogMsg(1,"I","Test logon completed, host="+addr+
+			util.addDebugLogMsg(1,"I","Test logon completed, host="+host+
 					", port="+port+", user="+auth.getUsername());
 		} catch(SmbException e) {
 //			if (e.getNtStatus()==NtStatus.NT_STATUS_LOGON_FAILURE ||
@@ -2142,7 +2142,7 @@ public class ProfileMaintenance {
 		Button file_filter_btn = (Button) dialog.findViewById(R.id.sync_profile_file_filter_btn);
 		file_filter_btn.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				processFileFilterButton(dialog, prof_file_filter);
+				invokeEditFileFilterDlg(dialog, prof_file_filter);
 			}
 		});
 		// directory filterボタンの指定
@@ -2151,7 +2151,7 @@ public class ProfileMaintenance {
 		else dir_filter_btn.setEnabled(false);
 		dir_filter_btn.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				processDirectoryFilterButton(dialog, prof_dir_filter);
+				invokeEditDirFilterDlg(dialog, prof_dir_filter);
 			}
 		});
 		
@@ -2246,7 +2246,7 @@ public class ProfileMaintenance {
 				mGp.profileAdapter.remove(0);
 			String m_typ=getProfileType(prof_master,mGp.profileAdapter);
 			String t_typ=getProfileType(prof_target,mGp.profileAdapter);
-			updateSyncProfileItem(prof_name, prof_act,
+			updateSyncProfileAdapter(prof_name, prof_act,
 					prof_syncopt, m_typ,prof_master, t_typ,prof_target,
 					prof_file_filter,prof_dir_filter,prof_mpd,
 					cbConf.isChecked(),cbLastMod.isChecked(),
@@ -2312,7 +2312,7 @@ public class ProfileMaintenance {
 					}
 					
 				});
-				setLocalDir(url,"",p_dir,ntfy);
+				selectLocalDirDlg(url,"",p_dir,ntfy);
 			}
 		});
 		
@@ -2385,7 +2385,7 @@ public class ProfileMaintenance {
 							@Override
 							public void positiveResponse(Context c,Object[] o) {
 								dialog.dismiss();
-								updateLocalProfileItem(false,t_prof_name,t_prof_act,
+								updateLocalProfileAdapter(false,t_prof_name,t_prof_act,
 										t_prof_lmp, t_prof_dir,false,prof_num);
 								resolveSyncProfileRelation();
 								saveProfileToFile(false,"","",mGp.profileAdapter,false);
@@ -2498,14 +2498,13 @@ public class ProfileMaintenance {
 				String port="";
 				if (cb_use_port_number.isChecked()) port=editport.getText().toString();
 				if (cb_use_hostname.isChecked()) {
-					processLogonToRemote(edithost.getText().toString(),
+					logonToRemoteDlg(edithost.getText().toString(),
 							"", port, user,pass,null);
 				} else {
 					String t_addr=editaddr.getText().toString();
 					String s_addr=t_addr;
 					if (t_addr.indexOf(":")>=0) s_addr=t_addr.substring(0,t_addr.indexOf(":")) ;
-					processLogonToRemote("",s_addr,
-							port, user,pass,null);
+					logonToRemoteDlg("",s_addr, port, user,pass,null);
 				}
 			}
 		});
@@ -2524,7 +2523,7 @@ public class ProfileMaintenance {
 		if (util.isRemoteDisable()) btnAddr.setEnabled(false);
 		btnAddr.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				processIpAddressScanButton(dialog);
+				ipAddressScanButtonDlg(dialog);
 			}
 		});
 		
@@ -2533,7 +2532,7 @@ public class ProfileMaintenance {
 		if (util.isRemoteDisable()) btnGet1.setEnabled(false);
 		btnGet1.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				processRemoteShareButton(dialog);
+				invokeSelectRemoteShareDlg(dialog);
 			}
 		});
 		// RemoteDirectoryボタンの指定
@@ -2541,7 +2540,7 @@ public class ProfileMaintenance {
 		if (util.isRemoteDisable()) btnGet2.setEnabled(false);
 		btnGet2.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				processRemoteDirectoryButton(dialog);
+				selectRemoteDirectory(dialog);
 			}
 		});
 
@@ -2602,7 +2601,7 @@ public class ProfileMaintenance {
 							remote_port=editport.getText().toString();
 //						int pos=glblParms.profileListView.getFirstVisiblePosition();
 //						int posTop=glblParms.profileListView.getChildAt(0).getTop();
-						updateRemoteProfileItem(false,prof_name,prof_act,prof_dir,
+						updateRemoteProfileAdapter(false,prof_name,prof_act,prof_dir,
 								remote_user, remote_pass,remote_share,
 								remote_addr,remote_host,remote_port,
 								false,prof_num);
@@ -2810,7 +2809,7 @@ public class ProfileMaintenance {
 		Button file_filter_btn = (Button) dialog.findViewById(R.id.sync_profile_file_filter_btn);
 		file_filter_btn.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				processFileFilterButton(dialog, n_file_filter);
+				invokeEditFileFilterDlg(dialog, n_file_filter);
 			}
 		});
 		// directory filterボタンの指定
@@ -2819,7 +2818,7 @@ public class ProfileMaintenance {
 		else dir_filter_btn.setEnabled(false);
 		dir_filter_btn.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				processDirectoryFilterButton(dialog, n_dir_filter);
+				invokeEditDirFilterDlg(dialog, n_dir_filter);
 			}
 		});
 		// Master Dir processボタンの指定
@@ -2962,7 +2961,7 @@ public class ProfileMaintenance {
 
 	};
 
-	private void processIpAddressScanButton(Dialog dialog) {
+	private void ipAddressScanButtonDlg(Dialog dialog) {
 		final TextView dlg_msg=(TextView) dialog.findViewById(R.id.remote_profile_dlg_msg);
 		final EditText editaddr = (EditText) dialog.findViewById(R.id.remote_profile_addr);
 		final EditText edithost = (EditText) dialog.findViewById(R.id.remote_profile_hostname);
@@ -2994,7 +2993,7 @@ public class ProfileMaintenance {
 		scanRemoteNetworkDlg(ntfy,port_num);
 	};
 
-	private void processRemoteShareButton(Dialog dialog) {
+	private void invokeSelectRemoteShareDlg(Dialog dialog) {
 		final TextView dlg_msg=(TextView) dialog.findViewById(R.id.remote_profile_dlg_msg);
 
 		final EditText editaddr = (EditText) dialog.findViewById(R.id.remote_profile_addr);
@@ -3063,7 +3062,7 @@ public class ProfileMaintenance {
 			}
 			
 		});
-		setRemoteShare(remurl,"", ntfy);
+		selectRemoteShareDlg(remurl,"", ntfy);
 	};
 
 	public void setSmbUserPass(String user, String pass) {
@@ -3071,7 +3070,7 @@ public class ProfileMaintenance {
 		smbPass=pass;
 	};
 	
-	private void processRemoteDirectoryButton(Dialog dialog) {
+	private void selectRemoteDirectory(Dialog dialog) {
 		final TextView dlg_msg=(TextView) dialog.findViewById(R.id.remote_profile_dlg_msg);
 
 		final EditText editaddr = (EditText) dialog.findViewById(R.id.remote_profile_addr);
@@ -3195,7 +3194,7 @@ public class ProfileMaintenance {
 		return result;
 	}
 	
-	private void processFileFilterButton(Dialog dialog,
+	private void invokeEditFileFilterDlg(Dialog dialog,
 			final ArrayList<String> n_file_filter) {
 		final TextView dlg_file_filter=(TextView) dialog.findViewById(R.id.sync_profile_file_filter);
 
@@ -3220,11 +3219,11 @@ public class ProfileMaintenance {
 			public void negativeResponse(Context arg0, Object[] arg1) {}
 			
 		});
-		setFileFilter(n_file_filter,ntfy);
+		editFileFilterDlg(n_file_filter,ntfy);
 
 	};
 	
-	private void processDirectoryFilterButton(Dialog dialog,
+	private void invokeEditDirFilterDlg(Dialog dialog,
 			final ArrayList<String> n_dir_filter) {
 		final CheckBox cbmpd = (CheckBox)dialog.findViewById(R.id.sync_profile_master_dir_cb);
 		final TextView dlg_dir_filter=(TextView) dialog.findViewById(R.id.sync_profile_dir_filter);
@@ -3266,7 +3265,7 @@ public class ProfileMaintenance {
 			}
 			return;
 		}
-		setDirFilter(mGp.profileAdapter,m_prof_name,n_dir_filter,ntfy);
+		editDirFilterDlg(mGp.profileAdapter,m_prof_name,n_dir_filter,ntfy);
 	};
 	
 	public void setLocalMountPointSpinner(Spinner spinner, String prof_lmp) {
@@ -3317,7 +3316,7 @@ public class ProfileMaintenance {
 		}
 	};
 	
-	public void setFileFilter(final ArrayList<String>file_filter, final NotifyEvent p_ntfy) {
+	public void editFileFilterDlg(final ArrayList<String>file_filter, final NotifyEvent p_ntfy) {
 		ArrayList<FilterListItem> filterList=new ArrayList<FilterListItem>() ;
 		final AdapterFilterList filterAdapter;
 		
@@ -3453,7 +3452,7 @@ public class ProfileMaintenance {
 		
 	};
 	
-	public void setDirFilter(final AdapterProfileList prof_dapter,
+	public void editDirFilterDlg(final AdapterProfileList prof_dapter,
 			final String prof_master, final ArrayList<String>dir_filter, 
 			final NotifyEvent p_ntfy) {
 		ArrayList<FilterListItem> filterList=new ArrayList<FilterListItem>() ;
@@ -3757,7 +3756,7 @@ public class ProfileMaintenance {
 	    		final int pos=tfa.getItem(idx);
 	    		final TreeFilelistItem tfi=tfa.getDataItem(pos);
 				if (tfi.getName().startsWith("---")) return;
-				processLocalDirTree(true,item.getLocalMountPoint(), pos,tfi,tfa);
+				expandHideLocalDirTree(true,item.getLocalMountPoint(), pos,tfi,tfa);
             }
         });
 		lv.setOnItemLongClickListener(new OnItemLongClickListener(){
@@ -3925,7 +3924,7 @@ public class ProfileMaintenance {
 			    		final int pos=tfa.getItem(idx);
 			    		final TreeFilelistItem tfi=tfa.getDataItem(pos);
 						if (tfi.getName().startsWith("---")) return;
-						processRemoteDirTree(remurl, pos,tfi,tfa);
+						expandHideRemoteDirTree(remurl, pos,tfi,tfa);
 					}
 				});	 
 				lv.setOnItemLongClickListener(new OnItemLongClickListener(){
@@ -4892,7 +4891,7 @@ public class ProfileMaintenance {
 	};
 	
 	
-	public void setLocalDir(final String url,final String dir,
+	public void selectLocalDirDlg(final String url,final String dir,
 			String p_dir,final NotifyEvent p_ntfy) {
 		
     	//カスタムダイアログの生成
@@ -4932,7 +4931,7 @@ public class ProfileMaintenance {
 	    		final int pos=tfa.getItem(idx);
 	    		final TreeFilelistItem tfi=tfa.getDataItem(pos);
 				if (tfi.getName().startsWith("---")) return;
-				processLocalDirTree(true,url, pos,tfi,tfa);
+				expandHideLocalDirTree(true,url, pos,tfi,tfa);
 			}
         });
 		lv.setOnItemLongClickListener(new OnItemLongClickListener(){
@@ -5143,7 +5142,7 @@ public class ProfileMaintenance {
        	.start();
 	}
 	
-	public void setRemoteShare(final String remurl, String remdir,
+	public void selectRemoteShareDlg(final String remurl, String remdir,
 			final NotifyEvent p_ntfy) { 
 		
 		NotifyEvent ntfy=new NotifyEvent(mContext);
@@ -5281,7 +5280,7 @@ public class ProfileMaintenance {
 			    		final int pos=tfa.getItem(idx);
 			    		final TreeFilelistItem tfi=tfa.getDataItem(pos);
 						if (tfi.getName().startsWith("---")) return;
-						processRemoteDirTree(remurl, pos,tfi,tfa);
+						expandHideRemoteDirTree(remurl, pos,tfi,tfa);
 			        }
 			    });	
 				lv.setOnItemLongClickListener(new OnItemLongClickListener(){
@@ -5394,7 +5393,7 @@ public class ProfileMaintenance {
         return ;
 	};
 
-	private void processRemoteDirTree(String remurl, final int pos, 
+	private void expandHideRemoteDirTree(String remurl, final int pos, 
 			final TreeFilelistItem tfi, final TreeFilelistAdapter tfa) {
 		if (tfi.getSubDirItemCount()==0) return;
 		if(tfi.isChildListExpanded()) {
@@ -5421,7 +5420,7 @@ public class ProfileMaintenance {
 			}
 		}
 	};
-	private void processLocalDirTree (boolean dironly,String lclurl, final int pos, 
+	private void expandHideLocalDirTree(boolean dironly,String lclurl, final int pos, 
 			final TreeFilelistItem tfi, final TreeFilelistAdapter tfa) {
 		if (tfi.getSubDirItemCount()==0) return;
 		if(tfi.isChildListExpanded()) {
@@ -5680,7 +5679,7 @@ public class ProfileMaintenance {
 			}
 		}
 		if (parm[0].equals(SMBSYNC_PROF_TYPE_REMOTE)) {//Remote
-			rem.add(setRemoteProfilelistItem(
+			rem.add(createRemoteProfilelistItem(
 					prof_group,// group
 					parm[1],//Name
 					parm[2],//Active
@@ -5694,7 +5693,7 @@ public class ProfileMaintenance {
 					false));
 		} else {
 			if (parm[0].equals(SMBSYNC_PROF_TYPE_LOCAL)) {//Local
-				lcl.add(setLocalProfilelistItem(
+				lcl.add(createLocalProfilelistItem(
 						prof_group,// group
 						parm[1],//Name
 						parm[2],//Active
@@ -5707,7 +5706,7 @@ public class ProfileMaintenance {
 				if (parm[6].length()!=0) ff.add("IF"+parm[6]);
 				if (parm[7].length()!=0) ff.add("IF"+parm[7]);
 				if (parm[8].length()!=0) ff.add("IF"+parm[8]);
-				sync.add(setSyncProfilelistItem(
+				sync.add(createSyncProfilelistItem(
 						prof_group,// group
 						parm[1],//Name
 						parm[ 2],//Active
@@ -5756,7 +5755,7 @@ public class ProfileMaintenance {
 			}
 		}
 		if (parm[1].equals(SMBSYNC_PROF_TYPE_REMOTE)) {//Remote
-			rem.add(setRemoteProfilelistItem(
+			rem.add(createRemoteProfilelistItem(
 					parm[0],//group
 					parm[2],//Name
 					parm[3],//Active
@@ -5772,7 +5771,7 @@ public class ProfileMaintenance {
 		} else {
 			if (parm[1].equals(SMBSYNC_PROF_TYPE_LOCAL)) {//Local
 				if (parm[5].equals("")) parm[5]=mGp.SMBSync_External_Root_Dir;
-				lcl.add(setLocalProfilelistItem(
+				lcl.add(createLocalProfilelistItem(
 						parm[0],//group
 						parm[2],//Name
 						parm[3],//Active
@@ -5794,7 +5793,7 @@ public class ProfileMaintenance {
 				if (parm[9].equals("0")) mpd=false;
 				if (parm[10].equals("1")) conf=true;
 				if (parm[11].equals("1")) ujlm=true;
-				sync.add(setSyncProfilelistItem(
+				sync.add(createSyncProfilelistItem(
 						parm[0],//group
 						parm[ 2],//Name
 						parm[ 3],//Active
@@ -5843,7 +5842,7 @@ public class ProfileMaintenance {
 			}
 		}
 		if (parm[1].equals(SMBSYNC_PROF_TYPE_REMOTE)) {//Remote
-			rem.add(setRemoteProfilelistItem(
+			rem.add(createRemoteProfilelistItem(
 					parm[0],//group
 					parm[2],//Name
 					parm[3],//Active
@@ -5859,7 +5858,7 @@ public class ProfileMaintenance {
 		} else {
 			if (parm[1].equals(SMBSYNC_PROF_TYPE_LOCAL)) {//Local
 				if (parm[5].equals("")) parm[5]=mGp.SMBSync_External_Root_Dir;
-				lcl.add(setLocalProfilelistItem(
+				lcl.add(createLocalProfilelistItem(
 						parm[0],//group
 						parm[2],//Name
 						parm[3],//Active
@@ -5881,7 +5880,7 @@ public class ProfileMaintenance {
 				if (parm[9].equals("0")) mpd=false;
 				if (parm[10].equals("1")) conf=true;
 				if (parm[11].equals("1")) ujlm=true;
-				sync.add(setSyncProfilelistItem(
+				sync.add(createSyncProfilelistItem(
 						parm[0],//group
 						parm[ 2],//Name
 						parm[ 3],//Active
@@ -5943,7 +5942,7 @@ public class ProfileMaintenance {
 				h_name=parm[9];
 			}
 //			Log.v("","h_addr="+h_addr+", h_name="+h_name);
-			rem.add(setRemoteProfilelistItem(
+			rem.add(createRemoteProfilelistItem(
 					parm[0],//group
 					parm[2],//Name
 					parm[3],//Active
@@ -5959,7 +5958,7 @@ public class ProfileMaintenance {
 		} else {
 			if (parm[1].equals(SMBSYNC_PROF_TYPE_LOCAL)) {//Local
 				if (parm[5].equals("")) parm[5]=mGp.SMBSync_External_Root_Dir;
-				lcl.add(setLocalProfilelistItem(
+				lcl.add(createLocalProfilelistItem(
 						parm[0],//group
 						parm[2],//Name
 						parm[3],//Active
@@ -5981,7 +5980,7 @@ public class ProfileMaintenance {
 				if (parm[9].equals("0")) mpd=false;
 				if (parm[10].equals("1")) conf=true;
 				if (parm[11].equals("1")) ujlm=true;
-				sync.add(setSyncProfilelistItem(
+				sync.add(createSyncProfilelistItem(
 						parm[0],//group
 						parm[ 2],//Name
 						parm[ 3],//Active
@@ -6043,7 +6042,7 @@ public class ProfileMaintenance {
 				h_name=parm[9];
 			}
 //			Log.v("","h_addr="+h_addr+", h_name="+h_name);
-			rem.add(setRemoteProfilelistItem(
+			rem.add(createRemoteProfilelistItem(
 					parm[0],//group
 					parm[2],//Name
 					parm[3],//Active
@@ -6059,7 +6058,7 @@ public class ProfileMaintenance {
 		} else {
 			if (parm[1].equals(SMBSYNC_PROF_TYPE_LOCAL)) {//Local
 				if (parm[5].equals("")) parm[5]=mGp.SMBSync_External_Root_Dir;
-				lcl.add(setLocalProfilelistItem(
+				lcl.add(createLocalProfilelistItem(
 						parm[0],//group
 						parm[2],//Name
 						parm[3],//Active
@@ -6082,7 +6081,7 @@ public class ProfileMaintenance {
 				if (parm[10].equals("1")) conf=true;
 				if (parm[11].equals("1")) ujlm=true;
 				if (parm[12].equals("1")) nulm_remote=true;
-				sync.add(setSyncProfilelistItem(
+				sync.add(createSyncProfilelistItem(
 						parm[0],//group
 						parm[ 2],//Name
 						parm[ 3],//Active
@@ -6146,7 +6145,7 @@ public class ProfileMaintenance {
 				h_name=parm[9];
 			}
 //			Log.v("","h_addr="+h_addr+", h_name="+h_name);
-			rem.add(setRemoteProfilelistItem(
+			rem.add(createRemoteProfilelistItem(
 					parm[0],//group
 					parm[2],//Name
 					parm[3],//Active
@@ -6162,7 +6161,7 @@ public class ProfileMaintenance {
 		} else {
 			if (parm[1].equals(SMBSYNC_PROF_TYPE_LOCAL)) {//Local
 				if (parm[5].equals("")) parm[5]=mGp.SMBSync_External_Root_Dir;
-				lcl.add(setLocalProfilelistItem(
+				lcl.add(createLocalProfilelistItem(
 						parm[0],//group
 						parm[2],//Name
 						parm[3],//Active
@@ -6185,7 +6184,7 @@ public class ProfileMaintenance {
 				if (parm[10].equals("1")) conf=true;
 				if (parm[11].equals("1")) ujlm=true;
 				if (parm[12].equals("1")) nulm_remote=true;
-				sync.add(setSyncProfilelistItem(
+				sync.add(createSyncProfilelistItem(
 						parm[0],//group
 						parm[ 2],//Name
 						parm[ 3],//Active
@@ -6240,7 +6239,7 @@ public class ProfileMaintenance {
 		return out;
 	};
 
-	private void updateSyncProfileItem(String prof_name, 
+	private void updateSyncProfileAdapter(String prof_name, 
 			String prof_act,String prof_syncopt, String prof_master_typ,String prof_master,
 			String prof_target_typ,String prof_target, 
 			ArrayList<String> file_filter, ArrayList<String> dir_filter,
@@ -6250,20 +6249,20 @@ public class ProfileMaintenance {
 		boolean isExists=isProfileExists(prof_group,
 				 SMBSYNC_PROF_TYPE_SYNC, prof_name);
 		if (!isExists) {
-			ProfileListItem pfli=setSyncProfilelistItem(prof_group,prof_name,prof_act,
+			ProfileListItem pfli=createSyncProfilelistItem(prof_group,prof_name,prof_act,
 					prof_syncopt,prof_master_typ,prof_master,prof_target_typ,prof_target,
 					file_filter, dir_filter,prof_mpd,prof_conf,prof_ujlm,nulm_remote,isChk);
 			mGp.profileAdapter.add(pfli);
 		} else {
 //			glblParms.profileAdapter.remove(glblParms.profileAdapter.getItem(pos));
-			ProfileListItem pfli=setSyncProfilelistItem(prof_group,prof_name,prof_act,
+			ProfileListItem pfli=createSyncProfilelistItem(prof_group,prof_name,prof_act,
 					prof_syncopt,prof_master_typ,prof_master,prof_target_typ,prof_target,
 					file_filter, dir_filter, prof_mpd,prof_conf,prof_ujlm,nulm_remote,isChk);
 			mGp.profileAdapter.replace(pfli,pos);
 		}
 	};
 	
-	private ProfileListItem setSyncProfilelistItem(String prof_group,String prof_name, 
+	private ProfileListItem createSyncProfilelistItem(String prof_group,String prof_name, 
 			String prof_act,String prof_syncopt, String prof_master_typ,String prof_master,
 			String prof_target_typ,String prof_target, 
 			ArrayList<String> ff, ArrayList<String> df,boolean prof_mpd, 
@@ -6283,22 +6282,22 @@ public class ProfileMaintenance {
 				isChk);
 	};
 
-	private void updateRemoteProfileItem(boolean isAdd, String prof_name, 
+	private void updateRemoteProfileAdapter(boolean isAdd, String prof_name, 
 			String prof_act,String prof_dir, String prof_user, String prof_pass, 
 			String prof_share, String prof_addr, String prof_host, String prof_port,
 			boolean isChk,int pos) {
 		String prof_group=SMBSYNC_PROF_GROUP_DEFAULT;
 		if (isAdd) {
-			mGp.profileAdapter.add(setRemoteProfilelistItem(prof_group, prof_name,prof_act,
+			mGp.profileAdapter.add(createRemoteProfilelistItem(prof_group, prof_name,prof_act,
 					prof_dir,prof_user,prof_pass,prof_share,prof_addr,prof_host,prof_port,isChk));
 		} else {
 //			glblParms.profileAdapter.remove(glblParms.profileAdapter.getItem(pos));
-			mGp.profileAdapter.replace(setRemoteProfilelistItem(prof_group, prof_name,prof_act,
+			mGp.profileAdapter.replace(createRemoteProfilelistItem(prof_group, prof_name,prof_act,
 					prof_dir,prof_user,prof_pass,prof_share,prof_addr,prof_host,prof_port,isChk),pos);
 		}
 
 	};
-	private ProfileListItem setRemoteProfilelistItem(String prof_group, String prof_name, 
+	private ProfileListItem createRemoteProfilelistItem(String prof_group, String prof_name, 
 			String prof_act,String prof_dir, String prof_user, String prof_pass, 
 			String prof_share, String prof_addr, String prof_host, String prof_port,boolean isChk) {
 		return new ProfileListItem(prof_group,SMBSYNC_PROF_TYPE_REMOTE,prof_name,prof_act,
@@ -6313,22 +6312,21 @@ public class ProfileMaintenance {
 				isChk);
 	};
 
-	private void updateLocalProfileItem(boolean isAdd, String prof_name, 
+	private void updateLocalProfileAdapter(boolean isAdd, String prof_name, 
 			String prof_act, String prof_lmp, String prof_dir, 
 			boolean isChk,int pos) {
 		String prof_group=SMBSYNC_PROF_GROUP_DEFAULT;
 		if (isAdd) {
-			mGp.profileAdapter.add(setLocalProfilelistItem(prof_group,prof_name,
+			mGp.profileAdapter.add(createLocalProfilelistItem(prof_group,prof_name,
 					prof_act, prof_dir, prof_lmp, isChk));
 		} else {
-//			glblParms.profileAdapter.remove(glblParms.profileAdapter.getItem(pos));
 			mGp.profileAdapter.replace(
-					setLocalProfilelistItem(prof_group,prof_name,prof_act,
+					createLocalProfilelistItem(prof_group,prof_name,prof_act,
 							prof_dir, prof_lmp, isChk),pos);
 		}
 	};
 
-	private ProfileListItem setLocalProfilelistItem(String prof_group,
+	private ProfileListItem createLocalProfilelistItem(String prof_group,
 			String prof_name, String prof_act, String prof_dir, 
 			String prof_lmp, boolean isChk) {
 		return new ProfileListItem(prof_group,SMBSYNC_PROF_TYPE_LOCAL,

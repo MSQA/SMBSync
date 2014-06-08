@@ -1792,13 +1792,13 @@ public class SMBSyncMain extends FragmentActivity {
 			for (int i=0;i<mGp.profileAdapter.getCount();i++) {
 				item = mGp.profileAdapter.getItem(i);
 				if (idx==i) {
-					profMaint.setProfileChecked(true, mGp.profileAdapter, item, i);
+					profMaint.setProfileToChecked(true, mGp.profileAdapter, item, i);
 					j=i;//set new index no
 					if (mGp.profileAdapter.getItem(i).getType().equals(SMBSYNC_PROF_TYPE_SYNC))
 						sync=true;
 				} else {
 					if (item.isChecked()) {
-						profMaint.setProfileChecked(false, mGp.profileAdapter, item, i);
+						profMaint.setProfileToChecked(false, mGp.profileAdapter, item, i);
 					}
 				}
 			}
@@ -1865,7 +1865,7 @@ public class SMBSyncMain extends FragmentActivity {
 			public void onClick(CharSequence menuTitle) {
 				for (int i=0;i<mGp.profileAdapter.getCount();i++) {
 					ProfileListItem item = mGp.profileAdapter.getItem(i);
-					profMaint.setProfileChecked(true, mGp.profileAdapter, item, i);
+					profMaint.setProfileToChecked(true, mGp.profileAdapter, item, i);
 				}
 			}
 		});
@@ -2024,7 +2024,7 @@ public class SMBSyncMain extends FragmentActivity {
 				public void onClick(CharSequence menuTitle) {
 					for (int i=0;i<mGp.profileAdapter.getCount();i++) {
 						ProfileListItem item = mGp.profileAdapter.getItem(i);
-						profMaint.setProfileChecked(true, mGp.profileAdapter, item, i);
+						profMaint.setProfileToChecked(true, mGp.profileAdapter, item, i);
 					}
 				}
 			});
@@ -2043,7 +2043,7 @@ public class SMBSyncMain extends FragmentActivity {
 	private void resetAllCheckedItem() {
 		for (int i=0;i<mGp.profileAdapter.getCount();i++) {
 			ProfileListItem item = mGp.profileAdapter.getItem(i);
-			profMaint.setProfileChecked(false, mGp.profileAdapter, item, i);
+			profMaint.setProfileToChecked(false, mGp.profileAdapter, item, i);
 		}
 	};
 	

@@ -551,7 +551,7 @@ public class ProfileCreationWizard {
 						dlg_msg.setText("");
 					}
 				});
-				profMaint.setLocalDir(url,"",p_dir,ntfy);
+				profMaint.selectLocalDirDlg(url,"",p_dir,ntfy);
 			}
 		});
 		
@@ -862,10 +862,10 @@ public class ProfileCreationWizard {
 					}
 				});
 				if (cb_use_hostname.isChecked()) {
-					profMaint.processLogonToRemote(et_remote_hostname.getText().toString(),
+					profMaint.logonToRemoteDlg(et_remote_hostname.getText().toString(),
 							"","",user,pass,ntfy);
 				} else {
-					profMaint.processLogonToRemote("",
+					profMaint.logonToRemoteDlg("",
 							et_remote_addr.getText().toString(),"",user,pass,ntfy);
 				}
 			}
@@ -922,7 +922,7 @@ public class ProfileCreationWizard {
 					}
 					
 				});
-				profMaint.setRemoteShare(remurl,"", ntfy);
+				profMaint.selectRemoteShareDlg(remurl,"", ntfy);
 			}
 		});
 		// RemoteDirectoryボタンの指定
@@ -1275,7 +1275,7 @@ public class ProfileCreationWizard {
 					public void negativeResponse(Context arg0, Object[] arg1) {}
 					
 				});
-				profMaint.setFileFilter(mWizData.file_filter,ntfy);
+				profMaint.editFileFilterDlg(mWizData.file_filter,ntfy);
 			}
 		});
 		
@@ -1310,7 +1310,7 @@ public class ProfileCreationWizard {
 					@Override
 					public void negativeResponse(Context arg0, Object[] arg1) {}
 				});
-				profMaint.setDirFilter(t_prof,mWizData.master_name,
+				profMaint.editDirFilterDlg(t_prof,mWizData.master_name,
 						mWizData.dir_filter,ntfy);
 			}
 		});
