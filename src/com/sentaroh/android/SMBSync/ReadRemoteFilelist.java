@@ -84,7 +84,7 @@ public class ReadRemoteFilelist implements Runnable  {
 			mHostName=t_host2;
 		}
 		util.addDebugLogMsg(1,"I","getFileList constructed. name="+mHostName+
-				", addr="+mHostAddr+", port="+mHostPort);
+				", addr="+mHostAddr+", port="+mHostPort+", remoteUrl="+remoteUrl);
 		
 		
 		util.addDebugLogMsg(1,"I","getFileList constructed. user="+user+

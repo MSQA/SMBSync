@@ -89,7 +89,6 @@ import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.text.ClipboardManager;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -3001,31 +3000,31 @@ public class SMBSyncMain extends FragmentActivity {
 					settingsSmbPerfClass.equals("2")) {
 				if (!settingsSmbPerfClass.equals(prevSmbPerfClass)) {
 					result=true;
-					Log.v("","perfClass");
+//					Log.v("","perfClass");
 				}
 			} else {
 				if (!settingsSmbLogLevel.equals(prevSmbLogLevel)) {
 					result=true;
-					Log.v("","logLevel");
+//					Log.v("","logLevel");
 				} else if (!settingsSmbRcvBufSize.equals(prevSmbRcvBufSize)) {
 					result=true;
-					Log.v("","rcvBuff");
+//					Log.v("","rcvBuff");
 				}
 				else if (!settingsSmbSndBufSize.equals(prevSmbSndBufSize)) {
 					result=true;
-					Log.v("","sndBuff");
+//					Log.v("","sndBuff");
 				}
 				else if (!settingsSmbListSize.equals(prevSmbListSize)) {
 					result=true;
-					Log.v("","listSize");
+//					Log.v("","listSize");
 				}
 				else if (!settingsSmbMaxBuffers.equals(prevSmbMaxBuffers)) {
 					result=true;
-					Log.v("","maxBuff");
+//					Log.v("","maxBuff");
 				}
 				else if (!settingsSmbTcpNodelay.equals(prevSmbTcpNodelay)) {
 					result=true;
-					Log.v("","tcpNodelay");
+//					Log.v("","tcpNodelay");
 				}
 			}
 		}
