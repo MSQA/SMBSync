@@ -607,14 +607,14 @@ public class MirrorIO implements Runnable {
 				if (!SMBSyncUtil.isSmbHostAddressConnected(mipl.getRemoteAddr(),
 						Integer.parseInt(mipl.getRemotePort()))) {
 					addLogMsg("E","",
-							String.format(glblParms.svcContext.getString(R.string.msgs_mirror_remote_addr_not_connected_with_port)+
+							String.format(glblParms.svcContext.getString(R.string.msgs_mirror_remote_addr_not_connected_with_port),
 							mipl.getRemoteAddr(),mipl.getRemotePort()));
 					isSyncParmError=true;
 				}
 			} else {//Check for default report port
 				if (!SMBSyncUtil.isSmbHostAddressConnected(mipl.getRemoteAddr())) {
 					addLogMsg("E","",
-							String.format(glblParms.svcContext.getString(R.string.msgs_mirror_remote_addr_not_connected)+
+							String.format(glblParms.svcContext.getString(R.string.msgs_mirror_remote_addr_not_connected),
 							mipl.getRemoteAddr()));
 					isSyncParmError=true;
 				}

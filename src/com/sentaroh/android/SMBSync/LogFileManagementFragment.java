@@ -391,7 +391,7 @@ public class LogFileManagementFragment extends DialogFragment{
 				"",
 				mContext.getString(R.string.msgs_common_dialog_cancel),
 				mContext.getString(R.string.msgs_common_dialog_cancel));
-		pbdf.showDialog(getFragmentManager(), pbdf, ntfy);
+		pbdf.showDialog(getFragmentManager(), pbdf, ntfy,true);
 		Thread th=new Thread() {
 			@Override
 			public void run() {
