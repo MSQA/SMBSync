@@ -77,7 +77,7 @@
 
 	<string name="msgs_prof_cont_mult"		>Multiple selection</string>
     <string name="msgs_prof_cont_sngl_act"	>Active (%s)</string>
-    <string name="msgs_prof_cont_sngl_wizard">Start new sync creation Wizard</string>
+    <string name="msgs_prof_cont_sngl_wizard">Start a Sync creation wizard</string>
 	<string name="msgs_prof_cont_mult_act"	>Activate selected profiles</string>
 	<string name="msgs_prof_cont_mult_inact">Inactive selected profiles</string>
 	<string name="msgs_prof_cont_mult_sync" >Sync selected profiles</string>

@@ -39,9 +39,9 @@
 	
 	<string name="msgs_sync_wizard_specify_server">Specify server name or IP address or press Scan button</string>
 	<string name="msgs_sync_wizard_specify_user_pass">Specify user and/or password</string>
-	<string name="msgs_sync_wizard_specify_remote_share">Specify remote share</string>
+	<string name="msgs_sync_wizard_specify_remote_share">Press show list button for Share</string>
 	<string name="msgs_sync_wizard_logon_required">Logon required, press Logon button</string>
-	<string name="msgs_sync_wizard_specify_remote_dir">Specify remote directory</string>
+	<string name="msgs_sync_wizard_specify_remote_dir">Specify remote directory or press next buton</string>
 	
 	<string name="msgs_sync_wizard_specify_other_option">Specify other option or press Create button.</string>
 	

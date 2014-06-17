@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.graphics.Color;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -711,6 +712,8 @@ public class ProfileCreationWizard {
 		et_remote_prof.selectAll();
 		if (node_pos==0) et_remote_prof.setText(mWizData.master_name);
 		else et_remote_prof.setText(mWizData.target_name);
+		
+		final Handler hndl=new Handler();
 
 		et_remote_addr.setText(mWizData.prof_node[node_pos].remote_host_ipaddr);
 		et_remote_hostname.setText(mWizData.prof_node[node_pos].remote_host_name);
@@ -852,13 +855,23 @@ public class ProfileCreationWizard {
 				ntfy.setListener(new NotifyEventListener(){
 					@Override
 					public void positiveResponse(Context c, Object[] o) {
-						remote_user_pass_verified=true;
-						setRemoteProfileViewVisibility(dialog);
+						hndl.post(new Runnable(){
+							@Override
+							public void run() {
+								remote_user_pass_verified=true;
+								setRemoteProfileViewVisibility(dialog);
+							}
+						});
 					}
 					@Override
 					public void negativeResponse(Context c, Object[] o) {
-						remote_user_pass_verified=false;
-						setRemoteProfileViewVisibility(dialog);
+						hndl.post(new Runnable(){
+							@Override
+							public void run() {
+								remote_user_pass_verified=false;
+								setRemoteProfileViewVisibility(dialog);
+							}
+						});
 					}
 				});
 				if (cb_use_hostname.isChecked()) {
@@ -888,10 +901,12 @@ public class ProfileCreationWizard {
 							cb_use_hostname.setChecked(true);
 							et_remote_hostname.setText((String)arg1[1]);
 						}
+						setRemoteProfileViewVisibility(dialog);
 					}
 					@Override
 					public void negativeResponse(Context arg0, Object[] arg1) {
 						dlg_msg.setText("");
+						setRemoteProfileViewVisibility(dialog);
 					}
 				});
 				profMaint.scanRemoteNetworkDlg(ntfy,"");
@@ -913,12 +928,14 @@ public class ProfileCreationWizard {
 					@Override
 					public void positiveResponse(Context arg0, Object[] arg1) {
 						et_remote_share.setText((String)arg1[0]);
+						setRemoteProfileViewVisibility(dialog);
 					}
 
 					@Override
 					public void negativeResponse(Context arg0, Object[] arg1) {
 						if (arg1!=null) dlg_msg.setText((String)arg1[0]);
 						else dlg_msg.setText("");
+						setRemoteProfileViewVisibility(dialog);
 					}
 					
 				});
@@ -1039,6 +1056,8 @@ public class ProfileCreationWizard {
 		final EditText et_remote_dir=(EditText)dialog.findViewById((R.id.sync_wizard_dlg_remote_dir));
 		final Button btn_next=(Button)dialog.findViewById(R.id.sync_wizard_dlg_next);
 		final Button btnLogon = (Button) dialog.findViewById(R.id.sync_wizard_dlg_remote_logon);
+		btnLogon.setEnabled(false);
+		et_remote_share.setEnabled(false);
 		
 		boolean nw=false;
 		if (cb_use_hostname.isChecked()) {
@@ -1079,10 +1098,12 @@ public class ProfileCreationWizard {
 				et_remote_user.setVisibility(CheckBox.VISIBLE);
 				et_remote_pass.setVisibility(CheckBox.VISIBLE);
 				btnLogon.setVisibility(Button.VISIBLE);
+				if (et_remote_user.getText().length()>0 && et_remote_pass.getText().length()>0) btnLogon.setEnabled(true);
+				else btnLogon.setEnabled(false);
 				if (et_remote_user.getText().length()>0) {
 					if (et_remote_pass.getText().length()>0) {
 						btn_remote_share.setEnabled(true);
-						et_remote_share.setEnabled(true);
+//						et_remote_share.setEnabled(true);
 						if (et_remote_share.getText().length()>0) {
 							btn_remote_dir.setEnabled(true);
 							et_remote_dir.setEnabled(true);
@@ -1094,7 +1115,7 @@ public class ProfileCreationWizard {
 				et_remote_pass.setVisibility(CheckBox.GONE);
 				btnLogon.setVisibility(Button.GONE);
 				btn_remote_share.setEnabled(true);
-				et_remote_share.setEnabled(true);
+//				et_remote_share.setEnabled(true);
 				if (et_remote_share.getText().length()>0) {
 					btn_remote_dir.setEnabled(true);
 					et_remote_dir.setEnabled(true);

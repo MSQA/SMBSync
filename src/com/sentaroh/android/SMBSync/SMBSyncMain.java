@@ -1940,9 +1940,19 @@ public class SMBSyncMain extends FragmentActivity {
 						resetAllCheckedItem();
 					}
 			});
-
-
 		};
+		
+		ccMenu.addMenuItem(String.format(msgs_prof_cont_sngl_wizard,i_name),R.drawable.ic_64_wizard)
+	  	.setOnClickListener(new CustomContextMenuOnClickListener() {
+			@Override
+			public void onClick(CharSequence menuTitle) {
+				ProfileCreationWizard sw=new ProfileCreationWizard(mGp, mContext, 
+						util, profMaint, commonDlg, mGp.profileAdapter);
+				sw.wizardMain();
+				resetAllCheckedItem();
+			}
+	  	});
+
 		ccMenu.addMenuItem(msgs_prof_cont_add_local,R.drawable.menu_add)
 			.setOnClickListener(new CustomContextMenuOnClickListener() {
 				@Override
@@ -2004,17 +2014,6 @@ public class SMBSyncMain extends FragmentActivity {
 				}
 			});
 		};
-
-		ccMenu.addMenuItem(String.format(msgs_prof_cont_sngl_wizard,i_name),R.drawable.ic_64_wizard)
-	  	.setOnClickListener(new CustomContextMenuOnClickListener() {
-			@Override
-			public void onClick(CharSequence menuTitle) {
-				ProfileCreationWizard sw=new ProfileCreationWizard(mGp, mContext, 
-						util, profMaint, commonDlg, mGp.profileAdapter);
-				sw.wizardMain();
-				resetAllCheckedItem();
-			}
-	  	});
 
 		if (!i_type.equals("")) {
 			ccMenu.addMenuItem(msgs_prof_cont_select_all)

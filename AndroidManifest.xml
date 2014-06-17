@@ -3,7 +3,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.sentaroh.android.SMBSync"
     android:versionCode="113"
-    android:versionName="1.94" >
+    android:versionName="1.94">
 
     <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="11"/>
     

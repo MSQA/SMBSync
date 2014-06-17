@@ -36,8 +36,8 @@
 	<string name="msgs_sync_wizard_specify_server">サーバー名またはサーバーIPアドレスを入力してください、またはスキャンを押してください</string>
 	<string name="msgs_sync_wizard_specify_user_pass">ユーザー名およびパスワードを入力してください</string>
 	<string name="msgs_sync_wizard_logon_required">ログオンボタンを押してログオンしてください</string>
-	<string name="msgs_sync_wizard_specify_remote_share">リモートの共有名を入力してください</string>
-	<string name="msgs_sync_wizard_specify_remote_dir">リモート ディレクトリーを指定してください</string>
+	<string name="msgs_sync_wizard_specify_remote_share">共有名の一覧表示ボタンを押してください</string>
+	<string name="msgs_sync_wizard_specify_remote_dir">リモート ディレクトリーを指定するか、次へボタンを押してください</string>
 	
 	<string name="msgs_sync_wizard_specify_other_option">オプションを指定するか作成ボタンを押してください</string>
 	
