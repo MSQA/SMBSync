@@ -602,29 +602,32 @@ public class MirrorIO implements Runnable {
 			}
 		}
 
-		if (mipl.getHostName().equals("")) {
-			if (mipl.getRemotePort().length()>0) {//Check for report port specified
-				if (!SMBSyncUtil.isSmbHostAddressConnected(mipl.getRemoteAddr(),
-						Integer.parseInt(mipl.getRemotePort()))) {
+// Check remote connection		
+		if (syncMasterProfType.equals("R") || syncTargetProfType.equals("R")) {
+			if (mipl.getHostName().equals("")) {
+				if (mipl.getRemotePort().length()>0) {//Check for report port specified
+					if (!SMBSyncUtil.isSmbHostAddressConnected(mipl.getRemoteAddr(),
+							Integer.parseInt(mipl.getRemotePort()))) {
+						addLogMsg("E","",
+								String.format(glblParms.svcContext.getString(R.string.msgs_mirror_remote_addr_not_connected_with_port),
+								mipl.getRemoteAddr(),mipl.getRemotePort()));
+						isSyncParmError=true;
+					}
+				} else {//Check for default report port
+					if (!SMBSyncUtil.isSmbHostAddressConnected(mipl.getRemoteAddr())) {
+						addLogMsg("E","",
+								String.format(glblParms.svcContext.getString(R.string.msgs_mirror_remote_addr_not_connected),
+								mipl.getRemoteAddr()));
+						isSyncParmError=true;
+					}
+				}
+			} else {
+				if (resolveHostName(mipl.getHostName())==null) {
 					addLogMsg("E","",
-							String.format(glblParms.svcContext.getString(R.string.msgs_mirror_remote_addr_not_connected_with_port),
-							mipl.getRemoteAddr(),mipl.getRemotePort()));
+							glblParms.svcContext.getString(R.string.msgs_mirror_remote_name_not_found)+
+							mipl.getHostName());
 					isSyncParmError=true;
 				}
-			} else {//Check for default report port
-				if (!SMBSyncUtil.isSmbHostAddressConnected(mipl.getRemoteAddr())) {
-					addLogMsg("E","",
-							String.format(glblParms.svcContext.getString(R.string.msgs_mirror_remote_addr_not_connected),
-							mipl.getRemoteAddr()));
-					isSyncParmError=true;
-				}
-			}
-		} else {
-			if (resolveHostName(mipl.getHostName())==null) {
-				addLogMsg("E","",
-						glblParms.svcContext.getString(R.string.msgs_mirror_remote_name_not_found)+
-						mipl.getHostName());
-				isSyncParmError=true;
 			}
 		}
 
