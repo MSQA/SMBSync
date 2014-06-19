@@ -148,6 +148,7 @@ public class LogFileManagementFragment extends DialogFragment{
     	
     	mDialog=new Dialog(getActivity());
 		mDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		mDialog.setCanceledOnTouchOutside(false);
 
 		if (!terminateRequired) initViewWidget();
 

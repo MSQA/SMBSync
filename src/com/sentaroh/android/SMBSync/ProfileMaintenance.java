@@ -238,6 +238,7 @@ public class ProfileMaintenance {
 		// カスタムダイアログの生成
 		final Dialog dialog = new Dialog(mContext);
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		dialog.setCanceledOnTouchOutside(false);
 		dialog.setContentView(R.layout.password_input_dlg);
 		final TextView dlg_msg = (TextView) dialog.findViewById(R.id.password_input_msg);
 		final CheckBox cb_protect = (CheckBox) dialog.findViewById(R.id.password_input_protect);
@@ -333,6 +334,7 @@ public class ProfileMaintenance {
 		// カスタムダイアログの生成
 		final Dialog dialog = new Dialog(mContext);
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		dialog.setCanceledOnTouchOutside(false);
 		dialog.setContentView(R.layout.password_input_dlg);
 		final TextView dlg_msg = (TextView) dialog.findViewById(R.id.password_input_msg);
 		final CheckBox cb_protect = (CheckBox) dialog.findViewById(R.id.password_input_protect);
@@ -498,6 +500,7 @@ public class ProfileMaintenance {
 		final Dialog dialog=new Dialog(mContext);
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		dialog.setContentView(R.layout.export_import_profile_dlg);
+		dialog.setCanceledOnTouchOutside(false);
 		
 		CommonDialog.setDlgBoxSizeLimit(dialog,true);
 		
@@ -952,6 +955,7 @@ public class ProfileMaintenance {
 		// カスタムダイアログの生成
 		final Dialog dialog = new Dialog(mContext);
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		dialog.setCanceledOnTouchOutside(false);
 		dialog.setContentView(R.layout.edit_profile_local);
 		final TextView dlg_title=(TextView) dialog.findViewById(R.id.local_profile_dlg_title);
 		if (add_op) dlg_title.setText(msgs_add_local_profile);
@@ -1142,6 +1146,7 @@ public class ProfileMaintenance {
 		// カスタムダイアログの生成
 		final Dialog dialog = new Dialog(mContext);
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		dialog.setCanceledOnTouchOutside(false);
 		dialog.setContentView(R.layout.edit_profile_remote);
 		final TextView dlg_title=(TextView) dialog.findViewById(R.id.remote_profile_dlg_title);
 		if (add_op) dlg_title.setText(msgs_add_remote_profile);
@@ -1373,6 +1378,7 @@ public class ProfileMaintenance {
 		// カスタムダイアログの生成
 		final Dialog dialog = new Dialog(mContext);
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		dialog.setCanceledOnTouchOutside(false);
 		dialog.setContentView(R.layout.progress_spin_dlg);
 		((TextView)dialog.findViewById(R.id.progress_spin_dlg_title))
 			.setText(R.string.msgs_progress_spin_dlg_test_logon);
@@ -1963,6 +1969,7 @@ public class ProfileMaintenance {
 		// カスタムダイアログの生成
 		final Dialog dialog = new Dialog(mContext);
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		dialog.setCanceledOnTouchOutside(false);
 		dialog.setContentView(R.layout.edit_profile_sync);
 		final TextView dlg_title=(TextView) dialog.findViewById(R.id.sync_profile_dlg_title);
 		if (add_op) dlg_title.setText(msgs_add_sync_profile);
@@ -2265,6 +2272,7 @@ public class ProfileMaintenance {
 		// カスタムダイアログの生成
 		final Dialog dialog = new Dialog(mContext);
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		dialog.setCanceledOnTouchOutside(false);
 		dialog.getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		dialog.setContentView(R.layout.edit_profile_local);
@@ -2426,6 +2434,7 @@ public class ProfileMaintenance {
 		// カスタムダイアログの生成
 		final Dialog dialog = new Dialog(mContext);
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		dialog.setCanceledOnTouchOutside(false);
 		dialog.getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		dialog.setContentView(R.layout.edit_profile_remote);
@@ -2656,6 +2665,7 @@ public class ProfileMaintenance {
 		// カスタムダイアログの生成
 		final Dialog dialog = new Dialog(mContext);//,android.R.style.Theme_Light);
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		dialog.setCanceledOnTouchOutside(false);
 		dialog.getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		dialog.setContentView(R.layout.edit_profile_sync);
@@ -2877,6 +2887,7 @@ public class ProfileMaintenance {
 		// カスタムダイアログの生成
 		final Dialog dialog = new Dialog(mContext);
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		dialog.setCanceledOnTouchOutside(false);
 		dialog.setContentView(R.layout.single_item_input_dlg);
 		final TextView dlg_title = (TextView) dialog.findViewById(R.id.single_item_input_title);		
 //		final TextView dlg_msg = (TextView) dialog.findViewById(R.id.single_item_input_msg);
@@ -2990,7 +3001,7 @@ public class ProfileMaintenance {
 		});
 		String port_num="";
 		if (cb_use_port_number.isChecked()) port_num=editport.getText().toString();
-		scanRemoteNetworkDlg(ntfy,port_num);
+		scanRemoteNetworkDlg(ntfy,port_num,false);
 	};
 
 	private void invokeSelectRemoteShareDlg(Dialog dialog) {
@@ -3323,6 +3334,7 @@ public class ProfileMaintenance {
 		// カスタムダイアログの生成
 		final Dialog dialog = new Dialog(mContext);
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		dialog.setCanceledOnTouchOutside(false);
 		dialog.setContentView(R.layout.filter_list_dlg);
 		
 		Button dirbtn=(Button) dialog.findViewById(R.id.filter_select_edit_dir_btn);
@@ -3461,6 +3473,7 @@ public class ProfileMaintenance {
 		// カスタムダイアログの生成
 		final Dialog dialog = new Dialog(mContext);
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		dialog.setCanceledOnTouchOutside(false);
 		dialog.setContentView(R.layout.filter_list_dlg);
 		
 		filterAdapter = new AdapterFilterList(mContext,
@@ -3628,6 +3641,7 @@ public class ProfileMaintenance {
 		// カスタムダイアログの生成
 		final Dialog dialog = new Dialog(mContext);
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		dialog.setCanceledOnTouchOutside(false);
 		dialog.setContentView(R.layout.filter_edit_dlg);
 		
 		CommonDialog.setDlgBoxSizeCompact(dialog);
@@ -3724,6 +3738,7 @@ public class ProfileMaintenance {
     	//カスタムダイアログの生成
         final Dialog dialog=new Dialog(mContext);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
     	dialog.setContentView(R.layout.item_select_list_dlg);
 		((TextView)dialog.findViewById(R.id.item_select_list_dlg_title))
 			.setText(mContext.getString(R.string.msgs_filter_list_dlg_add_dir_filter));
@@ -3894,6 +3909,7 @@ public class ProfileMaintenance {
 				//カスタムダイアログの生成
 				final Dialog dialog=new Dialog(mContext);
 				dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+				dialog.setCanceledOnTouchOutside(false);
 				dialog.setContentView(R.layout.item_select_list_dlg);
 				((TextView)dialog.findViewById(R.id.item_select_list_dlg_title))
 					.setText(mContext.getString(R.string.msgs_filter_list_dlg_add_dir_filter));
@@ -4334,10 +4350,12 @@ public class ProfileMaintenance {
 		return active;
 	};
 
-	public void scanRemoteNetworkDlg(final NotifyEvent p_ntfy, String port_number) {
+	public void scanRemoteNetworkDlg(final NotifyEvent p_ntfy, 
+			String port_number, boolean scan_start) {
 		//カスタムダイアログの生成
 	    final Dialog dialog=new Dialog(mContext);
 	    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+	    dialog.setCanceledOnTouchOutside(false);
 	    dialog.setContentView(R.layout.scan_remote_ntwk_dlg);
 	    final Button btn_scan=(Button)dialog.findViewById(R.id.scan_remote_ntwk_btn_ok);
 	    final Button btn_cancel=(Button)dialog.findViewById(R.id.scan_remote_ntwk_btn_cancel);
@@ -4473,6 +4491,7 @@ public class ProfileMaintenance {
 		});
 	    dialog.show();
 
+	    if (scan_start) btn_scan.performClick();
 	};
 
 	private int mScanCompleteCount=0, mScanAddrCount=0;
@@ -4897,6 +4916,7 @@ public class ProfileMaintenance {
     	//カスタムダイアログの生成
         final Dialog dialog=new Dialog(mContext);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
     	dialog.setContentView(R.layout.item_select_list_dlg);
         ((TextView)dialog.findViewById(R.id.item_select_list_dlg_title))
         	.setText(msgs_select_local_dir);
@@ -5051,6 +5071,8 @@ public class ProfileMaintenance {
 		// カスタムダイアログの生成
 		final Dialog dialog = new Dialog(mContext);
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		dialog.setCanceledOnTouchOutside(false);
+		dialog.setCanceledOnTouchOutside(false);
 		dialog.setContentView(R.layout.progress_spin_dlg);
 		((TextView)dialog.findViewById(R.id.progress_spin_dlg_title))
 			.setText(R.string.msgs_progress_spin_dlg_filelist_getting);
@@ -5164,6 +5186,7 @@ public class ProfileMaintenance {
 				//カスタムダイアログの生成
 				final Dialog dialog=new Dialog(mContext);
 				dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+				dialog.setCanceledOnTouchOutside(false);
 				dialog.setContentView(R.layout.item_select_list_dlg);
 				((TextView)dialog.findViewById(R.id.item_select_list_dlg_title))
 					.setText(msgs_select_remote_share);
@@ -5240,6 +5263,7 @@ public class ProfileMaintenance {
 				//カスタムダイアログの生成
 			    final Dialog dialog=new Dialog(mContext);
 			    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+			    dialog.setCanceledOnTouchOutside(false);
 				dialog.setContentView(R.layout.item_select_list_dlg);
 			    ((TextView)dialog.findViewById(R.id.item_select_list_dlg_title))
 			    	.setText(msgs_select_remote_dir);

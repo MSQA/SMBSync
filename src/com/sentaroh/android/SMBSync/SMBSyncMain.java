@@ -683,8 +683,17 @@ public class SMBSyncMain extends FragmentActivity {
 		switch (item.getItemId()) {
 			case R.id.menu_top_sync:
 				if (!util.isRemoteDisable()) {
-					if (profMaint.getActiveSyncProfileCount(mGp.profileAdapter)>0) 
+					if (profMaint.getActiveSyncProfileCount(mGp.profileAdapter)>0) {
 						syncActiveProfile();
+					} else {
+						if (mToastNextIssuedTimeSyncOption<System.currentTimeMillis()) {
+							Toast.makeText(mContext, 
+								mContext.getString(R.string.msgs_sync_can_not_sync_no_valid_profile), 
+								Toast.LENGTH_SHORT)
+								.show();
+							mToastNextIssuedTimeSyncOption=System.currentTimeMillis()+2000;
+						}
+					}
 				} else {
 					if (mToastNextIssuedTimeSyncOption<System.currentTimeMillis()) {
 						Toast.makeText(mContext, 

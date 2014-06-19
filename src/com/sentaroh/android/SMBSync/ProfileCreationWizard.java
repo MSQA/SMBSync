@@ -106,6 +106,7 @@ public class ProfileCreationWizard {
 		final Dialog dialog = new Dialog(mContext);
 		mWizData.dialog_list.add(dialog);
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		dialog.setCanceledOnTouchOutside(false);
 		dialog.setContentView(R.layout.sync_wizard_dlg);
 		
 		final LinearLayout ll_overall=(LinearLayout)dialog.findViewById(R.id.sync_wizard_dlg_overall);
@@ -427,6 +428,7 @@ public class ProfileCreationWizard {
 		final Dialog dialog = new Dialog(mContext);
 		mWizData.dialog_list.add(dialog);
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		dialog.setCanceledOnTouchOutside(false);
 		dialog.setContentView(R.layout.sync_wizard_dlg);
 		
 		final LinearLayout ll_overall=(LinearLayout)dialog.findViewById(R.id.sync_wizard_dlg_overall);
@@ -668,6 +670,7 @@ public class ProfileCreationWizard {
 		final Dialog dialog = new Dialog(mContext);
 		mWizData.dialog_list.add(dialog);
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		dialog.setCanceledOnTouchOutside(false);
 		dialog.setContentView(R.layout.sync_wizard_dlg);
 		
 		final LinearLayout ll_overall=(LinearLayout)dialog.findViewById(R.id.sync_wizard_dlg_overall);
@@ -909,7 +912,7 @@ public class ProfileCreationWizard {
 						setRemoteProfileViewVisibility(dialog);
 					}
 				});
-				profMaint.scanRemoteNetworkDlg(ntfy,"");
+				profMaint.scanRemoteNetworkDlg(ntfy,"",true);
 			}
 		});
 		
@@ -1179,6 +1182,7 @@ public class ProfileCreationWizard {
 		final Dialog dialog = new Dialog(mContext);
 		mWizData.dialog_list.add(dialog);
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		dialog.setCanceledOnTouchOutside(false);
 		dialog.setContentView(R.layout.sync_wizard_dlg);
 		
 		final LinearLayout ll_overall=(LinearLayout)dialog.findViewById(R.id.sync_wizard_dlg_overall);
