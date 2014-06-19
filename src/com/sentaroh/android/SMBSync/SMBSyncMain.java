@@ -197,6 +197,7 @@ public class SMBSyncMain extends FragmentActivity {
 
 		mScreenOnWakelock=((PowerManager)getSystemService(Context.POWER_SERVICE))
 	    			.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK
+//	    				 PowerManager.PARTIAL_WAKE_LOCK
 	    				| PowerManager.ACQUIRE_CAUSES_WAKEUP
 //	   	    				| PowerManager.ON_AFTER_RELEASE
 	    				, "SMBSync-ScreenOn");
@@ -2244,45 +2245,40 @@ public class SMBSyncMain extends FragmentActivity {
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
-		setScreenOn(0);
+		setScreenOn();
 		acqWifiLock();
 
 	};
 
 	private WakeLock mScreenOnWakelock=null;
-//	private void setScreenOn() {
-//		if (glblParms.settingScreenOnEnabled) {
+//	private void setScreenOn(int timeout) {
+//		if (mGp.settingScreenOnEnabled) {
 //			if (Build.VERSION.SDK_INT>=17) {
 //				getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON) ;
-//				
 //					util.addDebugLogMsg(1,"I","setScreenOn set KEEP_SCREEN_ON");
 //			} else {
 //				if (!mScreenOnWakelock.isHeld()) {
-//			    	
-//						util.addDebugLogMsg(1,"I","setScreenOn Wakelock acquired");
-//					mScreenOnWakelock.acquire();
+//			    	if (timeout==0) mScreenOnWakelock.acquire();
+//			    	else mScreenOnWakelock.acquire(timeout);
+//					util.addDebugLogMsg(1,"I","Wakelock acquired");
 //				} else {
-//					
-//						util.addDebugLogMsg(1,"I","setScreenOn Wakelock already acquired");
+//					util.addDebugLogMsg(1,"I","Wakelock not acquired, because Wakelock already acquired");
 //				}
 //			}
 //		}
 //	};
 //	
 //	private void clearScreenOn() {
-//		if (glblParms.settingScreenOnEnabled) {
+//		if (mGp.settingScreenOnEnabled) {
 //			if (Build.VERSION.SDK_INT>=17) {
 //				getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON) ;
-//				
-//					util.addDebugLogMsg(1,"I","clearScreenOn clear KEEP_SCREEN_ON");
+//				util.addDebugLogMsg(1,"I","clearScreenOn clear KEEP_SCREEN_ON");
 //			} else {
 //				if (mScreenOnWakelock.isHeld()) {
-//			    	
-//						util.addDebugLogMsg(1,"I","clearScreenOn Wakelock released");
+//					util.addDebugLogMsg(1,"I","Wakelock released");
 //					mScreenOnWakelock.release();
 //				} else {
-//			    	
-//						util.addDebugLogMsg(1,"I","clearScreenOn Wakelock already released");
+//					util.addDebugLogMsg(1,"I","Wakelock not relased, because Wakelock not acquired");
 //				}
 //			}
 //		}
@@ -2310,21 +2306,29 @@ public class SMBSyncMain extends FragmentActivity {
 		}
 	};
 	
-	private void setScreenOn(int timeout) {
+	private void setScreenOn() {
 		if (mGp.settingScreenOnEnabled) {
+			try {
+				mSvcClient.aidlAcqWakeLock();
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
 			if (!mScreenOnWakelock.isHeld()) {
-		    	if (timeout==0) mScreenOnWakelock.acquire();
-		    	else mScreenOnWakelock.acquire(timeout);
+		    	mScreenOnWakelock.acquire();
 				util.addDebugLogMsg(1,"I","Wakelock acquired");
 			} else {
-				
-					util.addDebugLogMsg(1,"I","Wakelock not acquired, because Wakelock already acquired");
+				util.addDebugLogMsg(1,"I","Wakelock not acquired, because Wakelock already acquired");
 			}
 		}
 	};
 	
 	private void clearScreenOn() {
 		if (mGp.settingScreenOnEnabled) {
+			try {
+				mSvcClient.aidlRelWakeLock();
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
 			if (mScreenOnWakelock.isHeld()) {
 				util.addDebugLogMsg(1,"I","Wakelock released");
 				mScreenOnWakelock.release();

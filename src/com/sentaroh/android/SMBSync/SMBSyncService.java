@@ -23,22 +23,28 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
+import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
 import android.os.RemoteException;
 
 import com.sentaroh.android.Utilities.NotifyEvent;
 import com.sentaroh.android.Utilities.NotifyEvent.NotifyEventListener;
 import com.sentaroh.android.Utilities.ThreadCtrl;
 
+@SuppressLint("Wakelock")
 public class SMBSyncService extends Service {
 	private GlobalParameters glblParms=null;
 	
 	private SMBSyncUtil mUtil=null;
 	
 	private ThreadCtrl tcMirror=null, tcConfirm=null;
+	
+	private WakeLock mWakeLock=null;
 
 	@Override
 	public void onCreate() {
@@ -47,7 +53,14 @@ public class SMBSyncService extends Service {
 		glblParms.svcContext=this.getApplicationContext();
 		NotificationUtil.initNotification(glblParms);
 		mUtil=new SMBSyncUtil(getApplicationContext(), "Service", glblParms);
+
 		
+		mWakeLock=((PowerManager)getSystemService(Context.POWER_SERVICE))
+    			.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK
+	    				| PowerManager.ACQUIRE_CAUSES_WAKEUP
+//	   	    				| PowerManager.ON_AFTER_RELEASE
+	    				, "SMBSync-Service");
+
 //		PackageInfo packageInfo;
 //		try {
 //			packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
@@ -153,8 +166,27 @@ public class SMBSyncService extends Service {
 				throws RemoteException {
 			NotificationUtil.showOngoingNotificationMsg(glblParms, prof, fp, msg);
 		}
+		@Override
+		public void aidlAcqWakeLock() throws RemoteException {
+			if (mWakeLock.isHeld()) {
+				mUtil.addDebugLogMsg(1, "I", "aidlAcqWakeLock WakeLock not acquired, already held.");
+			} else {
+				mWakeLock.acquire();
+				mUtil.addDebugLogMsg(1, "I", "aidlAcqWakeLock WakeLock acquired.");
+			}
+		}
+		@Override
+		public void aidlRelWakeLock() throws RemoteException {
+			if (!mWakeLock.isHeld()) {
+				mUtil.addDebugLogMsg(1, "I", "aidlRelWakeLock WakeLock not released, not held.");
+			} else {
+				mWakeLock.release();
+				mUtil.addDebugLogMsg(1, "I", "aidlRelWakeLock WakeLock released.");
+			}
+		}
     };
 
+	@SuppressLint("Wakelock")
 	private void startThread() {
 //		final Handler hndl=new Handler();
 		NotificationUtil.setNotificationIcon(glblParms, R.drawable.ic_48_smbsync_run_anim);
@@ -185,7 +217,8 @@ public class SMBSyncService extends Service {
 				}
 			}
 			@Override
-			public void negativeResponse(Context c, Object[] o) {} 
+			public void negativeResponse(Context c, Object[] o) {
+			} 
 		});
 		
 		Thread tm = new Thread(new MirrorIO(glblParms, ntfy, tcMirror, tcConfirm)); 

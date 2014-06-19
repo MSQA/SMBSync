@@ -17,4 +17,8 @@ interface ISvcClient{
 	void aidlStopService() ;
 	
 	void aidlShowNotificationMsg(String prof, String fp, String msg);
+	
+	void aidlAcqWakeLock();
+	
+	void aidlRelWakeLock();
 }
