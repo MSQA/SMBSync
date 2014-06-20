@@ -80,6 +80,7 @@ import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -644,20 +645,18 @@ public class ProfileMaintenance {
 			public void positiveResponse(Context c, Object[] o) {
 				String imp_list="";
 				for (int i=0;i<tfl.getCount();i++) {
-					ProfileListItem pfli=tfl.getItem(i);
+					ProfileListItem ipfli=tfl.getItem(i);
 					ExportImportProfileListItem eipli=imp_list_adapt.getItem(i);
 					if (eipli.isChecked ) {
-						imp_list+=pfli.getName()+"\n";
-						if (getProfile(pfli.getName(), mGp.profileAdapter)!=null) {
-							for (int j=0;j<mGp.profileAdapter.getCount();j++) {
-								ProfileListItem mpfli=tfl.getItem(j);
-								if (mpfli.getName().equals(pfli.getName())) {
-									mGp.profileAdapter.replace(pfli, j);
-									break;
-								}
-							}
+						imp_list+=ipfli.getName()+"\n";
+//						Log.v("","name1="+ipfli.getName()+
+//								", result="+getProfile(ipfli.getName(), mGp.profileAdapter));
+						ProfileListItem mpfli=getProfile(ipfli.getName(), mGp.profileAdapter);
+						if (mpfli!=null) {
+							mGp.profileAdapter.remove(mpfli);
+							mGp.profileAdapter.add(ipfli);
 						} else {
-							mGp.profileAdapter.add(pfli);
+							mGp.profileAdapter.add(ipfli);
 						}
 					}
 				}
