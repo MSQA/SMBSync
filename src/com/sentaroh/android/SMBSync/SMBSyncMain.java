@@ -89,7 +89,6 @@ import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.text.ClipboardManager;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -130,6 +129,7 @@ public class SMBSyncMain extends FragmentActivity {
 	
 	private boolean isTaskTermination = false; // kill is disabled(enable is kill by onDestroy)
 	
+	@SuppressWarnings("unused")
 	private boolean isApplicationFirstTimeRunning=false;
 	
 	private AdapterSyncHistory historyAdapter=null;
