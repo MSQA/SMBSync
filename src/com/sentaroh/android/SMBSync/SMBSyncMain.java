@@ -89,6 +89,7 @@ import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.text.ClipboardManager;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -313,12 +314,19 @@ public class SMBSyncMain extends FragmentActivity {
 								commonDlg.showCommonDialog(false, "W", "", m_txt, ntfy_nr);
 								util.addLogMsg("W",m_txt);
 							} else {
-								if (isApplicationFirstTimeRunning) {
-									if (mGp.profileAdapter.getItem(0).getType().equals("")) {
-										ProfileCreationWizard sw=new ProfileCreationWizard(mGp, mContext, 
-												util, profMaint, commonDlg, mGp.profileAdapter);
-										sw.wizardMain();
-									}
+//								if (isApplicationFirstTimeRunning) {
+//									if (mGp.profileAdapter.getItem(0).getType().equals("")) {
+//										ProfileCreationWizard sw=new ProfileCreationWizard(mGp, mContext, 
+//												util, profMaint, commonDlg, mGp.profileAdapter);
+//										sw.wizardMain();
+//									}
+//								} else {
+//									ntfy_nr.notifyToListener(true, null);
+//								}
+								if (mGp.profileAdapter.getItem(0).getType().equals("")) {
+									ProfileCreationWizard sw=new ProfileCreationWizard(mGp, mContext, 
+											util, profMaint, commonDlg, mGp.profileAdapter);
+									sw.wizardMain();
 								} else {
 									ntfy_nr.notifyToListener(true, null);
 								}
@@ -687,13 +695,19 @@ public class SMBSyncMain extends FragmentActivity {
 					if (profMaint.getActiveSyncProfileCount(mGp.profileAdapter)>0) {
 						syncActiveProfile();
 					} else {
-						if (mToastNextIssuedTimeSyncOption<System.currentTimeMillis()) {
-							Toast.makeText(mContext, 
-								mContext.getString(R.string.msgs_sync_can_not_sync_no_valid_profile), 
-								Toast.LENGTH_SHORT)
-								.show();
-							mToastNextIssuedTimeSyncOption=System.currentTimeMillis()+2000;
-						}
+						NotifyEvent ntfy=new NotifyEvent(mContext);
+						ntfy.setListener(new NotifyEventListener(){
+							@Override
+							public void positiveResponse(Context c, Object[] o) {
+								ProfileCreationWizard sw=new ProfileCreationWizard(mGp, mContext, 
+										util, profMaint, commonDlg, mGp.profileAdapter);
+								sw.wizardMain();
+							}
+							@Override
+							public void negativeResponse(Context c, Object[] o) {}
+						});
+						commonDlg.showCommonDialog(false, "W", "", 
+								mContext.getString(R.string.msgs_sync_can_not_sync_no_valid_profile), ntfy);
 					}
 				} else {
 					if (mToastNextIssuedTimeSyncOption<System.currentTimeMillis()) {
