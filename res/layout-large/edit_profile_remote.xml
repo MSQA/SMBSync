@@ -68,11 +68,17 @@
                 </EditText>
             </LinearLayout>
 
+			<Button
+			    android:id="@+id/remote_profile_search_remote_host"
+			    android:layout_width="match_parent"
+			    android:layout_height="wrap_content"
+			    android:text="@string/msgs_remote_profile_dlg_search_remote_list"
+			    android:textAppearance="?android:attr/textAppearanceMedium" />
+            
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >
-
 	            <CheckBox
 	                android:id="@+id/remote_profile_use_computer_name"
 	                style="@style/check_box_style"
@@ -80,12 +86,7 @@
 	                android:layout_height="wrap_content"
 	                android:textAppearance="?android:attr/textAppearanceMedium"
 	                android:text="@string/msgs_remote_profile_dlg_use_computer_name" />
-				<Button
-	                android:id="@+id/remote_profile_get_addr_btn"
-	                android:layout_width="wrap_content"
-	                android:layout_height="wrap_content"
-	                android:text="@string/msgs_remote_profile_dlg_addr_list"
-	                android:textAppearance="?android:attr/textAppearanceMedium" />	            
+                
                 <EditText
                     android:id="@+id/remote_profile_addr"
                     android:layout_width="0dp"
@@ -179,7 +180,7 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/remote_profile_get_btn1"
+                    android:id="@+id/remote_profile_list_share"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="1dp"
@@ -202,7 +203,7 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/remote_profile_get_btn2"
+                    android:id="@+id/remote_profile_list_directory"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="1dp"

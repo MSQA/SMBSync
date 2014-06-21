@@ -33,7 +33,7 @@
 	
 	<string name="msgs_sync_wizard_specify_local_dir">ローカル ディレクトリーを入力してください</string>
 	
-	<string name="msgs_sync_wizard_specify_server">サーバー名またはサーバーIPアドレスを入力するか、スキャンボタンを押してください</string>
+	<string name="msgs_sync_wizard_specify_server">サーバー名またはサーバーIPアドレスを入力するか、検索ボタンを押してください</string>
 	<string name="msgs_sync_wizard_specify_user_pass">ユーザー名およびパスワードを入力してください</string>
 	<string name="msgs_sync_wizard_logon_required">ログオンボタンを押してログオンしてください</string>
 	<string name="msgs_sync_wizard_specify_remote_share">共有名の一覧表示ボタンを押してください</string>

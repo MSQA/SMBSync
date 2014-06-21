@@ -25,7 +25,7 @@
     <string name="msgs_remote_profile_dlg_sharelist">一覧表示</string>
     <string name="msgs_remote_profile_dlg_directory">ディレクトリ</string>
     <string name="msgs_remote_profile_dlg_dirlist">一覧表示</string>
-    <string name="msgs_remote_profile_dlg_addr_list">リモートサーバーのスキャン</string>
+    <string name="msgs_remote_profile_dlg_search_remote_list">リモートサーバーの検索</string>
 	<string name="msgs_remote_profile_dlg_use_computer_name">コンピュータ名を使用する</string>    
 	<string name="msgs_remote_profile_dlg_use_user_pass">ユーザーID/パスワードを使用する</string>
 	<string name="msgs_remote_profile_dlg_logon">ログオン</string>
@@ -81,14 +81,14 @@
    	<string name="msgs_progress_spin_dlg_syncronizing">同期処理中</string>
    	<string name="msgs_progress_spin_dlg_sync_cancel">同期処理をキャンセル</string>
    	
-   	<string name="msgs_progress_spin_dlg_addr_cancel">スキャン中止</string>
-   	<string name="msgs_scan_ip_address_select_title">リモートSMBホストのスキャン</string>
-	<string name="msgs_scan_ip_address_scan_btn">スキャン開始</string>
-	<string name="msgs_scan_ip_address_press_scan_btn">IPアドレスを指定して、スキャンボタンを押してください。</string>
+   	<string name="msgs_progress_spin_dlg_addr_cancel">検索中止</string>
+   	<string name="msgs_scan_ip_address_select_title">リモートSMBホストの検索</string>
+	<string name="msgs_scan_ip_address_scan_btn">検索開始</string>
+	<string name="msgs_scan_ip_address_press_scan_btn">IPアドレスを指定して、検索ボタンを押してください。</string>
 	<string name="msgs_scan_ip_address_not_detected">リモートSMBホストが検知できませんでした。</string>
-	<string name="msgs_scan_ip_address_select_detected_host">検知結果のIPアドレスかホスト名をタップして選択してください。</string>
-	<string name="msgs_scan_ip_address_scan_result_title">検知結果</string>
-   	<string name="msgs_ip_address_scan_progress">リモートSMBホスト スキャンが%s%% 終了</string>
+	<string name="msgs_scan_ip_address_select_detected_host">検索結果のIPアドレスかホスト名をタップして選択してください。</string>
+	<string name="msgs_scan_ip_address_scan_result_title">検索結果</string>
+   	<string name="msgs_ip_address_scan_progress">リモートSMBホスト 検索が%s%% 終了</string>
    	
    	<string name="msgs_ip_address_range_dlg_begin">開始</string>
    	<string name="msgs_ip_address_range_dlg_end">終了</string>
@@ -99,7 +99,7 @@
    	<string name="msgs_ip_address_range_dlg_end_notspecified">終了アドレスが指定されていません。</string>
    	<string name="msgs_ip_address_range_dlg_end_range_error">終了アドレスは1から254の範囲で指定してください。</string>
    	<string name="msgs_ip_address_range_dlg_begin_addr_gt_end_addr">開始アドレスが終了アドレスより大きい。</string>
-   	<string name="msgs_ip_address_range_dlg_not_private">グローバルアドレスのためスキャンできません。</string>
+   	<string name="msgs_ip_address_range_dlg_not_private">グローバルアドレスのため検索できません。</string>
    	
    	<string name="msgs_progress_dlg_canceling">キャンセルしています</string>
    	

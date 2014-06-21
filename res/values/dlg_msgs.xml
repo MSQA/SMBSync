@@ -24,7 +24,7 @@
     <string name="msgs_remote_profile_dlg_sharelist">Show list</string>
     <string name="msgs_remote_profile_dlg_directory">Directory</string>
     <string name="msgs_remote_profile_dlg_dirlist">Show list</string>
-    <string name="msgs_remote_profile_dlg_addr_list">Scan remote server</string>
+    <string name="msgs_remote_profile_dlg_search_remote_list">Search remote server</string>
     <string name="msgs_remote_profile_dlg_use_computer_name">Use computer name</string>
     <string name="msgs_remote_profile_dlg_use_user_pass">Use remote host userid and password</string>
     <string name="msgs_remote_profile_dlg_logon">Logon</string>
@@ -81,14 +81,14 @@
    	<string name="msgs_progress_spin_dlg_syncronizing">Synchronizing</string>
    	<string name="msgs_progress_spin_dlg_sync_cancel">Cancel synchronize</string>
 
-   	<string name="msgs_progress_spin_dlg_addr_cancel">Cancel scan</string>
-   	<string name="msgs_scan_ip_address_select_title">Scan remote SMB host</string>
-	<string name="msgs_scan_ip_address_scan_btn">Begin Scan</string>
-	<string name="msgs_scan_ip_address_press_scan_btn">Specify IP adrress and press scan button.</string>
+   	<string name="msgs_progress_spin_dlg_addr_cancel">Cancel Search</string>
+   	<string name="msgs_scan_ip_address_select_title">Search remote SMB host</string>
+	<string name="msgs_scan_ip_address_scan_btn">Begin Search</string>
+	<string name="msgs_scan_ip_address_press_scan_btn">Specify IP adrress and press Search button.</string>
 	<string name="msgs_scan_ip_address_not_detected">Remote SMB host not detected.</string>
-	<string name="msgs_scan_ip_address_select_detected_host">Please tap the scan result hostname or IP address for remote server choice.</string>
-	<string name="msgs_scan_ip_address_scan_result_title">Scan result</string>
-   	<string name="msgs_ip_address_scan_progress">Remote SMB host scan is %s%% Completed</string>
+	<string name="msgs_scan_ip_address_select_detected_host">Please tap the search result hostname or IP address for remote server choice.</string>
+	<string name="msgs_scan_ip_address_scan_result_title">Search result</string>
+   	<string name="msgs_ip_address_scan_progress">Remote SMB host search is %s%% Completed</string>
    	
    	<string name="msgs_ip_address_range_dlg_begin">Begin</string>
    	<string name="msgs_ip_address_range_dlg_end">End</string>
@@ -99,7 +99,7 @@
    	<string name="msgs_ip_address_range_dlg_end_notspecified">End address was not specified.</string>
    	<string name="msgs_ip_address_range_dlg_begin_addr_gt_end_addr">Begin address is greater than end address.</string>
    	<string name="msgs_ip_address_range_dlg_end_range_error">End address range is must be 1 to 254.</string>
-   	<string name="msgs_ip_address_range_dlg_not_private">Global address was can not be scan.</string>
+   	<string name="msgs_ip_address_range_dlg_not_private">Global address was can not be search.</string>
    		
    	<string name="msgs_progress_dlg_canceling">Canceling</string>
 

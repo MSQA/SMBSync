@@ -80,6 +80,7 @@ import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.SparseBooleanArray;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -1164,9 +1165,9 @@ public class ProfileMaintenance {
 		final CheckBox cb_use_hostname = (CheckBox) dialog.findViewById(R.id.remote_profile_use_computer_name);
 		final CheckBox cb_use_user_pass = (CheckBox) dialog.findViewById(R.id.remote_profile_use_user_pass);
 		
-		final Button btnAddr = (Button) dialog.findViewById(R.id.remote_profile_get_addr_btn);
-		final Button btnListShare = (Button) dialog.findViewById(R.id.remote_profile_get_btn1);
-		final Button btnListDir = (Button) dialog.findViewById(R.id.remote_profile_get_btn2);
+		final Button btnAddr = (Button) dialog.findViewById(R.id.remote_profile_search_remote_host);
+		final Button btnListShare = (Button) dialog.findViewById(R.id.remote_profile_list_share);
+		final Button btnListDir = (Button) dialog.findViewById(R.id.remote_profile_list_directory);
 
 		if (prof_host.equals("")) {
 			cb_use_hostname.setChecked(false);
@@ -2526,7 +2527,7 @@ public class ProfileMaintenance {
 			else tg.setChecked(false);
 		
 		// addressボタンの指定
-		Button btnAddr = (Button) dialog.findViewById(R.id.remote_profile_get_addr_btn);
+		Button btnAddr = (Button) dialog.findViewById(R.id.remote_profile_search_remote_host);
 		if (util.isRemoteDisable()) btnAddr.setEnabled(false);
 		btnAddr.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
@@ -2535,7 +2536,7 @@ public class ProfileMaintenance {
 		});
 		
 		// RemoteShareボタンの指定
-		Button btnGet1 = (Button) dialog.findViewById(R.id.remote_profile_get_btn1);
+		Button btnGet1 = (Button) dialog.findViewById(R.id.remote_profile_list_share);
 		if (util.isRemoteDisable()) btnGet1.setEnabled(false);
 		btnGet1.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
@@ -2543,7 +2544,7 @@ public class ProfileMaintenance {
 			}
 		});
 		// RemoteDirectoryボタンの指定
-		final Button btnGet2 = (Button) dialog.findViewById(R.id.remote_profile_get_btn2);
+		final Button btnGet2 = (Button) dialog.findViewById(R.id.remote_profile_list_directory);
 		if (util.isRemoteDisable()) btnGet2.setEnabled(false);
 		btnGet2.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
@@ -5070,7 +5071,6 @@ public class ProfileMaintenance {
 		final Dialog dialog = new Dialog(mContext);
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		dialog.setCanceledOnTouchOutside(false);
-		dialog.setCanceledOnTouchOutside(false);
 		dialog.setContentView(R.layout.progress_spin_dlg);
 		((TextView)dialog.findViewById(R.id.progress_spin_dlg_title))
 			.setText(R.string.msgs_progress_spin_dlg_filelist_getting);
@@ -5176,10 +5176,16 @@ public class ProfileMaintenance {
 				
 				for (int i=0;i<rfl.size();i++){
 					if (rfl.get(i).isDir() && rfl.get(i).canRead() && 
-							!rfl.get(i).getName().startsWith("IPC$"))
+							!rfl.get(i).getName().endsWith("$"))
+//							!rfl.get(i).getName().startsWith("IPC$"))
 						rows.add(rfl.get(i).getName().replaceAll("/", ""));
 				}
-				if (rows.size()<1) rows.add(msgs_dir_empty);
+				boolean wk_list_empty=false; 
+				if (rows.size()<1) {
+					wk_list_empty=true;
+					rows.add(msgs_dir_empty);
+				}
+				final boolean list_empty=wk_list_empty;
 				Collections.sort(rows, String.CASE_INSENSITIVE_ORDER);
 				//カスタムダイアログの生成
 				final Dialog dialog=new Dialog(mContext);
@@ -5194,31 +5200,49 @@ public class ProfileMaintenance {
 //		        if (rows.size()<=2) 
 //		        	((TextView)dialog.findViewById(R.id.item_select_list_dlg_spacer))
 //		        	.setVisibility(TextView.VISIBLE);
+				final Button btn_cancel=(Button)dialog.findViewById(R.id.item_select_list_dlg_cancel_btn);
+				final Button btn_ok=(Button)dialog.findViewById(R.id.item_select_list_dlg_ok_btn);
+				btn_ok.setEnabled(false);
 				
 				CommonDialog.setDlgBoxSizeLimit(dialog, false);
 				
 				final ListView lv = (ListView) dialog.findViewById(android.R.id.list);
-				lv.setAdapter(new ArrayAdapter<String>(mContext,
+				if (!list_empty) {
+					lv.setAdapter(new ArrayAdapter<String>(mContext,
+							android.R.layout.simple_list_item_checked,rows));
+					lv.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+				} else {
+					lv.setAdapter(new ArrayAdapter<String>(mContext,
 							R.layout.simple_list_item_1o, rows));
+				}
 				lv.setScrollingCacheEnabled(false);
 				lv.setScrollbarFadingEnabled(false);
 				
 				lv.setOnItemClickListener(new OnItemClickListener(){
 					public void onItemClick(AdapterView<?> items, View view, int idx, long id) {
 						if (rows.get(idx).startsWith("---")) return;
-				    	dialog.dismiss();
-				    	// リストアイテムを選択したときの処理
-			    		String tmp =(String)lv.getItemAtPosition(idx);
-			    		if (tmp.lastIndexOf("/")>0) tmp=tmp.substring(0,tmp.lastIndexOf("/"));
-			    		p_ntfy.notifyToListener(true, new Object[]{tmp});
+						if (!list_empty) btn_ok.setEnabled(true);
 					}
 				});	 
 				//CANCELボタンの指定
-				final Button btn_cancel=(Button)dialog.findViewById(R.id.item_select_list_dlg_cancel_btn);
 				btn_cancel.setOnClickListener(new View.OnClickListener() {
 				    public void onClick(View v) {
 				        dialog.dismiss();
 			    		p_ntfy.notifyToListener(false, null);
+				    }
+				});
+				//OKボタンの指定
+				btn_ok.setVisibility(Button.VISIBLE);
+				btn_ok.setOnClickListener(new View.OnClickListener() {
+				    public void onClick(View v) {
+				        dialog.dismiss();
+		                SparseBooleanArray checked = lv.getCheckedItemPositions();
+		                for(int i=0; i<=rows.size();i++){
+		                    if(checked.get(i) == true){
+					    		p_ntfy.notifyToListener(true, new Object[]{rows.get(i)});
+					    		break;
+		                    }
+		                }
 				    }
 				});
 				// Cancelリスナーの指定

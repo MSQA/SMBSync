@@ -37,7 +37,7 @@
 	
 	<string name="msgs_sync_wizard_specify_local_dir">Specify local directory</string>
 	
-	<string name="msgs_sync_wizard_specify_server">Specify remote server name, IP address or press Scan remote server button</string>
+	<string name="msgs_sync_wizard_specify_server">Specify remote server name, IP address or press Search remote server button</string>
 	<string name="msgs_sync_wizard_specify_user_pass">Specify user and/or password</string>
 	<string name="msgs_sync_wizard_specify_remote_share">Press show list button for Share</string>
 	<string name="msgs_sync_wizard_logon_required">Logon required, press Logon button</string>

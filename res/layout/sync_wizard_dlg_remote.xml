@@ -38,7 +38,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginRight="5dp"
-        android:text="@string/msgs_remote_profile_dlg_addr_list"
+        android:text="@string/msgs_remote_profile_dlg_search_remote_list"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <CheckBox
