@@ -317,7 +317,7 @@ public class MirrorIO implements Runnable {
     					ex.toString()+st_msg;
         		tcMirror.setThreadMessage(end_msg);
         		addLogMsg("E","",end_msg);
-        		NotificationUtil.showOngoingNotificationMsg(glblParms,end_msg);
+        		NotificationUtil.showOngoingMsg(glblParms,end_msg);
         		notifyThreadTerminate();
         		tcMirror.setDisable();
                 // re-throw critical exception further to the os (important)
@@ -332,7 +332,7 @@ public class MirrorIO implements Runnable {
 		defaultUEH = Thread.currentThread().getUncaughtExceptionHandler();
         Thread.currentThread().setUncaughtExceptionHandler(unCaughtExceptionHandler);
         
-		NotificationUtil.showOngoingNotificationMsg(glblParms,msgs_mirror_task_started);
+		NotificationUtil.showOngoingMsg(glblParms,msgs_mirror_task_started);
 		waitMediaScanner(true);//wait for media scanner service connection
 		copiedFileList = new ArrayList<String>();
 		totalCopyCnt=totalDeleteCnt=totalIgnoreCnt=totalWarningMsgCnt=totalErrorMsgCnt=0;
@@ -427,7 +427,7 @@ public class MirrorIO implements Runnable {
 		waitMediaScanner(false);//wait for media scanner disconnection
 
 		addLogMsg("I","",msgs_mirror_task_ended);
-		NotificationUtil.showOngoingNotificationMsg(glblParms,msgs_mirror_task_ended);
+		NotificationUtil.showOngoingMsg(glblParms,msgs_mirror_task_ended);
 
 		addLogMsg("I","",String.format(msgs_mirror_task_result_stats, 
 				totalCopyCnt, totalDeleteCnt, totalIgnoreCnt,totalWarningMsgCnt,totalErrorMsgCnt));
@@ -450,7 +450,7 @@ public class MirrorIO implements Runnable {
 		}
 		tcMirror.setThreadMessage(end_msg);
 		addLogMsg("I","",end_msg);
-		NotificationUtil.showOngoingNotificationMsg(glblParms,end_msg);
+		NotificationUtil.showOngoingMsg(glblParms,end_msg);
 		notifyThreadTerminate();
 		tcMirror.setDisable();
 	};

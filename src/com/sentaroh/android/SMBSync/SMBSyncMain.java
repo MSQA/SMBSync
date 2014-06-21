@@ -2745,21 +2745,19 @@ public class SMBSyncMain extends FragmentActivity {
 				util.addLogMsg("I",getString(R.string.msgs_aterm_expired));
 				if (mGp.settingAutoTerm){
 					svcStopForeground(true);
-
 					//Wait until stopForeground() completion 
 					Handler hndl=new Handler();
 					hndl.post(new Runnable(){
 						@Override
 						public void run() {
-							
-								util.addDebugLogMsg(1,"I","Auto termination was invoked.");
+							util.addDebugLogMsg(1,"I","Auto termination was invoked.");
 							if (!mGp.settingBgTermNotifyMsg.equals(SMBSYNC_BG_TERM_NOTIFY_MSG_NO)) {
 //								Log.v("","result code="+result_code+", result_msg="+result_msg);
 								if (mGp.settingBgTermNotifyMsg.equals(SMBSYNC_BG_TERM_NOTIFY_MSG_ALWAYS)) 
-									NotificationUtil.showNoticeNotificationMsg(mContext,mGp,result_msg);
+									NotificationUtil.showNoticeMsg(mContext,mGp,result_msg);
 								else {
 									if (!result_code.equals("OK")) {
-										NotificationUtil.showNoticeNotificationMsg(mContext,mGp,result_msg);
+										NotificationUtil.showNoticeMsg(mContext,mGp,result_msg);
 									} else {
 										NotificationUtil.clearNotification(mGp);
 									}
@@ -2793,6 +2791,15 @@ public class SMBSyncMain extends FragmentActivity {
 		}
 	};
 
+	@SuppressWarnings("unused")
+	private void setNotificationIcon(int icon_res) {
+		try {
+			mSvcClient.aidlSetNotificationIcon(icon_res);
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+	};
+	
 	private void autoTimer( 
 			final ThreadCtrl threadCtl, final NotifyEvent at_ne, final String msg) {
 		setUiDisabled();

@@ -275,13 +275,13 @@ public class SMBSyncUtil {
 					glblParms.mainViewProgressProf.setText(sync_prof);
 					glblParms.mainViewProgressFilepath.setText(fp);
 					glblParms.mainViewProgressMessage.setText(msg_text);
-					NotificationUtil.showOngoingNotificationMsg(glblParms,sync_prof,fp,msg_text);
+					NotificationUtil.showOngoingMsg(glblParms,sync_prof,fp,msg_text);
 				} else { //
 					if (msgflag.equals("1")) {
 						glblParms.mainViewProgressProf.setText(sync_prof);
 						glblParms.mainViewProgressFilepath.setText(fp);
 						glblParms.mainViewProgressMessage.setText(msg_text);
-						NotificationUtil.showOngoingNotificationMsg(glblParms,sync_prof,fp,msg_text);
+						NotificationUtil.showOngoingMsg(glblParms,sync_prof,fp,msg_text);
 					}  
 					if (debug_flag.equals("M") || 
 							(debug_flag.equals("D")&&glblParms.settingDebugMsgDisplay)) {

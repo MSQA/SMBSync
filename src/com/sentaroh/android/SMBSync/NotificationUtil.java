@@ -54,7 +54,7 @@ public class NotificationUtil {
 
 		gwa.notificationBuilder=new NotificationCompat.Builder(gwa.svcContext);
 		gwa.notificationBuilder.setContentIntent(gwa.notificationPendingIntent)
-		   	.setTicker(gwa.notificationAppName)
+//		   	.setTicker(gwa.notificationAppName)
 			.setOngoing(true)
 			.setAutoCancel(false)
 			.setSmallIcon(gwa.notificationIcon)//smbsync_animation)
@@ -105,17 +105,17 @@ public class NotificationUtil {
 		else gwa.notificationLastShowedMessage=fp+" "+msg;
 	};
 	
-	final static public Notification showOngoingNotificationMsg(GlobalParameters gwa, 
+	final static public Notification showOngoingMsg(GlobalParameters gwa, 
 			String msg ) {
-		return showOngoingNotificationMsg(gwa,"","",msg);
+		return showOngoingMsg(gwa,"","",msg);
 	};
 
-	final static public Notification showOngoingNotificationMsg(GlobalParameters gwa, 
+	final static public Notification showOngoingMsg(GlobalParameters gwa, 
 			String prof, String msg ) {
-		return showOngoingNotificationMsg(gwa,prof,"",msg);
+		return showOngoingMsg(gwa,prof,"",msg);
 	};
 	
-	final static public Notification showOngoingNotificationMsg(GlobalParameters gwa, 
+	final static public Notification showOngoingMsg(GlobalParameters gwa, 
 			String prof, String fp, String msg ) {
 		setNotificationMessage(gwa,prof,fp,msg);
 		gwa.notificationBuilder
@@ -136,10 +136,11 @@ public class NotificationUtil {
     	return gwa.notification;
 	};
 
-	final static public void showNoticeNotificationMsg(Context context, GlobalParameters gwa, String msg ) {
+	final static public void showNoticeMsg(Context context, GlobalParameters gwa, String msg ) {
 		clearNotification(gwa);
 		NotificationCompat.Builder builder=new NotificationCompat.Builder(context);
-		builder.setTicker(gwa.notificationAppName)
+		builder
+//			.setTicker(gwa.notificationAppName)
 			.setOngoing(false)
 			.setAutoCancel(true)
 			.setSmallIcon(R.drawable.ic_48_smbsync_wait)

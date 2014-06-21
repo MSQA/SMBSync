@@ -6639,6 +6639,8 @@ public class ProfileMaintenance {
 		saveSettingsParmsToFileString(group, pw, "",     encrypt_required,cp,mContext.getString(R.string.settings_log_dir));
 		saveSettingsParmsToFileString(group, pw, "10",   encrypt_required,cp,mContext.getString(R.string.settings_log_generation));
 		saveSettingsParmsToFileBoolean(group, pw, false, encrypt_required,cp,mContext.getString(R.string.settings_suppress_warning_mixed_mp));
+		saveSettingsParmsToFileString(group, pw, "0", encrypt_required,cp,mContext.getString(R.string.settings_playback_ringtone_when_sync_ended));
+		saveSettingsParmsToFileString(group, pw, "0", encrypt_required,cp,mContext.getString(R.string.settings_vibrate_when_sync_ended));
 
 		saveSettingsParmsToFileString(group, pw, "",     encrypt_required,cp,mContext.getString(R.string.settings_default_user));
 		saveSettingsParmsToFileString(group, pw, "",     encrypt_required,cp,mContext.getString(R.string.settings_default_pass));

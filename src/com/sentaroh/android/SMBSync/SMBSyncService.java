@@ -31,7 +31,6 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.os.RemoteException;
-
 import com.sentaroh.android.Utilities.NotifyEvent;
 import com.sentaroh.android.Utilities.NotifyEvent.NotifyEventListener;
 import com.sentaroh.android.Utilities.ThreadCtrl;
@@ -44,7 +43,7 @@ public class SMBSyncService extends Service {
 	
 	private ThreadCtrl tcMirror=null, tcConfirm=null;
 	
-	private WakeLock mWakeLock=null;
+	private WakeLock mPartialWakeLock=null;
 
 	@Override
 	public void onCreate() {
@@ -55,7 +54,7 @@ public class SMBSyncService extends Service {
 		mUtil=new SMBSyncUtil(getApplicationContext(), "Service", glblParms);
 
 		
-		mWakeLock=((PowerManager)getSystemService(Context.POWER_SERVICE))
+		mPartialWakeLock=((PowerManager)getSystemService(Context.POWER_SERVICE))
     			.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK
 	    				| PowerManager.ACQUIRE_CAUSES_WAKEUP
 //	   	    				| PowerManager.ON_AFTER_RELEASE
@@ -164,23 +163,32 @@ public class SMBSyncService extends Service {
 		@Override
 		public void aidlShowNotificationMsg(String prof, String fp, String msg)
 				throws RemoteException {
-			NotificationUtil.showOngoingNotificationMsg(glblParms, prof, fp, msg);
+			NotificationUtil.showOngoingMsg(glblParms, prof, fp, msg);
 		}
+		
+		@Override
+		public void aidlSetNotificationIcon(int icon_res)
+				throws RemoteException {
+//			Log.v("","icon="+icon_res);
+//			Thread.currentThread().dumpStack();
+			NotificationUtil.setNotificationIcon(glblParms, icon_res);
+		}
+		
 		@Override
 		public void aidlAcqWakeLock() throws RemoteException {
-			if (mWakeLock.isHeld()) {
+			if (mPartialWakeLock.isHeld()) {
 				mUtil.addDebugLogMsg(1, "I", "aidlAcqWakeLock WakeLock not acquired, already held.");
 			} else {
-				mWakeLock.acquire();
+				mPartialWakeLock.acquire();
 				mUtil.addDebugLogMsg(1, "I", "aidlAcqWakeLock WakeLock acquired.");
 			}
 		}
 		@Override
 		public void aidlRelWakeLock() throws RemoteException {
-			if (!mWakeLock.isHeld()) {
+			if (!mPartialWakeLock.isHeld()) {
 				mUtil.addDebugLogMsg(1, "I", "aidlRelWakeLock WakeLock not released, not held.");
 			} else {
-				mWakeLock.release();
+				mPartialWakeLock.release();
 				mUtil.addDebugLogMsg(1, "I", "aidlRelWakeLock WakeLock released.");
 			}
 		}
