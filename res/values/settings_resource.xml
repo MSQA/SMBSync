@@ -42,11 +42,11 @@
 
     <string name="settings_ui_title">User interface</string>
 
-    <string name="settings_ui_keep_screen_on_title">Screen state during synchronization</string>
-    <string name="settings_ui_keep_screen_on_summary_ena">Screen so that does not turn off during synchronization.</string>
+    <string name="settings_ui_keep_screen_on_title">Screen lock</string>
+    <string name="settings_ui_keep_screen_on_summary_ena">Do not lock the screen during synchronization.</string>
 	<string name="settings_ui_keep_screen_on">settings_ui_keep_screen_on</string>	
     
-    <string name="settings_wifi_lock_title">Wi-Fi lock during synchronization</string>
+    <string name="settings_wifi_lock_title">Wi-Fi lock</string>
     <string name="settings_wifi_lock_summary_ena">Acquire Wi-Fi lock during synchronization.</string>
 	<string name="settings_wifi_lock">settings_wifi_lock</string>	
 

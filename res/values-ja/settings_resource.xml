@@ -31,10 +31,10 @@
 
 	<string name="settings_ui_title">ユーザーインターフェース</string>
 	
-    <string name="settings_ui_keep_screen_on_title">同期中の画面オン</string>
-    <string name="settings_ui_keep_screen_on_summary_ena">同期中に画面がオフにならないようにする</string>
+    <string name="settings_ui_keep_screen_on_title">画面ロック</string>
+    <string name="settings_ui_keep_screen_on_summary_ena">同期中は画面をロックさせない</string>
 		
-    <string name="settings_wifi_lock_title">同期中のWi-Fiロック</string>
+    <string name="settings_wifi_lock_title">Wi-Fiロック</string>
     <string name="settings_wifi_lock_summary_ena">同期中はWi-Fiロックを取得する</string>
     
     <string name="settings_remote_file_copy_by_rename_title">リモートコピー先ファイルの保存</string>
