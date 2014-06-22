@@ -80,9 +80,9 @@
 	<string name="settings_background_termination_notification_dialog_title">Select termination notice of application run in background</string>
 	<string name="settings_background_termination_notification">settings_background_termination_notification</string>
 	<string-array name="settings_background_termination_notification_list_entries">
-        <item>Always show</item>
-        <item>When sync was ended with error</item>
-        <item>Not show</item>
+        <item>Always shows notification message</item>
+        <item>Show notification message when error detected</item>
+        <item>Notification message not show</item>
     </string-array>
     <string-array name="settings_background_termination_notification_list_values">
         <item>0</item>
@@ -98,10 +98,10 @@
 	<string name="settings_playback_ringtone_when_sync_ended_dialog_title">Select playback condition</string>
 	<string name="settings_playback_ringtone_when_sync_ended">settings_playback_ringtone_when_sync_ended</string>
 	<string-array name="settings_playback_ringtone_when_sync_ended_list_entries">
-        <item>None</item>
-        <item>Always</item>
-        <item>When sync was ended successfully</item>
-        <item>When sync was ended with error</item>
+        <item>Do not playback default notification</item>
+        <item>To playback default notification when sync was ended</item>
+        <item>To playback default notification when sync was ended without error</item>
+        <item>To playback default notification when sync was ended with error</item>
     </string-array>
     <string-array name="settings_playback_ringtone_when_sync_ended_list_values">
         <item>0</item>
@@ -115,13 +115,13 @@
 	<string name="settings_vibrate_when_sync_ended_summary_success">Vibrate when sync was ended successfully</string>
 	<string name="settings_vibrate_when_sync_ended_summary_error">Vibrate when sync was ended with error</string>
 	<string name="settings_vibrate_when_sync_ended_summary_no">Do not vibrate</string>
-	<string name="settings_vibrate_when_sync_ended_dialog_title">Select vibratio condition</string>
+	<string name="settings_vibrate_when_sync_ended_dialog_title">Select vibration condition</string>
 	<string name="settings_vibrate_when_sync_ended">settings_vibrate_when_sync_ended</string>
 	<string-array name="settings_vibrate_when_sync_ended_list_entries">
-        <item>None</item>
-        <item>Always</item>
-        <item>When sync was ended successfully</item>
-        <item>When sync was ended with error</item>
+        <item>Do not vibrate</item>
+        <item>Always vibrate when sync was ended</item>
+        <item>Vibrate when sync was ended successfully</item>
+        <item>Vibrate when sync was ended with error</item>
     </string-array>
     <string-array name="settings_vibrate_when_sync_ended_list_values">
         <item>0</item>

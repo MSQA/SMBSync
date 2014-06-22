@@ -12,7 +12,6 @@
    	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
    	<uses-permission android:name="android.permission.WAKE_LOCK"/>
    	<uses-permission android:name="android.permission.VIBRATE"/>
-   	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
    	
     <application
         android:icon="@drawable/smbsync"
@@ -42,24 +41,6 @@
         </activity>
         <service android:name=".SMBSyncService"/>
         <!-- android:noHistory="true"  -->
-        <service 
-		    android:name=".SMBSyncScheduler" 
-		    android:process=":Sched" android:exported="false">
-			<intent-filter>
-				<action android:name="com.sentaroh.android.SMBSync.ACTION_SERVICE_HEARTBEAT" />
-			</intent-filter>
-		</service>
-        <receiver 
-    	    android:name=".SMBSyncReceiver"
-    	    android:icon="@drawable/ic_64_smbsync" 
-    	    android:label="SMBSyncReceiver"
-    	    android:process=":Sched" 
-    	    android:exported="true">
-			<intent-filter>
-				<action android:name="android.intent.action.BOOT_COMPLETED" />
-				<action android:name="com.sentaroh.android.SMBSync.ACTION_TIMER_EXPIRED" />
-			</intent-filter>
-		</receiver>
         
     </application>
 

@@ -61,9 +61,9 @@
 	<string name="settings_background_termination_notification_summary_no">メッセージを表示しない</string>
 	<string name="settings_background_termination_notification_dialog_title">バックグラウンドでのアプリケーション終了通知の選択</string>
 	<string-array name="settings_background_termination_notification_list_entries">
-        <item>常に表示</item>
-        <item>エラー時のみ</item>
-        <item>表示しない</item>
+        <item>常にメッセージを表示</item>
+        <item>エラー時のみメッセージを表示</item>
+        <item>メッセージを表示しない</item>
     </string-array>
     
 	<string name="settings_playback_ringtone_when_sync_ended_title">通知音の再生</string>
@@ -71,12 +71,12 @@
 	<string name="settings_playback_ringtone_when_sync_ended_summary_error">同期がエラーで終了したときに再生する</string>
 	<string name="settings_playback_ringtone_when_sync_ended_summary_success">同期が正常終了したときに再生する</string>
 	<string name="settings_playback_ringtone_when_sync_ended_summary_no">再生しない</string>
-	<string name="settings_playback_ringtone_when_sync_ended_dialog_title">再生する条件の選択</string>
+	<string name="settings_playback_ringtone_when_sync_ended_dialog_title">同期終了時に再生する条件の選択</string>
 	<string-array name="settings_playback_ringtone_when_sync_ended_list_entries">
         <item>再生しない</item>
-        <item>常に再生する</item>
-        <item>正常終了したときに再生する</item>
-        <item>エラーで終了したときに再生する</item>
+        <item>同期が終了したとき常に再生する</item>
+        <item>同期が正常終了したときに再生する</item>
+        <item>同期がエラーで終了したときに再生する</item>
     </string-array>
 
 	<string name="settings_vibrate_when_sync_ended_title">バイブレーション</string>
@@ -84,12 +84,12 @@
 	<string name="settings_vibrate_when_sync_ended_summary_success">同期が正常終了したときに振動する</string>
 	<string name="settings_vibrate_when_sync_ended_summary_error">同期がエラーで終了したときに振動する</string>
 	<string name="settings_vibrate_when_sync_ended_summary_no">振動させない</string>
-	<string name="settings_vibrate_when_sync_ended_dialog_title">振動させる条件の選択</string>
+	<string name="settings_vibrate_when_sync_ended_dialog_title">同期終了時に振動させる条件の選択</string>
 	<string-array name="settings_vibrate_when_sync_ended_list_entries">
-        <item>振動しない</item>
-        <item>常に振動する</item>
-        <item>正常終了したときに振動する</item>
-        <item>エラーで終了したときに振動する</item>
+        <item>振動させない</item>
+        <item>同期が終了したとき常に振動させる</item>
+        <item>同期が正常終了したときに振動する</item>
+        <item>同期がエラーで終了したときに振動する</item>
     </string-array>
 		
 	<string name="settings_log_title">ログ</string>
