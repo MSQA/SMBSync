@@ -37,14 +37,14 @@
     <string name="settings_wifi_lock_title">Wi-Fiロック</string>
     <string name="settings_wifi_lock_summary_ena">同期中はWi-Fiロックを取得する</string>
     
-    <string name="settings_remote_file_copy_by_rename_title">リモートコピー先ファイルの保存</string>
-    <string name="settings_remote_file_copy_by_rename_summary_ena">リモートへのファイルコピー時にコピー完了までコピー先のファイルを保存する(コピーが中止された場合はファイルの内容は変更されません)</string>
+    <string name="settings_remote_file_copy_by_rename_title">リモートへのファイルコピー</string>
+    <string name="settings_remote_file_copy_by_rename_summary_ena">コピーが正常終了するまでコピー先ファイルの内容を変えない</string>
 
-    <string name="settings_local_file_copy_by_rename_title">ローカルコピー先ファイルの保存</string>
-    <string name="settings_local_file_copy_by_rename_summary_ena">ローカルへのファイルコピー時にコピー完了までコピー先のファイルを保存する(コピーが中止された場合はファイルの内容は変更されません)</string>
+    <string name="settings_local_file_copy_by_rename_title">ローカルへのファイルコピー</string>
+    <string name="settings_local_file_copy_by_rename_summary_ena">コピーが正常終了するまでコピー先ファイルの内容を変えない</string>
 		
 	<string name="settings_ui_alternate_ui_title">代替UI</string>
-    <string name="settings_ui_alternate_ui_summary_ena">他の項目が選択されていないときにクリックしたら編集、他の項目が選択されているときは項目を選択。</string>
+    <string name="settings_ui_alternate_ui_summary_ena">他の項目が選択されていないときにクリックしたら編集、他の項目が選択されているときはクリックした項目を選択。</string>
 			
     <string name="settings_debug_msg_diplay_title">デバッグメッセージの表示</string>
 	<string name="settings_debug_msg_diplay_summary_ena">メッセージタブに表示する</string>
@@ -55,19 +55,19 @@
     <string name="settings_error_option_title">エラー時のオプション</string>
 	<string name="settings_error_option_summary_ena">エラーを無視して次の同期を実行</string>
 
-	<string name="settings_background_termination_notification_title">バックグラウンド終了の通知</string>
-	<string name="settings_background_termination_notification_summary_always">常に表示</string>
-	<string name="settings_background_termination_notification_summary_error">エラー時のみ表示</string>
-	<string name="settings_background_termination_notification_summary_no">表示しない</string>
-	<string name="settings_background_termination_notification_dialog_title">バックグラウンドでのアプリケーション終了後の通知</string>
+	<string name="settings_background_termination_notification_title">バックグラウンドでのアプリ終了通知</string>
+	<string name="settings_background_termination_notification_summary_always">常にメッセージを表示</string>
+	<string name="settings_background_termination_notification_summary_error">エラー時のみメッセージを表示</string>
+	<string name="settings_background_termination_notification_summary_no">メッセージを表示しない</string>
+	<string name="settings_background_termination_notification_dialog_title">バックグラウンドでのアプリケーション終了通知の選択</string>
 	<string-array name="settings_background_termination_notification_list_entries">
         <item>常に表示</item>
         <item>エラー時のみ</item>
         <item>表示しない</item>
     </string-array>
     
-	<string name="settings_playback_ringtone_when_sync_ended_title">同期終了時の通知音の再生</string>
-	<string name="settings_playback_ringtone_when_sync_ended_summary_always">常に再生する</string>
+	<string name="settings_playback_ringtone_when_sync_ended_title">通知音の再生</string>
+	<string name="settings_playback_ringtone_when_sync_ended_summary_always">同期が終了したとき常に再生する</string>
 	<string name="settings_playback_ringtone_when_sync_ended_summary_error">同期がエラーで終了したときに再生する</string>
 	<string name="settings_playback_ringtone_when_sync_ended_summary_success">同期が正常終了したときに再生する</string>
 	<string name="settings_playback_ringtone_when_sync_ended_summary_no">再生しない</string>
@@ -79,8 +79,8 @@
         <item>エラーで終了したときに再生する</item>
     </string-array>
 
-	<string name="settings_vibrate_when_sync_ended_title">同期終了時のバイブレーション</string>
-	<string name="settings_vibrate_when_sync_ended_summary_always">常に振動させる</string>
+	<string name="settings_vibrate_when_sync_ended_title">バイブレーション</string>
+	<string name="settings_vibrate_when_sync_ended_summary_always">同期が終了したとき常に振動させる</string>
 	<string name="settings_vibrate_when_sync_ended_summary_success">同期が正常終了したときに振動する</string>
 	<string name="settings_vibrate_when_sync_ended_summary_error">同期がエラーで終了したときに振動する</string>
 	<string name="settings_vibrate_when_sync_ended_summary_no">振動させない</string>
@@ -95,7 +95,7 @@
 	<string name="settings_log_title">ログ</string>
 	<string name="settings_log_preference_screen_title">ログ</string>
 			
-	<string name="settings_log_option_title">ログ記録</string>
+	<string name="settings_log_option_title">ログファイル</string>
 	<string name="settings_log_option_summary_no">ログファイルは作成しない</string>
 	<string name="settings_log_option_summary_date_time">ログファイル名に起動日付(yyyy-mm-dd)を付けて追記</string>
 	<string name="settings_log_option_dialog_title">ログ記録のオプション</string>

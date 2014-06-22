@@ -5,10 +5,10 @@
     <string name="settings_sync_title">Synchronization</string>
 
 	<string name="settings_network_wifi_option_title">Wireless LAN Option</string>
-	<string name="settings_network_wifi_option_summary_adapter_off">Synchronization can be used when Wireless LAN is disabled.</string>
-	<string name="settings_network_wifi_option_summary_adapter_on">Synchronization can be used when Wireless LAN is enabled and access point was not connected.</string>
-	<string name="settings_network_wifi_option_summary_connected_any_ap">Synchronization can be used when Wireless LAN is enabled and access point was connected.</string>
-	<string name="settings_network_wifi_option_summary_connected_spec_ap">Synchronization can be used when Wireless LAN is enabled and specific access point was connected.</string>
+	<string name="settings_network_wifi_option_summary_adapter_off">Synchronization can be used when Wireless LAN is disabled</string>
+	<string name="settings_network_wifi_option_summary_adapter_on">Synchronization can be used when Wireless LAN is enabled and access point was not connected</string>
+	<string name="settings_network_wifi_option_summary_connected_any_ap">Synchronization can be used when Wireless LAN is enabled and access point was connected</string>
+	<string name="settings_network_wifi_option_summary_connected_spec_ap">Synchronization can be used when Wireless LAN is enabled and specific access point was connected</string>
 	<string name="settings_network_wifi_option_dialog_title">Select Wireless LAN Option</string>
     
 	<string name="settings_network_wifi_option">settings_network_wifi_option</string>
@@ -28,57 +28,56 @@
     </string-array>	    
 	
     <string name="settings_auto_start_title">Auto Sync start-up</string>
-    <string name="settings_auto_start_summary_ena">Sync task will not started immediately 
-	    after application startup.</string>
+    <string name="settings_auto_start_summary_ena">Sync task will not started immediately after application startup</string>
 	<string name="settings_auto_start">settings_auto_start</string>
 	
     <string name="settings_auto_term_title">Auto termination</string>
-	<string name="settings_auto_term_summary_ena">Application will be terminated after sync task end.</string>
+	<string name="settings_auto_term_summary_ena">Application will be terminated after sync task end</string>
 	<string name="settings_auto_term">settings_auto_term</string>
 
     <string name="settings_backgroound_execution_title">Background execution</string>
-	<string name="settings_backgroound_execution_summary_ena">Run in the background.(Show home screen after application started)</string>
+	<string name="settings_backgroound_execution_summary_ena">Run in the background(Show home screen after application started)</string>
 	<string name="settings_backgroound_execution">settings_backgroound_execution</string>
 
     <string name="settings_ui_title">User interface</string>
 
     <string name="settings_ui_keep_screen_on_title">Screen lock</string>
-    <string name="settings_ui_keep_screen_on_summary_ena">Do not lock the screen during synchronization.</string>
+    <string name="settings_ui_keep_screen_on_summary_ena">Do not lock the screen during synchronization</string>
 	<string name="settings_ui_keep_screen_on">settings_ui_keep_screen_on</string>	
     
     <string name="settings_wifi_lock_title">Wi-Fi lock</string>
-    <string name="settings_wifi_lock_summary_ena">Acquire Wi-Fi lock during synchronization.</string>
+    <string name="settings_wifi_lock_summary_ena">Acquire Wi-Fi lock during synchronization</string>
 	<string name="settings_wifi_lock">settings_wifi_lock</string>	
 
-    <string name="settings_remote_file_copy_by_rename_title">Keep the remote destination file</string>
-    <string name="settings_remote_file_copy_by_rename_summary_ena">Keep destination file until file copy was ended.(Contents of the file will not be changed if the copy is aborted)</string>
+    <string name="settings_remote_file_copy_by_rename_title">Copying files to remote</string>
+    <string name="settings_remote_file_copy_by_rename_summary_ena">Contents of the file will not be changed if the copy is aborted</string>
 	<string name="settings_remote_file_copy_by_rename">settings_remote_file_copy_by_rename</string>	
 
-    <string name="settings_local_file_copy_by_rename_title">Keep the local destination file</string>
-    <string name="settings_local_file_copy_by_rename_summary_ena">Keep destination file until file copy was ended.(Contents of the file will not be changed if the copy is aborted)</string>
+    <string name="settings_local_file_copy_by_rename_title">Copying files to local</string>
+    <string name="settings_local_file_copy_by_rename_summary_ena">Contents of the file will not be changed if the copy is aborted</string>
 	<string name="settings_local_file_copy_by_rename">settings_local_file_copy_by_rename</string>	
 		
 	<string name="settings_ui_alternate_ui_title">Alternate UI for tab</string>
-    <string name="settings_ui_alternate_ui_summary_ena">To edit the item if you click when the other items is not selected. To select the item if you click when the other items are selected.</string>
+    <string name="settings_ui_alternate_ui_summary_ena">To edit the item if you click when the other items is not selected</string>
 	<string name="settings_ui_alternate_ui">settings_ui_alternate_ui</string>	
 				
     <string name="settings_debug_msg_diplay_title">Show/hide debug message</string>
-	<string name="settings_debug_msg_diplay_summary_ena">Show debug message to message tab.</string>
+	<string name="settings_debug_msg_diplay_summary_ena">Show debug message to message tab</string>
 	<string name="settings_debug_msg_diplay">settings_debug_msg_diplay</string>
 
-	<string name="settings_suppress_warning_mixed_mp_title">Suppress mixed mount point name.</string>
-    <string name="settings_suppress_warning_mixed_mp_summary_ena">Suppress mixed mount point name.</string>
+	<string name="settings_suppress_warning_mixed_mp_title">Suppress mixed mount point name</string>
+    <string name="settings_suppress_warning_mixed_mp_summary_ena">Suppress mixed mount point name</string>
 	<string name="settings_suppress_warning_mixed_mp">settings_suppress_warning_mixed_mp</string>	
 			
     <string name="settings_error_option_title">Error process option</string>
-	<string name="settings_error_option_summary_ena">Ignore error, processing continued.</string>
+	<string name="settings_error_option_summary_ena">Ignore error, processing continued</string>
 	<string name="settings_error_option">settings_error_option</string>
 
-	<string name="settings_background_termination_notification_title">Background termination notification.</string>
+	<string name="settings_background_termination_notification_title">Termination notice in background execution</string>
 	<string name="settings_background_termination_notification_summary_always">Always shows notification message</string>
-	<string name="settings_background_termination_notification_summary_error">Show notification message when error detected.</string>
+	<string name="settings_background_termination_notification_summary_error">Show notification message when error detected</string>
 	<string name="settings_background_termination_notification_summary_no">Notification message not show</string>
-	<string name="settings_background_termination_notification_dialog_title">Completion notice of application in the background.</string>
+	<string name="settings_background_termination_notification_dialog_title">Select termination notice of application run in background</string>
 	<string name="settings_background_termination_notification">settings_background_termination_notification</string>
 	<string-array name="settings_background_termination_notification_list_entries">
         <item>Always show</item>
@@ -91,11 +90,11 @@
         <item>2</item>
     </string-array>	    
 
-	<string name="settings_playback_ringtone_when_sync_ended_title">Playback default notification</string>
-	<string name="settings_playback_ringtone_when_sync_ended_summary_always">To playback default notification when sync was ended.</string>
-	<string name="settings_playback_ringtone_when_sync_ended_summary_error">To playback default notification when sync was ended with error.</string>
-	<string name="settings_playback_ringtone_when_sync_ended_summary_suucess">To playback default notification when sync was ended without error.</string>
-	<string name="settings_playback_ringtone_when_sync_ended_summary_no">Do not playback default notification.</string>
+	<string name="settings_playback_ringtone_when_sync_ended_title">Playback notification</string>
+	<string name="settings_playback_ringtone_when_sync_ended_summary_always">To playback default notification when sync was ended</string>
+	<string name="settings_playback_ringtone_when_sync_ended_summary_error">To playback default notification when sync was ended with error</string>
+	<string name="settings_playback_ringtone_when_sync_ended_summary_suucess">To playback default notification when sync was ended without error</string>
+	<string name="settings_playback_ringtone_when_sync_ended_summary_no">Do not playback default notification</string>
 	<string name="settings_playback_ringtone_when_sync_ended_dialog_title">Select playback condition</string>
 	<string name="settings_playback_ringtone_when_sync_ended">settings_playback_ringtone_when_sync_ended</string>
 	<string-array name="settings_playback_ringtone_when_sync_ended_list_entries">
@@ -112,11 +111,11 @@
     </string-array>	    
 
 	<string name="settings_vibrate_when_sync_ended_title">Vibration</string>
-	<string name="settings_vibrate_when_sync_ended_summary_always">Always vibrate when sync was ended.</string>
-	<string name="settings_vibrate_when_sync_ended_summary_success">Vibrate when sync was ended successfully.</string>
-	<string name="settings_vibrate_when_sync_ended_summary_error">Vibrate when sync was ended with error.</string>
-	<string name="settings_vibrate_when_sync_ended_summary_no">Do not vibrate.</string>
-	<string name="settings_vibrate_when_sync_ended_dialog_title">Select vibratio condition.</string>
+	<string name="settings_vibrate_when_sync_ended_summary_always">Always vibrate when sync was ended</string>
+	<string name="settings_vibrate_when_sync_ended_summary_success">Vibrate when sync was ended successfully</string>
+	<string name="settings_vibrate_when_sync_ended_summary_error">Vibrate when sync was ended with error</string>
+	<string name="settings_vibrate_when_sync_ended_summary_no">Do not vibrate</string>
+	<string name="settings_vibrate_when_sync_ended_dialog_title">Select vibratio condition</string>
 	<string name="settings_vibrate_when_sync_ended">settings_vibrate_when_sync_ended</string>
 	<string-array name="settings_vibrate_when_sync_ended_list_entries">
         <item>None</item>
@@ -134,9 +133,9 @@
 	<string name="settings_log_title">Log</string>	    
 	<string name="settings_log_preference_screen_title">Log</string>
 	
-	<string name="settings_log_option_title">Message logging</string>
-	<string name="settings_log_option_summary_no">No log message file.</string>
-	<string name="settings_log_option_summary_date_time">Append with a starting date(yyyy-mm-dd) of application to the log file name.</string>
+	<string name="settings_log_option_title">Log file</string>
+	<string name="settings_log_option_summary_no">No log message file</string>
+	<string name="settings_log_option_summary_date_time">Append with a starting date(yyyy-mm-dd) of application to the log file name</string>
 	<string name="settings_log_option_dialog_title">Message Logging option</string>
 	<string name="settings_log_option">settings_log_option</string>
 	<string-array name="settings_log_option_list_entries">
@@ -148,8 +147,8 @@
         <item>1</item>
     </string-array>	    
 
-	<string name="settings_log_generation_title">Generation of log files.</string>
-	<string name="settings_log_generation_summary">keep for %s Generation(s).</string>
+	<string name="settings_log_generation_title">Generation of log files</string>
+	<string name="settings_log_generation_summary">keep for %s Generation(s)</string>
 	<string name="settings_log_generation_dialog_title">Select Generation</string>
 	<string name="settings_log_generation">settings_log_generation</string>
 	<string-array name="settings_log_generation_list_entries">
@@ -232,7 +231,7 @@
     </string-array>
 	<!--  <string name="settings_media_store_title">MediaStore Library File handling</string> -->
 	<string name="settings_media_store_last_mod_time_title">Media store file last modified time</string>
-	<string name="settings_media_store_last_mod_time_summary">Handling of the last update time of the media store file.</string>
+	<string name="settings_media_store_last_mod_time_summary">Handling of the last update time of the media store file</string>
 	<string name="settings_media_store_last_mod_time_dialog_title">Select condition</string>
 	<string name="settings_media_store_last_mod_time">settings_media_store</string>
 	<string name="settings_media_store_last_mod_time_0">Checking last modified time</string>
@@ -268,8 +267,8 @@
     <string name="settings_other_title">Other</string>
     
     <string name="settings_exit_clean_title">Exit cleanly</string>
-    <string name="settings_exit_clean_summary_dis">Do not kill application process.</string>
-    <string name="settings_exit_clean_summary_ena">Kill application process after application cleanup.</string>
+    <string name="settings_exit_clean_summary_dis">Do not kill application process</string>
+    <string name="settings_exit_clean_summary_ena">Kill application process after application cleanup</string>
 	<string name="settings_exit_clean">settings_exit_clean</string>
     
     <string name="settings_smb_tuning">settings_smb_tuning</string>
@@ -361,8 +360,8 @@
     
     <string name="settings_misc_title">Miscellaneous</string>
     
-    <string name="settings_exported_profile_encryption_title">Profiles stored on external media.</string>
-    <string name="settings_exported_profile_encryption_summary_ena">Password protected.</string>
+    <string name="settings_exported_profile_encryption_title">Profiles stored on external media</string>
+    <string name="settings_exported_profile_encryption_summary_ena">Password protected</string>
 	<string name="settings_exported_profile_encryption">settings_exported_profile_encryption</string>
     
 </resources>
