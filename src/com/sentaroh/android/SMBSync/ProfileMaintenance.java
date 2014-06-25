@@ -4546,7 +4546,7 @@ public class ProfileMaintenance {
 			public void run() {//non UI thread
 				mScanCompleteCount=0;
 				mScanAddrCount=end_addr-begin_addr+1;
-				int scan_thread=30;
+				int scan_thread=60;
 				String scan_port="";
 				if (cb_use_port_number.isChecked()) scan_port=et_port_number.getText().toString();
 				for (int i=begin_addr; i<=end_addr;i+=scan_thread) {
@@ -4622,7 +4622,7 @@ public class ProfileMaintenance {
 		Thread th=new Thread(new Runnable() {
 			@Override
 			public void run() {
-				if (isIpAddrReachable(addr,scan_port)) {
+				if (isIpAddrSmbHost(addr,scan_port)) {
 					synchronized(mLockScanCompleteCount) {
 						mScanCompleteCount++;
 						String srv_name=getSmbHostName(addr);
@@ -4663,22 +4663,25 @@ public class ProfileMaintenance {
        	});
        	th.start();
 	};
-
-	private boolean isIpAddrReachable(String address, String scan_port) {
-		boolean reachable=false;
-//		reachable=NetworkUtil.ping(address);
-		if (scan_port.equals("")) {
-			if (!NetworkUtil.isIpAddressAndPortConnected(address,139,3000)) {
-				reachable=NetworkUtil.isIpAddressAndPortConnected(address,445,3000);
-			} else reachable=true;
-		} else {
-			reachable=NetworkUtil.isIpAddressAndPortConnected(address,
-					Integer.parseInt(scan_port),3000);
+	
+	private boolean isIpAddrSmbHost(String address, String scan_port) {
+		boolean smbhost=false;
+		boolean reachable=NetworkUtil.ping(address);
+		if (reachable) {
+			if (scan_port.equals("")) {
+				if (!NetworkUtil.isIpAddressAndPortConnected(address,139,3000)) {
+					smbhost=NetworkUtil.isIpAddressAndPortConnected(address,445,3000);
+				} else smbhost=true;
+			} else {
+				smbhost=NetworkUtil.isIpAddressAndPortConnected(address,
+						Integer.parseInt(scan_port),3000);
+			}
 		}
-		util.addDebugLogMsg(2,"I","isIpAddrReachable Address="+address+
-				", port="+scan_port+", reachable="+reachable);
-		return reachable;
+		util.addDebugLogMsg(2,"I","isIpAddrSmbHost Address="+address+
+				", port="+scan_port+", reachable="+reachable+", smbhost="+smbhost);
+		return smbhost;
 	};
+
 
 //	@SuppressWarnings("unused")
 //	private boolean isNbtAddressActive(String address) {
