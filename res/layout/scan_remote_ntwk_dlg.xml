@@ -22,7 +22,6 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
-        android:text=""
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="#ff0000" />
 
@@ -45,11 +44,15 @@
                 android:layout_weight="1"
                 android:inputType="number"
                 android:maxLength="3"
-                android:text="255" />
+                android:text="255" >
+
+                <requestFocus />
+            </EditText>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="."
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -64,6 +67,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="."
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -78,6 +82,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="."
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -92,6 +97,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="-"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
@@ -103,31 +109,31 @@
                 android:inputType="number"
                 android:maxLength="3" />
         </LinearLayout>
+
         <LinearLayout
             android:id="@+id/scan_remote_ntwk_port_option"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp" >
-        
-                <CheckBox
-                    android:id="@+id/scan_remote_ntwk_use_port"
-                    style="@style/check_box_style"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="5dp"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="@string/msgs_remote_profile_dlg_use_port_number" />
-	            <EditText
-	                android:id="@+id/scan_remote_ntwk_port_number"
-	                android:layout_width="0dp"
-	                android:layout_height="wrap_content"
-	                android:layout_weight="1"
-	                android:inputType="number"
-	                android:maxLength="5" />
-                
-        </LinearLayout>                
-        
+
+            <CheckBox
+                android:id="@+id/scan_remote_ntwk_use_port"
+                style="@style/check_box_style"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:text="@string/msgs_remote_profile_dlg_use_port_number"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <EditText
+                android:id="@+id/scan_remote_ntwk_port_number"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:inputType="number"
+                android:maxLength="5" />
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -173,7 +179,7 @@
         android:layout_marginTop="10dp"
         android:text="@string/msgs_scan_ip_address_scan_result_title"
         android:textAppearance="?android:attr/textAppearanceMedium" />
-    
+
     <ListView
         android:id="@+id/scan_remote_ntwk_scan_result_list"
         android:layout_width="match_parent"
@@ -182,7 +188,7 @@
         android:layout_marginRight="5dp"
         android:layout_weight="1" >
     </ListView>
-
+    
     <include layout="@layout/scan_remote_ntwk_dlg_ok_cancel" />
 
 </LinearLayout>
