@@ -40,7 +40,7 @@
     <string name="msgs_sync_profile_dlg_save_and_sync">Save and Sync</string>
     <string name="msgs_sync_profile_dlg_master">Master Profile</string>
     <string name="msgs_sync_profile_dlg_target">Target Profile</string>
-    <string name="msgs_sync_profile_dlg_syncopt">Sync Option</string>
+    <string name="msgs_sync_profile_dlg_syncopt">Sync type</string>
     <string name="msgs_sync_profile_dlg_syncopt_prompt">Select sync option</string>
     <string name="msgs_sync_profile_dlg_mirror">Mirror</string>
     <string name="msgs_sync_profile_dlg_copy">Copy</string>
