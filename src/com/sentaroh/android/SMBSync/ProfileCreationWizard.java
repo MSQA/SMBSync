@@ -38,6 +38,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.sentaroh.android.Utilities.LocalMountPoint;
+import com.sentaroh.android.Utilities.NetworkUtil;
 import com.sentaroh.android.Utilities.NotifyEvent;
 import com.sentaroh.android.Utilities.NotifyEvent.NotifyEventListener;
 import com.sentaroh.android.Utilities.Dialog.CommonDialog;
@@ -78,7 +79,6 @@ public class ProfileCreationWizard {
 		public String remote_share_name="";
 		public String remote_dir_name="";
 		public String remote_port="";
-		public boolean remote_use_hostname=true;
 		public boolean remote_use_user_pass=true;
 	};
 	
@@ -699,10 +699,8 @@ public class ProfileCreationWizard {
 
 		dlg_msg.setText(mContext.getString(R.string.msgs_sync_wizard_specify_server));
 		
-		final CheckBox cb_use_hostname=(CheckBox)dialog.findViewById((R.id.sync_wizard_dlg_remote_use_computer_name));
 		final Button btn_scan_network=(Button)dialog.findViewById((R.id.sync_wizard_dlg_remote_get_addr_btn));
-		final EditText et_remote_addr=(EditText)dialog.findViewById((R.id.sync_wizard_dlg_remote_addr));
-		final EditText et_remote_hostname=(EditText)dialog.findViewById((R.id.sync_wizard_dlg_remote_hostname));
+		final EditText et_remote_hostname=(EditText)dialog.findViewById((R.id.sync_wizard_dlg_remote_server));
 		final CheckBox cb_use_user_pass=(CheckBox)dialog.findViewById((R.id.sync_wizard_dlg_remote_use_user_pass));
 		final EditText et_remote_user=(EditText)dialog.findViewById((R.id.sync_wizard_dlg_remote_user));
 		final EditText et_remote_pass=(EditText)dialog.findViewById((R.id.sync_wizard_dlg_remote_password));
@@ -718,8 +716,9 @@ public class ProfileCreationWizard {
 		
 		final Handler hndl=new Handler();
 
-		et_remote_addr.setText(mWizData.prof_node[node_pos].remote_host_ipaddr);
-		et_remote_hostname.setText(mWizData.prof_node[node_pos].remote_host_name);
+		if (mWizData.prof_node[node_pos].remote_host_ipaddr.equals("")) et_remote_hostname.setText(mWizData.prof_node[node_pos].remote_host_name);
+		else et_remote_hostname.setText(mWizData.prof_node[node_pos].remote_host_ipaddr);
+		
 		et_remote_user.setText(mWizData.prof_node[node_pos].remote_user_name);
 		et_remote_pass.setText(mWizData.prof_node[node_pos].remote_user_pass);
 		et_remote_share.setText(mWizData.prof_node[node_pos].remote_share_name);
@@ -734,35 +733,9 @@ public class ProfileCreationWizard {
 		et_remote_dir.setEnabled(false);
 		btn_next.setEnabled(false);
 
-		cb_use_hostname.setChecked(mWizData.prof_node[node_pos].remote_use_hostname);
-		et_remote_addr.setVisibility(EditText.GONE);
 		et_remote_hostname.setVisibility(EditText.VISIBLE);
-		cb_use_hostname.setOnCheckedChangeListener(new OnCheckedChangeListener(){
-			@Override
-			public void onCheckedChanged(CompoundButton arg0, boolean isChecked) {
-				if (isChecked) {
-					et_remote_addr.setVisibility(EditText.GONE);
-					et_remote_hostname.setVisibility(EditText.VISIBLE);
-				} else {
-					et_remote_addr.setVisibility(EditText.VISIBLE);
-					et_remote_hostname.setVisibility(EditText.GONE);
-				}
-				setRemoteProfileViewVisibility(dialog);
-			}
-		});
 		
 		et_remote_hostname.addTextChangedListener(new TextWatcher(){
-			@Override
-			public void afterTextChanged(Editable arg0) {
-				setRemoteProfileViewVisibility(dialog);
-			}
-
-			@Override
-			public void beforeTextChanged(CharSequence arg0, int arg1,int arg2, int arg3) {}
-			@Override
-			public void onTextChanged(CharSequence s, int start, int before,int count) {}
-		});
-		et_remote_addr.addTextChangedListener(new TextWatcher(){
 			@Override
 			public void afterTextChanged(Editable arg0) {
 				setRemoteProfileViewVisibility(dialog);
@@ -877,12 +850,12 @@ public class ProfileCreationWizard {
 						});
 					}
 				});
-				if (cb_use_hostname.isChecked()) {
+				if (NetworkUtil.isValidIpAddress(et_remote_hostname.getText().toString()))  {
+					profMaint.logonToRemoteDlg("",
+							et_remote_hostname.getText().toString(),"",user,pass,ntfy);
+				}  else {
 					profMaint.logonToRemoteDlg(et_remote_hostname.getText().toString(),
 							"","",user,pass,ntfy);
-				} else {
-					profMaint.logonToRemoteDlg("",
-							et_remote_addr.getText().toString(),"",user,pass,ntfy);
 				}
 			}
 		});
@@ -897,13 +870,7 @@ public class ProfileCreationWizard {
 				ntfy.setListener(new NotifyEventListener() {
 					@Override
 					public void positiveResponse(Context arg0, Object[] arg1) {
-						if (((String)arg1[0]).equals("A")) {
-							cb_use_hostname.setChecked(false);
-							et_remote_addr.setText((String)arg1[1]);
-						} else {
-							cb_use_hostname.setChecked(true);
-							et_remote_hostname.setText((String)arg1[1]);
-						}
+						et_remote_hostname.setText((String)arg1[1]);
 						setRemoteProfileViewVisibility(dialog);
 					}
 					@Override
@@ -922,8 +889,7 @@ public class ProfileCreationWizard {
 			public void onClick(View v) {
 				profMaint.setSmbUserPass(et_remote_user.getText().toString(),et_remote_pass.getText().toString());
 				String t_url="";
-				if (cb_use_hostname.isChecked()) t_url=et_remote_hostname.getText().toString();
-				else t_url=et_remote_addr.getText().toString();
+				t_url=et_remote_hostname.getText().toString();
 				String remurl="smb://"+t_url+"/";
 				NotifyEvent ntfy=new NotifyEvent(mContext);
 				//Listen setRemoteShare response 
@@ -951,8 +917,7 @@ public class ProfileCreationWizard {
 			public void onClick(View v) {
 				profMaint.setSmbUserPass(et_remote_user.getText().toString(),et_remote_pass.getText().toString());
 				String t_url="";
-				if (cb_use_hostname.isChecked()) t_url=et_remote_hostname.getText().toString();
-				else t_url=et_remote_addr.getText().toString();
+				t_url=et_remote_hostname.getText().toString();
 				String remurl="smb://"+t_url+"/"+
 						et_remote_share.getText().toString()+"/";
 				NotifyEvent ntfy=new NotifyEvent(mContext);
@@ -1025,10 +990,12 @@ public class ProfileCreationWizard {
 				else mWizData.target_name=et_remote_prof.getText().toString();
 
 				mWizData.prof_node[node_pos].remote_dir_name=et_remote_dir.getText().toString();
-				mWizData.prof_node[node_pos].remote_host_ipaddr=et_remote_addr.getText().toString();
-				mWizData.prof_node[node_pos].remote_host_name=et_remote_hostname.getText().toString();
+				if (NetworkUtil.isValidIpAddress(et_remote_hostname.getText().toString()))  {
+					mWizData.prof_node[node_pos].remote_host_ipaddr=et_remote_hostname.getText().toString();
+				}  else {
+					mWizData.prof_node[node_pos].remote_host_name=et_remote_hostname.getText().toString();
+				}
 				mWizData.prof_node[node_pos].remote_share_name=et_remote_share.getText().toString();
-				mWizData.prof_node[node_pos].remote_use_hostname=cb_use_hostname.isChecked();
 				mWizData.prof_node[node_pos].remote_use_user_pass=cb_use_user_pass.isChecked();
 				mWizData.prof_node[node_pos].remote_user_name=et_remote_user.getText().toString();
 				mWizData.prof_node[node_pos].remote_user_pass=et_remote_pass.getText().toString();
@@ -1046,10 +1013,8 @@ public class ProfileCreationWizard {
 	
 	private void setRemoteProfileViewVisibility(Dialog dialog) {
 		final TextView dlg_msg=(TextView) dialog.findViewById(R.id.sync_wizard_dlg_msg);
-		final CheckBox cb_use_hostname=(CheckBox)dialog.findViewById((R.id.sync_wizard_dlg_remote_use_computer_name));
 //		final Button btn_scan_network=(Button)dialog.findViewById((R.id.sync_wizard_dlg_remote_get_addr_btn));
-		final EditText et_remote_addr=(EditText)dialog.findViewById((R.id.sync_wizard_dlg_remote_addr));
-		final EditText et_remote_hostname=(EditText)dialog.findViewById((R.id.sync_wizard_dlg_remote_hostname));
+		final EditText et_remote_hostname=(EditText)dialog.findViewById((R.id.sync_wizard_dlg_remote_server));
 		final CheckBox cb_use_user_pass=(CheckBox)dialog.findViewById((R.id.sync_wizard_dlg_remote_use_user_pass));
 		final EditText et_remote_user=(EditText)dialog.findViewById((R.id.sync_wizard_dlg_remote_user));
 		final EditText et_remote_pass=(EditText)dialog.findViewById((R.id.sync_wizard_dlg_remote_password));
@@ -1062,30 +1027,30 @@ public class ProfileCreationWizard {
 		btnLogon.setEnabled(false);
 		et_remote_share.setEnabled(false);
 		
-		boolean nw=false;
-		if (cb_use_hostname.isChecked()) {
-			if (et_remote_hostname.getText().length()>0) nw=true;
-		} else {
-			if (et_remote_addr.getText().length()>0) {
-				String[] addr=et_remote_addr.getText().toString().split("\\.");
-				if (addr.length==4) {
-					boolean error=false;
-					for (int i=0;i<4;i++) {
-						try {
-							int num=Integer.parseInt(addr[i]);
-							if (num<0 || num>255) {
-								error=true;
-								break;
-							}
-						} catch(NumberFormatException e) {
-							error=true;
-							break;
-						}
-					}
-					if (!error) nw=true;
-				}
-			}
-		}
+//		boolean nw=false;
+//		if (cb_use_hostname.isChecked()) {
+//			if (et_remote_hostname.getText().length()>0) nw=true;
+//		} else {
+//			if (et_remote_addr.getText().length()>0) {
+//				String[] addr=et_remote_addr.getText().toString().split("\\.");
+//				if (addr.length==4) {
+//					boolean error=false;
+//					for (int i=0;i<4;i++) {
+//						try {
+//							int num=Integer.parseInt(addr[i]);
+//							if (num<0 || num>255) {
+//								error=true;
+//								break;
+//							}
+//						} catch(NumberFormatException e) {
+//							error=true;
+//							break;
+//						}
+//					}
+//					if (!error) nw=true;
+//				}
+//			}
+//		}
 //		cb_use_user_pass.setEnabled(false);
 //		et_remote_user.setEnabled(false);
 //		et_remote_pass.setEnabled(false);
@@ -1095,7 +1060,7 @@ public class ProfileCreationWizard {
 //		et_remote_dir.setEnabled(false);
 //		btn_next.setEnabled(false);
 		
-		if (nw) {
+		if (et_remote_hostname.getText().length()>0) {
 			cb_use_user_pass.setEnabled(true);
 			if (cb_use_user_pass.isChecked()) {
 				et_remote_user.setVisibility(CheckBox.VISIBLE);
@@ -1471,8 +1436,9 @@ public class ProfileCreationWizard {
 		String result="";
 		
 		String server_id="";
-		if (prof_node.remote_use_hostname) server_id=prof_node.remote_host_name;
+		if (!prof_node.remote_host_name.equals("")) server_id=prof_node.remote_host_name;
 		else server_id=prof_node.remote_host_ipaddr;
+		
 		String user_id=prof_node.remote_user_name;
 		String share=prof_node.remote_share_name;
 		String dir=prof_node.remote_dir_name;

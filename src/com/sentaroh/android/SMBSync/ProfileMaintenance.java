@@ -1154,32 +1154,20 @@ public class ProfileMaintenance {
 		dlg_msg.setText(dialog_msg);
 
 		final CheckBox tg = (CheckBox) dialog.findViewById(R.id.remote_profile_active);
-		final EditText editaddr = (EditText) dialog.findViewById(R.id.remote_profile_addr);
 		final EditText edituser = (EditText) dialog.findViewById(R.id.remote_profile_user);
 		final EditText editpass = (EditText) dialog.findViewById(R.id.remote_profile_pass);
 		final EditText editshare = (EditText) dialog.findViewById(R.id.remote_profile_share);
 		final EditText editdir = (EditText) dialog.findViewById(R.id.remote_profile_dir);
 		final EditText editname = (EditText) dialog.findViewById(R.id.remote_profile_name);
 
-		final EditText edithost = (EditText) dialog.findViewById(R.id.remote_profile_hostname);
-		final CheckBox cb_use_hostname = (CheckBox) dialog.findViewById(R.id.remote_profile_use_computer_name);
+		final EditText edithost = (EditText) dialog.findViewById(R.id.remote_profile_remote_server);
 		final CheckBox cb_use_user_pass = (CheckBox) dialog.findViewById(R.id.remote_profile_use_user_pass);
 		
 		final Button btnAddr = (Button) dialog.findViewById(R.id.remote_profile_search_remote_host);
 		final Button btnListShare = (Button) dialog.findViewById(R.id.remote_profile_list_share);
 		final Button btnListDir = (Button) dialog.findViewById(R.id.remote_profile_list_directory);
 
-		if (prof_host.equals("")) {
-			cb_use_hostname.setChecked(false);
-			editaddr.setVisibility(EditText.VISIBLE);
-			edithost.setVisibility(EditText.GONE);
-		} else {
-			cb_use_hostname.setChecked(true);
-			editaddr.setVisibility(EditText.GONE);
-			edithost.setVisibility(EditText.VISIBLE);
-		}
-		editaddr.setText(prof_addr);
-		edithost.setText(prof_host);
+		edithost.setVisibility(EditText.VISIBLE);
 		if (prof_user.equals("") && prof_pass.equals("")) {
 			cb_use_user_pass.setChecked(false);
 			edituser.setEnabled(false);
@@ -1203,9 +1191,9 @@ public class ProfileMaintenance {
 		CommonDialog.setDlgBoxSizeCompact(dialog);
 		
 		editname.setText(prof_name);
-		editaddr.setText(prof_addr);
-		edithost.setText(prof_host);
 		edituser.setText(prof_user);
+		if (prof_addr.equals("")) edithost.setText(prof_addr); 
+		else edithost.setText(prof_host);
 		editpass.setText(prof_pass);
 		editshare.setText(prof_share);
 		editdir.setText(prof_dir);
@@ -1245,15 +1233,13 @@ public class ProfileMaintenance {
 				}
 				String port="";
 				if (cb_use_port_number.isChecked()) port=editport.getText().toString();
-				if (cb_use_hostname.isChecked()) {
-					logonToRemoteDlg(edithost.getText().toString(),
-							"", port, user,pass,null);
-				} else {
-					String t_addr=editaddr.getText().toString();
+				if (NetworkUtil.isValidIpAddress(edithost.getText().toString())) {
+					String t_addr=edithost.getText().toString();
 					String s_addr=t_addr;
 					if (t_addr.indexOf(":")>=0) s_addr=t_addr.substring(0,t_addr.indexOf(":")) ;
-					logonToRemoteDlg("",s_addr,
-							port, user,pass,null);
+					logonToRemoteDlg("",s_addr, port, user,pass,null);
+				} else {
+					logonToRemoteDlg(edithost.getText().toString(), "", port, user,pass,null);
 				}
 			}
 		});
@@ -1314,9 +1300,9 @@ public class ProfileMaintenance {
 				String prof_name, prof_user, prof_pass, prof_share, prof_dir, prof_act;
 				String prof_addr="", prof_host="";
 				
-				prof_addr = editaddr.getText().toString();
-
-				prof_host = edithost.getText().toString();
+				if (NetworkUtil.isValidIpAddress(edithost.getText().toString())) prof_addr = edithost.getText().toString();
+				else prof_host = edithost.getText().toString();
+				
 				prof_user = edituser.getText().toString();
 				prof_pass = editpass.getText().toString();
 				prof_share = editshare.getText().toString();
@@ -1330,36 +1316,22 @@ public class ProfileMaintenance {
 				
 				if (tg.isChecked()) prof_act = SMBSYNC_PROF_ACTIVE;
 					else prof_act = SMBSYNC_PROF_INACTIVE;
-//				String e_msg=auditRemoteProfileField(dialog);
-//				if (e_msg.length()!=0) {
-//					((TextView) dialog.findViewById(R.id.remote_profile_dlg_msg))
-//						.setText(e_msg);
-//					return;
-//				} else {
-					if (!isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_REMOTE, prof_name)) {
-						dialog.dismiss();
-						if (cb_use_hostname.isChecked()) prof_addr="";
-						else prof_host="";
-						String remote_port="";
-						if (cb_use_port_number.isChecked()) remote_port=editport.getText().toString();
-//						int pos=glblParms.profileListView.getFirstVisiblePosition();
-//						int posTop=glblParms.profileListView.getChildAt(0).getTop();
-						if (mGp.profileAdapter.getItem(0).getType().equals(""))
-							mGp.profileAdapter.remove(0);
-						updateRemoteProfileAdapter(true, prof_name, prof_act,prof_dir,
-								prof_user,prof_pass,prof_share,prof_addr,prof_host,
-								remote_port, false,0);
-						mGp.profileAdapter.sort();
-						mGp.profileAdapter.notifyDataSetChanged();
-						saveProfileToFile(false,"","",mGp.profileAdapter,false);
-//						AdapterProfileList tfl= createProfileList(false,"");
-//						replaceglblParms.profileAdapterContent(tfl);
-//						glblParms.profileListView.setSelectionFromTop(pos,posTop);
-					} else {
-						((TextView) dialog.findViewById(R.id.remote_profile_dlg_msg))
-						.setText(msgs_duplicate_profile);
-					}
-//				}
+				if (!isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_REMOTE, prof_name)) {
+					dialog.dismiss();
+					String remote_port="";
+					if (cb_use_port_number.isChecked()) remote_port=editport.getText().toString();
+					if (mGp.profileAdapter.getItem(0).getType().equals(""))
+						mGp.profileAdapter.remove(0);
+					updateRemoteProfileAdapter(true, prof_name, prof_act,prof_dir,
+							prof_user,prof_pass,prof_share,prof_addr,prof_host,
+							remote_port, false,0);
+					mGp.profileAdapter.sort();
+					mGp.profileAdapter.notifyDataSetChanged();
+					saveProfileToFile(false,"","",mGp.profileAdapter,false);
+				} else {
+					((TextView) dialog.findViewById(R.id.remote_profile_dlg_msg))
+					.setText(msgs_duplicate_profile);
+				}
 			}
 		});
 //		dialog.setOnKeyListener(new DialogOnKeyListener(context));
@@ -1557,15 +1529,13 @@ public class ProfileMaintenance {
 	private void setRemoteProfileCommonListener(final Dialog dialog) {
 		final TextView dlg_msg=(TextView) dialog.findViewById(R.id.remote_profile_dlg_msg);
 
-		final EditText editaddr = (EditText) dialog.findViewById(R.id.remote_profile_addr);
-		final EditText edithost = (EditText) dialog.findViewById(R.id.remote_profile_hostname);
+		final EditText edithost = (EditText) dialog.findViewById(R.id.remote_profile_remote_server);
 
 		final EditText edituser = (EditText) dialog.findViewById(R.id.remote_profile_user);
 		final EditText editpass = (EditText) dialog.findViewById(R.id.remote_profile_pass);
 		final EditText editshare = (EditText) dialog.findViewById(R.id.remote_profile_share);
 		final EditText editdir = (EditText) dialog.findViewById(R.id.remote_profile_dir);
 
-		final CheckBox cb_use_hostname = (CheckBox) dialog.findViewById(R.id.remote_profile_use_computer_name);
 		final CheckBox cb_use_user_pass = (CheckBox) dialog.findViewById(R.id.remote_profile_use_user_pass);
 
 		final CheckBox cb_use_port_number = (CheckBox) dialog.findViewById(R.id.remote_profile_use_port_number);
@@ -1581,20 +1551,6 @@ public class ProfileMaintenance {
 			ll_port.setVisibility(LinearLayout.GONE);
 		}
 		
-		cb_use_hostname.setOnCheckedChangeListener(new OnCheckedChangeListener(){
-			@Override
-			public void onCheckedChanged(CompoundButton arg0, boolean isChecked) {
-				if (isChecked) {
-					editaddr.setVisibility(EditText.GONE);
-					edithost.setVisibility(EditText.VISIBLE);
-				} else {
-					editaddr.setVisibility(EditText.VISIBLE);
-					edithost.setVisibility(EditText.GONE);
-				}
-				setRemoteProfileOkBtnEnabled(dialog);
-			}
-		});
-
 		cb_use_user_pass.setOnCheckedChangeListener(new OnCheckedChangeListener(){
 			@Override
 			public void onCheckedChanged(CompoundButton arg0, boolean isChecked) {
@@ -1606,32 +1562,6 @@ public class ProfileMaintenance {
 					editpass.setEnabled(false);
 				}
 				setRemoteProfileOkBtnEnabled(dialog);
-			}
-		});
-		editaddr.addTextChangedListener(new TextWatcher(){
-			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-			@Override
-			public void onTextChanged(CharSequence s, int start, int before, int count) {}
-			@Override
-			public void afterTextChanged(Editable s) {
-				if (hasInvalidChar(s.toString(),new String[]{"\t"})) {
-					String new_val=removeInvalidChar(s.toString());
-					dlg_msg.setText(String.format(msgs_audit_msgs_address1,detectedInvalidCharMsg));
-					editaddr.setText(new_val);
-					editaddr.requestFocus();
-				} else if (s.length()==0) {
-					if (!cb_use_hostname.isChecked() && editaddr.getText().length()==0) {
-						dlg_msg.setText(msgs_audit_msgs_address2);
-						editaddr.requestFocus();
-					} else {
-						if (cb_use_hostname.isChecked() && edithost.getText().length()==0) {
-							dlg_msg.setText(msgs_audit_msgs_address2);
-							edithost.requestFocus();
-						}
-					}
-				}
-				setRemoteProfileOkBtnEnabled(dialog); 
 			}
 		});
 		edithost.addTextChangedListener(new TextWatcher(){
@@ -1647,15 +1577,8 @@ public class ProfileMaintenance {
 					edithost.setText(new_val);
 					edithost.requestFocus();
 				} else if (s.length()==0) {
-					if (!cb_use_hostname.isChecked() && editaddr.getText().length()==0) {
-						dlg_msg.setText(msgs_audit_msgs_address2);
-						editaddr.requestFocus();
-					} else {
-						if (cb_use_hostname.isChecked() && edithost.getText().length()==0) {
-							dlg_msg.setText(msgs_audit_msgs_address2);
-							edithost.requestFocus();
-						}
-					}
+					dlg_msg.setText(msgs_audit_msgs_address2);
+					edithost.requestFocus();
 				}
 				setRemoteProfileOkBtnEnabled(dialog);
 			}
@@ -1670,8 +1593,8 @@ public class ProfileMaintenance {
 				if (hasInvalidChar(s.toString(),new String[]{"\t"})) {
 					String new_val=removeInvalidChar(s.toString());
 					dlg_msg.setText(String.format(msgs_audit_msgs_username1,detectedInvalidCharMsg));
-					editaddr.setText(new_val);
-					editaddr.requestFocus();
+					edituser.setText(new_val);
+					edituser.requestFocus();
 				} else if (s.length()==0) {
 					if (edituser.getText().length()==0 && editpass.getText().length()==0) {
 						dlg_msg.setText(String.format(msgs_audit_msgs_user_or_pass_missing,detectedInvalidCharMsg));
@@ -1691,8 +1614,8 @@ public class ProfileMaintenance {
 				if (hasInvalidChar(s.toString(),new String[]{"\t"})) {
 					String new_val=removeInvalidChar(s.toString());
 					dlg_msg.setText(String.format(msgs_audit_msgs_password1,detectedInvalidCharMsg));
-					editaddr.setText(new_val);
-					editaddr.requestFocus();
+					editpass.setText(new_val);
+					editpass.requestFocus();
 				} else if (s.length()==0) {
 					if (edituser.getText().length()==0 && editpass.getText().length()==0) {
 						dlg_msg.setText(String.format(msgs_audit_msgs_user_or_pass_missing,detectedInvalidCharMsg));
@@ -1758,23 +1681,15 @@ public class ProfileMaintenance {
 		});
 	};
 	
-	private boolean auditIpAddressValue(String in_addr) {
-		boolean result=NetworkUtil.isValidIpAddress(in_addr);
-		return result;
-	};
-
-	
 	private void setRemoteProfileOkBtnEnabled(Dialog dialog) {
 		final TextView dlg_msg=(TextView) dialog.findViewById(R.id.remote_profile_dlg_msg);
 
-		final EditText editaddr = (EditText) dialog.findViewById(R.id.remote_profile_addr);
-		final EditText edithost = (EditText) dialog.findViewById(R.id.remote_profile_hostname);
+		final EditText edithost = (EditText) dialog.findViewById(R.id.remote_profile_remote_server);
 
 		final EditText edituser = (EditText) dialog.findViewById(R.id.remote_profile_user);
 		final EditText editpass = (EditText) dialog.findViewById(R.id.remote_profile_pass);
 		final EditText editshare = (EditText) dialog.findViewById(R.id.remote_profile_share);
 
-		final CheckBox cb_use_hostname = (CheckBox) dialog.findViewById(R.id.remote_profile_use_computer_name);
 		final CheckBox cb_use_user_pass = (CheckBox) dialog.findViewById(R.id.remote_profile_use_user_pass);
 
 		final CheckBox cb_use_port_number = (CheckBox) dialog.findViewById(R.id.remote_profile_use_port_number);
@@ -1784,20 +1699,11 @@ public class ProfileMaintenance {
 		final Button btn_ok = (Button) dialog.findViewById(R.id.remote_profile_ok);
 		btn_ok.setEnabled(false);
 		btn_logon.setEnabled(false);
-		if (cb_use_hostname.isChecked()) {
-			if (edithost.getText().length()>0) {
-				dlg_msg.setText("");
-			} else {
-				dlg_msg.setText(mContext.getString(R.string.msgs_audit_hostname_not_spec));
-				return;
-			}
+		if (edithost.getText().length()>0) {
+			dlg_msg.setText("");
 		} else {
-			if (auditIpAddressValue(editaddr.getText().toString())) {
-				dlg_msg.setText("");
-			} else {
-				dlg_msg.setText(mContext.getString(R.string.msgs_audit_hostaddr_not_spec));
-				return;
-			}
+			dlg_msg.setText(mContext.getString(R.string.msgs_audit_hostname_not_spec));
+			return;
 		}
 
 		if (cb_use_user_pass.isChecked()) {
@@ -2443,9 +2349,8 @@ public class ProfileMaintenance {
 		final TextView dlg_msg=(TextView) dialog.findViewById(R.id.remote_profile_dlg_msg);
 		dlg_msg.setText(dialog_msg);
 
-		final EditText editaddr = (EditText) dialog.findViewById(R.id.remote_profile_addr);
-		if (prof_addr.length()!=0) editaddr.setText(prof_addr);
-		final EditText edithost = (EditText) dialog.findViewById(R.id.remote_profile_hostname);
+		final EditText edithost = (EditText) dialog.findViewById(R.id.remote_profile_remote_server);
+		
 		final EditText edituser = (EditText) dialog.findViewById(R.id.remote_profile_user);
 		if (prof_user.length()!=0) edituser.setText(prof_user);
 		final EditText editpass = (EditText) dialog.findViewById(R.id.remote_profile_pass);
@@ -2459,20 +2364,10 @@ public class ProfileMaintenance {
 		editname.setTextColor(Color.LTGRAY);
 		editname.setEnabled(false);
 		
-		final CheckBox cb_use_hostname = (CheckBox) dialog.findViewById(R.id.remote_profile_use_computer_name);
 		final CheckBox cb_use_user_pass = (CheckBox) dialog.findViewById(R.id.remote_profile_use_user_pass);
 		
-		if (prof_host.equals("")) {
-			cb_use_hostname.setChecked(false);
-			editaddr.setVisibility(EditText.VISIBLE);
-			edithost.setVisibility(EditText.GONE);
-		} else {
-			cb_use_hostname.setChecked(true);
-			editaddr.setVisibility(EditText.GONE);
-			edithost.setVisibility(EditText.VISIBLE);
-		}
-		editaddr.setText(prof_addr);
-		edithost.setText(prof_host);
+		if (prof_addr.length()!=0) edithost.setText(prof_addr);
+		else edithost.setText(prof_host);
 		
 		if (prof_user.equals("") && prof_pass.equals("")) {
 			cb_use_user_pass.setChecked(false);
@@ -2505,14 +2400,13 @@ public class ProfileMaintenance {
 				}
 				String port="";
 				if (cb_use_port_number.isChecked()) port=editport.getText().toString();
-				if (cb_use_hostname.isChecked()) {
-					logonToRemoteDlg(edithost.getText().toString(),
-							"", port, user,pass,null);
-				} else {
-					String t_addr=editaddr.getText().toString();
+				if (NetworkUtil.isValidIpAddress(edithost.getText().toString())) {
+					String t_addr=edithost.getText().toString();
 					String s_addr=t_addr;
 					if (t_addr.indexOf(":")>=0) s_addr=t_addr.substring(0,t_addr.indexOf(":")) ;
 					logonToRemoteDlg("",s_addr, port, user,pass,null);
+				} else {
+					logonToRemoteDlg(edithost.getText().toString(), "", port, user,pass,null);
 				}
 			}
 		});
@@ -2573,8 +2467,6 @@ public class ProfileMaintenance {
 				prof_dir, prof_act = null;
 				String remote_host="",remote_addr="";
 
-				remote_host=edithost.getText().toString();
-				remote_addr=editaddr.getText().toString();
 				
 				remote_user = edituser.getText().toString();
 				remote_pass = editpass.getText().toString();
@@ -2602,8 +2494,12 @@ public class ProfileMaintenance {
 							 !isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,
 									 SMBSYNC_PROF_TYPE_REMOTE, prof_name))) {
 						dialog.dismiss();
-						if (cb_use_hostname.isChecked()) remote_addr="";
-						else remote_host="";
+						if (NetworkUtil.isValidIpAddress(edithost.getText().toString())) {
+							remote_addr=edithost.getText().toString();
+						} else {
+							remote_host=edithost.getText().toString();
+						}
+
 						String remote_port="";
 						if (cb_use_port_number.isChecked()) 
 							remote_port=editport.getText().toString();
@@ -2973,9 +2869,7 @@ public class ProfileMaintenance {
 
 	private void ipAddressScanButtonDlg(Dialog dialog) {
 		final TextView dlg_msg=(TextView) dialog.findViewById(R.id.remote_profile_dlg_msg);
-		final EditText editaddr = (EditText) dialog.findViewById(R.id.remote_profile_addr);
-		final EditText edithost = (EditText) dialog.findViewById(R.id.remote_profile_hostname);
-		final CheckBox cb_use_hostname = (CheckBox) dialog.findViewById(R.id.remote_profile_use_computer_name);
+		final EditText edithost = (EditText) dialog.findViewById(R.id.remote_profile_remote_server);
 		final CheckBox cb_use_port_number = (CheckBox) dialog.findViewById(R.id.remote_profile_use_port_number);
 		final EditText editport = (EditText) dialog.findViewById(R.id.remote_profile_port);
 		NotifyEvent ntfy=new NotifyEvent(mContext);
@@ -2983,13 +2877,7 @@ public class ProfileMaintenance {
 		ntfy.setListener(new NotifyEventListener() {
 			@Override
 			public void positiveResponse(Context arg0, Object[] arg1) {
-				if (((String)arg1[0]).equals("A")) {
-					cb_use_hostname.setChecked(false);
-					editaddr.setText((String)arg1[1]);
-				} else {
-					cb_use_hostname.setChecked(true);
-					edithost.setText((String)arg1[1]);
-				}
+				edithost.setText((String)arg1[1]);
 			}
 
 			@Override
@@ -3006,27 +2894,22 @@ public class ProfileMaintenance {
 	private void invokeSelectRemoteShareDlg(Dialog dialog) {
 		final TextView dlg_msg=(TextView) dialog.findViewById(R.id.remote_profile_dlg_msg);
 
-		final EditText editaddr = (EditText) dialog.findViewById(R.id.remote_profile_addr);
 		final EditText edituser = (EditText) dialog.findViewById(R.id.remote_profile_user);
 		final EditText editpass = (EditText) dialog.findViewById(R.id.remote_profile_pass);
 		final EditText editshare = (EditText) dialog.findViewById(R.id.remote_profile_share);
-		final EditText edithost = (EditText) dialog.findViewById(R.id.remote_profile_hostname);
-		final CheckBox cb_use_hostname = (CheckBox) dialog.findViewById(R.id.remote_profile_use_computer_name);
+		final EditText edithost = (EditText) dialog.findViewById(R.id.remote_profile_remote_server);
 		final CheckBox cb_use_userpass = (CheckBox) dialog.findViewById(R.id.remote_profile_use_user_pass);
 		final EditText editport = (EditText) dialog.findViewById(R.id.remote_profile_port);
 		final CheckBox cb_use_port_number = (CheckBox) dialog.findViewById(R.id.remote_profile_use_port_number);
 		String remote_addr, remote_user="", remote_pass="",remote_host;
 		
-		remote_addr = editaddr.getText().toString();
-		remote_host = edithost.getText().toString();
 		if (cb_use_userpass.isChecked()) {
 			remote_user = edituser.getText().toString();
 			remote_pass = editpass.getText().toString();
 		}
 
-		if (remote_addr.length()<1 && remote_host.length()<1) { 
-			if (cb_use_hostname.isChecked()) dlg_msg.setText(mContext.getString(R.string.msgs_audit_hostname_not_spec));
-			else dlg_msg.setText(mContext.getString(R.string.msgs_audit_hostaddr_not_spec));
+		if (edithost.getText().toString().length()<1) { 
+			dlg_msg.setText(mContext.getString(R.string.msgs_audit_hostname_not_spec));
 			return;
 		}
 		if (hasInvalidChar(remote_pass,new String[]{"\t"})) {
@@ -3046,8 +2929,13 @@ public class ProfileMaintenance {
 
 		setSmbUserPass(remote_user,remote_pass);
 		String t_url="";
-		if (cb_use_hostname.isChecked()) t_url=remote_host;
-		else t_url=remote_addr;
+		if (NetworkUtil.isValidIpAddress(edithost.getText().toString()))  {
+			remote_addr = edithost.getText().toString();
+			t_url=remote_addr;
+		}  else {
+			remote_host = edithost.getText().toString();
+			t_url=remote_host;
+		}
 		String h_port="";
 		if (cb_use_port_number.isChecked()) {
 			if (editport.getText().length()>0) h_port=":"+editport.getText().toString();
@@ -3083,19 +2971,15 @@ public class ProfileMaintenance {
 	private void selectRemoteDirectory(Dialog dialog) {
 		final TextView dlg_msg=(TextView) dialog.findViewById(R.id.remote_profile_dlg_msg);
 
-		final EditText editaddr = (EditText) dialog.findViewById(R.id.remote_profile_addr);
-		final EditText edithost = (EditText) dialog.findViewById(R.id.remote_profile_hostname);
+		final EditText edithost = (EditText) dialog.findViewById(R.id.remote_profile_remote_server);
 		final EditText edituser = (EditText) dialog.findViewById(R.id.remote_profile_user);
 		final EditText editpass = (EditText) dialog.findViewById(R.id.remote_profile_pass);
 		final EditText editshare = (EditText) dialog.findViewById(R.id.remote_profile_share);
 		final EditText editdir = (EditText) dialog.findViewById(R.id.remote_profile_dir);
-		final CheckBox cb_use_hostname = (CheckBox) dialog.findViewById(R.id.remote_profile_use_computer_name);
 		final CheckBox cb_use_userpass = (CheckBox) dialog.findViewById(R.id.remote_profile_use_user_pass);
 		final EditText editport = (EditText) dialog.findViewById(R.id.remote_profile_port);
 		final CheckBox cb_use_port_number = (CheckBox) dialog.findViewById(R.id.remote_profile_use_port_number);
 		String remote_addr, remote_user="", remote_pass="",remote_share,remote_host;
-		remote_addr = editaddr.getText().toString();
-		remote_host = edithost.getText().toString();
 		if (cb_use_userpass.isChecked()) {
 			remote_user = edituser.getText().toString();
 			remote_pass = editpass.getText().toString();
@@ -3103,9 +2987,8 @@ public class ProfileMaintenance {
 
 		remote_share = editshare.getText().toString();
 
-		if (remote_addr.length()<1 && remote_host.length()<1) {
-			if (cb_use_hostname.isChecked()) dlg_msg.setText(mContext.getString(R.string.msgs_audit_hostname_not_spec));
-			else dlg_msg.setText(mContext.getString(R.string.msgs_audit_hostaddr_not_spec));
+		if (edithost.getText().toString().length()<1) {
+			dlg_msg.setText(mContext.getString(R.string.msgs_audit_hostname_not_spec));
 			return;
 		}
 		if (remote_share.length()<1) {
@@ -3130,8 +3013,13 @@ public class ProfileMaintenance {
 		
 		setSmbUserPass(remote_user,remote_pass);
 		String t_url="";
-		if (cb_use_hostname.isChecked()) t_url=remote_host;
-		else t_url=remote_addr;
+		if (NetworkUtil.isValidIpAddress(edithost.getText().toString()))  {
+			remote_addr = edithost.getText().toString();
+			t_url=remote_addr;
+		}  else {
+			remote_host = edithost.getText().toString();
+			t_url=remote_host;
+		}
 		String h_port="";
 		if (cb_use_port_number.isChecked()) {
 			if (editport.getText().length()>0) h_port=":"+editport.getText().toString();

@@ -17,8 +17,8 @@
     
     <string name="msgs_remote_profile_dlg_active">有効</string>
     <string name="msgs_remote_profile_dlg_profile">プロファイル名</string>
-    <string name="msgs_remote_profile_dlg_address">サーバ　IPアドレス</string>
-    <string name="msgs_remote_profile_dlg_hostname">サーバ名</string>
+    <string name="del_msgs_remote_profile_dlg_address">サーバ　IPアドレス</string>
+    <string name="msgs_remote_profile_dlg_remote_server">サーバ 名/アドレス</string>
     <string name="msgs_remote_profile_dlg_username">ユーザー名</string>
     <string name="msgs_remote_profile_dlg_password">パスワード</string>
     <string name="msgs_remote_profile_dlg_share">共有名</string>
@@ -26,7 +26,7 @@
     <string name="msgs_remote_profile_dlg_directory">ディレクトリ</string>
     <string name="msgs_remote_profile_dlg_dirlist">一覧表示</string>
     <string name="msgs_remote_profile_dlg_search_remote_list">リモートサーバーの検索</string>
-	<string name="msgs_remote_profile_dlg_use_computer_name">コンピュータ名を使用する</string>    
+	<string name="del_msgs_remote_profile_dlg_use_computer_name">コンピュータ名を使用する</string>    
 	<string name="msgs_remote_profile_dlg_use_user_pass">ユーザーID/パスワードを使用する</string>
 	<string name="msgs_remote_profile_dlg_logon">ログオン</string>
 	<string name="msgs_remote_profile_dlg_logon_success">ログオンが正常に完了しました</string>

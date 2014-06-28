@@ -16,8 +16,8 @@
     
     <string name="msgs_remote_profile_dlg_active">Active</string>
     <string name="msgs_remote_profile_dlg_profile">Profile Name</string>
-    <string name="msgs_remote_profile_dlg_address">Server IP Address</string>
-    <string name="msgs_remote_profile_dlg_hostname">Server name</string>
+    <string name="del_msgs_remote_profile_dlg_address">Server IP Address</string>
+    <string name="msgs_remote_profile_dlg_remote_server">Server Name/Address</string>
     <string name="msgs_remote_profile_dlg_username">User name</string>
     <string name="msgs_remote_profile_dlg_password">Password</string>
     <string name="msgs_remote_profile_dlg_share">Share</string>
@@ -25,7 +25,7 @@
     <string name="msgs_remote_profile_dlg_directory">Directory</string>
     <string name="msgs_remote_profile_dlg_dirlist">Show list</string>
     <string name="msgs_remote_profile_dlg_search_remote_list">Search remote server</string>
-    <string name="msgs_remote_profile_dlg_use_computer_name">Use computer name</string>
+    <string name="del_msgs_remote_profile_dlg_use_computer_name">Use computer name</string>
     <string name="msgs_remote_profile_dlg_use_user_pass">Use remote host userid and password</string>
     <string name="msgs_remote_profile_dlg_logon">Logon</string>
 	<string name="msgs_remote_profile_dlg_logon_success">Logon successfully completed</string>    

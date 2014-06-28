@@ -74,37 +74,19 @@
                 android:text="@string/msgs_remote_profile_dlg_search_remote_list"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
             
-            <CheckBox
-                android:id="@+id/remote_profile_use_computer_name"
-                style="@style/check_box_style"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="@string/msgs_remote_profile_dlg_use_computer_name" />
-            
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
                 android:orientation="horizontal" >
-                <EditText
-                    android:id="@+id/remote_profile_addr"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="2"
-                    android:digits="0123456789."
-                    android:hint="@string/msgs_remote_profile_dlg_address"
-                    android:inputType="numberDecimal"
-                    android:textAppearance="?android:attr/textAppearanceSmall" />
 
                 <EditText
-                    android:id="@+id/remote_profile_hostname"
+                    android:id="@+id/remote_profile_remote_server"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="2"
-                    android:hint="@string/msgs_remote_profile_dlg_hostname"
+                    android:hint="@string/msgs_remote_profile_dlg_remote_server"
                     android:inputType="text"
                     android:textAppearance="?android:attr/textAppearanceSmall" />
 

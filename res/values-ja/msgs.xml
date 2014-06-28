@@ -40,17 +40,6 @@
 	
     <string name="profile_list_dir_const_string">DIR:</string>
     
-	<string name="sync_list_name_string">Sync Profile</string>
-	<string name="sync_list_master_string">マスター</string>
-	<string name="sync_list_sync_image_master_string">icon</string>
-	<string name="sync_list_master_name_string">マスター</string>
-	<string name="sync_list_target_string">ターゲット</string>
-	<string name="sync_list_sync_image_target_string">icon</string>
-	<string name="sync_list_target_name_string">ターゲット</string>
-	<string name="sync_list_synctype_string">ミラー</string>    
-	<string name="sync_list_active_string">無効</string>
-    
-    
 	<string name="msgs_filelist_cancel"		>ファイルリスト作成は中断しました。</string>
     <string name="msgs_filelist_error"		>リモートリスト作成中にエラーが発生しました。</string>
     
@@ -128,8 +117,7 @@
 	
 	<string name="msgs_audit_share_not_spec">共有名を入力してください。</string>
 	<string name="msgs_audit_msgs_local_dir">ディレクトリに%s文字が含まれています、無効な文字を消しました。</string>
-	<string name="msgs_audit_hostname_not_spec">名前を入力してください。</string>
-	<string name="msgs_audit_hostaddr_not_spec">アドレスを入力してください。</string>
+	<string name="msgs_audit_hostname_not_spec">名前またはアドレスを入力してください。</string>
 	<string name="msgs_audit_hostport_not_spec">ポート番号を入力してください。</string>
 		
 	<string name="msgs_audit_msgs_address1">アドレスまたは名前に%s文字が含まれています、無効な文字を消しました。</string>

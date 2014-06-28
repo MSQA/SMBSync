@@ -138,9 +138,8 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
                 
                 holder.tv_row_master= (TextView) v.findViewById(R.id.profile_list_master_name);
                 holder.tv_row_target= (TextView) v.findViewById(R.id.profile_list_target_name);
-                holder.tv_row_master_const= (TextView) v.findViewById(R.id.profile_list_master_const);
-                holder.tv_row_target_const= (TextView) v.findViewById(R.id.profile_list_target_const);
                 holder.tv_row_synctype= (TextView) v.findViewById(R.id.profile_list_synctype);
+                holder.tv_row_synctype_hdr1= (TextView) v.findViewById(R.id.profile_list_synctype_hdr1);
                 holder.iv_row_image_master= (ImageView) v.findViewById(R.id.profile_list_image_master);
                 holder.iv_row_image_target= (ImageView) v.findViewById(R.id.profile_list_image_target);
                 holder.tv_mtype_mirror=c.getString(R.string.msgs_sync_list_array_mtype_mirr);
@@ -171,18 +170,13 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
             	holder.tv_row_active.setText(act);
             	holder.tv_row_name.setText(o.getName());
                 
-                if (!getItem(position).getActive().equals("A")) {
-             	   //v.setVisibility(View.INVISIBLE);
-//             	   holder.tv_row_name.setTextColor(Color.DKGRAY);
-//             	   holder.tv_row_active.setTextColor(Color.DKGRAY);
-              	   holder.tv_row_name.setEnabled(false);
-              	   holder.tv_row_active.setEnabled(false);
-                } else {
-//             	   holder.tv_row_name.setTextColor(Color.WHITE);
-//             	   holder.tv_row_active.setTextColor(Color.WHITE);
-               	   holder.tv_row_name.setEnabled(true);
-               	   holder.tv_row_active.setEnabled(true);
-                }
+//                if (!getItem(position).getActive().equals("A")) {
+//              	   holder.tv_row_name.setEnabled(false);
+//              	   holder.tv_row_active.setEnabled(false);
+//                } else {
+//               	   holder.tv_row_name.setEnabled(true);
+//               	   holder.tv_row_active.setEnabled(true);
+//                }
                
                 if (o.getType().equals("S")) {//Sync profile
                 	holder.tv_dir_name.setVisibility(LinearLayout.GONE);
@@ -214,26 +208,14 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
                     holder.tv_row_synctype.setText(synctp);
                     
                     if (!getItem(position).getActive().equals("A")) {
-//                    	holder.tv_row_master.setTextColor(Color.DKGRAY);
-//                    	holder.tv_row_master_const.setTextColor(Color.DKGRAY);
-//                    	holder.tv_row_target.setTextColor(Color.DKGRAY);
-//                    	holder.tv_row_target_const.setTextColor(Color.DKGRAY);
-//                    	holder.tv_row_synctype.setTextColor(Color.DKGRAY);
                     	holder.tv_row_master.setEnabled(false);
-                    	holder.tv_row_master_const.setEnabled(false);
                     	holder.tv_row_target.setEnabled(false);
-                    	holder.tv_row_target_const.setEnabled(false);
+                    	holder.tv_row_synctype_hdr1.setEnabled(false); 
                     	holder.tv_row_synctype.setEnabled(false);
                     } else {
-//                    	holder.tv_row_master.setTextColor(Color.WHITE);
-//                    	holder.tv_row_master_const.setTextColor(Color.WHITE);
-//                    	holder.tv_row_target.setTextColor(Color.WHITE);
-//                    	holder.tv_row_target_const.setTextColor(Color.WHITE);
-//                    	holder.tv_row_synctype.setTextColor(Color.WHITE);
                     	holder.tv_row_master.setEnabled(true);
-                    	holder.tv_row_master_const.setEnabled(true);
                     	holder.tv_row_target.setEnabled(true);
-                    	holder.tv_row_target_const.setEnabled(true);
+                    	holder.tv_row_synctype_hdr1.setEnabled(true); 
                     	holder.tv_row_synctype.setEnabled(true);
                     }
                 } else if (o.getType().equals("R") || o.getType().equals("L")) {//Remote or Local profile
@@ -249,10 +231,8 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
                     }
                 	
                 	if (!getItem(position).getActive().equals("A")) {
-//                    	holder.tv_dir_name.setTextColor(Color.DKGRAY);
                     	holder.tv_dir_name.setEnabled(false);
                     } else {
-//                    	holder.tv_dir_name.setTextColor(Color.WHITE);
                     	holder.tv_dir_name.setEnabled(true);
                     }
                 } else {
@@ -286,7 +266,7 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
 			String tv_active_active,tv_active_inact;
 			
 			TextView tv_row_synctype, tv_row_master, tv_row_target;
-			TextView tv_row_master_const, tv_row_target_const;
+			TextView tv_row_synctype_hdr1;
 			ImageView iv_row_image_master,iv_row_image_target;
 			String tv_mtype_mirror,tv_mtype_move,tv_mtype_copy;
 			
