@@ -127,7 +127,7 @@ public class SMBSyncService extends Service {
 		@Override
 		public void aidlCancelThread() throws RemoteException {
 			mUtil.addDebugLogMsg(1, "I", "aidlCancelThread entered");
-			tcMirror.setDisable();
+			tcMirror.setDisabled();
 		}
 
 		@Override
@@ -200,8 +200,8 @@ public class SMBSyncService extends Service {
 		NotificationUtil.setNotificationIcon(glblParms, R.drawable.ic_48_smbsync_run_anim);
 		tcConfirm.initThreadCtrl();
 		tcMirror.initThreadCtrl();
-		tcMirror.setEnable();//enableAsyncTask();
-		tcConfirm.setEnable();//enableAsyncTask();
+		tcMirror.setEnabled();//enableAsyncTask();
+		tcConfirm.setEnabled();//enableAsyncTask();
 		NotifyEvent ntfy = new NotifyEvent(this);
 		ntfy.setListener(new NotifyEventListener() {
 			@Override

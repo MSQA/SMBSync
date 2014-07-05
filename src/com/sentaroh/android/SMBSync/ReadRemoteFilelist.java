@@ -138,7 +138,7 @@ public class ReadRemoteFilelist implements Runnable  {
 		if (!error_exit) readFIleList();
 			
 		util.addDebugLogMsg(1,"I","getFileList ended.");
-		getFLCtrl.setDisable();
+		getFLCtrl.setDisabled();
 		notifyEvent.notifyToListener(true, null);
 	};
 	
@@ -151,7 +151,7 @@ public class ReadRemoteFilelist implements Runnable  {
 			for (int i=0;i<fl.length;i++){
 				String fn=fl[i].getName();
 				if (fn.endsWith("/")) fn=fn.substring(0,fn.length()-1);
-				if (getFLCtrl.isEnable()) {
+				if (getFLCtrl.isEnabled()) {
 					int dirct=0;
 					String fp=fl[i].getPath();
 					if (fp.endsWith("/")) fp=fp.substring(0,fp.lastIndexOf("/"));
@@ -217,28 +217,28 @@ public class ReadRemoteFilelist implements Runnable  {
 		} catch (SmbException e) {
 //			e.printStackTrace();
 			util.addDebugLogMsg(1,"E",e.toString());
-			if (getFLCtrl.isEnable()) {
+			if (getFLCtrl.isEnabled()) {
 				getFLCtrl.setThreadResultError();
 				String[] e_msg=NetworkUtil.analyzeNtStatusCode(e, mContext, 
 						remoteUrl+remoteDir,ntlmPasswordAuth.getUsername());
 				getFLCtrl.setThreadMessage(e_msg[0]);
-				getFLCtrl.setDisable();
+				getFLCtrl.setDisabled();
 			} else {
 				getFLCtrl.setThreadResultCancelled();
 				util.addDebugLogMsg(1,"W","File list creation cancelled by main task.");
-				getFLCtrl.setDisable();
+				getFLCtrl.setDisabled();
 			}
 		} catch (MalformedURLException e) {
 //			e.printStackTrace();
 			util.addDebugLogMsg(1,"E",e.toString());
-			if (getFLCtrl.isEnable()) {
+			if (getFLCtrl.isEnabled()) {
 				getFLCtrl.setThreadResultError();
 				getFLCtrl.setThreadMessage(e.getMessage());
-				getFLCtrl.setDisable();
+				getFLCtrl.setDisabled();
 			} else {
 				getFLCtrl.setThreadResultCancelled();
 				util.addDebugLogMsg(1,"W","File list creation cancelled by main task.");
-				getFLCtrl.setDisable();
+				getFLCtrl.setDisabled();
 			}
 		}
 	}
@@ -263,7 +263,7 @@ public class ReadRemoteFilelist implements Runnable  {
             	getFLCtrl.setThreadResultError();
     			String end_msg=ex.toString()+st_msg;
     			getFLCtrl.setThreadMessage(end_msg);
-    			getFLCtrl.setDisable();
+    			getFLCtrl.setDisabled();
     			notifyEvent.notifyToListener(true, null);
                 // re-throw critical exception further to the os (important)
 //                defaultUEH.uncaughtException(thread, ex);

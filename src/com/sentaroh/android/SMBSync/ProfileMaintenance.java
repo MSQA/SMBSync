@@ -1343,7 +1343,7 @@ public class ProfileMaintenance {
 	public void logonToRemoteDlg(final String host, final String addr, final String port, 
 			final String user, final String pass, final NotifyEvent p_ntfy) {
 		final ThreadCtrl tc=new ThreadCtrl();
-		tc.setEnable();
+		tc.setEnabled();
 		tc.setThreadResultSuccess();
 		
 		// カスタムダイアログの生成
@@ -1367,7 +1367,7 @@ public class ProfileMaintenance {
 		// CANCELボタンの指定
 		btn_cancel.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				tc.setDisable();//disableAsyncTask();
+				tc.setDisabled();//disableAsyncTask();
 				btn_cancel.setText(mContext.getString(R.string.msgs_progress_dlg_canceling));
 				btn_cancel.setEnabled(false);
 				util.addDebugLogMsg(1,"W","Logon is cancelled.");
@@ -1396,7 +1396,7 @@ public class ProfileMaintenance {
 					public void positiveResponse(Context c, Object[] o) {
 						dialog.dismiss();
 						String err_msg=(String)o[0];
-						if (tc.isEnable()) {
+						if (tc.isEnabled()) {
 							if (err_msg!=null) {
 								commonDlg.showCommonDialog(false, "E", 
 										mContext.getString(R.string.msgs_remote_profile_dlg_logon_error)
@@ -4418,7 +4418,7 @@ public class ProfileMaintenance {
 				scan_cancel.setText(mContext.getString(R.string.msgs_progress_dlg_canceling));
 				scan_cancel.setEnabled(false);
 				util.addDebugLogMsg(1,"W","IP Address list creation was cancelled");
-				tc.setDisable();
+				tc.setDisabled();
 			}
 		});
 		if (util.isActivityForeground()) dialog.show();
@@ -4438,7 +4438,7 @@ public class ProfileMaintenance {
 				String scan_port="";
 				if (cb_use_port_number.isChecked()) scan_port=et_port_number.getText().toString();
 				for (int i=begin_addr; i<=end_addr;i+=scan_thread) {
-					if (!tc.isEnable()) break;
+					if (!tc.isEnabled()) break;
 					boolean scan_end=false;
 					for (int j=i;j<(i+scan_thread);j++) {
 						if (j<=end_addr) {
@@ -4450,12 +4450,12 @@ public class ProfileMaintenance {
 					}
 					if (!scan_end) {
 						for (int wc=0;wc<210;wc++) {
-							if (!tc.isEnable()) break;
+							if (!tc.isEnabled()) break;
 							SystemClock.sleep(30);
 						}
 					}
 				}
-				if (!tc.isEnable()) {
+				if (!tc.isEnabled()) {
 					handler.post(new Runnable() {// UI thread
 						@Override
 						public void run() {
@@ -4955,7 +4955,7 @@ public class ProfileMaintenance {
 		final ArrayList<TreeFilelistItem> remoteFileList =
 								new ArrayList<TreeFilelistItem>();
 		final ThreadCtrl tc=new ThreadCtrl();
-		tc.setEnable();
+		tc.setEnabled();
 		tc.setThreadResultSuccess();
 		
 		// カスタムダイアログの生成
@@ -4979,7 +4979,7 @@ public class ProfileMaintenance {
 		// CANCELボタンの指定
 		btn_cancel.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				tc.setDisable();//disableAsyncTask();
+				tc.setDisabled();//disableAsyncTask();
 				btn_cancel.setText(mContext.getString(R.string.msgs_progress_dlg_canceling));
 				btn_cancel.setEnabled(false);
 				util.addDebugLogMsg(1,"W","Sharelist is cancelled.");
@@ -5007,7 +5007,7 @@ public class ProfileMaintenance {
 						String err;
 						util.addDebugLogMsg(1,"I","FileListThread result="+tc.getThreadResult()+","+
 								"msg="+tc.getThreadMessage()+", enable="+
-									tc.isEnable());
+									tc.isEnabled());
 						if (tc.isThreadResultSuccess()) {
 							p_event.notifyToListener(true, new Object[]{remoteFileList});
 						} else {
@@ -5045,7 +5045,7 @@ public class ProfileMaintenance {
 				handler.post(new Runnable() {
 					@Override
 					public void run() {// UI thread
-						if (tc.isEnable()) if (dialog!=null) dialog.show();
+						if (tc.isEnabled()) if (dialog!=null) dialog.show();
 					}
 				});
 			}

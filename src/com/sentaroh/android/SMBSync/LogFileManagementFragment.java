@@ -384,7 +384,7 @@ public class LogFileManagementFragment extends DialogFragment{
 			}
 			@Override
 			public void negativeResponse(Context c, Object[] o) {
-				tc.setDisable();
+				tc.setDisabled();
 			}
 		});
 		final ProgressBarDialogFragment pbdf=ProgressBarDialogFragment.newInstance(
@@ -399,7 +399,7 @@ public class LogFileManagementFragment extends DialogFragment{
 				File lf=new File(zip_file_name);
 				lf.delete();
 				MiscUtil.createZipFile(tc,pbdf,zip_file_name,file_name);
-				if (tc.isEnable()) {
+				if (tc.isEnabled()) {
 				    Intent intent=new Intent();
 				    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				    intent.setAction(Intent.ACTION_SEND);  

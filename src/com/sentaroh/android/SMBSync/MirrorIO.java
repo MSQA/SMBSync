@@ -319,7 +319,7 @@ public class MirrorIO implements Runnable {
         		addLogMsg("E","",end_msg);
         		NotificationUtil.showOngoingMsg(glblParms,end_msg);
         		notifyThreadTerminate();
-        		tcMirror.setDisable();
+        		tcMirror.setDisabled();
                 // re-throw critical exception further to the os (important)
 //                defaultUEH.uncaughtException(thread, ex);
             }
@@ -345,7 +345,7 @@ public class MirrorIO implements Runnable {
 //			mHistoryDeletedList=new ArrayList<String>();
 //			mHistoryIgnoredList=new ArrayList<String>();
 			isMediaStoreChangeWarningIssued=false;
-			if (tcMirror.isEnable()) { // async process was enabled
+			if (tcMirror.isEnabled()) { // async process was enabled
 				syncProfName = syncList.get(i).getProfname();
 				addMsgToProgDlg(false,"I","",msgs_mirror_prof_started);
 				addLogMsg("I","",msgs_mirror_prof_started);
@@ -387,7 +387,7 @@ public class MirrorIO implements Runnable {
 				totalCopyCnt+=copyCount;
 				totalDeleteCnt+=deleteCount;
 				totalIgnoreCnt+=ignoreCount;
-				if (tcMirror.isEnable()) {
+				if (tcMirror.isEnabled()) {
 					if (!isSyncParmError && !isExceptionOccured) {
 						addLogMsg("I","",String.format(msgs_mirror_prof_no_of_copy,
 										copyCount , deleteCount, ignoreCount));
@@ -433,7 +433,7 @@ public class MirrorIO implements Runnable {
 				totalCopyCnt, totalDeleteCnt, totalIgnoreCnt,totalWarningMsgCnt,totalErrorMsgCnt));
 
 		String end_msg="";
-		if (!tcMirror.isEnable()) {
+		if (!tcMirror.isEnabled()) {
 			tcMirror.setThreadResultCancelled();
 			end_msg=msgs_mirror_task_result_cancel;
 		} else if (isSyncParmError || isExceptionOccured || error_occured_but_ignored) {
@@ -452,7 +452,7 @@ public class MirrorIO implements Runnable {
 		addLogMsg("I","",end_msg);
 		NotificationUtil.showOngoingMsg(glblParms,end_msg);
 		notifyThreadTerminate();
-		tcMirror.setDisable();
+		tcMirror.setDisabled();
 	};
 
 	final private void addHistoryList(int status, int copy_cnt, int del_cnt, int ignore_cnt,
@@ -1135,7 +1135,7 @@ public class MirrorIO implements Runnable {
 	
 	final private int checkErrorStatus() {
 		int rc=0;
-		if (!tcMirror.isEnable()) rc=-10;
+		if (!tcMirror.isEnabled()) rc=-10;
 		if (isExceptionOccured) rc=-1;
 //		if (glblParms.debugLevel>=3) 
 //			addDebugLogMsg(3,"I","checkErrorStatus status="+rc);
@@ -1207,7 +1207,7 @@ public class MirrorIO implements Runnable {
 //							updateLocalFileLastModifiedList(currentFileLastModifiedList,newFileLastModifiedList,
 //									targetUrl,hf.getLastModified());
 						}
-						if (!tcMirror.isEnable()) return -10;
+						if (!tcMirror.isEnabled()) return -10;
 						if (isExceptionOccured) return -1;
 					}
 				}
@@ -1428,7 +1428,7 @@ public class MirrorIO implements Runnable {
 								addLogMsg("W",targetUrl,msgs_mirror_confirm_copy_cancel);
 							}
 						}
-						if (!tcMirror.isEnable()) return -10;
+						if (!tcMirror.isEnabled()) return -10;
 						if (isExceptionOccured) return -1;
 					}
 				}
@@ -2341,7 +2341,7 @@ public class MirrorIO implements Runnable {
 				addMsgToProgDlg(false,"I",t_fn,
 					String.format(msgs_mirror_prof_file_copying,(fileReadBytes*100)/file_byte));
 			}
-			if (!tcMirror.isEnable()) {
+			if (!tcMirror.isEnabled()) {
 				in.close();
 				out.flush();
 				out.close();
@@ -2398,7 +2398,7 @@ public class MirrorIO implements Runnable {
 				addMsgToProgDlg(false,"I",t_fn,
 					String.format(msgs_mirror_prof_file_copying,(fileReadBytes*100)/file_byte));
 			}
-			if (!tcMirror.isEnable()) {
+			if (!tcMirror.isEnabled()) {
 				in.close();
 				out.flush();
 				out.close();
@@ -2455,7 +2455,7 @@ public class MirrorIO implements Runnable {
 				addMsgToProgDlg(false,"I",t_fn,
 					String.format(msgs_mirror_prof_file_copying,(fileReadBytes*100)/file_byte));
 			}
-			if (!tcMirror.isEnable()) {
+			if (!tcMirror.isEnabled()) {
 				in.close();
 				out.flush();
 				out.close();

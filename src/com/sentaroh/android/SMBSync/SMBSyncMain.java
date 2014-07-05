@@ -2647,7 +2647,7 @@ public class SMBSyncMain extends FragmentActivity {
 
 	private void autoStartDlg() {
 		final ThreadCtrl threadCtl=new ThreadCtrl();
-		threadCtl.setEnable();//enableAsyncTask();
+		threadCtl.setEnabled();//enableAsyncTask();
 
 		final LinearLayout ll_bar=(LinearLayout)findViewById(R.id.profile_progress_bar);
 		ll_bar.setVisibility(LinearLayout.VISIBLE);
@@ -2666,7 +2666,7 @@ public class SMBSyncMain extends FragmentActivity {
 				mGp.settingAutoTerm=false;
 				btnCancel.setText(getString(R.string.msgs_progress_dlg_canceling));
 				btnCancel.setEnabled(false);
-				threadCtl.setDisable();//disableAsyncTask();
+				threadCtl.setDisabled();//disableAsyncTask();
 				util.addLogMsg("W",getString(R.string.msgs_astart_canceling));
 				showNotificationMsg(getString(R.string.msgs_astart_canceling));
 			}
@@ -2713,7 +2713,7 @@ public class SMBSyncMain extends FragmentActivity {
 
 	private void autoTerminateDlg(final String result_code, final String result_msg) {
 		final ThreadCtrl threadCtl=new ThreadCtrl();
-		threadCtl.setEnable();//enableAsyncTask();
+		threadCtl.setEnabled();//enableAsyncTask();
 
 		final LinearLayout ll_bar=(LinearLayout)findViewById(R.id.profile_progress_bar);
 		ll_bar.setVisibility(LinearLayout.VISIBLE);
@@ -2732,7 +2732,7 @@ public class SMBSyncMain extends FragmentActivity {
 				mGp.settingAutoTerm=false;
 				btnCancel.setText(getString(R.string.msgs_progress_dlg_canceling));
 				btnCancel.setEnabled(false);
-				threadCtl.setDisable();//disableAsyncTask();
+				threadCtl.setDisabled();//disableAsyncTask();
 				util.addLogMsg("W",getString(R.string.msgs_aterm_canceling));
 				showNotificationMsg(getString(R.string.msgs_aterm_canceling));
 			}
@@ -2814,7 +2814,7 @@ public class SMBSyncMain extends FragmentActivity {
 						(TextView)findViewById(R.id.profile_progress_bar_msg);
 				for (int i=0; i<ATERM_WAIT_TIME;i++) {
 					try {
-						if(threadCtl.isEnable()) {
+						if(threadCtl.isEnabled()) {
 							final int ix=i;
 							handler.post(new Runnable() {
 								//UI thread
@@ -2841,7 +2841,7 @@ public class SMBSyncMain extends FragmentActivity {
 						LinearLayout ll_bar=(LinearLayout)findViewById(R.id.profile_progress_bar);
 						ll_bar.setVisibility(LinearLayout.GONE);
 						setUiEnabled();
-						if(threadCtl.isEnable())at_ne.notifyToListener(true, null);
+						if(threadCtl.isEnabled())at_ne.notifyToListener(true, null);
 						else at_ne.notifyToListener(false, null);
 					}
 				});
