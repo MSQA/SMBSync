@@ -115,15 +115,18 @@
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
                 android:layout_marginBottom="2dp"
                 android:layout_marginTop="5dp" >
 
                 <TextView
-                    android:layout_width="60dp"
+                    android:layout_width="50dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:lines="2"
                     android:gravity="center"
+                    android:layout_marginRight="5dp"
                     android:text="@string/msgs_sync_profile_dlg_syncopt"
                     android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -134,7 +137,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
                     android:layout_weight="1"
                     android:background="@drawable/spinner_color_background"
                     android:minHeight="36dp"
