@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="msgs_menu_scheduler">Scheduler</string>
+	<string name="msgs_scheduler_main_dlg_hdr_sun">Sun</string>
+	<string name="msgs_scheduler_main_dlg_hdr_mon">Mon</string>
+	<string name="msgs_scheduler_main_dlg_hdr_tue">Tue</string>
+	<string name="msgs_scheduler_main_dlg_hdr_wed">Wed</string>
+	<string name="msgs_scheduler_main_dlg_hdr_thu">Thu</string>
+	<string name="msgs_scheduler_main_dlg_hdr_fri">Fri</string>
+	<string name="msgs_scheduler_main_dlg_hdr_sat">Sat</string>
+	<string name="msgs_scheduler_main_dlg_hdr_year">Year</string>
+	<string name="msgs_scheduler_main_dlg_hdr_month">Month</string>
+	<string name="msgs_scheduler_main_dlg_hdr_day">Day</string>
+	<string name="msgs_scheduler_main_dlg_hdr_hour">Hour</string>
+	<string name="msgs_scheduler_main_dlg_hdr_minute">Minute</string>
+    
+</resources>
