@@ -70,7 +70,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:gravity="center_vertical|left"
                 android:text="@string/msgs_sync_profile_dlg_change_master_and_target"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -91,23 +90,21 @@
                 <ImageButton
                     android:id="@+id/sync_profile_edit_master"
                     android:layout_width="60dp"
-                    android:layout_height="40dp"
-                    android:layout_gravity="center_vertical"
-                    android:scaleType="fitCenter"
+                    android:layout_height="50dp"
+                    android:scaleType="centerCrop"
                     android:src="@drawable/menu_edit" />
 
 		        <Spinner
 		            android:id="@+id/sync_profile_master_spinner"
 		            style="@android:style/Widget.Spinner"
 		            android:layout_width="0dp"
-		            android:layout_height="wrap_content"
+		            android:layout_height="50dp"
 		            android:layout_marginLeft="1dp"
 		            android:layout_marginRight="5dp"
 		            android:layout_gravity="center_vertical"
 		            android:layout_weight="1"
 		            android:textAppearance="?android:attr/textAppearanceMedium"
 		            android:background="@drawable/spinner_color_background"
-		            android:minHeight="36dp"
 		            android:paddingLeft="5dp"/>
 
             </LinearLayout>
@@ -115,9 +112,10 @@
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginBottom="2dp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
-                android:layout_marginBottom="2dp"
                 android:layout_marginTop="5dp" >
 
                 <TextView
@@ -142,6 +140,7 @@
                     android:minHeight="36dp"
                     android:paddingLeft="5dp"
                     android:textAppearance="?android:attr/textAppearanceMedium" />
+
             </LinearLayout>
 
             <TextView
@@ -162,23 +161,20 @@
                 <ImageButton
                     android:id="@+id/sync_profile_edit_target"
                     android:layout_width="60dp"
-                    android:layout_height="40dp"
-                    android:layout_gravity="center_vertical"
-                    android:scaleType="fitCenter"
+                    android:layout_height="50dp"
+                    android:scaleType="centerCrop"
                     android:src="@drawable/menu_edit" />
 
 		        <Spinner
 		            android:id="@+id/sync_profile_target_spinner"
 		            style="@android:style/Widget.Spinner"
 		            android:layout_width="0dp"
-		            android:layout_height="wrap_content"
+		            android:layout_height="50dp"
 		            android:layout_marginLeft="1dp"
 		            android:layout_marginRight="5dp"
 		            android:layout_weight="1"
-		            android:layout_gravity="center_vertical"
 		            android:textAppearance="?android:attr/textAppearanceMedium"
 		            android:background="@drawable/spinner_color_background"
-		            android:minHeight="36dp"
 		            android:paddingLeft="5dp"/>
                 
             </LinearLayout>

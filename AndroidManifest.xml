@@ -13,15 +13,34 @@
    	<uses-permission android:name="android.permission.WAKE_LOCK"/>
    	<uses-permission android:name="android.permission.VIBRATE"/>
    	
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+   	
     <application
         android:icon="@drawable/smbsync"
         android:label="@string/app_name"
         android:theme="@style/MainTheme" 
         android:name="GlobalParameters" android:largeHeap="true">
+        <receiver 
+    	    android:name=".SchedulerReceiver"
+    	    android:icon="@drawable/ic_64_smbsync" 
+    	    android:label="SchedulerReceiver"
+    	    android:process=":Svc" 
+    	    android:exported="true">
+			<intent-filter>
+				<action android:name="android.intent.action.BOOT_COMPLETED" />
+				<action android:name="android.intent.action.ACTION_SHUTDOWN" />
+				<action android:name="android.intent.action.LOCALE_CHANGED" />
+				<action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+				<action android:name="com.sentaroh.android.SMBSync.ACTION_TIMER_EXPIRED" />
+				<action android:name="com.sentaroh.android.SMBSync.ACTION_START_SCHEDULER" />
+				<action android:name="com.sentaroh.android.SMBSync.ACTION_RESTART_SCHEDULER" />
+			</intent-filter>
+		</receiver>
+        
         <activity
             android:label="@string/app_name"
             android:name=".SMBSyncMain"
-            android:launchMode="singleTop"
+            android:launchMode="singleTask"
             android:configChanges="locale|keyboardHidden|orientation|layoutDirection"
             android:screenOrientation="unspecified" 
             android:alwaysRetainTaskState="true" 
@@ -31,6 +50,7 @@
             <intent-filter >
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity 

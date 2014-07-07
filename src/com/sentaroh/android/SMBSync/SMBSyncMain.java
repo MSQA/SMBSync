@@ -23,7 +23,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_BG_TERM_NOTIFY_MSG_ALWAYS;
+import static com.sentaroh.android.SMBSync.Constants.*;
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_BG_TERM_NOTIFY_MSG_NO;
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_CONFIRM_FOR_COPY;
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_CONFIRM_RESP_NO;
@@ -89,6 +89,7 @@ import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.text.ClipboardManager;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -644,6 +645,7 @@ public class SMBSyncMain extends FragmentActivity {
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		util.addDebugLogMsg(1,"I","onPrepareOptionsMenu entered, isUiEnabled()="+isUiEnabled());
+		menu.findItem(R.id.menu_top_scheduler).setVisible(false);
 		if (isUiEnabled()) {
 			menu.findItem(R.id.menu_top_sync).setEnabled(true);
 			menu.findItem(R.id.menu_top_browse_log).setEnabled(true);
@@ -1314,35 +1316,65 @@ public class SMBSyncMain extends FragmentActivity {
 					util.addLogMsg("W"," Background must be boolean, ignored extra data");
 				}
 			}
+			if (bundle.containsKey(SMBSYNC_EXTRA_PARM_OVERRIDE_PARMS)) {
+				if (bundle.get(SMBSYNC_EXTRA_PARM_OVERRIDE_PARMS).getClass().getSimpleName().equals("String")) {
+					String op=bundle.getString(SMBSYNC_EXTRA_PARM_OVERRIDE_PARMS).replaceAll("\"", "").replaceAll("\'", "");
+//					Log.v("","op="+op);
+					boolean[] opa=new boolean[]{false,false,false};
+					boolean error=false;
+					if (op.length()!=3) {
+						error=true;
+						util.addLogMsg("W"," OverrideParms length error, OverrideParms length is must be 3. parms="+op);
+					} else {
+						for (int i=0;i<op.length();i++) {
+//							Log.v("","i="+i+", d="+op.substring(i,i+1)+"|");
+							if (op.substring(i,i+1).equals("0")) {
+								opa[i]=false;
+							} else if (op.substring(i,i+1).equals("1")){
+								opa[i]=true;
+							} else {
+								error=true;
+								util.addLogMsg("W"," OverrideParms value must be 0 or 1, ignored OverrideParms data");
+								break;
+							} 
+						}
+					}
+					if (!error) {
+						extraDataSpecifiedAutoStart=true;
+						mGp.settingAutoStart=opa[0];
+						util.addLogMsg("I"," AutoStart="+mGp.settingAutoStart);
+
+						if (extraDataSpecifiedAutoStart && mGp.settingAutoStart) {
+							extraDataSpecifiedAutoTerm=true;
+							mGp.settingAutoTerm=opa[1];
+							util.addLogMsg("I"," AutoTerm="+mGp.settingAutoTerm);
+						} else {
+							util.addLogMsg("W",mContext.getString(R.string.msgs_extra_data_ignored)+"AutoTerm");
+						}
+
+						extraDataSpecifiedExecuteMinimum=opa[2];
+						mGp.settingBackgroundExecution=extraDataSpecifiedExecuteMinimum;
+						util.addLogMsg("I"," Background="+mGp.settingBackgroundExecution);
+
+					}
+				} else {
+					util.addLogMsg("W"," OverrideParms must be String, ignored extra data");
+				}
+			}
 			if (bundle.containsKey(SMBSYNC_EXTRA_PARM_SYNC_PROFILE)) {
 				if (extraDataSpecifiedAutoStart && mGp.settingAutoStart) {
 					if (bundle.get(SMBSYNC_EXTRA_PARM_SYNC_PROFILE).getClass().getSimpleName().equals("String[]")) {
 						String[] sync_profile=bundle.getStringArray(SMBSYNC_EXTRA_PARM_SYNC_PROFILE);
-						if (sync_profile.length!=0) {
-							util.addLogMsg("I",mContext.getString(R.string.msgs_extra_data_sync_profile));
-							for (int sidx=0;sidx<sync_profile.length;sidx++) {
-								boolean selected=false;
-								for (int pidx=0;pidx<mGp.profileAdapter.getCount();pidx++) {
-									if (mGp.profileAdapter.getItem(pidx).getType().equals(SMBSYNC_PROF_TYPE_SYNC) && 
-											mGp.profileAdapter.getItem(pidx).getName().equals(sync_profile[sidx])) {
-										selected=true;
-										if (mGp.profileAdapter.getItem(pidx).getActive().equals(SMBSYNC_PROF_ACTIVE)) {
-											mGp.profileAdapter.getItem(pidx).setChecked(true);
-											util.addLogMsg("I",mContext.getString(R.string.msgs_extra_data_profile_selected)+sync_profile[sidx]);
-											extraDataSpecifiedSyncProfile=true;
-										} else {
-											util.addLogMsg("W",mContext.getString(R.string.msgs_extra_data_profile_disabled)+sync_profile[sidx]);								
-										}
-									}
-								}
-								if (!selected) 
-									util.addLogMsg("W",mContext.getString(R.string.msgs_extra_data_profile_not_exists)+sync_profile[sidx]);								
-							}
-						} else {
-							util.addLogMsg("W"," No profile name was specified, ignored extra data");
-						}
+						checkExtraDataProfileName(sync_profile);
 					} else {
-						util.addLogMsg("W"," SyncProfile must be string array(String[]), ignored extra data");
+						if (bundle.get(SMBSYNC_EXTRA_PARM_SYNC_PROFILE).getClass().getSimpleName().equals("String")) {
+							String sp=bundle.getString(SMBSYNC_EXTRA_PARM_SYNC_PROFILE).replaceAll("\"", "").replaceAll("\'", "");
+//							Log.v("","sp="+sp);
+							String[] sync_profile=sp.split(",");
+							checkExtraDataProfileName(sync_profile);
+						} else {
+							util.addLogMsg("W"," SyncProfile must be string, ignored extra data");
+						}
 					}
 				} else {
 					util.addLogMsg("W",mContext.getString(R.string.msgs_extra_data_ignored)+"SyncProfile");
@@ -1352,6 +1384,32 @@ public class SMBSyncMain extends FragmentActivity {
 				util.addLogMsg("I",mContext.getString(R.string.msgs_extra_data_no_profile_selected));
 		}
 	};
+
+	private void checkExtraDataProfileName(String[] sync_profile) {
+		if (sync_profile.length!=0) {
+			util.addLogMsg("I",mContext.getString(R.string.msgs_extra_data_sync_profile));
+			for (int sidx=0;sidx<sync_profile.length;sidx++) {
+				boolean selected=false;
+				for (int pidx=0;pidx<mGp.profileAdapter.getCount();pidx++) {
+					if (mGp.profileAdapter.getItem(pidx).getType().equals(SMBSYNC_PROF_TYPE_SYNC) && 
+							mGp.profileAdapter.getItem(pidx).getName().equals(sync_profile[sidx])) {
+						selected=true;
+						if (mGp.profileAdapter.getItem(pidx).getActive().equals(SMBSYNC_PROF_ACTIVE)) {
+							mGp.profileAdapter.getItem(pidx).setChecked(true);
+							util.addLogMsg("I",mContext.getString(R.string.msgs_extra_data_profile_selected)+sync_profile[sidx]);
+							extraDataSpecifiedSyncProfile=true;
+						} else {
+							util.addLogMsg("W",mContext.getString(R.string.msgs_extra_data_profile_disabled)+sync_profile[sidx]);								
+						}
+					}
+				}
+				if (!selected) 
+					util.addLogMsg("W",mContext.getString(R.string.msgs_extra_data_profile_not_exists)+sync_profile[sidx]);								
+			}
+		} else {
+			util.addLogMsg("W"," No profile name was specified, ignored extra data");
+		}
+	}
 	
 	private void listSMBSyncOption() {
 		util.addDebugLogMsg(1,"I","SMBSync option :"+
@@ -3333,7 +3391,8 @@ public class SMBSyncMain extends FragmentActivity {
         public CustomTabContentView(Context context) {  
             super(context);  
         }  
-        public CustomTabContentView(Context context, String title) {  
+        @SuppressLint("InflateParams")
+		public CustomTabContentView(Context context, String title) {  
             this(context);  
             childview1 = inflater.inflate(R.layout.tab_widget1, null);  
             tv1 = (TextView) childview1.findViewById(R.id.tab_widget1_textview);  

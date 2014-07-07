@@ -124,13 +124,15 @@
 		                android:layout_height="wrap_content"
 		                android:layout_gravity="center_vertical"
 		                android:orientation="horizontal" >
+
 		                <ImageButton
 		                    android:id="@+id/sync_profile_edit_master"
 		                    android:layout_width="60dp"
 		                    android:layout_height="60dp"
 		                    android:layout_gravity="center_vertical"
-		                    android:scaleType="fitCenter"
+		                    android:scaleType="centerCrop"
 		                    android:src="@drawable/menu_edit" />
+
 				        <Spinner
 				            android:id="@+id/sync_profile_master_spinner"
 				            style="@android:style/Widget.Spinner"
@@ -171,12 +173,12 @@
 		                android:layout_height="wrap_content"
 		                android:layout_gravity="center_vertical"
 		                android:orientation="horizontal" >
-		                <ImageButton
+		                <ImageButton
 		                    android:id="@+id/sync_profile_edit_target"
 		                    android:layout_width="60dp"
 		                    android:layout_height="60dp"
 		                    android:layout_gravity="center_vertical"
-		                    android:scaleType="fitCenter"
+		                    android:scaleType="centerCrop"
 		                    android:src="@drawable/menu_edit" />
 		
 				        <Spinner

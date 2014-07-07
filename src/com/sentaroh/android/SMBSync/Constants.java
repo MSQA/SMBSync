@@ -62,6 +62,7 @@ public class Constants {
 	public final static String SMBSYNC_EXTRA_PARM_AUTO_START="AutoStart";
 	public final static String SMBSYNC_EXTRA_PARM_AUTO_TERM="AutoTerm";
 	public final static String SMBSYNC_EXTRA_PARM_BACKGROUND_EXECUTION="Background";
+	public final static String SMBSYNC_EXTRA_PARM_OVERRIDE_PARMS="OverrideParms";
 	public final static String SMBSYNC_EXTRA_PARM_SYNC_PROFILE="SyncProfile";
 	
 	public final static String SMBSYNC_PROF_VER1="PROF 1";
