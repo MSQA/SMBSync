@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="msgs_menu_scheduler">スケジューリング</string>
+    <string name="msgs_scheduler_main_dlg_hdr_title">スケジューリング</string>
+    <string name="msgs_scheduler_main_dlg_hdr_enable">スケジュール有効</string>
+    <string name="msgs_scheduler_main_dlg_hdr_edit_prof">同期リストの編集</string>
+	<string name="msgs_scheduler_main_dlg_hdr_sun">日</string>
+	<string name="msgs_scheduler_main_dlg_hdr_mon">月</string>
+	<string name="msgs_scheduler_main_dlg_hdr_tue">火</string>
+	<string name="msgs_scheduler_main_dlg_hdr_wed">水</string>
+	<string name="msgs_scheduler_main_dlg_hdr_thu">木</string>
+	<string name="msgs_scheduler_main_dlg_hdr_fri">金</string>
+	<string name="msgs_scheduler_main_dlg_hdr_sat">土</string>
+	<string name="msgs_scheduler_main_dlg_hdr_month">月</string>
+	<string name="msgs_scheduler_main_dlg_hdr_day">日</string>
+	<string name="msgs_scheduler_main_dlg_hdr_hour">時</string>
+	<string name="msgs_scheduler_main_dlg_hdr_minute">分</string>
+	
+	<string name="msgs_scheduler_main_spinner_sched_type_prompt">スケジュール方法の選択</string>
+	<string name="msgs_scheduler_main_spinner_sched_type_every_hour">毎時</string>
+	<string name="msgs_scheduler_main_spinner_sched_type_every_day">毎日</string>
+	<string name="msgs_scheduler_main_spinner_sched_type_day_of_week">曜日</string>
+	<string name="msgs_scheduler_main_spinner_sched_hours_prompt">時間の選択</string>
+	<string name="msgs_scheduler_main_spinner_sched_minutes_prompt">分の選択</string>
+	
+	<string name="msgs_scheduler_edit_synclist_dlg_hdr_title">同期プロファイルリスト</string>
+    <string name="msgs_scheduler_edit_synclist_dlg_hdr_sync_all_sync_profile">全ての有効なプロファイルを同期する</string>
+</resources>

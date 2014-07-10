@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     
-    <string name="msgs_terminate_application">SMBSyncを終了しますか？</string>
-    
     <string name="msgs_dlg_ok_btn">了解</string>
     <string name="msgs_dlg_save_btn">保存</string>
     <string name="msgs_dlg_cancel_btn">キャンセル</string>

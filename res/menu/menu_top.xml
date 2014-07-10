@@ -33,5 +33,9 @@
           android:title="@string/msgs_menu_settings" 
           android:icon="@+android:drawable/ic_menu_preferences"
           />
-          
+    <item android:id="@+id/menu_top_kill"
+          android:title="@string/msgs_menu_kill" 
+          android:icon="@android:drawable/ic_menu_close_clear_cancel"
+          />
+    
 </menu>

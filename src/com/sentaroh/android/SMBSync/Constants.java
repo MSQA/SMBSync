@@ -59,10 +59,11 @@ public class Constants {
 	public final static String SMBSYNC_LOCAL_FILE_LAST_MODIFIED_NAME_V3=".SMBSync_lastmod_V3";
 	public final static String SMBSYNC_LOCAL_FILE_LAST_MODIFIED_WAS_FORCE_LASTEST="*";
 
+	public final static String SMBSYNC_SCHEDULER_ID="SchedulerID";
 	public final static String SMBSYNC_EXTRA_PARM_AUTO_START="AutoStart";
 	public final static String SMBSYNC_EXTRA_PARM_AUTO_TERM="AutoTerm";
 	public final static String SMBSYNC_EXTRA_PARM_BACKGROUND_EXECUTION="Background";
-	public final static String SMBSYNC_EXTRA_PARM_OVERRIDE_PARMS="OverrideParms";
+	public final static String SMBSYNC_EXTRA_PARM_STARTUP_PARMS="StartupParms";
 	public final static String SMBSYNC_EXTRA_PARM_SYNC_PROFILE="SyncProfile";
 	
 	public final static String SMBSYNC_PROF_VER1="PROF 1";

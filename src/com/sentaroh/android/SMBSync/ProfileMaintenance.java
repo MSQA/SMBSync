@@ -51,6 +51,14 @@ import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_SETTINGS_TYPE_STRIN
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_SYNC_TYPE_COPY;
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_SYNC_TYPE_MIRROR;
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_SYNC_TYPE_MOVE;
+import static com.sentaroh.android.SMBSync.SchedulerConstants.*;
+import static com.sentaroh.android.SMBSync.SchedulerConstants.SCHEDULER_SCHEDULE_HOURS_KEY;
+import static com.sentaroh.android.SMBSync.SchedulerConstants.SCHEDULER_SCHEDULE_MINUTES_KEY;
+import static com.sentaroh.android.SMBSync.SchedulerConstants.SCHEDULER_SCHEDULE_TYPE_KEY;
+import static com.sentaroh.android.SMBSync.SchedulerConstants.SCHEDULER_SYNC_OPTION_AUTOSTART_KEY;
+import static com.sentaroh.android.SMBSync.SchedulerConstants.SCHEDULER_SYNC_OPTION_AUTOTERM_KEY;
+import static com.sentaroh.android.SMBSync.SchedulerConstants.SCHEDULER_SYNC_OPTION_BGEXEC_KEY;
+import static com.sentaroh.android.SMBSync.SchedulerConstants.SCHEDULER_SYNC_PROFILE_KEY;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -6557,6 +6565,16 @@ public class ProfileMaintenance {
 		saveSettingsParmsToFileString(group, pw, "",     encrypt_required,cp,mContext.getString(R.string.settings_smb_maxBuffers));
 		saveSettingsParmsToFileString(group, pw, "",     encrypt_required,cp,mContext.getString(R.string.settings_io_buffers));
 		saveSettingsParmsToFileString(group, pw, "false",encrypt_required,cp,mContext.getString(R.string.settings_smb_tcp_nodelay));
+		
+    	saveSettingsParmsToFileBoolean(group, pw, false,   encrypt_required,cp,SCHEDULER_SCHEDULE_ENABLED_KEY);
+    	saveSettingsParmsToFileString(group, pw, "D",      encrypt_required,cp,SCHEDULER_SCHEDULE_TYPE_KEY);
+    	saveSettingsParmsToFileString(group, pw, "00",     encrypt_required,cp,SCHEDULER_SCHEDULE_HOURS_KEY);
+    	saveSettingsParmsToFileString(group, pw, "00",     encrypt_required,cp,SCHEDULER_SCHEDULE_MINUTES_KEY);
+    	saveSettingsParmsToFileString(group, pw, "0000000",encrypt_required,cp,SCHEDULER_SCHEDULE_DAY_OF_THE_WEEK_KEY);
+    	saveSettingsParmsToFileString(group, pw, "",       encrypt_required,cp,SCHEDULER_SYNC_PROFILE_KEY);
+    	saveSettingsParmsToFileBoolean(group, pw, false,   encrypt_required,cp,SCHEDULER_SYNC_OPTION_AUTOSTART_KEY);
+    	saveSettingsParmsToFileBoolean(group, pw, false,   encrypt_required,cp,SCHEDULER_SYNC_OPTION_AUTOTERM_KEY);
+    	saveSettingsParmsToFileBoolean(group, pw, false,   encrypt_required,cp,SCHEDULER_SYNC_OPTION_BGEXEC_KEY);
 	};
 
 	

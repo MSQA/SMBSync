@@ -52,6 +52,8 @@ public class GlobalParameters extends Application{
 	
 	public boolean enableMainUi=true;
 	
+	public boolean mirrorThreadActive=false;
+	
 	public Handler uiHandler=null;
 	public TextView mainViewProgressProf=null;
 	public TextView mainViewProgressFilepath=null;
@@ -78,7 +80,7 @@ public class GlobalParameters extends Application{
 	public String notificationAppName="";
 //	public boolean notiifcationEnabled=false;
 	
-	public ISvcCallback callBackStub=null;
+//	public ISvcCallback callBackStub=null;
 	
 	public ArrayList<MirrorIoParmList> mirrorIoParms=null;
 	

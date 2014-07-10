@@ -78,6 +78,8 @@ public class MirrorIO implements Runnable {
 	
 	private int mirrorIoBufferSize =65536*2; //64K x 2
 	private byte[] mirrorIoBuffer;
+	
+	private ISvcCallback callBackStub=null;
 
 	private boolean syncLocalToLocal=false;
 
@@ -163,13 +165,16 @@ public class MirrorIO implements Runnable {
 	
 	private SMBSyncUtil mUtil=null;
 	
-	public MirrorIO(GlobalParameters gwa, NotifyEvent ne, ThreadCtrl ac, ThreadCtrl tw ) {
+	public MirrorIO(GlobalParameters gwa, NotifyEvent ne, ThreadCtrl ac, ThreadCtrl tw,
+			ISvcCallback cb) {
 		glblParms=gwa;
 		notifyEvent=ne;
 		tcConfirm=tw;
 		syncList = glblParms.mirrorIoParms;
 		loadMsgString(glblParms);
 		tcMirror=ac; //new ThreadCtrl();
+		
+		callBackStub=cb;
 		
 		mUtil=new SMBSyncUtil(glblParms.svcContext, settingsMediaStoreUseLastModTime, gwa);
 		mUtil.setLogIdentifier("MirrorIO");
@@ -1677,7 +1682,7 @@ public class MirrorIO implements Runnable {
 					confirmDeleteResult!=SMBSYNC_CONFIRM_RESP_NOALL) {
 				try {
 					tcConfirm.initThreadCtrl();
-					glblParms.callBackStub.cbShowConfirm(url, SMBSYNC_CONFIRM_FOR_DELETE);
+					callBackStub.cbShowConfirm(url, SMBSYNC_CONFIRM_FOR_DELETE);
 					synchronized(tcConfirm) {
 						tcConfirm.wait();//Posted by SMBSyncService#aidlConfirmResponse()
 					}
@@ -1721,7 +1726,7 @@ public class MirrorIO implements Runnable {
 				if (file_exists) {
 					try {
 						tcConfirm.initThreadCtrl();
-						glblParms.callBackStub.cbShowConfirm(url, SMBSYNC_CONFIRM_FOR_COPY);
+						callBackStub.cbShowConfirm(url, SMBSYNC_CONFIRM_FOR_COPY);
 						synchronized(tcConfirm) {
 							tcConfirm.wait();//Posted by SMBSyncService#aidlConfirmResponse()
 						}

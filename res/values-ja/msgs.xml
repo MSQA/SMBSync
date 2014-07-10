@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE msg_string>
 <resources>
+    <string name="msgs_terminate_application">SMBSyncを終了しますか？</string>
+    
+    <string name="msgs_kill_application">SMBSyncを強制終了しますか？</string>
+
+    <string name="msgs_application_already_started">同期実行中ため、スケジュールまたは外部アプリケーションからの起動要求を無視しました。</string>
+    
     <string name="msgs_sync_select_prof_no_active_profile">有効な同期プロファイルが選択されていません。</string>
     
     <string name="msgs_notification_sync_active">同期処理中です。</string>
@@ -146,13 +152,21 @@
 	<string name="msgs_menu_log_management">ログファイル管理</string>
 	<string name="msgs_menu_about">SMBSyncについて</string>
 	<string name="msgs_menu_settings">設定</string>
+	<string name="msgs_menu_kill">強制終了</string>
 	
-	<string name="msgs_extra_data_ignored"            >AutoStartが無指定または無効(false)のため無視しました : </string>
-	<string name="msgs_extra_data_was_found"          >Extra dataが指定されました</string>
+	<string name="msgs_extra_data_ignored"            >AutoStartが無効のため%sを無視しました、同期を中止します。</string>
 	<string name="msgs_extra_data_sync_profile"       >下記のプロファイルが指定されています</string>
 	<string name="msgs_extra_data_profile_selected"   >   選択されたプロファイル : </string>
 	<string name="msgs_extra_data_profile_disabled"   >   無効なプロファイルなため無視 : </string>
 	<string name="msgs_extra_data_profile_not_exists" >   存在しないプロファイル : </string>
 	<string name="msgs_extra_data_no_profile_selected">プロファイルが選択されていないため全ての有効なプロファイルを同期します。</string>
-			
+	
+	<string name="msgs_extra_data_startup_by">%sにより同期が開始されました。</string>
+	<string name="msgs_extra_data_auto_start_not_boolean">AutoStartはbooleanで指定されていません、同期を中止します。</string>
+	<string name="msgs_extra_data_auto_term_not_boolean">AutoTermはbooleanで指定されていません、同期を中止します。</string>
+	<string name="msgs_extra_data_back_ground_not_boolean">Backgroundはbooleanで指定されていません、同期を中止します。</string>
+	<string name="msgs_extra_data_startup_parms_length_error">StartupParmsは最低3つの項目が指定されている必要があります、同期を中止します。parms=%s</string>
+	<string name="msgs_extra_data_startup_parms_value_error">StartupParmsの最初の3つの項目はtrueまたはfalseで指定してください、同期を中止します。値=%s</string>
+	<string name="msgs_extra_data_startup_parms_type_error">StartupParmsはStringで指定されていません、同期を中止します。</string>
+	<string name="msgs_extra_data_sync_profile_type_error">SyncProfileはString配列で指定されていません、同期を中止します。</string>
 </resources>

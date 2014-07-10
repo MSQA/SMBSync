@@ -44,6 +44,8 @@ public class SMBSyncService extends Service {
 	private ThreadCtrl tcMirror=null, tcConfirm=null;
 	
 	private WakeLock mPartialWakeLock=null;
+	
+	private ISvcCallback callBackStub=null;
 
 	@Override
 	public void onCreate() {
@@ -108,14 +110,14 @@ public class SMBSyncService extends Service {
 		public void setCallBack(ISvcCallback callback)
 				throws RemoteException {
 			mUtil.addDebugLogMsg(1, "I", "aidlSetCallBack entered");
-			glblParms.callBackStub=callback;
+			callBackStub=callback;
 		}
 
 		@Override
 		public void removeCallBack(ISvcCallback callback)
 				throws RemoteException {
 			mUtil.addDebugLogMsg(1, "I", "aidlRemoveCallBack entered");
-			glblParms.callBackStub=null;
+			callBackStub=null;
 		}
 
 		@Override
@@ -219,7 +221,7 @@ public class SMBSyncService extends Service {
 					result_msg=tcMirror.getThreadMessage();
 				}
 				try {
-					glblParms.callBackStub.cbThreadEnded(result_code, result_msg);
+					callBackStub.cbThreadEnded(result_code, result_msg);
 				} catch (RemoteException e) {
 					e.printStackTrace();
 				}
@@ -229,7 +231,7 @@ public class SMBSyncService extends Service {
 			} 
 		});
 		
-		Thread tm = new Thread(new MirrorIO(glblParms, ntfy, tcMirror, tcConfirm)); 
+		Thread tm = new Thread(new MirrorIO(glblParms, ntfy, tcMirror, tcConfirm, callBackStub)); 
 		tm.setPriority(Thread.MIN_PRIORITY);
 		tm.start();
 	};

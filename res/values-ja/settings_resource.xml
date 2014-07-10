@@ -21,13 +21,13 @@
     </string-array>
 	
     <string name="settings_auto_start_title">自動同期起動</string>
-    <string name="settings_auto_start_summary_ena">アプリケーション起動後に有効な全プロファイルの同期を実行</string>
+    <string name="settings_auto_start_summary_ena">有効な全プロファイルの同期を実行</string>
 	
     <string name="settings_auto_term_title">自動停止</string>
-	<string name="settings_auto_term_summary_ena">自動同期起動による同期終了後に終了する</string>
+	<string name="settings_auto_term_summary_ena">同期終了後に終了する</string>
 	
     <string name="settings_backgroound_execution_title">バックグラウンド実行</string>
-	<string name="settings_backgroound_execution_summary_ena">SMBSyncをバックグランドで実行(アプリケーションの起動後にホームスクリーンが表示されます)</string>
+	<string name="settings_backgroound_execution_summary_ena">バックグランドで実行</string>
 
 	<string name="settings_ui_title">ユーザーインターフェース</string>
 	

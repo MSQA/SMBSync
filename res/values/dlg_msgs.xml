@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     
-    <string name="msgs_terminate_application">Terminate application?</string>
-    
     <string name="msgs_dlg_ok_btn">OK</string>
     <string name="msgs_dlg_save_btn">Save</string>
     <string name="msgs_dlg_cancel_btn">Cancel</string>

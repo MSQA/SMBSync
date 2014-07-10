@@ -24,30 +24,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 */
 
 import static com.sentaroh.android.SMBSync.Constants.*;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_BG_TERM_NOTIFY_MSG_NO;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_CONFIRM_FOR_COPY;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_CONFIRM_RESP_NO;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_CONFIRM_RESP_NOALL;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_CONFIRM_RESP_YES;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_CONFIRM_RESP_YESALL;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_EXTRA_PARM_AUTO_START;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_EXTRA_PARM_AUTO_TERM;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_EXTRA_PARM_BACKGROUND_EXECUTION;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_EXTRA_PARM_SYNC_PROFILE;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PB_RINGTONE_NOTIFICATION_ALWAYS;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PB_RINGTONE_NOTIFICATION_ERROR;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PB_RINGTONE_NOTIFICATION_SUCCESS;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROF_ACTIVE;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROF_TYPE_LOCAL;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROF_TYPE_REMOTE;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROF_TYPE_SYNC;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_SERIALIZABLE_FILE_NAME;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_SUPPRESS_WARNING_MIXED_MP;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_SYNC_WIFI_OPTION_ADAPTER_OFF;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_SYNC_WIFI_OPTION_CONNECTED_ANY_AP;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_VIBRATE_WHEN_SYNC_ENDED_ALWAYS;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_VIBRATE_WHEN_SYNC_ENDED_ERROR;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_VIBRATE_WHEN_SYNC_ENDED_SUCCESS;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -89,6 +65,7 @@ import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.text.ClipboardManager;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -148,9 +125,14 @@ public class SMBSyncMain extends FragmentActivity {
 	private static SMBSyncUtil util=null;
 	private CustomContextMenu ccMenu = null;
 	
-	public boolean extraDataSpecifiedSyncProfile=false,
-			extraDataSpecifiedAutoStart=false,extraDataSpecifiedAutoTerm=false,
-			extraDataSpecifiedExecuteMinimum=false;
+	private boolean 
+			isExtraSpecAutoStart=false,
+			isExtraSpecAutoTerm=false,
+			isExtraSpecBgExec=false;
+	private String[] extraValueSyncProfList=null;
+	private boolean extraValueAutoStart=false,
+			extraValueAutoTerm=false,
+			extraValueBgExec=false;
 	
 	private int restartStatus=0;
 	
@@ -242,6 +224,7 @@ public class SMBSyncMain extends FragmentActivity {
 		if (profMaint==null) 
 			profMaint=new ProfileMaintenance(util,this, commonDlg,ccMenu, mGp);
 		
+//		SchedulerMain.setTimer(mContext);		
 	};
 	
 	@Override
@@ -254,6 +237,27 @@ public class SMBSyncMain extends FragmentActivity {
 		util.setActivityIsForeground(true);
 	};
 
+	@Override
+	protected void onNewIntent(Intent intent) {
+		super.onNewIntent(intent);
+		util.addDebugLogMsg(1,"I","onNewIntent entered, "+"resartStatus="+restartStatus);
+		if (mGp.mirrorThreadActive) {
+			if (intent.getExtras()!=null) {
+				commonDlg.showCommonDialog(false, "W", "", 
+						mContext.getString(R.string.msgs_application_already_started), null);
+				util.addLogMsg("I",mContext.getString(R.string.msgs_application_already_started));
+			}
+		} else {
+			if (isAutoStartRequested(intent)) {
+				util.addDebugLogMsg(1,"I","onNewIntent Extra data found.");
+				isExtraSpecAutoStart=false;
+				isExtraSpecAutoTerm=false;
+				isExtraSpecBgExec=false;
+				checkAutoStart(intent);
+			}
+		}
+	};
+	
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -279,67 +283,18 @@ public class SMBSyncMain extends FragmentActivity {
 					svcStartForeground();
 					setCallbackListener();
 					
-					if (restartStatus==0) startupWarning();
-					
 					if (restartStatus==0) {
+						startupWarning();
 						util.addLogMsg("I",msgs_smbsync_main_start+" Version "+packageVersionName );
 						showNotificationMsg(msgs_smbsync_main_start+" Version "+packageVersionName );
-						loadExtraDataParms();
-						listSMBSyncOption();
-						if (mGp.settingAutoStart && 
-							mGp.externalStorageIsMounted && !util.isRemoteDisable()) {
-							if (profMaint.getActiveSyncProfileCount(mGp.profileAdapter)>0) {
-								autoStartDlg();
-								if (mGp.settingBackgroundExecution) {
-									setScreenSwitchToHome();
-								}
-							}
-						} else {
-							NotifyEvent ntfy_nr=new NotifyEvent(mContext);
-							ntfy_nr.setListener(new NotifyEventListener(){
-								@Override
-								public void positiveResponse(Context c,Object[] o) {
-									if (LocalFileLastModified.isLastModifiedWasUsed(mGp.profileAdapter))
-										checkLastModifiedListValidity();
-								}
-								@Override
-								public void negativeResponse(Context c,Object[] o) {}
-							});
-							
-							if (mGp.settingAutoStart && 
-								(!mGp.externalStorageIsMounted || util.isRemoteDisable())) {
-								String m_txt="";
-								if (!mGp.externalStorageIsMounted) m_txt=c.getString(R.string.msgs_astart_abort_external_storage_not_mounted);
-								if (util.isRemoteDisable()) m_txt=c.getString(R.string.msgs_astart_abort_wifi_option_not_satisfied);
-								commonDlg.showCommonDialog(false, "W", "", m_txt, ntfy_nr);
-								util.addLogMsg("W",m_txt);
-							} else {
-//								if (isApplicationFirstTimeRunning) {
-//									if (mGp.profileAdapter.getItem(0).getType().equals("")) {
-//										ProfileCreationWizard sw=new ProfileCreationWizard(mGp, mContext, 
-//												util, profMaint, commonDlg, mGp.profileAdapter);
-//										sw.wizardMain();
-//									}
-//								} else {
-//									ntfy_nr.notifyToListener(true, null);
-//								}
-								if (mGp.profileAdapter.getItem(0).getType().equals("")) {
-									ProfileCreationWizard sw=new ProfileCreationWizard(mGp, mContext, 
-											util, profMaint, commonDlg, mGp.profileAdapter);
-									sw.wizardMain();
-								} else {
-									ntfy_nr.notifyToListener(true, null);
-								}
-							}
-						}
 					} else if (restartStatus==2) {
 						restoreTaskData();
 						if (currentViewType.equals("M")) tabHost.setCurrentTab(1);
 						util.addLogMsg("I",msgs_smbsync_main_restart+" Version "+packageVersionName);
 						showNotificationMsg(msgs_smbsync_main_restart+" Version "+packageVersionName);
 					}
+					listSMBSyncOption();
 
-					restartStatus=1;
 					deleteTaskData();
 					
 					setMsglistViewListener();
@@ -349,7 +304,21 @@ public class SMBSyncMain extends FragmentActivity {
 					
 					setHistoryViewItemClickListener();
 					setHistoryViewLongClickListener();
+
+					if (isAutoStartRequested(getIntent())) {
+						if (restartStatus!=2) checkAutoStart(getIntent());
+					} else {
+						if (mGp.profileAdapter.getItem(0).getType().equals("")) {
+							ProfileCreationWizard sw=new ProfileCreationWizard(mGp, mContext, 
+										util, profMaint, commonDlg, mGp.profileAdapter);
+							sw.wizardMain();
+						} else {
+							if (LocalFileLastModified.isLastModifiedWasUsed(mGp.profileAdapter))
+								checkLastModifiedListValidity();
+						}
+					}
 					
+					restartStatus=1;
 				}
 				@Override
 				public void negativeResponse(Context c, Object[] o) {}
@@ -644,7 +613,7 @@ public class SMBSyncMain extends FragmentActivity {
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		util.addDebugLogMsg(1,"I","onPrepareOptionsMenu entered, isUiEnabled()="+isUiEnabled());
-		menu.findItem(R.id.menu_top_scheduler).setVisible(false);
+//		menu.findItem(R.id.menu_top_scheduler).setVisible(false);
 		if (isUiEnabled()) {
 			menu.findItem(R.id.menu_top_sync).setEnabled(true);
 			menu.findItem(R.id.menu_top_browse_log).setEnabled(true);
@@ -654,6 +623,7 @@ public class SMBSyncMain extends FragmentActivity {
 			menu.findItem(R.id.menu_top_about).setEnabled(true);
 			menu.findItem(R.id.menu_top_settings).setEnabled(true);
 			menu.findItem(R.id.menu_top_log_management).setEnabled(true);
+			menu.findItem(R.id.menu_top_scheduler).setVisible(true);
 			if (!mGp.externalStorageIsMounted) {
 				menu.findItem(R.id.menu_top_sync).setEnabled(false);
 				menu.findItem(R.id.menu_top_browse_log).setEnabled(false);
@@ -683,6 +653,7 @@ public class SMBSyncMain extends FragmentActivity {
 			menu.findItem(R.id.menu_top_about).setEnabled(false);
 			menu.findItem(R.id.menu_top_settings).setEnabled(false);
 			menu.findItem(R.id.menu_top_log_management).setEnabled(false);
+			menu.findItem(R.id.menu_top_scheduler).setVisible(false);
 		}
         return super.onPrepareOptionsMenu(menu);
 	};
@@ -737,15 +708,19 @@ public class SMBSyncMain extends FragmentActivity {
 			case R.id.menu_top_log_management:
 				invokeLogManagement();
 				return true;
+			case R.id.menu_top_scheduler:
+				SchedulerMain sm=new SchedulerMain(util, mContext, commonDlg, ccMenu, mGp);
+				sm.initDialog();
+				return true;
 			case R.id.menu_top_about:
 				aboutSMBSync();
 				return true;			
 			case R.id.menu_top_settings:
 				invokeSettingsActivity();
 				return true;			
-//			case R.id.menu_top_quit:
-//				terminateApplication();
-//				return true;
+			case R.id.menu_top_kill:
+				killTerminateApplication();
+				return true;
 		}
 		if (isUiEnabled()) {
 		}
@@ -762,15 +737,6 @@ public class SMBSyncMain extends FragmentActivity {
 	private void checkLastModifiedListValidity() {
 		final ArrayList<LocalFileLastModifiedMaintListItem> maint_list=
 				new ArrayList<LocalFileLastModifiedMaintListItem>();
-		final NotifyEvent th_ntfy=new NotifyEvent(mContext);
-		th_ntfy.setListener(new NotifyEventListener(){
-			@Override
-			public void positiveResponse(Context c, Object[] o) {
-				checkMixedMountPoint(maint_list);
-			}
-			@Override
-			public void negativeResponse(Context c, Object[] o) {}
-		});
 		final Handler hndl=new Handler();
 		Thread th=new Thread(new Runnable(){
 			@Override
@@ -780,7 +746,7 @@ public class SMBSyncMain extends FragmentActivity {
 				hndl.post(new Runnable() {
 					@Override
 					public void run() {
-						th_ntfy.notifyToListener(true, null);
+						checkMixedMountPoint(maint_list);
 					}
 				});
 			}
@@ -933,9 +899,9 @@ public class SMBSyncMain extends FragmentActivity {
 			case KeyEvent.KEYCODE_BACK:
 				if (onKeyCallBackListener!=null) {
 					if (!onKeyCallBackListener.onCallBack(mContext, event, null))
-						confirmTerminateApplication();
+						terminateApplication();
 				} else {
-					confirmTerminateApplication();
+					terminateApplication();
 				}
 				return true;
 				// break;
@@ -1071,21 +1037,19 @@ public class SMBSyncMain extends FragmentActivity {
 		finish();
 	};
 	
-	private void confirmTerminateApplication() {
+	private void killTerminateApplication() {
 		
-//		NotifyEvent ntfy=new NotifyEvent(mContext);
-//		ntfy.setListener(new NotifyEventListener() {
-//			@Override
-//			public void positiveResponse(Context c,Object[] o) {
-//				terminateApplication();
-//			}
-//			@Override
-//			public void negativeResponse(Context c,Object[] o) {}
-//		});
-//		commonDlg.showCommonDialog(true,"W",msgs_terminate_application,"",ntfy);
-		terminateApplication();
-
-		return;
+		NotifyEvent ntfy=new NotifyEvent(mContext);
+		ntfy.setListener(new NotifyEventListener() {
+			@Override
+			public void positiveResponse(Context c,Object[] o) {
+				terminateApplication();
+			}
+			@Override
+			public void negativeResponse(Context c,Object[] o) {}
+		});
+		commonDlg.showCommonDialog(true,"W",
+				mContext.getString(R.string.msgs_kill_application),"",ntfy);
 	};
 	
 	private void initSettingsParms() {
@@ -1222,10 +1186,6 @@ public class SMBSyncMain extends FragmentActivity {
 //		if (!glblParms.settingLogOption.equals(t_lo) ) {// option was changed
 //			commonDlg.showCommonDialog(false,"W",msgs_setting_log_opt_chg,"",null);
 //		}
-		if (mGp.settingAutoStart) {
-			mGp.settingLogOption="1"; //Force log enabled
-		}
-
 		mGp.settingAutoTerm=
 				prefs.getBoolean(getString(R.string.settings_auto_term), false);
 		mGp.settingWifiOption=
@@ -1278,137 +1238,207 @@ public class SMBSyncMain extends FragmentActivity {
 //		
 	};
 
-	private void loadExtraDataParms() {
-		Intent in=getIntent();
+	private void checkAutoStart(Intent in) {
+		loadExtraDataParms(in);
+		util.addDebugLogMsg(1,"I","Extra data AutoStart="+extraValueAutoStart+
+				", AutoTerm="+extraValueAutoTerm+
+				", Background="+extraValueBgExec+
+				", SyncProfile="+extraValueSyncProfList);
+		if (mGp.settingAutoStart ||(isExtraSpecAutoStart && extraValueAutoStart)) {
+			if (mGp.settingLogOption.equals("0")) {
+				mGp.settingLogOption="1";
+				util.addLogMsg("I",getString(R.string.msgs_smbsync_main_settings_force_log_enabled));
+			}
+			if ((!mGp.externalStorageIsMounted || util.isRemoteDisable())) {
+				String m_txt="";
+				if (!mGp.externalStorageIsMounted) m_txt=mContext.getString(R.string.msgs_astart_abort_external_storage_not_mounted);
+				if (util.isRemoteDisable()) m_txt=mContext.getString(R.string.msgs_astart_abort_wifi_option_not_satisfied);
+				commonDlg.showCommonDialog(false, "W", "", m_txt, null);
+				util.addLogMsg("W",m_txt);
+			} else {
+				if (extraValueAutoStart) markAutoStartProfileList(extraValueSyncProfList);
+				if (profMaint.getActiveSyncProfileCount(mGp.profileAdapter)>0) {
+					autoStartDlg();
+					if (mGp.settingBackgroundExecution || (isExtraSpecBgExec && extraValueBgExec)) {
+						setScreenSwitchToHome();
+					}
+				}
+			}
+		}
+	};
+
+	@SuppressLint("DefaultLocale")
+	private boolean isAutoStartRequested(Intent in) {
+		boolean result=false;
 		Bundle bundle=in.getExtras();
 		if (bundle!=null) {
-			util.addLogMsg("I",mContext.getString(R.string.msgs_extra_data_was_found));
+			if (bundle.containsKey(SMBSYNC_EXTRA_PARM_AUTO_START)) {
+				result=true;
+			} else if (bundle.containsKey(SMBSYNC_EXTRA_PARM_AUTO_TERM)) {
+				result=true;
+			} else if (bundle.containsKey(SMBSYNC_EXTRA_PARM_BACKGROUND_EXECUTION)) {
+				result=true;
+			} else if (bundle.containsKey(SMBSYNC_EXTRA_PARM_STARTUP_PARMS)) {
+				result=true;
+			} else if (bundle.containsKey(SMBSYNC_EXTRA_PARM_SYNC_PROFILE)) {
+				result=true;
+			}
+		}
+		util.addDebugLogMsg(1,"I","isAutoStartRequested result="+result);
+		return result;
+	};
+	
+	@SuppressLint("DefaultLocale")
+	private void loadExtraDataParms(Intent in) {
+		Bundle bundle=in.getExtras();
+		if (bundle!=null) {
+			tabHost.setCurrentTab(1);
+			String sid="External Application";
+			if (bundle.containsKey(SMBSYNC_SCHEDULER_ID)) {
+				if (bundle.get(SMBSYNC_SCHEDULER_ID).getClass().getSimpleName().equals("String")) {
+					sid=bundle.getString(SMBSYNC_SCHEDULER_ID);
+				}
+			}
+			util.addLogMsg("I",
+					String.format(mContext.getString(R.string.msgs_extra_data_startup_by),sid));
 			if (bundle.containsKey(SMBSYNC_EXTRA_PARM_AUTO_START)) {
 				if (bundle.get(SMBSYNC_EXTRA_PARM_AUTO_START).getClass().getSimpleName().equals("Boolean")) {
-					extraDataSpecifiedAutoStart=true;
-					mGp.settingAutoStart=bundle.getBoolean(SMBSYNC_EXTRA_PARM_AUTO_START);
-					util.addLogMsg("I"," AutoStart="+mGp.settingAutoStart);
+					isExtraSpecAutoStart=true;
+					extraValueAutoStart=bundle.getBoolean(SMBSYNC_EXTRA_PARM_AUTO_START);
+					util.addLogMsg("I","AutoStart="+extraValueAutoStart);
 				} else {
-					util.addLogMsg("W"," AutoStart must be boolean, ignored extra data");
+					util.addLogMsg("W",mContext.getString(R.string.msgs_extra_data_auto_start_not_boolean));
 				}
 			}
 			if (bundle.containsKey(SMBSYNC_EXTRA_PARM_AUTO_TERM)) {
 				if (bundle.get(SMBSYNC_EXTRA_PARM_AUTO_TERM).getClass().getSimpleName().equals("Boolean")) {
-					if (extraDataSpecifiedAutoStart && mGp.settingAutoStart) {
-						extraDataSpecifiedAutoTerm=true;
-						mGp.settingAutoTerm=bundle.getBoolean(SMBSYNC_EXTRA_PARM_AUTO_TERM);
-						util.addLogMsg("I"," AutoTerm="+mGp.settingAutoTerm);
+					if (extraValueAutoStart) {
+						isExtraSpecAutoTerm=true;
+						extraValueAutoTerm=bundle.getBoolean(SMBSYNC_EXTRA_PARM_AUTO_TERM);
+						util.addLogMsg("I","AutoTerm="+extraValueAutoTerm);
 					} else {
-						util.addLogMsg("W",mContext.getString(R.string.msgs_extra_data_ignored)+"AutoTerm");
+						util.addLogMsg("W",String.format(
+								mContext.getString(R.string.msgs_extra_data_ignored),"AutoTerm"));
 					}
 				} else {
-					util.addLogMsg("W"," AutoTerm must be boolean, ignored extra data");
+					util.addLogMsg("W",mContext.getString(R.string.msgs_extra_data_auto_term_not_boolean));
 				}
 			}
 			if (bundle.containsKey(SMBSYNC_EXTRA_PARM_BACKGROUND_EXECUTION)) {
 				if (bundle.get(SMBSYNC_EXTRA_PARM_BACKGROUND_EXECUTION).getClass().getSimpleName().equals("Boolean")) {
-					extraDataSpecifiedExecuteMinimum=
-							bundle.getBoolean(SMBSYNC_EXTRA_PARM_BACKGROUND_EXECUTION);
-					mGp.settingBackgroundExecution=extraDataSpecifiedExecuteMinimum;
-					util.addLogMsg("I"," Background="+mGp.settingBackgroundExecution);
+					if (extraValueAutoStart) {
+						isExtraSpecBgExec=true;
+						extraValueBgExec=bundle.getBoolean(SMBSYNC_EXTRA_PARM_BACKGROUND_EXECUTION);
+						util.addLogMsg("I","Background="+extraValueBgExec);
+					} else {
+						util.addLogMsg("W",String.format(
+								mContext.getString(R.string.msgs_extra_data_ignored),"Background"));
+					}
+
 				} else {
-					util.addLogMsg("W"," Background must be boolean, ignored extra data");
+					util.addLogMsg("W",mContext.getString(R.string.msgs_extra_data_back_ground_not_boolean));
 				}
 			}
-			if (bundle.containsKey(SMBSYNC_EXTRA_PARM_OVERRIDE_PARMS)) {
-				if (bundle.get(SMBSYNC_EXTRA_PARM_OVERRIDE_PARMS).getClass().getSimpleName().equals("String")) {
-					String op=bundle.getString(SMBSYNC_EXTRA_PARM_OVERRIDE_PARMS).replaceAll("\"", "").replaceAll("\'", "");
+			if (bundle.containsKey(SMBSYNC_EXTRA_PARM_STARTUP_PARMS)) {
+				if (bundle.get(SMBSYNC_EXTRA_PARM_STARTUP_PARMS).getClass().getSimpleName().equals("String")) {
+					String op=bundle.getString(SMBSYNC_EXTRA_PARM_STARTUP_PARMS).replaceAll("\"", "").replaceAll("\'", "");
 //					Log.v("","op="+op);
 					boolean[] opa=new boolean[]{false,false,false};
 					boolean error=false;
-					if (op.length()!=3) {
+					extraValueSyncProfList=null;
+					String[] op_str_array=op.split(",");
+					if (op_str_array.length<3) {
 						error=true;
-						util.addLogMsg("W"," OverrideParms length error, OverrideParms length is must be 3. parms="+op);
+						util.addLogMsg("W",String.format(
+								mContext.getString(R.string.msgs_extra_data_startup_parms_length_error),op));
 					} else {
-						for (int i=0;i<op.length();i++) {
-//							Log.v("","i="+i+", d="+op.substring(i,i+1)+"|");
-							if (op.substring(i,i+1).equals("0")) {
+						for (int i=0;i<3;i++) {
+							if (op_str_array[i].toLowerCase().equals("false")) {
 								opa[i]=false;
-							} else if (op.substring(i,i+1).equals("1")){
+							} else if (op_str_array[i].toLowerCase().equals("true")){
 								opa[i]=true;
 							} else {
 								error=true;
-								util.addLogMsg("W"," OverrideParms value must be 0 or 1, ignored OverrideParms data");
+								util.addLogMsg("W",String.format(
+										mContext.getString(R.string.msgs_extra_data_startup_parms_value_error),op_str_array[i]));
 								break;
 							} 
 						}
+						if (op_str_array.length>3) {
+							extraValueSyncProfList=new String[op_str_array.length-3];
+							for (int i=0;i<op_str_array.length-3;i++) 
+								extraValueSyncProfList[i]=op_str_array[i+3];
+						}
 					}
 					if (!error) {
-						extraDataSpecifiedAutoStart=true;
-						mGp.settingAutoStart=opa[0];
-						util.addLogMsg("I"," AutoStart="+mGp.settingAutoStart);
-
-						if (extraDataSpecifiedAutoStart && mGp.settingAutoStart) {
-							extraDataSpecifiedAutoTerm=true;
-							mGp.settingAutoTerm=opa[1];
-							util.addLogMsg("I"," AutoTerm="+mGp.settingAutoTerm);
+						isExtraSpecAutoStart=true;
+						extraValueAutoStart=opa[0];
+						util.addLogMsg("I","AutoStart="+extraValueAutoStart);
+						if (isExtraSpecAutoStart && extraValueAutoStart) {
+							isExtraSpecAutoTerm=true;
+							extraValueAutoTerm=opa[1];
+							util.addLogMsg("I","AutoTerm="+extraValueAutoTerm);
+							
+							isExtraSpecBgExec=opa[2];
+							extraValueBgExec=isExtraSpecBgExec;
+							util.addLogMsg("I","Background="+extraValueBgExec);
 						} else {
-							util.addLogMsg("W",mContext.getString(R.string.msgs_extra_data_ignored)+"AutoTerm");
+							util.addLogMsg("W",String.format(
+									mContext.getString(R.string.msgs_extra_data_ignored),"AutoTerm"));
+							util.addLogMsg("W",String.format(
+									mContext.getString(R.string.msgs_extra_data_ignored),"Background"));
 						}
-
-						extraDataSpecifiedExecuteMinimum=opa[2];
-						mGp.settingBackgroundExecution=extraDataSpecifiedExecuteMinimum;
-						util.addLogMsg("I"," Background="+mGp.settingBackgroundExecution);
-
 					}
 				} else {
-					util.addLogMsg("W"," OverrideParms must be String, ignored extra data");
+					util.addLogMsg("W",mContext.getString(R.string.msgs_extra_data_startup_parms_type_error));
 				}
 			}
 			if (bundle.containsKey(SMBSYNC_EXTRA_PARM_SYNC_PROFILE)) {
-				if (extraDataSpecifiedAutoStart && mGp.settingAutoStart) {
+				if (isExtraSpecAutoStart && extraValueAutoStart) {
 					if (bundle.get(SMBSYNC_EXTRA_PARM_SYNC_PROFILE).getClass().getSimpleName().equals("String[]")) {
-						String[] sync_profile=bundle.getStringArray(SMBSYNC_EXTRA_PARM_SYNC_PROFILE);
-						checkExtraDataProfileName(sync_profile);
+						extraValueSyncProfList=bundle.getStringArray(SMBSYNC_EXTRA_PARM_SYNC_PROFILE);
 					} else {
-						if (bundle.get(SMBSYNC_EXTRA_PARM_SYNC_PROFILE).getClass().getSimpleName().equals("String")) {
-							String sp=bundle.getString(SMBSYNC_EXTRA_PARM_SYNC_PROFILE).replaceAll("\"", "").replaceAll("\'", "");
-//							Log.v("","sp="+sp);
-							String[] sync_profile=sp.split(",");
-							checkExtraDataProfileName(sync_profile);
-						} else {
-							util.addLogMsg("W"," SyncProfile must be string, ignored extra data");
-						}
+						util.addLogMsg("W",mContext.getString(R.string.msgs_extra_data_sync_profile_type_error));
 					}
 				} else {
-					util.addLogMsg("W",mContext.getString(R.string.msgs_extra_data_ignored)+"SyncProfile");
+					util.addLogMsg("W",String.format(
+							mContext.getString(R.string.msgs_extra_data_ignored),"SyncProfile"));
 				}
 			}
-			if (extraDataSpecifiedAutoStart && mGp.settingAutoStart && !extraDataSpecifiedSyncProfile)
-				util.addLogMsg("I",mContext.getString(R.string.msgs_extra_data_no_profile_selected));
 		}
 	};
 
-	private void checkExtraDataProfileName(String[] sync_profile) {
-		if (sync_profile.length!=0) {
+	private boolean markAutoStartProfileList(String[] sync_profile) {
+		boolean prof_selected=false;
+		if (sync_profile!=null && sync_profile.length!=0) {
 			util.addLogMsg("I",mContext.getString(R.string.msgs_extra_data_sync_profile));
+			for (int pidx=0;pidx<mGp.profileAdapter.getCount();pidx++) {
+				mGp.profileAdapter.getItem(pidx).setChecked(false);
+			}
 			for (int sidx=0;sidx<sync_profile.length;sidx++) {
-				boolean selected=false;
-				for (int pidx=0;pidx<mGp.profileAdapter.getCount();pidx++) {
-					if (mGp.profileAdapter.getItem(pidx).getType().equals(SMBSYNC_PROF_TYPE_SYNC) && 
-							mGp.profileAdapter.getItem(pidx).getName().equals(sync_profile[sidx])) {
-						selected=true;
-						if (mGp.profileAdapter.getItem(pidx).getActive().equals(SMBSYNC_PROF_ACTIVE)) {
-							mGp.profileAdapter.getItem(pidx).setChecked(true);
-							util.addLogMsg("I",mContext.getString(R.string.msgs_extra_data_profile_selected)+sync_profile[sidx]);
-							extraDataSpecifiedSyncProfile=true;
-						} else {
-							util.addLogMsg("W",mContext.getString(R.string.msgs_extra_data_profile_disabled)+sync_profile[sidx]);								
+				if (!sync_profile[sidx].equals("")) {
+					boolean selected=false;
+					for (int pidx=0;pidx<mGp.profileAdapter.getCount();pidx++) {
+						if (mGp.profileAdapter.getItem(pidx).getType().equals(SMBSYNC_PROF_TYPE_SYNC) && 
+								mGp.profileAdapter.getItem(pidx).getName().equals(sync_profile[sidx])) {
+							selected=true;
+							if (mGp.profileAdapter.getItem(pidx).getActive().equals(SMBSYNC_PROF_ACTIVE)) {
+								mGp.profileAdapter.getItem(pidx).setChecked(true);
+								util.addLogMsg("I",mContext.getString(R.string.msgs_extra_data_profile_selected)+sync_profile[sidx]);
+								prof_selected=true;
+							} else {
+								util.addLogMsg("W",mContext.getString(R.string.msgs_extra_data_profile_disabled)+sync_profile[sidx]);								
+							}
 						}
 					}
+					if (!selected) 
+						util.addLogMsg("W",mContext.getString(R.string.msgs_extra_data_profile_not_exists)+sync_profile[sidx]);								
 				}
-				if (!selected) 
-					util.addLogMsg("W",mContext.getString(R.string.msgs_extra_data_profile_not_exists)+sync_profile[sidx]);								
 			}
-		} else {
-			util.addLogMsg("W"," No profile name was specified, ignored extra data");
 		}
-	}
+		if (!prof_selected) util.addLogMsg("I",mContext.getString(R.string.msgs_extra_data_no_profile_selected));
+		return prof_selected;
+	};
 	
 	private void listSMBSyncOption() {
 		util.addDebugLogMsg(1,"I","SMBSync option :"+
@@ -1447,9 +1477,6 @@ public class SMBSyncMain extends FragmentActivity {
 		if (mGp.debugLevel==9)
 			util.addDebugLogMsg(1,"I","settings_default_pass="+
 					mGp.settingPassword);
-		if (mGp.settingAutoStart) util.addLogMsg("I",
-				getString(R.string.msgs_smbsync_main_settings_force_log_enabled));
-
 	};
 
 	@SuppressLint("SdCardPath")
@@ -2311,6 +2338,7 @@ public class SMBSyncMain extends FragmentActivity {
 		mGp.mirrorIoParms=alp;
 
 		setUiDisabled();
+		mGp.mirrorThreadActive=true;
 		try {
 			mSvcClient.aidlStartThread();
 		} catch (RemoteException e) {
@@ -2425,7 +2453,7 @@ public class SMBSyncMain extends FragmentActivity {
 
 		mGp.msgListView.setFastScrollEnabled(true);
 		util.flushLogFile();
-		if (mGp.settingAutoStart && mGp.settingAutoTerm) {
+		if ((mGp.settingAutoStart && mGp.settingAutoTerm) || (isExtraSpecAutoTerm && extraValueAutoTerm)) {
 			if (mGp.settingErrorOption) {
 				showMirrorThreadResult(result_code,result_msg);
 				autoTerminateDlg(result_code, result_msg);
@@ -2433,41 +2461,54 @@ public class SMBSyncMain extends FragmentActivity {
 				if (result_code.equals("OK")) {
 					showMirrorThreadResult(result_code,result_msg);
 					autoTerminateDlg(result_code, result_msg);
-				}
-				else {
+				} else {
 					mGp.settingAutoTerm=false;
 					showMirrorThreadResult(result_code,result_msg);
+					mGp.mirrorThreadActive=false;
 				}		
 			}
 		} else {
 			showMirrorThreadResult(result_code,result_msg);
+			mGp.mirrorThreadActive=false;
 			saveTaskData();
 		}
 	};
 	
 	private void playBackDefaultNotification() {
-		Thread th=new Thread(){
-			@Override
-			public void run() {
-				Uri uri=RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-				if (uri!=null) {
-//					Ringtone rt=RingtoneManager.getRingtone(mContext, uri);
-//					rt.play();
-//					SystemClock.sleep(1000);
-//					rt.stop();
-					MediaPlayer player = MediaPlayer.create(mContext, uri);
-					if (player!=null) {
-						int dur=player.getDuration();
-						player.start();
-						SystemClock.sleep(dur+10);
-						player.stop();
-						player.reset();
-						player.release();
-					}
-				}
+//		Thread th=new Thread(){
+//			@Override
+//			public void run() {
+//				Uri uri=RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+//				if (uri!=null) {
+////					Ringtone rt=RingtoneManager.getRingtone(mContext, uri);
+////					rt.play();
+////					SystemClock.sleep(1000);
+////					rt.stop();
+//					MediaPlayer player = MediaPlayer.create(mContext, uri);
+//					if (player!=null) {
+//						int dur=player.getDuration();
+//						player.start();
+//						SystemClock.sleep(dur+10);
+//						player.stop();
+//						player.reset();
+//						player.release();
+//					}
+//				}
+//			}
+//		};
+//		th.start();
+		Uri uri=RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+		if (uri!=null) {
+			MediaPlayer player = MediaPlayer.create(mContext, uri);
+			if (player!=null) {
+				int dur=player.getDuration();
+				player.start();
+				SystemClock.sleep(dur+10);
+				player.stop();
+				player.reset();
+				player.release();
 			}
-		};
-		th.start();
+		}
 	};
 
 	private void vibrateDefaultPattern() {
@@ -2482,9 +2523,9 @@ public class SMBSyncMain extends FragmentActivity {
     };
     
 	private void showMirrorThreadResult(final String code, final String text) {
-		if (!mGp.settingAutoTerm)
-			if (util.isActivityForeground())
-				commonDlg.showCommonDialog(false,"I",text,"",null);
+//		if (!mGp.settingAutoTerm)
+//			if (util.isActivityForeground())
+//				commonDlg.showCommonDialog(false,"I",text,"",null);
 		if (mGp.settingBgTermNotifyMsg.equals(SMBSYNC_BG_TERM_NOTIFY_MSG_ALWAYS))
 			showNotificationMsg(text);
 //		Log.v("","code="+code+", pb="+glblParms.settingRingtoneWhenSyncEnded+", vib="+glblParms.settingVibrateWhenSyncEnded);
@@ -2547,7 +2588,7 @@ public class SMBSyncMain extends FragmentActivity {
 	
 	private void openService(final NotifyEvent p_ntfy) {
     	
-			util.addDebugLogMsg(1,"I","openService entered");
+		util.addDebugLogMsg(1,"I","openService entered");
         mSvcConnection = new ServiceConnection(){
     		public void onServiceConnected(ComponentName arg0, IBinder service) {
     	    	util.addDebugLogMsg(1,"I","onServiceConnected entered");
@@ -2735,7 +2776,7 @@ public class SMBSyncMain extends FragmentActivity {
 			public void positiveResponse(Context c,Object[] o) {
 				util.addLogMsg("I",getString(R.string.msgs_astart_expired));
 				showNotificationMsg(getString(R.string.msgs_astart_expired));
-				if (mGp.settingAutoStart){
+				if (mGp.settingAutoStart || (isExtraSpecAutoStart && extraValueAutoStart)){
 					
 					util.addDebugLogMsg(1,"I","Auto synchronization was invoked.");
 //					saveTaskData();
@@ -2744,10 +2785,11 @@ public class SMBSyncMain extends FragmentActivity {
 						if (mGp.profileAdapter.getItem(i).getType().equals(SMBSYNC_PROF_TYPE_SYNC) && 
 								mGp.profileAdapter.getItem(i).isChecked()) {
 							sel_prof=true;
-							break;
+							Log.v("","name="+mGp.profileAdapter.getItem(i).getName());
+//							break;
 						}
 					}
-					if (sel_prof && extraDataSpecifiedSyncProfile) syncSelectedProfile();
+					if (sel_prof) syncSelectedProfile();
 					else syncActiveProfile();
 				}
 			}
@@ -2761,7 +2803,8 @@ public class SMBSyncMain extends FragmentActivity {
 		showNotificationMsg(getString(R.string.msgs_astart_started));
 		util.addLogMsg("I",getString(R.string.msgs_astart_started));
 		tabHost.setCurrentTab(1);
-		if (extraDataSpecifiedAutoStart) {
+		if (extraValueAutoStart) {
+			ll_bar.setVisibility(LinearLayout.GONE);
 			at_ne.notifyToListener(true, null);
 		} else {
 			autoTimer(threadCtl, at_ne,getString(R.string.msgs_astart_after));
@@ -2800,7 +2843,7 @@ public class SMBSyncMain extends FragmentActivity {
 			@Override
 			public void positiveResponse(Context c,Object[] o) {
 				util.addLogMsg("I",getString(R.string.msgs_aterm_expired));
-				if (mGp.settingAutoTerm){
+				if (mGp.settingAutoTerm || (isExtraSpecAutoStart && extraValueAutoStart)){
 					svcStopForeground(true);
 					//Wait until stopForeground() completion 
 					Handler hndl=new Handler();
@@ -2833,10 +2876,12 @@ public class SMBSyncMain extends FragmentActivity {
 			public void negativeResponse(Context c,Object[] o) {
 				util.addLogMsg("W",getString(R.string.msgs_aterm_cancelled));
 				showNotificationMsg(getString(R.string.msgs_aterm_cancelled));
+				mGp.mirrorThreadActive=false;
 			}
 		});
+//		Log.v("","e="+extraDataSpecifiedAutoTerm);
 		util.addLogMsg("I",getString(R.string.msgs_aterm_started));
-		if (extraDataSpecifiedAutoTerm) {
+		if (extraValueAutoTerm) {
 			util.addLogMsg("I", getString(R.string.msgs_aterm_back_ground_term));
 			at_ne.notifyToListener(true, null);
 		} else if (!util.isActivityForeground()) {

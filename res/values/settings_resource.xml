@@ -28,7 +28,7 @@
     </string-array>	    
 	
     <string name="settings_auto_start_title">Auto Sync start-up</string>
-    <string name="settings_auto_start_summary_ena">Sync task will not started immediately after application startup</string>
+    <string name="settings_auto_start_summary_ena">Performs sync of all active profiles</string>
 	<string name="settings_auto_start">settings_auto_start</string>
 	
     <string name="settings_auto_term_title">Auto termination</string>
