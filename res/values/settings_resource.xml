@@ -134,13 +134,13 @@
 	<string name="settings_log_preference_screen_title">Log</string>
 	
 	<string name="settings_log_option_title">Log file</string>
-	<string name="settings_log_option_summary_no">No log message file</string>
-	<string name="settings_log_option_summary_date_time">Append with a starting date(yyyy-mm-dd) of application to the log file name</string>
+	<string name="settings_log_option_summary_no">Do not create a log file</string>
+	<string name="settings_log_option_summary_date_time">Create a log file</string>
 	<string name="settings_log_option_dialog_title">Message Logging option</string>
 	<string name="settings_log_option">settings_log_option</string>
 	<string-array name="settings_log_option_list_entries">
-        <item>No log message</item>
-        <item>Append with a starting date of application to the log file name.</item>
+        <item>Do not create a log file</item>
+        <item>Create a log file</item>
     </string-array>
     <string-array name="settings_log_option_list_values">
         <item>0</item>

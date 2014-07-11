@@ -99,7 +99,6 @@ public class GlobalParameters extends Application{
 			settingScanExternalStorage,
 			settingExitClean,
 			settingBackgroundExecution=false;
-	public boolean settingLogFileCreatedByStartupTime=false;//true:ログファイルの作成はスタート毎に作成
 	public boolean settingScreenOnEnabled=true;
 	public boolean settingWifiLockRequired=true;
 	public String settingWifiOption=SMBSYNC_SYNC_WIFI_OPTION_CONNECTED_ANY_AP;
@@ -114,7 +113,7 @@ public class GlobalParameters extends Application{
 	public static final String BG_TERM_NOTIFY_MSG_ERROR = "1";
 	public static final String BG_TERM_NOTIFY_MSG_NO = "2";
 
-	public String settingLogMsgFilename="SMBSync_log_yyyy-mm-dd.txt";
+	public String settingLogMsgFilename="";
 	public int settiingLogGeneration=1;
 	public boolean settingExportedProfileEncryptRequired=true;
 //	public boolean settingInternalProfileEncryptRequired=true;

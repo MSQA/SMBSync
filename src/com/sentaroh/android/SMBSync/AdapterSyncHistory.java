@@ -120,7 +120,7 @@ public class AdapterSyncHistory extends ArrayAdapter<SyncHistoryListItem> {
             	holder.tv_cnt_ignored.setText(Integer.toString(o.sync_result_no_of_ignored));
             	if (o.sync_log_file_path!=null && !o.sync_log_file_path.equals("")) {
             		holder.tv_log_path.setText(o.sync_log_file_path);
-            	} else holder.tv_log_path.setText("");
+            	} else holder.tv_log_path.setVisibility(TextView.GONE);//.setText("");
            		if (o.sync_error_text!=null && !o.sync_error_text.equals("")) {
            			holder.tv_error.setVisibility(TextView.VISIBLE);
            			holder.tv_error.setText(o.sync_error_text);

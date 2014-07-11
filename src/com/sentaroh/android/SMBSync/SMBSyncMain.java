@@ -31,7 +31,6 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -483,6 +482,7 @@ public class SMBSyncMain extends FragmentActivity {
 		historyListView.setFocusable(true);
 		historyListView.setFastScrollEnabled(true);
 		historyListView.setFocusableInTouchMode(true);
+		historyListView.setScrollBarStyle(View.SCROLLBARS_OUTSIDE_INSET);
 		setFastScrollListener(historyListView);
 
 	};
@@ -1173,10 +1173,6 @@ public class SMBSyncMain extends FragmentActivity {
 		String p_opt=mGp.settingLogOption;
 		mGp.settingLogOption=
 				prefs.getString(getString(R.string.settings_log_option), "0");
-		SimpleDateFormat df=null;
-		if (mGp.settingLogFileCreatedByStartupTime) df = new SimpleDateFormat("yyyy-MM-dd_HHmmss");
-		else df = new SimpleDateFormat("yyyy-MM-dd");
-		mGp.settingLogMsgFilename="SMBSync_log_"+df.format(System.currentTimeMillis())+".txt";
 
 		if (!mGp.settingLogOption.equals(p_opt)) {
 			if (mGp.settingLogOption.equals("0")) util.closeLogFile();
@@ -1464,7 +1460,6 @@ public class SMBSyncMain extends FragmentActivity {
 				", settingShowSyncDetailMessage="+mGp.settingShowSyncDetailMessage+
 				", settingLogOption="+mGp.settingLogOption+
 				", settingLogMsgDir="+mGp.settingLogMsgDir+
-				", settingLogFileCreatedByStartupTime="+mGp.settingLogFileCreatedByStartupTime+
 				", settingLogMsgFilename="+mGp.settingLogMsgFilename+
 				", settiingLogGeneration="+mGp.settiingLogGeneration+
 				
@@ -2464,13 +2459,24 @@ public class SMBSyncMain extends FragmentActivity {
 				} else {
 					mGp.settingAutoTerm=false;
 					showMirrorThreadResult(result_code,result_msg);
+					rotateLogFile();
 					mGp.mirrorThreadActive=false;
 				}		
 			}
 		} else {
 			showMirrorThreadResult(result_code,result_msg);
-			mGp.mirrorThreadActive=false;
+			rotateLogFile();
 			saveTaskData();
+			mGp.mirrorThreadActive=false;
+		}
+	};
+	
+	private void rotateLogFile() {
+		if (!mGp.settingLogOption.equals("0")) {
+			util.flushLogFile();
+			util.closeLogFile();
+			util.openLogFile();
+			util.addLogMsg("I", mContext.getString(R.string.msgs_log_management_log_file_switched));
 		}
 	};
 	
@@ -2876,6 +2882,7 @@ public class SMBSyncMain extends FragmentActivity {
 			public void negativeResponse(Context c,Object[] o) {
 				util.addLogMsg("W",getString(R.string.msgs_aterm_cancelled));
 				showNotificationMsg(getString(R.string.msgs_aterm_cancelled));
+				rotateLogFile();
 				mGp.mirrorThreadActive=false;
 			}
 		});
@@ -2888,8 +2895,7 @@ public class SMBSyncMain extends FragmentActivity {
 			util.addLogMsg("I", getString(R.string.msgs_aterm_back_ground_term));
 			at_ne.notifyToListener(true, null);
 		} else {
-			autoTimer(threadCtl, at_ne,
-					getString(R.string.msgs_aterm_terminate_after));
+			autoTimer(threadCtl, at_ne, getString(R.string.msgs_aterm_terminate_after));
 		}
 	};
 

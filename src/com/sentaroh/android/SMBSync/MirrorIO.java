@@ -405,11 +405,13 @@ public class MirrorIO implements Runnable {
 									calTransferRate(totalTransferByte,totalTransferTime));
 						}
 						addLogMsg("I","",msgs_mirror_prof_success_end);
-						addHistoryList(SyncHistoryListItem.SYNC_STATUS_SUCCESS,copyCount,deleteCount,ignoreCount,"");
+						addHistoryList(SyncHistoryListItem.SYNC_STATUS_SUCCESS,
+								copyCount,deleteCount,ignoreCount,"");
 						mUtil.saveHistoryList(syncHistoryList);
 					} else { 
 						addLogMsg("E","",msgs_mirror_prof_was_failed);
-						addHistoryList(SyncHistoryListItem.SYNC_STATUS_ERROR,copyCount,deleteCount,ignoreCount,tcMirror.getThreadMessage());
+						addHistoryList(SyncHistoryListItem.SYNC_STATUS_ERROR,
+								copyCount,deleteCount,ignoreCount,tcMirror.getThreadMessage());
 						mUtil.saveHistoryList(syncHistoryList);
 						tcMirror.setExtraDataInt(1);//Indicate error occured
 						if (!glblParms.settingErrorOption) {
@@ -474,6 +476,7 @@ public class MirrorIO implements Runnable {
 		hli.sync_result_no_of_deleted=del_cnt;
 		hli.sync_result_no_of_ignored=ignore_cnt;
 		hli.sync_error_text=error_msg;
+		if (!glblParms.currentLogFilePath.equals("")) hli.isLogFileAvailable=true;
 		hli.sync_log_file_path=glblParms.currentLogFilePath;
 //		hli.sync_copied_file=new String[mHistoryCopiedList.size()];
 //		for (int i=0;i<mHistoryCopiedList.size();i++) hli.sync_copied_file[i]=mHistoryCopiedList.get(i);

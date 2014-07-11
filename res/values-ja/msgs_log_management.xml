@@ -12,4 +12,6 @@
 	
 	<string name="msgs_log_management_dlg_send_zip_file_creating">zipファイルの作成中</string>
 	<string name="msgs_log_management_dlg_send_zip_file_cancelled">zipファイル作成がキャンセルされました</string>
+	
+	<string name="msgs_log_management_log_file_switched">ログファイルを切り替えました。</string>
 </resources>

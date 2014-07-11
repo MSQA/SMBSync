@@ -13,4 +13,6 @@
 	<string name="msgs_log_management_dlg_send_zip_file_creating">Creating the zip file</string>
 	<string name="msgs_log_management_dlg_send_zip_file_cancelled">Zip file creation has been canceled</string>
 	
+	<string name="msgs_log_management_log_file_switched">Log file was switched.</string>
+	
 </resources>

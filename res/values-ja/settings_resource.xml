@@ -96,12 +96,12 @@
 	<string name="settings_log_preference_screen_title">ログ</string>
 			
 	<string name="settings_log_option_title">ログファイル</string>
-	<string name="settings_log_option_summary_no">ログファイルは作成しない</string>
-	<string name="settings_log_option_summary_date_time">ログファイル名に起動日付(yyyy-mm-dd)を付けて追記</string>
+	<string name="settings_log_option_summary_no">ログファイルを作成しない</string>
+	<string name="settings_log_option_summary_date_time">ログファイルを作成する</string>
 	<string name="settings_log_option_dialog_title">ログ記録のオプション</string>
 	<string-array name="settings_log_option_list_entries">
         <item>作成しない</item>
-        <item>ログファイル名に起動日付を付けて追記</item>
+        <item>作成する</item>
     </string-array>
     
 	<string name="settings_log_generation_title">ログファイルの保存世代</string>
