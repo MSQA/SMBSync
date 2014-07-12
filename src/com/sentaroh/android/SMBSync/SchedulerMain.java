@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import android.app.Dialog;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -165,7 +166,7 @@ public class SchedulerMain {
 		    	mSchedulerSyncOptionBgExec=cb_bg_exec.isChecked();
 		    	prefs.edit().putBoolean(SCHEDULER_SYNC_OPTION_BGEXEC_KEY, mSchedulerSyncOptionBgExec).commit();
 
-		    	setTimer(mContext);
+		    	setTimer(mContext, SCHEDULER_SET_TIMER);
 			}
 		});
 
@@ -313,10 +314,10 @@ public class SchedulerMain {
 		dialog.show();
 	};
 	
-	public static void setTimer(Context c) {
-		Intent intent = new Intent(SCHEDULER_SET_TIMER);
+	public static void setTimer(Context c, String act) {
+		Intent intent = new Intent(act);
 		c.sendBroadcast(intent);
-	}
+	};
 	
 	private void setViewVisibility(Dialog dialog) {
 		final Spinner sp_sched_type=(Spinner)dialog.findViewById(R.id.scheduler_main_dlg_date_time_type);

@@ -24,6 +24,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 */
 
 import static com.sentaroh.android.SMBSync.Constants.*;
+import static com.sentaroh.android.SMBSync.SchedulerConstants.*;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -108,9 +109,6 @@ public class SMBSyncMain extends FragmentActivity {
 	@SuppressWarnings("unused")
 	private boolean isApplicationFirstTimeRunning=false;
 	
-	private AdapterSyncHistory historyAdapter=null;
-	private ListView historyListView;
-
 	private String packageVersionName="Not found"; 
 
 	private String currentViewType ="P";
@@ -223,7 +221,7 @@ public class SMBSyncMain extends FragmentActivity {
 		if (profMaint==null) 
 			profMaint=new ProfileMaintenance(util,this, commonDlg,ccMenu, mGp);
 		
-//		SchedulerMain.setTimer(mContext);		
+		SchedulerMain.setTimer(mContext, SCHEDULER_SET_TIMER_IF_NOT_SET);		
 	};
 	
 	@Override
@@ -473,17 +471,18 @@ public class SMBSyncMain extends FragmentActivity {
 		currentViewType="P";
 		mGp.profileListView.setAdapter(mGp.profileAdapter);
 		
-		historyListView=(ListView)findViewById(R.id.history_view_list);
-		historyAdapter=new AdapterSyncHistory(mContext, R.layout.sync_history_list_item_view, 
-				util.loadHistoryList());
-		historyListView.setAdapter(historyAdapter);
-		historyAdapter.notifyDataSetChanged();
-		historyListView.setClickable(true);
-		historyListView.setFocusable(true);
-		historyListView.setFastScrollEnabled(true);
-		historyListView.setFocusableInTouchMode(true);
-		historyListView.setScrollBarStyle(View.SCROLLBARS_OUTSIDE_INSET);
-		setFastScrollListener(historyListView);
+		mGp.syncHistoryList=util.loadHistoryList();
+		mGp.syncHistoryListView=(ListView)findViewById(R.id.history_view_list);
+		mGp.syncHistoryAdapter=new AdapterSyncHistory(mContext, R.layout.sync_history_list_item_view, 
+				mGp.syncHistoryList);
+		mGp.syncHistoryListView.setAdapter(mGp.syncHistoryAdapter);
+		mGp.syncHistoryAdapter.notifyDataSetChanged();
+		mGp.syncHistoryListView.setClickable(true);
+		mGp.syncHistoryListView.setFocusable(true);
+		mGp.syncHistoryListView.setFastScrollEnabled(true);
+		mGp.syncHistoryListView.setFocusableInTouchMode(true);
+		mGp.syncHistoryListView.setScrollBarStyle(View.SCROLLBARS_OUTSIDE_INSET);
+		setFastScrollListener(mGp.syncHistoryListView);
 
 	};
 	
@@ -876,6 +875,7 @@ public class SMBSyncMain extends FragmentActivity {
 			@Override
 			public void positiveResponse(Context c, Object[] o) {
 				applySettingParms();
+				SchedulerMain.setTimer(mContext, SCHEDULER_SET_TIMER);
 			}
 
 			@Override
@@ -1534,26 +1534,35 @@ public class SMBSyncMain extends FragmentActivity {
 
 	private void setHistoryViewItemClickListener() {
 		
-		historyListView
+		mGp.syncHistoryListView
 			.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				SyncHistoryListItem item = historyAdapter.getItem(position);
+				SyncHistoryListItem item = mGp.syncHistoryList.get(position);
+//				Log.v("","fp="+item.sync_result_file_path);
 				if (mGp.settingAltUiEnabled) {
 					if (isHistoryItemSelected()) item.isChecked=!item.isChecked;
 					else {
-						if (item.isLogFileAvailable) {
+//						if (item.isLogFileAvailable) {
+//							Intent intent = 
+//									new Intent(android.content.Intent.ACTION_VIEW);
+//							intent.setDataAndType(
+//									Uri.parse("file://"+item.sync_log_file_path),
+//									"text/plain");
+//							startActivityForResult(intent,1);
+//						}
+						if (!item.sync_result_file_path.equals("")) {
 							Intent intent = 
 									new Intent(android.content.Intent.ACTION_VIEW);
 							intent.setDataAndType(
-									Uri.parse("file://"+item.sync_log_file_path),
+									Uri.parse("file://"+item.sync_result_file_path),
 									"text/plain");
 							startActivityForResult(intent,1);
 						}
 					}
 				} else item.isChecked=!item.isChecked;
-				historyAdapter.notifyDataSetChanged();
+				mGp.syncHistoryAdapter.notifyDataSetChanged();
 			}
 		});
 	};
@@ -1561,8 +1570,8 @@ public class SMBSyncMain extends FragmentActivity {
 	private boolean isHistoryItemSelected() {
 		boolean result=false;
 		
-		for (int i=0;i<historyAdapter.getCount();i++) 
-			if (historyAdapter.getItem(i).isChecked) {
+		for (int i=0;i<mGp.syncHistoryList.size();i++) 
+			if (mGp.syncHistoryList.get(i).isChecked) {
 				result=true;
 				break;
 			}
@@ -1570,7 +1579,7 @@ public class SMBSyncMain extends FragmentActivity {
 	}
 	
 	private void setHistoryViewLongClickListener() {
-		historyListView
+		mGp.syncHistoryListView
 			.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 			@Override
 			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
@@ -1584,25 +1593,25 @@ public class SMBSyncMain extends FragmentActivity {
 	private void createHistoryContextMenu(View view, int idx) {
 		SyncHistoryListItem item;
 		int j=0;
-		for (int i=0;i<historyAdapter.getCount();i++) {
-			if (historyAdapter.getItem(i).isChecked) j++;
+		for (int i=0;i<mGp.syncHistoryAdapter.getCount();i++) {
+			if (mGp.syncHistoryAdapter.getItem(i).isChecked) j++;
 		}
 		if (j<=1) {
-			for (int i=0;i<historyAdapter.getCount();i++) {
-				item = historyAdapter.getItem(i);
+			for (int i=0;i<mGp.syncHistoryAdapter.getCount();i++) {
+				item = mGp.syncHistoryAdapter.getItem(i);
 				if (idx==i) {
-					historyAdapter.getItem(i).isChecked=true;
+					mGp.syncHistoryAdapter.getItem(i).isChecked=true;
 					j=i;//set new index no
 				} else {
 					if (item.isChecked) {
-						historyAdapter.getItem(i).isChecked=false;
+						mGp.syncHistoryAdapter.getItem(i).isChecked=false;
 					}
 				}
 			}
-			historyAdapter.notifyDataSetChanged();
+			mGp.syncHistoryAdapter.notifyDataSetChanged();
 			createHistoryContextMenu_Single(j);
 		} else {
-			historyAdapter.notifyDataSetChanged();
+			mGp.syncHistoryAdapter.notifyDataSetChanged();
 			createHistoryContextMenu_Multiple(idx);
 		}
 	};
@@ -1613,7 +1622,7 @@ public class SMBSyncMain extends FragmentActivity {
 		.setOnClickListener(new CustomContextMenuOnClickListener() {
 			@Override
 			public void onClick(CharSequence menuTitle) {
-				historyListView.setSelection(0);
+				mGp.syncHistoryListView.setSelection(0);
 			}
 		});
 		
@@ -1621,7 +1630,7 @@ public class SMBSyncMain extends FragmentActivity {
 			.setOnClickListener(new CustomContextMenuOnClickListener() {
 				@Override
 				public void onClick(CharSequence menuTitle) {
-					historyListView.setSelection(historyAdapter.getCount()-1);
+					mGp.syncHistoryListView.setSelection(mGp.syncHistoryAdapter.getCount()-1);
 				}
 		});
 		
@@ -1636,16 +1645,16 @@ public class SMBSyncMain extends FragmentActivity {
 		.setOnClickListener(new CustomContextMenuOnClickListener() {
 			@Override
 			public void onClick(CharSequence menuTitle) {
-				for (int i=0;i<historyAdapter.getCount();i++) historyAdapter.getItem(i).isChecked=false;
-				historyAdapter.notifyDataSetChanged();
+				for (int i=0;i<mGp.syncHistoryAdapter.getCount();i++) mGp.syncHistoryAdapter.getItem(i).isChecked=false;
+				mGp.syncHistoryAdapter.notifyDataSetChanged();
 			}
 		});
 		ccMenu.addMenuItem(msgs_sync_history_ccmeu_selectall)
 		.setOnClickListener(new CustomContextMenuOnClickListener() {
 			@Override
 			public void onClick(CharSequence menuTitle) {
-				for (int i=0;i<historyAdapter.getCount();i++) historyAdapter.getItem(i).isChecked=true;
-				historyAdapter.notifyDataSetChanged();
+				for (int i=0;i<mGp.syncHistoryAdapter.getCount();i++) mGp.syncHistoryAdapter.getItem(i).isChecked=true;
+				mGp.syncHistoryAdapter.notifyDataSetChanged();
 			}
 		});
 
@@ -1656,9 +1665,9 @@ public class SMBSyncMain extends FragmentActivity {
 				 ClipboardManager cm = 
 					      (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 				 StringBuilder out= new StringBuilder(256);
-				 for (int i=0;i<historyAdapter.getCount();i++){
-					 if (historyAdapter.getItem(i).isChecked) {
-						 SyncHistoryListItem hli=historyAdapter.getItem(i);
+				 for (int i=0;i<mGp.syncHistoryAdapter.getCount();i++){
+					 if (mGp.syncHistoryAdapter.getItem(i).isChecked) {
+						 SyncHistoryListItem hli=mGp.syncHistoryAdapter.getItem(i);
 						 out.append(hli.sync_date).append(" ");
 						 out.append(hli.sync_time).append(" ");
 						 out.append(hli.sync_prof).append("\n");
@@ -1690,26 +1699,26 @@ public class SMBSyncMain extends FragmentActivity {
 		String conf_list="";
 		boolean del_all_history=false;
 		int del_cnt=0;
-		for (int i=0;i<historyAdapter.getCount();i++) {
-			if (historyAdapter.getItem(i).isChecked) {
+		for (int i=0;i<mGp.syncHistoryAdapter.getCount();i++) {
+			if (mGp.syncHistoryAdapter.getItem(i).isChecked) {
 				del_cnt++;
-				conf_list+="\n"+historyAdapter.getItem(i).sync_date+" "+
-						historyAdapter.getItem(i).sync_time+" "+
-						historyAdapter.getItem(i).sync_prof+" ";
+				conf_list+="\n"+mGp.syncHistoryAdapter.getItem(i).sync_date+" "+
+						mGp.syncHistoryAdapter.getItem(i).sync_time+" "+
+						mGp.syncHistoryAdapter.getItem(i).sync_prof+" ";
 			}
 		}
-		if (del_cnt==historyAdapter.getCount()) del_all_history=true;
+		if (del_cnt==mGp.syncHistoryAdapter.getCount()) del_all_history=true;
 		NotifyEvent ntfy=new NotifyEvent(this);
 		ntfy.setListener(new NotifyEventListener(){
 			@Override
 			public void positiveResponse(Context c, Object[] o) {
-				for (int i=historyAdapter.getCount()-1;i>=0;i--) {
-					if (historyAdapter.getItem(i).isChecked) 
-						historyAdapter.remove(historyAdapter.getItem(i));
+				for (int i=mGp.syncHistoryAdapter.getCount()-1;i>=0;i--) {
+					if (mGp.syncHistoryAdapter.getItem(i).isChecked) 
+						mGp.syncHistoryAdapter.remove(mGp.syncHistoryAdapter.getItem(i));
 				}
-				util.saveHistoryList(historyAdapter.getSyncHistoryList());
-				historyAdapter.setSyncHistoryList(util.loadHistoryList());
-				historyAdapter.notifyDataSetChanged();
+				util.saveHistoryList(mGp.syncHistoryAdapter.getSyncHistoryList());
+				mGp.syncHistoryAdapter.setSyncHistoryList(util.loadHistoryList());
+				mGp.syncHistoryAdapter.notifyDataSetChanged();
 			}
 			@Override
 			public void negativeResponse(Context c, Object[] o) {}
@@ -1733,7 +1742,7 @@ public class SMBSyncMain extends FragmentActivity {
 		.setOnClickListener(new CustomContextMenuOnClickListener() {
 			@Override
 			public void onClick(CharSequence menuTitle) {
-				historyListView.setSelection(0);
+				mGp.syncHistoryListView.setSelection(0);
 			}
 		});
 		
@@ -1741,13 +1750,31 @@ public class SMBSyncMain extends FragmentActivity {
 			.setOnClickListener(new CustomContextMenuOnClickListener() {
 				@Override
 				public void onClick(CharSequence menuTitle) {
-					historyListView.setSelection(historyAdapter.getCount()-1);
+					mGp.syncHistoryListView.setSelection(mGp.syncHistoryAdapter.getCount()-1);
 				}
 		});
 
-		final SyncHistoryListItem item = historyAdapter.getItem(cin);
+		final SyncHistoryListItem item = mGp.syncHistoryAdapter.getItem(cin);
+		
+		if (!item.sync_result_file_path.equals("")) {
+			ccMenu.addMenuItem(
+					getString(R.string.msgs_sync_history_ccmeu_show_result),R.drawable.ic_64_browse_text)
+			.setOnClickListener(new CustomContextMenuOnClickListener() {
+				@Override
+				public void onClick(CharSequence menuTitle) {
+					Intent intent = 
+							new Intent(android.content.Intent.ACTION_VIEW);
+					intent.setDataAndType(
+							Uri.parse("file://"+item.sync_result_file_path),
+							"text/plain");
+					startActivityForResult(intent,1);
+				}
+			});
+		}
+		
 		if (item.isLogFileAvailable) {
-			ccMenu.addMenuItem(msgs_sync_history_ccmeu_browse,R.drawable.ic_64_browse_text)
+			ccMenu.addMenuItem(
+					getString(R.string.msgs_sync_history_ccmeu_show_log),R.drawable.ic_64_browse_text)
 			.setOnClickListener(new CustomContextMenuOnClickListener() {
 				@Override
 				public void onClick(CharSequence menuTitle) {
@@ -1772,16 +1799,16 @@ public class SMBSyncMain extends FragmentActivity {
 		.setOnClickListener(new CustomContextMenuOnClickListener() {
 			@Override
 			public void onClick(CharSequence menuTitle) {
-				for (int i=0;i<historyAdapter.getCount();i++) historyAdapter.getItem(i).isChecked=false;
-				historyAdapter.notifyDataSetChanged();
+				for (int i=0;i<mGp.syncHistoryAdapter.getCount();i++) mGp.syncHistoryAdapter.getItem(i).isChecked=false;
+				mGp.syncHistoryAdapter.notifyDataSetChanged();
 			}
 		});
 		ccMenu.addMenuItem(msgs_sync_history_ccmeu_selectall)
 		.setOnClickListener(new CustomContextMenuOnClickListener() {
 			@Override
 			public void onClick(CharSequence menuTitle) {
-				for (int i=0;i<historyAdapter.getCount();i++) historyAdapter.getItem(i).isChecked=true;
-				historyAdapter.notifyDataSetChanged();
+				for (int i=0;i<mGp.syncHistoryAdapter.getCount();i++) mGp.syncHistoryAdapter.getItem(i).isChecked=true;
+				mGp.syncHistoryAdapter.notifyDataSetChanged();
 			}
 		});
 		ccMenu.addMenuItem(msgs_sync_history_ccmeu_copy_clipboard)
@@ -1790,7 +1817,7 @@ public class SMBSyncMain extends FragmentActivity {
 			public void onClick(CharSequence menuTitle) {
 				 ClipboardManager cm = 
 					      (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-				 SyncHistoryListItem hli=historyAdapter.getItem(cin);
+				 SyncHistoryListItem hli=mGp.syncHistoryAdapter.getItem(cin);
 				 
 				 StringBuilder out= new StringBuilder(256);
 				 out.append(hli.sync_date).append(" ");
@@ -2438,10 +2465,11 @@ public class SMBSyncMain extends FragmentActivity {
 		final LinearLayout ll_spin=(LinearLayout)findViewById(R.id.profile_progress_spin);
 		ll_spin.setVisibility(LinearLayout.GONE);
 		
-		historyAdapter=new AdapterSyncHistory(mContext, R.layout.sync_history_list_item_view, 
-				util.loadHistoryList());
-		historyListView.setAdapter(historyAdapter);
-		historyAdapter.notifyDataSetChanged();
+		mGp.syncHistoryAdapter=new AdapterSyncHistory(mContext, R.layout.sync_history_list_item_view, 
+				mGp.syncHistoryList);
+		mGp.syncHistoryListView.setAdapter(mGp.syncHistoryAdapter);
+		setHistoryViewItemClickListener();
+		mGp.syncHistoryAdapter.notifyDataSetChanged();
 		
 //		playBackDefaultNotification();
 //		vibrateDefaultPattern();
@@ -2459,24 +2487,15 @@ public class SMBSyncMain extends FragmentActivity {
 				} else {
 					mGp.settingAutoTerm=false;
 					showMirrorThreadResult(result_code,result_msg);
-					rotateLogFile();
+					util.rotateLogFile();
 					mGp.mirrorThreadActive=false;
 				}		
 			}
 		} else {
 			showMirrorThreadResult(result_code,result_msg);
-			rotateLogFile();
+			util.rotateLogFile();
 			saveTaskData();
 			mGp.mirrorThreadActive=false;
-		}
-	};
-	
-	private void rotateLogFile() {
-		if (!mGp.settingLogOption.equals("0")) {
-			util.flushLogFile();
-			util.closeLogFile();
-			util.openLogFile();
-			util.addLogMsg("I", mContext.getString(R.string.msgs_log_management_log_file_switched));
 		}
 	};
 	
@@ -2882,7 +2901,7 @@ public class SMBSyncMain extends FragmentActivity {
 			public void negativeResponse(Context c,Object[] o) {
 				util.addLogMsg("W",getString(R.string.msgs_aterm_cancelled));
 				showNotificationMsg(getString(R.string.msgs_aterm_cancelled));
-				rotateLogFile();
+				util.rotateLogFile();
 				mGp.mirrorThreadActive=false;
 			}
 		});
@@ -3371,7 +3390,6 @@ public class SMBSyncMain extends FragmentActivity {
     private static String msgs_prof_cont_copy;
     private static String msgs_prof_cont_rename;
     
-    private static String msgs_sync_history_ccmeu_browse;
     private static String msgs_sync_history_ccmeu_delete;
     private static String msgs_sync_history_ccmeu_unselectall;
     private static String msgs_sync_history_ccmeu_selectall;
@@ -3385,7 +3403,6 @@ public class SMBSyncMain extends FragmentActivity {
 		
 		msgs_prof_cont_sngl_wizard=getString(R.string.msgs_prof_cont_sngl_wizard);
 		
-		msgs_sync_history_ccmeu_browse=getString(R.string.msgs_sync_history_ccmeu_browse);
 		msgs_sync_history_ccmeu_delete=getString(R.string.msgs_sync_history_ccmeu_delete);
 		msgs_sync_history_ccmeu_unselectall=getString(R.string.msgs_sync_history_ccmeu_unselectall);
 		msgs_sync_history_ccmeu_selectall=getString(R.string.msgs_sync_history_ccmeu_selectall);

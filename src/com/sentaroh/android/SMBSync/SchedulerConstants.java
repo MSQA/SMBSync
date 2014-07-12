@@ -13,6 +13,7 @@ public class SchedulerConstants {
 	
 	public static final String SCHEDULER_TIMER_EXPIRED="com.sentaroh.android.SMBSync.ACTION_TIMER_EXPIRED";
 	public static final String SCHEDULER_SET_TIMER="com.sentaroh.android.SMBSync.ACTION_SET_TIMER";
+	public static final String SCHEDULER_SET_TIMER_IF_NOT_SET="com.sentaroh.android.SMBSync.ACTION_SET_TIMER_IF_NOT_SET";
 	
 	public static final String SCHEDULER_SYNC_PROFILE_KEY="scheduler_sync_profile_key";
 	public static final String SCHEDULER_SYNC_OPTION_AUTOSTART_KEY="scheduler_sync_option_autostart_key";

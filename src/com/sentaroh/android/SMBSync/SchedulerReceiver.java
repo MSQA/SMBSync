@@ -40,14 +40,18 @@ public class SchedulerReceiver extends BroadcastReceiver{
 		mContext=context;
 //		mWakeLock.acquire(100);
 		loadScheduleData();
-		
 		String action=arg1.getAction();
 //		Log.v("","action="+action);
 		if (action!=null) {
-			if (action.equals(Intent.ACTION_BOOT_COMPLETED)) {
+			if (action.equals(Intent.ACTION_BOOT_COMPLETED) || action.equals(Intent.ACTION_DATE_CHANGED) || 
+					action.equals(Intent.ACTION_TIMEZONE_CHANGED) || action.equals(Intent.ACTION_TIME_CHANGED) ||
+					action.equals(Intent.ACTION_PACKAGE_REPLACED)) {
 				setTimer();
 			} else if (action.equals(SCHEDULER_SET_TIMER)) {
 				setTimer();
+			} else if (action.equals(SCHEDULER_SET_TIMER_IF_NOT_SET)) {
+				Log.v("","act="+action+", ena="+mSchedulerScheduleEmabled);
+				if (!isSetTimer()) setTimer();
 			} else if (action.equals(SCHEDULER_TIMER_EXPIRED)) {
 				startSync();
 				setTimer();
@@ -72,24 +76,32 @@ public class SchedulerReceiver extends BroadcastReceiver{
     	cancelTimer();
 		if (mSchedulerScheduleEmabled) {
 	    	long time=getNextSchedule();
-			Intent iw = new Intent();
-			iw.setAction(SCHEDULER_TIMER_EXPIRED);
-			iw.putExtra("date_time",time);
-			PendingIntent piw = PendingIntent.getBroadcast(mContext, 0, iw,
-					PendingIntent.FLAG_UPDATE_CURRENT);
-		    AlarmManager amw = (AlarmManager)mContext.getSystemService(Context.ALARM_SERVICE);
-		    amw.set(AlarmManager.RTC_WAKEUP, time, piw);
+			Intent in = new Intent();
+			in.setAction(SCHEDULER_TIMER_EXPIRED);
+			PendingIntent pi = PendingIntent.getBroadcast(mContext, 0, in, PendingIntent.FLAG_UPDATE_CURRENT);
+		    AlarmManager am = (AlarmManager)mContext.getSystemService(Context.ALARM_SERVICE);
+		    am.set(AlarmManager.RTC_WAKEUP, time, pi);
 		}
     };
     
-    static private void cancelTimer() {
-    	if (debugLevel!=0) addDebugMsg(1,"I", "cancelTimer entered");
+	private static boolean isSetTimer() {
 		Intent iw = new Intent();
 		iw.setAction(SCHEDULER_TIMER_EXPIRED);
-		PendingIntent piw = PendingIntent.getBroadcast(mContext, 0, iw,
-				PendingIntent.FLAG_CANCEL_CURRENT);
-	    AlarmManager amw = (AlarmManager)mContext.getSystemService(Context.ALARM_SERVICE);
-	    amw.cancel(piw);
+	    PendingIntent p = PendingIntent.getBroadcast(mContext, 0, iw, PendingIntent.FLAG_NO_CREATE);
+	    if(p == null) {
+	        return false;
+	    }else {
+	        return true;
+	    }
+	};
+    
+    static private void cancelTimer() {
+    	if (debugLevel!=0) addDebugMsg(1,"I", "cancelTimer entered");
+		Intent in = new Intent();
+		in.setAction(SCHEDULER_TIMER_EXPIRED);
+		PendingIntent pi = PendingIntent.getBroadcast(mContext, 0, in, PendingIntent.FLAG_CANCEL_CURRENT);
+	    AlarmManager am = (AlarmManager)mContext.getSystemService(Context.ALARM_SERVICE);
+	    am.cancel(pi);
     };
     
     private static boolean mSchedulerScheduleEmabled=false;
@@ -161,7 +173,7 @@ public class SchedulerReceiver extends BroadcastReceiver{
     		}
         	int s_hhmm=Integer.parseInt(mSchedulerScheduleHours)*100+s_min;
         	int c_hhmm=c_hr*100+c_mm;
-        	Log.v("","c_hhmm="+c_hhmm+", s_hhmm="+s_hhmm);
+//        	Log.v("","c_hhmm="+c_hhmm+", s_hhmm="+s_hhmm);
         	if (c_hhmm>=s_hhmm) c_dw++;
         	int s_dw=-1;
     		if (c_dw>=7) {//sat

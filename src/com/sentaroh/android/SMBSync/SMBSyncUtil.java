@@ -237,24 +237,13 @@ public class SMBSyncUtil {
 	};
 
 	private StringBuilder mSbForWriteLog = new StringBuilder(256);
-	final private void writeLogMsgToFile(String cat, String prof, 
+	final private String writeLogMsgToFile(String cat, String prof, 
 			String fp, String msg) {
+		String result=null;
 		if (mGp.logWriter!=null) { 
-				String dt=DateUtil.convDateTimeTo_YearMonthDayHourMinSec(System.currentTimeMillis());
-				mSbForWriteLog.setLength(0);
-				mSbForWriteLog.append(cat).append(" ")
-					.append(dt.substring(0,10)).append(" ")
-					.append(dt.substring(11)).append(" ")
-					.append(mLogId);
-				if (!prof.equals("")) {
-					mSbForWriteLog.append(prof).append(" ");
-				}
-				if (!fp.equals("")) {
-					mSbForWriteLog.append(fp).append(" ");
-				}
-				mSbForWriteLog.append(msg);
+				result=formatLogMsg(cat,prof,fp,msg);
 				try {
-					writeLog(mGp,mSbForWriteLog.toString());
+					writeLog(mGp,result);
 				} catch(Exception e) {
 					e.printStackTrace();
 				}
@@ -263,6 +252,25 @@ public class SMBSyncUtil {
 //				logFileFlushCnt=0;
 //			} else logFileFlushCnt++;
 		}
+		return result;
+	};
+
+	final public String formatLogMsg(String cat, String prof, 
+			String fp, String msg) {
+		String dt=DateUtil.convDateTimeTo_YearMonthDayHourMinSec(System.currentTimeMillis());
+		mSbForWriteLog.setLength(0);
+		mSbForWriteLog.append(cat).append(" ")
+			.append(dt.substring(0,10)).append(" ")
+			.append(dt.substring(11)).append(" ")
+			.append(mLogId);
+		if (!prof.equals("")) {
+			mSbForWriteLog.append(prof).append(" ");
+		}
+		if (!fp.equals("")) {
+			mSbForWriteLog.append(fp).append(" ");
+		}
+		mSbForWriteLog.append(msg);
+		return mSbForWriteLog.toString();
 	};
 	
 	private StringBuilder mSbForsendMsgToActivity=new StringBuilder(256);
@@ -299,15 +307,16 @@ public class SMBSyncUtil {
 	};
 
 	private StringBuilder mSbForAddLogMsg=new StringBuilder(256);
-	final public void addLogMsg(String log_cat, String sync_prof, String fp, String log_msg) {
+	final public String addLogMsg(String log_cat, String sync_prof, String fp, String log_msg) {
 		String dt=DateUtil.convDateTimeTo_YearMonthDayHourMinSec(System.currentTimeMillis());
 		// flag=1 both, arg2=0 dialog only, arg2=2 msgview only
 		sendMsgToActivity(log_cat,"2",sync_prof,dt.substring(0,10), dt.substring(11),
 				mLogId,"M",fp,log_msg);
-		writeLogMsgToFile("M "+log_cat, sync_prof, fp, log_msg);
+		String wmsg=writeLogMsgToFile("M "+log_cat, sync_prof, fp, log_msg);
 		if (mGp.debugLevel>0)
 			Log.v(DEBUG_TAG,
 					buildLogCatString(mSbForAddLogMsg, log_cat,mLogId,sync_prof,fp,log_msg));
+		return wmsg;
 	};
 
 	final public void addLogMsg(String cat, String logmsg) {
@@ -436,15 +445,23 @@ public class SMBSyncUtil {
 			}
 	};
 	
-	
+	final public void rotateLogFile() {
+//		if (!mGp.settingLogOption.equals("0")) {
+//			flushLogFile();
+//			closeLogFile();
+//			openLogFile();
+//			addLogMsg("I", mContext.getString(R.string.msgs_log_management_log_file_switched));
+//		}
+	};
+
 	@SuppressLint("SdCardPath")
 	public void openLogFile() {
 		addDebugLogMsg(2,"I","open log file entered. esm="+mGp.externalStorageIsMounted);
 		
 		if (!mGp.settingLogOption.equals("0") && mGp.logWriter==null) {
 			SimpleDateFormat df=null;
-			df = new SimpleDateFormat("yyyy-MM-dd_HHmmss");
-//			df = new SimpleDateFormat("yyyy-MM-dd");
+//			df = new SimpleDateFormat("yyyy-MM-dd_HHmmss");
+			df = new SimpleDateFormat("yyyy-MM-dd");
 			mGp.settingLogMsgFilename="SMBSync_log_"+df.format(System.currentTimeMillis())+".txt";
 		}
 		
@@ -646,14 +663,17 @@ public class SMBSyncUtil {
 				    		hli.sync_result_no_of_deleted=Integer.valueOf(l_array[5]);
 				    		hli.sync_result_no_of_ignored=Integer.valueOf(l_array[6]);
 				    		hli.sync_error_text=l_array[7].replaceAll("\u0002", "\n");
-				    		hli.sync_copied_file=string2Array(l_array[8]);
-				    		hli.sync_deleted_file=string2Array(l_array[9]);
-				    		hli.sync_ignored_file=string2Array(l_array[10]);
+//				    		hli.sync_copied_file=string2Array(l_array[8]);
+//				    		hli.sync_deleted_file=string2Array(l_array[9]);
+//				    		hli.sync_ignored_file=string2Array(l_array[10]);
 				    		if (l_array.length>=12) {
 				    			hli.sync_log_file_path=l_array[11];
 					    		if (!hli.sync_log_file_path.equals("")) {
 									File tf=new File(hli.sync_log_file_path);
 									if (tf.exists()) hli.isLogFileAvailable=true;
+					    		}
+					    		if (l_array.length>=13) {
+					    			hli.sync_result_file_path=l_array[12];
 					    		}
 				    		}
 				    		hl.add(hli);
@@ -689,6 +709,16 @@ public class SMBSyncUtil {
 		return hl;
 	};
 
+	final public String createSyncResultFilePath(String syncProfName) {
+		String dir=mGp.SMBSync_External_Root_Dir+"/SMBSync/result_log";
+		File tlf=new File(dir);
+		if (!tlf.exists()) tlf.mkdirs();
+		String dt=DateUtil.convDateTimeTo_YearMonthDayHourMinSec(System.currentTimeMillis());
+		String fn="result_"+syncProfName+"_"+dt+".txt";
+		String fp=dir+"/"+fn.replaceAll("/", "-").replaceAll(":", "").replaceAll(" ","_");
+		return fp;
+	};
+	
 	@SuppressLint("SdCardPath")
 	final public void saveHistoryList(ArrayList<SyncHistoryListItem> hl) {
 //		Log.v("","save hist started");
@@ -702,14 +732,15 @@ public class SMBSyncUtil {
 			int max=500;
 			StringBuilder sb_buf=new StringBuilder(1024*512);
 			SyncHistoryListItem shli=null;
-			String cpy_str, del_str, ign_str;
+//			String cpy_str, del_str, ign_str;
+			ArrayList<SyncHistoryListItem>del_list=new ArrayList<SyncHistoryListItem>();
 			for (int i=0;i<hl.size();i++) {
 				if (!hl.get(i).sync_prof.equals("No history")) {
+					shli=hl.get(i);
 					if (i<max) {
-						shli=hl.get(i);
-						cpy_str=array2String(sb_buf,shli.sync_copied_file);
-						del_str=array2String(sb_buf,shli.sync_deleted_file);
-						ign_str=array2String(sb_buf,shli.sync_ignored_file);
+//						cpy_str=array2String(sb_buf,shli.sync_copied_file);
+//						del_str=array2String(sb_buf,shli.sync_deleted_file);
+//						ign_str=array2String(sb_buf,shli.sync_ignored_file);
 						String lfp="";
 						if (shli.isLogFileAvailable) lfp=shli.sync_log_file_path;
 						sb_buf.setLength(0);
@@ -721,16 +752,26 @@ public class SMBSyncUtil {
 							.append(shli.sync_result_no_of_deleted).append("\u0001")
 							.append(shli.sync_result_no_of_ignored).append("\u0001")
 							.append(shli.sync_error_text.replaceAll("\n", "\u0002")).append("\u0001")
-							.append(cpy_str).append("\u0001")
-							.append(del_str).append("\u0001")
-							.append(ign_str).append("\u0001") 
-							.append(lfp)
+							.append(" ").append("\u0001") //Dummy
+							.append(" ").append("\u0001") //Dummy
+							.append(" ").append("\u0001") //Dummy 
+							.append(lfp).append("\u0001")
+							.append(shli.sync_result_file_path)
 							.append("\n");
 								
 						bw.append(sb_buf.toString());
+					} else {
+						del_list.add(shli);
+						if (!shli.sync_result_file_path.equals("")) {
+							File tlf=new File(shli.sync_result_file_path);
+							tlf.delete();
+						}
 					}
 				}
 			}
+			
+			for (int i=0;i<del_list.size();i++) hl.remove(del_list.get(i));
+			
 			bw.close();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -738,34 +779,34 @@ public class SMBSyncUtil {
 //		Log.v("","save hist ended");
 	};
 	
-	final static private String array2String(StringBuilder sb_buf,String[] sa) {
-		sb_buf.setLength(0);
-		if (sa!=null) {
-			sb_buf
-				.append(Integer.toString(sa.length))
-				.append("\u0002");
-			for (int i=0;i<sa.length;i++) {
-				sb_buf.append("\u0003")
-					.append(sa[i])
-					.append("\u0002");
-			}
-		} else {
-			sb_buf.append(Integer.toString(0));
-		}
-		return sb_buf.toString();
-	};
-
-	final static private String[] string2Array(String str) {
-		String[]t_array=str.split("\u0002");
-		String[] result=null;
-		if (!t_array[0].equals("0")) {
-			result=new String[Integer.parseInt(t_array[0])];
-			for (int i=0;i<result.length;i++) {
-				result[i]=t_array[i+1].replace("\u0003", "");
-			}
-		} 
-		return result;
-	};
+//	final static private String array2String(StringBuilder sb_buf,String[] sa) {
+//		sb_buf.setLength(0);
+//		if (sa!=null) {
+//			sb_buf
+//				.append(Integer.toString(sa.length))
+//				.append("\u0002");
+//			for (int i=0;i<sa.length;i++) {
+//				sb_buf.append("\u0003")
+//					.append(sa[i])
+//					.append("\u0002");
+//			}
+//		} else {
+//			sb_buf.append(Integer.toString(0));
+//		}
+//		return sb_buf.toString();
+//	};
+//
+//	final static private String[] string2Array(String str) {
+//		String[]t_array=str.split("\u0002");
+//		String[] result=null;
+//		if (!t_array[0].equals("0")) {
+//			result=new String[Integer.parseInt(t_array[0])];
+//			for (int i=0;i<result.length;i++) {
+//				result[i]=t_array[i+1].replace("\u0003", "");
+//			}
+//		} 
+//		return result;
+//	};
 	
 	public void addHistoryList(ArrayList<SyncHistoryListItem> hl, SyncHistoryListItem item) {
 		hl.add(0,item);

@@ -84,6 +84,10 @@ public class GlobalParameters extends Application{
 	
 	public ArrayList<MirrorIoParmList> mirrorIoParms=null;
 	
+	public ListView syncHistoryListView=null;
+	public AdapterSyncHistory syncHistoryAdapter=null;
+	public ArrayList<SyncHistoryListItem> syncHistoryList=null;
+	
 	//Message view
 	public boolean freezeMessageViewScroll=false;
 	
