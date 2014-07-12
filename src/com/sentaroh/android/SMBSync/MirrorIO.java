@@ -587,6 +587,7 @@ public class MirrorIO implements Runnable {
 			boolean cr=m_lf.canRead();
 			if (!ex || (ex && !cr)) {
 				addLogMsg("E",mipl.getMasterLocalMountPoint(),msgs_mirror_master_local_mount_point_not_readable);
+				tcMirror.setThreadMessage(msgs_mirror_master_local_mount_point_not_readable+" "+mipl.getMasterLocalMountPoint());
 				isSyncParmError=true;
 			}
 					
@@ -595,6 +596,7 @@ public class MirrorIO implements Runnable {
 			boolean cw=t_lf.canWrite();
 			if (!ex || (ex && !cw)) {
 				addLogMsg("E",mipl.getTargetLocalMountPoint(),msgs_mirror_target_local_mount_point_not_writable);
+				tcMirror.setThreadMessage(msgs_mirror_target_local_mount_point_not_writable+" "+mipl.getTargetLocalMountPoint());
 				isSyncParmError=true;
 			}
 			try {
@@ -605,19 +607,19 @@ public class MirrorIO implements Runnable {
 					if (m_out.lastModified()==t_out.lastModified()) {
 						//Same physical dir
 						if (mipl.getMasterLocalDir().equals(mipl.getTargetLocalDir())) {
-							addLogMsg("E",mipl.getLocalMountPoint(),
-									String.format(msgs_mirror_physcal_access_to_same_dir,
-											mipl.getMasterLocalMountPoint(),
-											mipl.getTargetLocalMountPoint()));
+							String msg=String.format(msgs_mirror_physcal_access_to_same_dir, mipl.getMasterLocalMountPoint(),
+									mipl.getTargetLocalMountPoint());
+							addLogMsg("E",mipl.getLocalMountPoint(),msg);
+							tcMirror.setThreadMessage(msg);
 							isSyncParmError=true;
 						}
 					}
 					t_out.delete();
 				} else {
 					//Create error
-					addLogMsg("E",mipl.getLocalMountPoint(),
-							String.format(msgs_mirror_physcal_access_check_create_error,
-									mipl.getTargetLocalMountPoint()));
+					String msg=String.format(msgs_mirror_physcal_access_check_create_error,mipl.getTargetLocalMountPoint());
+					addLogMsg("E",mipl.getLocalMountPoint(),msg);
+					tcMirror.setThreadMessage(msg);
 					isSyncParmError=true;
 				}
 			} catch (IOException e) {
@@ -631,6 +633,7 @@ public class MirrorIO implements Runnable {
 				boolean cr=lf.canRead();
 				if (!ex || (ex && !cr)) {
 					addLogMsg("E",mipl.getLocalMountPoint(),msgs_mirror_master_local_mount_point_not_readable);
+					tcMirror.setThreadMessage(msgs_mirror_master_local_mount_point_not_readable+" "+mipl.getLocalMountPoint());
 					isSyncParmError=true;
 				}
 			} else {
@@ -639,6 +642,7 @@ public class MirrorIO implements Runnable {
 				boolean cw=lf.canWrite();
 				if (!ex || (ex && !cw)) {
 					addLogMsg("E",mipl.getLocalMountPoint(),msgs_mirror_target_local_mount_point_not_writable);
+					tcMirror.setThreadMessage(msgs_mirror_target_local_mount_point_not_writable+" "+mipl.getLocalMountPoint());
 					isSyncParmError=true;
 				}
 			}
@@ -650,24 +654,27 @@ public class MirrorIO implements Runnable {
 				if (mipl.getRemotePort().length()>0) {//Check for report port specified
 					if (!SMBSyncUtil.isSmbHostAddressConnected(mipl.getRemoteAddr(),
 							Integer.parseInt(mipl.getRemotePort()))) {
-						addLogMsg("E","",
-								String.format(mGp.svcContext.getString(R.string.msgs_mirror_remote_addr_not_connected_with_port),
-								mipl.getRemoteAddr(),mipl.getRemotePort()));
+						String msg=String.format(mGp.svcContext.getString(R.string.msgs_mirror_remote_addr_not_connected_with_port),
+								mipl.getRemoteAddr(),mipl.getRemotePort());
+						addLogMsg("E","",msg);
+						tcMirror.setThreadMessage(msg);
 						isSyncParmError=true;
 					}
 				} else {//Check for default report port
 					if (!SMBSyncUtil.isSmbHostAddressConnected(mipl.getRemoteAddr())) {
-						addLogMsg("E","",
-								String.format(mGp.svcContext.getString(R.string.msgs_mirror_remote_addr_not_connected),
-								mipl.getRemoteAddr()));
+						String msg=String.format(mGp.svcContext.getString(R.string.msgs_mirror_remote_addr_not_connected),
+								mipl.getRemoteAddr());
+						addLogMsg("E","",msg);
+						tcMirror.setThreadMessage(msg);
 						isSyncParmError=true;
 					}
 				}
 			} else {
 				if (resolveHostName(mipl.getHostName())==null) {
-					addLogMsg("E","",
-							mGp.svcContext.getString(R.string.msgs_mirror_remote_name_not_found)+
-							mipl.getHostName());
+					String msg=mGp.svcContext.getString(R.string.msgs_mirror_remote_name_not_found)+
+							mipl.getHostName();
+					addLogMsg("E","",msg);
+					tcMirror.setThreadMessage(msg);
 					isSyncParmError=true;
 				}
 			}
