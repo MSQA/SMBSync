@@ -1758,22 +1758,6 @@ public class SMBSyncMain extends FragmentActivity {
 		
 		if (!item.sync_result_file_path.equals("")) {
 			ccMenu.addMenuItem(
-					getString(R.string.msgs_sync_history_ccmeu_show_result),R.drawable.ic_64_browse_text)
-			.setOnClickListener(new CustomContextMenuOnClickListener() {
-				@Override
-				public void onClick(CharSequence menuTitle) {
-					Intent intent = 
-							new Intent(android.content.Intent.ACTION_VIEW);
-					intent.setDataAndType(
-							Uri.parse("file://"+item.sync_result_file_path),
-							"text/plain");
-					startActivityForResult(intent,1);
-				}
-			});
-		}
-		
-		if (item.isLogFileAvailable) {
-			ccMenu.addMenuItem(
 					getString(R.string.msgs_sync_history_ccmeu_show_log),R.drawable.ic_64_browse_text)
 			.setOnClickListener(new CustomContextMenuOnClickListener() {
 				@Override
@@ -1781,7 +1765,7 @@ public class SMBSyncMain extends FragmentActivity {
 					Intent intent = 
 							new Intent(android.content.Intent.ACTION_VIEW);
 					intent.setDataAndType(
-							Uri.parse("file://"+item.sync_log_file_path),
+							Uri.parse("file://"+item.sync_result_file_path),
 							"text/plain");
 					startActivityForResult(intent,1);
 				}

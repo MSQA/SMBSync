@@ -35,7 +35,6 @@
     <string name="msgs_sync_history_count_copied">コピー:</string>
     <string name="msgs_sync_history_count_deleted">削除:</string>
     <string name="msgs_sync_history_count_ignored">無視:</string>
-    <string name="msgs_sync_history_ccmeu_show_result">結果表示</string>
     <string name="msgs_sync_history_ccmeu_show_log">ログ表示</string>
     <string name="msgs_sync_history_ccmeu_delete">履歴の削除</string>
     <string name="msgs_sync_history_ccmeu_selectall">全て選択</string>

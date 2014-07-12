@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="msgs_menu_scheduler">Scheduler</string>
-    <string name="msgs_scheduler_main_dlg_hdr_title">Scheduling</string>
-    <string name="msgs_scheduler_main_dlg_hdr_enable">Enable scheduler</string>
+    <string name="msgs_menu_scheduler">Schedule</string>
+    <string name="msgs_scheduler_main_dlg_hdr_title">Schedule</string>
+    <string name="msgs_scheduler_main_dlg_hdr_enable">Enable schedule</string>
     <string name="msgs_scheduler_main_dlg_hdr_edit_prof">Edit sync list</string>
 	<string name="msgs_scheduler_main_dlg_hdr_sun">Sun</string>
 	<string name="msgs_scheduler_main_dlg_hdr_mon">Mon</string>
