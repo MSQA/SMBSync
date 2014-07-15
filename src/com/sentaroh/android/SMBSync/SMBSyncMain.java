@@ -65,7 +65,6 @@ import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.text.ClipboardManager;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -302,7 +301,7 @@ public class SMBSyncMain extends FragmentActivity {
 					setHistoryViewItemClickListener();
 					setHistoryViewLongClickListener();
 
-					if (isAutoStartRequested(getIntent())) {
+					if (isAutoStartRequested(getIntent()) || mGp.settingAutoStart) {
 						if (restartStatus!=2) checkAutoStart(getIntent());
 					} else {
 						if (mGp.profileAdapter.getItem(0).getType().equals("")) {
@@ -1254,8 +1253,11 @@ public class SMBSyncMain extends FragmentActivity {
 			} else {
 				if (extraValueAutoStart) markAutoStartProfileList(extraValueSyncProfList);
 				if (profMaint.getActiveSyncProfileCount(mGp.profileAdapter)>0) {
+					mGp.mirrorThreadActive=true;
 					autoStartDlg();
-					if (mGp.settingBackgroundExecution || (isExtraSpecBgExec && extraValueBgExec)) {
+					if ((isExtraSpecBgExec && extraValueBgExec)) {
+						setScreenSwitchToHome();
+					} else if (!isExtraSpecBgExec && mGp.settingBackgroundExecution) {
 						setScreenSwitchToHome();
 					}
 				}
@@ -2460,7 +2462,8 @@ public class SMBSyncMain extends FragmentActivity {
 
 		mGp.msgListView.setFastScrollEnabled(true);
 		util.flushLogFile();
-		if ((mGp.settingAutoStart && mGp.settingAutoTerm) || (isExtraSpecAutoTerm && extraValueAutoTerm)) {
+		if ((!isExtraSpecAutoTerm && mGp.settingAutoStart && mGp.settingAutoTerm) || 
+				(isExtraSpecAutoTerm && extraValueAutoTerm)) {
 			if (mGp.settingErrorOption) {
 				showMirrorThreadResult(result_code,result_msg);
 				autoTerminateDlg(result_code, result_msg);
@@ -2794,7 +2797,7 @@ public class SMBSyncMain extends FragmentActivity {
 						if (mGp.profileAdapter.getItem(i).getType().equals(SMBSYNC_PROF_TYPE_SYNC) && 
 								mGp.profileAdapter.getItem(i).isChecked()) {
 							sel_prof=true;
-							Log.v("","name="+mGp.profileAdapter.getItem(i).getName());
+//							Log.v("","name="+mGp.profileAdapter.getItem(i).getName());
 //							break;
 						}
 					}
@@ -2806,6 +2809,7 @@ public class SMBSyncMain extends FragmentActivity {
 			public void negativeResponse(Context c,Object[] o) {
 				util.addLogMsg("W",getString(R.string.msgs_astart_cancelled));
 				showNotificationMsg(getString(R.string.msgs_astart_cancelled));
+				mGp.mirrorThreadActive=false;
 			}
 		});
 		
