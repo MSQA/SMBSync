@@ -238,7 +238,7 @@ public class SMBSyncMain extends FragmentActivity {
 		super.onNewIntent(intent);
 		util.addDebugLogMsg(1,"I","onNewIntent entered, "+"resartStatus="+restartStatus);
 		if (mGp.mirrorThreadActive) {
-			if (intent.getExtras()!=null) {
+			if (isAutoStartRequested(intent)) {
 				commonDlg.showCommonDialog(false, "W", "", 
 						mContext.getString(R.string.msgs_application_already_started), null);
 				util.addLogMsg("I",mContext.getString(R.string.msgs_application_already_started));
@@ -1715,11 +1715,17 @@ public class SMBSyncMain extends FragmentActivity {
 			@Override
 			public void positiveResponse(Context c, Object[] o) {
 				for (int i=mGp.syncHistoryAdapter.getCount()-1;i>=0;i--) {
-					if (mGp.syncHistoryAdapter.getItem(i).isChecked) 
+					if (mGp.syncHistoryAdapter.getItem(i).isChecked) {
+						String result_fp=mGp.syncHistoryAdapter.getItem(i).sync_result_file_path;
+						if (!result_fp.equals("")) {
+							File lf=new File(result_fp);
+							if (lf.exists()) lf.delete();
+						}
 						mGp.syncHistoryAdapter.remove(mGp.syncHistoryAdapter.getItem(i));
+					}
 				}
 				util.saveHistoryList(mGp.syncHistoryAdapter.getSyncHistoryList());
-				mGp.syncHistoryAdapter.setSyncHistoryList(util.loadHistoryList());
+//				mGp.syncHistoryAdapter.setSyncHistoryList(util.loadHistoryList());
 				mGp.syncHistoryAdapter.notifyDataSetChanged();
 			}
 			@Override

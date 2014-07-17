@@ -764,7 +764,7 @@ public class SMBSyncUtil {
 						del_list.add(shli);
 						if (!shli.sync_result_file_path.equals("")) {
 							File tlf=new File(shli.sync_result_file_path);
-							tlf.delete();
+							if (tlf.exists()) tlf.delete();
 						}
 					}
 				}
@@ -811,11 +811,21 @@ public class SMBSyncUtil {
 	public void addHistoryList(ArrayList<SyncHistoryListItem> hl, SyncHistoryListItem item) {
 		hl.add(0,item);
 	};
-	public void removeHistoryList(ArrayList<SyncHistoryListItem> hl, int pos) {
-		hl.remove(pos);
-	};
-	public void removeHistoryList(ArrayList<SyncHistoryListItem> hl, SyncHistoryListItem item) {
-		hl.remove(item);
-	};
+//	public void removeHistoryList(ArrayList<SyncHistoryListItem> hl, int pos) {
+//		String result_fp=hl.get(pos).sync_result_file_path;
+//		if (!result_fp.equals("")) {
+//			File lf=new File(result_fp);
+//			lf.delete();
+//		}
+//		hl.remove(pos);
+//	};
+//	public void removeHistoryList(ArrayList<SyncHistoryListItem> hl, SyncHistoryListItem item) {
+//		String result_fp=item.sync_result_file_path;
+//		if (!result_fp.equals("")) {
+//			File lf=new File(result_fp);
+//			lf.delete();
+//		}
+//		hl.remove(item);
+//	};
 	
 }
