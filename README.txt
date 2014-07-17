@@ -1,6 +1,6 @@
 SMBSync
 
-SMBSyncはPC/NASとAndroid端末との間でファイルを同期するためのツールです。
+SMBSyncはPC/NASとAndroid端末との間でSMB/SAMBAを使用してファイルを同期するためのツールです。
 
 Build
 

@@ -1253,6 +1253,7 @@ public class SMBSyncMain extends FragmentActivity {
 			} else {
 				if (extraValueAutoStart) markAutoStartProfileList(extraValueSyncProfList);
 				if (profMaint.getActiveSyncProfileCount(mGp.profileAdapter)>0) {
+					setScreenOn();
 					mGp.mirrorThreadActive=true;
 					autoStartDlg();
 					if ((isExtraSpecBgExec && extraValueBgExec)) {
@@ -2816,6 +2817,7 @@ public class SMBSyncMain extends FragmentActivity {
 				util.addLogMsg("W",getString(R.string.msgs_astart_cancelled));
 				showNotificationMsg(getString(R.string.msgs_astart_cancelled));
 				mGp.mirrorThreadActive=false;
+				clearScreenOn();
 			}
 		});
 		
