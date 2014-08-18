@@ -25,12 +25,26 @@
         android:layout_width="fill_parent" 
         android:layout_height="wrap_content" />
 
-    <Button 
-        android:id="@+id/profile_progress_bar_btn_cancel" 
-        android:layout_marginTop="5dp" 
-        android:layout_width="fill_parent" 
-        android:layout_height="wrap_content" 
-        android:textAppearance="?android:attr/textAppearanceMedium" 
-        android:text="@string/msgs_progress_bar_dlg_aterm_cancel" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <Button
+            android:id="@+id/profile_progress_bar_btn_cancel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginTop="5dp"
+            android:text="@string/msgs_progress_bar_dlg_aterm_cancel"/>
+
+        <Button
+            android:id="@+id/profile_progress_bar_btn_immediate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginTop="5dp"
+            android:text="@string/msgs_progress_bar_dlg_aterm_immediate"/>
+
+    </LinearLayout>
 	    
 </LinearLayout>

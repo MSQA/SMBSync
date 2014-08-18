@@ -2775,6 +2775,8 @@ public class SMBSyncMain extends FragmentActivity {
 		title.setText(getString(R.string.msgs_progress_bar_dlg_astart_starting));
 		final Button btnCancel = (Button) findViewById(R.id.profile_progress_bar_btn_cancel);
 		btnCancel.setText(getString(R.string.msgs_progress_bar_dlg_astart_cancel));
+		final Button btnImmed = (Button) findViewById(R.id.profile_progress_bar_btn_immediate);
+		btnImmed.setText(getString(R.string.msgs_progress_bar_dlg_astart_immediate));
 		
 		// CANCELボタンの指定
 		btnCancel.setEnabled(true);
@@ -2820,7 +2822,16 @@ public class SMBSyncMain extends FragmentActivity {
 				clearScreenOn();
 			}
 		});
-		
+
+		// Immediateボタンの指定
+		btnImmed.setEnabled(true);
+		btnImmed.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				mRequestAutoTimerExpired=true;
+				threadCtl.setDisabled();//disableAsyncTask();
+			}
+		});
+
 		showNotificationMsg(getString(R.string.msgs_astart_started));
 		util.addLogMsg("I",getString(R.string.msgs_astart_started));
 		tabHost.setCurrentTab(1);
@@ -2828,6 +2839,7 @@ public class SMBSyncMain extends FragmentActivity {
 			ll_bar.setVisibility(LinearLayout.GONE);
 			at_ne.notifyToListener(true, null);
 		} else {
+			mRequestAutoTimerExpired=false;
 			autoTimer(threadCtl, at_ne,getString(R.string.msgs_astart_after));
 		}
 	};
@@ -2844,8 +2856,10 @@ public class SMBSyncMain extends FragmentActivity {
 		final TextView title = (TextView) findViewById(R.id.profile_progress_bar_msg);
 		title.setText("");
 		final Button btnCancel = (Button) findViewById(R.id.profile_progress_bar_btn_cancel);
-
 		btnCancel.setText(getString(R.string.msgs_progress_bar_dlg_aterm_cancel));
+		final Button btnImmed = (Button) findViewById(R.id.profile_progress_bar_btn_immediate);
+		btnImmed.setText(getString(R.string.msgs_progress_bar_dlg_aterm_immediate));
+
 		// CANCELボタンの指定
 		btnCancel.setEnabled(true);
 		btnCancel.setOnClickListener(new View.OnClickListener() {
@@ -2901,6 +2915,16 @@ public class SMBSyncMain extends FragmentActivity {
 				mGp.mirrorThreadActive=false;
 			}
 		});
+		
+		// Immediateボタンの指定
+		btnImmed.setEnabled(true);
+		btnImmed.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				mRequestAutoTimerExpired=true;
+				threadCtl.setDisabled();//disableAsyncTask();
+			}
+		});
+
 //		Log.v("","e="+extraDataSpecifiedAutoTerm);
 		util.addLogMsg("I",getString(R.string.msgs_aterm_started));
 		if (extraValueAutoTerm) {
@@ -2910,6 +2934,7 @@ public class SMBSyncMain extends FragmentActivity {
 			util.addLogMsg("I", getString(R.string.msgs_aterm_back_ground_term));
 			at_ne.notifyToListener(true, null);
 		} else {
+			mRequestAutoTimerExpired=false;
 			autoTimer(threadCtl, at_ne, getString(R.string.msgs_aterm_terminate_after));
 		}
 	};
@@ -2923,6 +2948,7 @@ public class SMBSyncMain extends FragmentActivity {
 		}
 	};
 	
+	private boolean mRequestAutoTimerExpired=false;
 	private void autoTimer( 
 			final ThreadCtrl threadCtl, final NotifyEvent at_ne, final String msg) {
 		setUiDisabled();
@@ -2964,8 +2990,12 @@ public class SMBSyncMain extends FragmentActivity {
 						LinearLayout ll_bar=(LinearLayout)findViewById(R.id.profile_progress_bar);
 						ll_bar.setVisibility(LinearLayout.GONE);
 						setUiEnabled();
-						if(threadCtl.isEnabled())at_ne.notifyToListener(true, null);
-						else at_ne.notifyToListener(false, null);
+						if (mRequestAutoTimerExpired) {//Immediate process requested
+							at_ne.notifyToListener(true, null);
+						} else {
+							if(threadCtl.isEnabled())at_ne.notifyToListener(true, null);
+							else at_ne.notifyToListener(false, null);
+						}
 					}
 				});
 			}

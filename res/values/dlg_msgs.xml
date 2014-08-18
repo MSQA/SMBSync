@@ -71,10 +71,12 @@
     <string name="msgs_filter_edit_dlg_title">Edit filter</string>
     
     <string name="msgs_progress_bar_dlg_aterm_terminating">Auto termination</string>
-   	<string name="msgs_progress_bar_dlg_aterm_cancel">Cancel auto terminate</string>
+   	<string name="msgs_progress_bar_dlg_aterm_cancel">Cancel auto termination</string>
+   	<string name="msgs_progress_bar_dlg_aterm_immediate">Immediate termination</string>
    	
    	<string name="msgs_progress_bar_dlg_astart_starting">Auto synchronize</string>
    	<string name="msgs_progress_bar_dlg_astart_cancel">Cancel auto synchronize</string>
+   	<string name="msgs_progress_bar_dlg_astart_immediate">Immediate synchronize</string>
     
    	<string name="msgs_progress_spin_dlg_syncronizing">Synchronizing</string>
    	<string name="msgs_progress_spin_dlg_sync_cancel">Cancel synchronize</string>

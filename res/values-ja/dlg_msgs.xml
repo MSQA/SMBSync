@@ -72,9 +72,11 @@
     
     <string name="msgs_progress_bar_dlg_aterm_terminating">自動終了</string>
    	<string name="msgs_progress_bar_dlg_aterm_cancel">自動終了をキャンセル</string>
+   	<string name="msgs_progress_bar_dlg_aterm_immediate">即時終了</string>
 
    	<string name="msgs_progress_bar_dlg_astart_starting">自動同期</string>
    	<string name="msgs_progress_bar_dlg_astart_cancel">自動同期をキャンセル</string>
+   	<string name="msgs_progress_bar_dlg_astart_immediate">即時同期</string>
    	
    	<string name="msgs_progress_spin_dlg_syncronizing">同期処理中</string>
    	<string name="msgs_progress_spin_dlg_sync_cancel">同期処理をキャンセル</string>
