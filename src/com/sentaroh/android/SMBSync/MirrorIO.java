@@ -3358,14 +3358,23 @@ public class MirrorIO implements Runnable {
 		else if (log_cat.equals("E")) totalErrorMsgCnt++;
 		if (mSyncHistoryPrintWriter!=null) {
 			mSbAddLogMsg.setLength(0);
-			mSbAddLogMsg
-				.append(log_cat)
-				.append(" ")
-				.append(syncProfName)
-				.append(" ")
-				.append(fp)
-				.append(" ")
-				.append(log_msg);
+			if (fp.equals("")) {
+				mSbAddLogMsg
+					.append(log_cat)
+					.append(" ")
+					.append(syncProfName)
+					.append(" ")
+					.append(log_msg);
+			} else {
+				mSbAddLogMsg
+					.append(log_cat)
+					.append(" ")
+					.append(syncProfName)
+					.append(" ")
+					.append(fp)
+					.append(" ")
+					.append(log_msg);
+			}
 			mSyncHistoryPrintWriter.println(mSbAddLogMsg.toString());
 		}
 	};
