@@ -4519,21 +4519,26 @@ public class ProfileMaintenance {
 			@Override
 			public void run() {
 				if (isIpAddrSmbHost(addr,scan_port)) {
-					synchronized(mLockScanCompleteCount) {
-						mScanCompleteCount++;
-						String srv_name=getSmbHostName(addr);
-						ScanAddressResultListItem li=new ScanAddressResultListItem();
-						li.server_address=addr;
-						li.server_name=srv_name;
-						ipAddressList.add(li);
-						Collections.sort(ipAddressList, new Comparator<ScanAddressResultListItem>(){
-							@Override
-							public int compare(ScanAddressResultListItem lhs,
-									ScanAddressResultListItem rhs) {
-								return lhs.server_address.compareTo(rhs.server_address);
+					final String srv_name=getSmbHostName(addr);
+					handler.post(new Runnable() {// UI thread
+						@Override
+						public void run() {
+							synchronized(mLockScanCompleteCount) {
+								mScanCompleteCount++;
+								ScanAddressResultListItem li=new ScanAddressResultListItem();
+								li.server_address=addr;
+								li.server_name=srv_name;
+								ipAddressList.add(li);
+								Collections.sort(ipAddressList, new Comparator<ScanAddressResultListItem>(){
+									@Override
+									public int compare(ScanAddressResultListItem lhs,
+											ScanAddressResultListItem rhs) {
+										return lhs.server_address.compareTo(rhs.server_address);
+									}
+								});
 							}
-						});
-					}
+						}
+					});
 				} else {
 					synchronized(mLockScanCompleteCount) {
 						mScanCompleteCount++;
