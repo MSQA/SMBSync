@@ -61,13 +61,24 @@
                 <ListView
                     android:id="@+id/profile_view_list"
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
                     android:fadeScrollbars="false"
                     android:text=""
                     android:textAppearance="?android:attr/textAppearanceMedium" >
                 </ListView>
 
                 <include layout="@layout/divider_line1" />
+                
+			    <TextView
+			        android:id="@+id/schedule_info"
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"
+			        android:ellipsize="end"
+			        android:lines="1"
+			        android:text="Scheduler info"
+			        android:textAppearance="?android:attr/textAppearanceMedium" />
+                
             </LinearLayout>
 
             <LinearLayout
@@ -118,8 +129,10 @@
                 </ListView>
 
             </LinearLayout>
-            
-        </FrameLayout>
-    </LinearLayout>
 
+        </FrameLayout>
+        
+    </LinearLayout>
+    
+    
 </TabHost>

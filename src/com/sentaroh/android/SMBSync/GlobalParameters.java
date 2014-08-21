@@ -59,6 +59,8 @@ public class GlobalParameters extends Application{
 	public TextView mainViewProgressFilepath=null;
 	public TextView mainViewProgressMessage=null;
 	
+	public TextView mainViewScheduleInfo=null;
+	
 	public AdapterProfileList profileAdapter=null;
 	public ListView profileListView=null;
 

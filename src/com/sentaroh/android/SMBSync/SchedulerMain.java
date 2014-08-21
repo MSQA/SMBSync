@@ -12,6 +12,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.util.SparseBooleanArray;
@@ -32,6 +33,7 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.sentaroh.android.Utilities.DateUtil;
 import com.sentaroh.android.Utilities.NotifyEvent;
 import com.sentaroh.android.Utilities.NotifyEvent.NotifyEventListener;
 import com.sentaroh.android.Utilities.ContextMenu.CustomContextMenu;
@@ -48,23 +50,15 @@ public class SchedulerMain {
 	
 	private SMBSyncUtil util=null;
 	
-    private boolean mSchedulerScheduleEmabled=false;
-    private String mSchedulerScheduleType="";
-    private String mSchedulerScheduleHours="";
-    private String mSchedulerScheduleMinutes="";
-    private String mSchedulerScheduleDayOfTheWeek="";
-    private String mSchedulerSyncProfile="";
-    private boolean mSchedulerSyncOptionAutostart=false;
-    private boolean mSchedulerSyncOptionAutoterm=false;
-    private boolean mSchedulerSyncOptionBgExec=false;
-
+	private SchedulerParms mSched=null;
+	
 	SchedulerMain (SMBSyncUtil mu, Context c,  
 			CommonDialog cd, CustomContextMenu ccm, GlobalParameters gp) {
 		mContext=c;
 		mGp=gp;
 		util=mu;
 		commonDlg=cd;
-		
+		mSched=new SchedulerParms();
 	};
 	
 	public void initDialog() {
@@ -101,18 +95,18 @@ public class SchedulerMain {
 		
 		CommonDialog.setDlgBoxSizeCompact(dialog);
 		
-		setScheduleTypeSpinner(dialog, mSchedulerScheduleType);
-		setScheduleHoursSpinner(dialog, mSchedulerScheduleHours);
-		setScheduleMinutesSpinner(dialog, mSchedulerScheduleMinutes);
-		setDayOfTheWeekCb(dialog, mSchedulerScheduleDayOfTheWeek);
+		setScheduleTypeSpinner(dialog, mSched.scheduleType);
+		setScheduleHoursSpinner(dialog, mSched.scheduleHours);
+		setScheduleMinutesSpinner(dialog, mSched.scheduleMinutes);
+		setDayOfTheWeekCb(dialog, mSched.scheduleDayOfTheWeek);
 		
 		setViewVisibility(dialog);
 		
-		cb_sched_enabled.setChecked(mSchedulerScheduleEmabled);
-		cb_auto_term.setChecked(mSchedulerSyncOptionAutoterm);
-		cb_bg_exec.setChecked(mSchedulerSyncOptionBgExec);
+		cb_sched_enabled.setChecked(mSched.scheduleEmabled);
+		cb_auto_term.setChecked(mSched.syncOptionAutoterm);
+		cb_bg_exec.setChecked(mSched.syncOptionBgExec);
 
-		if (mSchedulerSyncProfile.equals("")) {
+		if (mSched.syncProfile.equals("")) {
 			cb_sync_all_prof.setChecked(true);
 			btn_edit.setVisibility(Button.GONE);//.setEnabled(false);
 			tv_sync_prof.setVisibility(TextView.GONE);//.setEnabled(false);
@@ -121,7 +115,7 @@ public class SchedulerMain {
 			btn_edit.setVisibility(Button.VISIBLE);//.setEnabled(true);
 			tv_sync_prof.setVisibility(TextView.VISIBLE);//.setEnabled(true);
 		}
-		tv_sync_prof.setText(mSchedulerSyncProfile);
+		tv_sync_prof.setText(mSched.syncProfile);
 		
 		sp_sched_type.setOnItemSelectedListener(new OnItemSelectedListener(){
 			@Override
@@ -139,34 +133,36 @@ public class SchedulerMain {
 				dialog.dismiss();
 				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
 				String dw=buildDayOfWeekString(dialog);
-				mSchedulerScheduleEmabled=cb_sched_enabled.isChecked();
-		    	prefs.edit().putBoolean(SCHEDULER_SCHEDULE_ENABLED_KEY, mSchedulerScheduleEmabled).commit();
+				mSched.scheduleEmabled=cb_sched_enabled.isChecked();
+		    	prefs.edit().putBoolean(SCHEDULER_SCHEDULE_ENABLED_KEY, mSched.scheduleEmabled).commit();
 		    	
-		    	if (sp_sched_type.getSelectedItemPosition()==0) mSchedulerScheduleType=SCHEDULER_SCHEDULE_TYPE_EVERY_HOURS;
-		    	else if (sp_sched_type.getSelectedItemPosition()==1) mSchedulerScheduleType=SCHEDULER_SCHEDULE_TYPE_EVERY_DAY;
-		    	else if (sp_sched_type.getSelectedItemPosition()==2) mSchedulerScheduleType=SCHEDULER_SCHEDULE_TYPE_DAY_OF_THE_WEEK;
-		    	prefs.edit().putString(SCHEDULER_SCHEDULE_TYPE_KEY, mSchedulerScheduleType).commit();
+		    	if (sp_sched_type.getSelectedItemPosition()==0) mSched.scheduleType=SCHEDULER_SCHEDULE_TYPE_EVERY_HOURS;
+		    	else if (sp_sched_type.getSelectedItemPosition()==1) mSched.scheduleType=SCHEDULER_SCHEDULE_TYPE_EVERY_DAY;
+		    	else if (sp_sched_type.getSelectedItemPosition()==2) mSched.scheduleType=SCHEDULER_SCHEDULE_TYPE_DAY_OF_THE_WEEK;
+		    	prefs.edit().putString(SCHEDULER_SCHEDULE_TYPE_KEY, mSched.scheduleType).commit();
 		    	
-		    	mSchedulerScheduleHours=sp_sched_hours.getSelectedItem().toString();
-		    	prefs.edit().putString(SCHEDULER_SCHEDULE_HOURS_KEY, mSchedulerScheduleHours).commit();
+		    	mSched.scheduleHours=sp_sched_hours.getSelectedItem().toString();
+		    	prefs.edit().putString(SCHEDULER_SCHEDULE_HOURS_KEY, mSched.scheduleHours).commit();
 		    	
-		    	mSchedulerScheduleMinutes=sp_sched_minutes.getSelectedItem().toString();
-		    	prefs.edit().putString(SCHEDULER_SCHEDULE_MINUTES_KEY, mSchedulerScheduleMinutes).commit();
+		    	mSched.scheduleMinutes=sp_sched_minutes.getSelectedItem().toString();
+		    	prefs.edit().putString(SCHEDULER_SCHEDULE_MINUTES_KEY, mSched.scheduleMinutes).commit();
 		    	
-		    	mSchedulerScheduleDayOfTheWeek=dw;
-		    	prefs.edit().putString(SCHEDULER_SCHEDULE_TYPE_DAY_OF_THE_WEEK, mSchedulerScheduleDayOfTheWeek).commit();
+		    	mSched.scheduleDayOfTheWeek=dw;
+		    	prefs.edit().putString(SCHEDULER_SCHEDULE_TYPE_DAY_OF_THE_WEEK, mSched.scheduleDayOfTheWeek).commit();
 
-		    	if (cb_sync_all_prof.isChecked()) mSchedulerSyncProfile="";
-		    	else mSchedulerSyncProfile=tv_sync_prof.getText().toString();
-		    	prefs.edit().putString(SCHEDULER_SYNC_PROFILE_KEY, mSchedulerSyncProfile).commit();
+		    	if (cb_sync_all_prof.isChecked()) mSched.syncProfile="";
+		    	else mSched.syncProfile=tv_sync_prof.getText().toString();
+		    	prefs.edit().putString(SCHEDULER_SYNC_PROFILE_KEY, mSched.syncProfile).commit();
 		    	
-		    	mSchedulerSyncOptionAutoterm=cb_auto_term.isChecked();
-		    	prefs.edit().putBoolean(SCHEDULER_SYNC_OPTION_AUTOTERM_KEY, mSchedulerSyncOptionAutoterm).commit();
+		    	mSched.syncOptionAutoterm=cb_auto_term.isChecked();
+		    	prefs.edit().putBoolean(SCHEDULER_SYNC_OPTION_AUTOTERM_KEY, mSched.syncOptionAutoterm).commit();
 		    	
-		    	mSchedulerSyncOptionBgExec=cb_bg_exec.isChecked();
-		    	prefs.edit().putBoolean(SCHEDULER_SYNC_OPTION_BGEXEC_KEY, mSchedulerSyncOptionBgExec).commit();
+		    	mSched.syncOptionBgExec=cb_bg_exec.isChecked();
+		    	prefs.edit().putBoolean(SCHEDULER_SYNC_OPTION_BGEXEC_KEY, mSched.syncOptionBgExec).commit();
 
 		    	setTimer(mContext, SCHEDULER_SET_TIMER);
+		    	
+		    	setSchedulerInfo(mGp, mContext, mSched);
 			}
 		});
 
@@ -319,6 +315,31 @@ public class SchedulerMain {
 		c.sendBroadcast(intent);
 	};
 	
+	public static void setSchedulerInfo(GlobalParameters gp, Context c, SchedulerParms sched) {
+		SchedulerParms sp=sched;
+		if (sched==null) {
+			sp=new SchedulerParms();
+			SchedulerUtil.loadScheduleData(sp, c);
+		}
+		long nst=SchedulerUtil.getNextSchedule(sp);
+    	String sched_time="";
+    	if (nst!=-1) {
+    		gp.mainViewScheduleInfo.setVisibility(TextView.VISIBLE);
+    		sched_time=String.format(c.getString(R.string.msgs_scheduler_info_next_schedule_time), 
+    				DateUtil.convDateTimeTo_YearMonthDayHourMin(nst));
+    		String sync_prof="";
+    		if (sp.syncProfile.equals("")) {
+    			sync_prof=c.getString(R.string.msgs_scheduler_info_sync_all_active_profile);
+    		} else {
+    			sync_prof=String.format(c.getString(R.string.msgs_scheduler_info_sync_selected_profile), 
+    					sp.syncProfile);
+    		}
+    		gp.mainViewScheduleInfo.setText(sched_time+", "+sync_prof);
+    	} else {
+    		gp.mainViewScheduleInfo.setVisibility(TextView.GONE);
+    	}
+	};
+
 	private void setViewVisibility(Dialog dialog) {
 		final Spinner sp_sched_type=(Spinner)dialog.findViewById(R.id.scheduler_main_dlg_date_time_type);
 //		final Spinner sp_sched_hours=(Spinner)dialog.findViewById(R.id.scheduler_main_dlg_exec_hours);
@@ -451,26 +472,16 @@ public class SchedulerMain {
 
 	
     private void loadScheduleData() {
-    	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-    	mSchedulerScheduleEmabled=prefs.getBoolean(SCHEDULER_SCHEDULE_ENABLED_KEY, false);
-    	mSchedulerScheduleType=prefs.getString(SCHEDULER_SCHEDULE_TYPE_KEY, SCHEDULER_SCHEDULE_TYPE_EVERY_DAY);
-    	mSchedulerScheduleHours=prefs.getString(SCHEDULER_SCHEDULE_HOURS_KEY, "00");
-    	mSchedulerScheduleMinutes=prefs.getString(SCHEDULER_SCHEDULE_MINUTES_KEY, "00");
-    	mSchedulerScheduleDayOfTheWeek=prefs.getString(SCHEDULER_SCHEDULE_TYPE_DAY_OF_THE_WEEK, "0000000");
-    	
-    	mSchedulerSyncProfile=prefs.getString(SCHEDULER_SYNC_PROFILE_KEY, "");
-    	mSchedulerSyncOptionAutostart=prefs.getBoolean(SCHEDULER_SYNC_OPTION_AUTOSTART_KEY, false);
-    	mSchedulerSyncOptionAutoterm=prefs.getBoolean(SCHEDULER_SYNC_OPTION_AUTOTERM_KEY, false);
-    	mSchedulerSyncOptionBgExec=prefs.getBoolean(SCHEDULER_SYNC_OPTION_BGEXEC_KEY, false);
+    	SchedulerUtil.loadScheduleData(mSched, mContext);
 
-    	util.addDebugLogMsg(1,"I", "loadScheduleData type="+mSchedulerScheduleType+
-    			", hours="+mSchedulerScheduleHours+
-    			", minutes="+mSchedulerScheduleMinutes+
-    			", dw="+mSchedulerScheduleDayOfTheWeek+
-    			", sync_prof="+mSchedulerSyncProfile+
-    			", auto_start="+mSchedulerSyncOptionAutostart+
-    			", auto_term="+mSchedulerSyncOptionAutoterm+
-    			", bg_exec="+mSchedulerSyncOptionBgExec
+    	util.addDebugLogMsg(1,"I", "loadScheduleData type="+mSched.scheduleType+
+    			", hours="+mSched.scheduleHours+
+    			", minutes="+mSched.scheduleMinutes+
+    			", dw="+mSched.scheduleDayOfTheWeek+
+    			", sync_prof="+mSched.syncProfile+
+    			", auto_start="+mSched.syncOptionAutostart+
+    			", auto_term="+mSched.syncOptionAutoterm+
+    			", bg_exec="+mSched.syncOptionBgExec
     			);
     };
 

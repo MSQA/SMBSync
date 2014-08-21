@@ -25,4 +25,8 @@
 	
 	<string name="msgs_scheduler_edit_synclist_dlg_hdr_title">同期プロファイルリスト</string>
     <string name="msgs_scheduler_edit_synclist_dlg_hdr_sync_all_sync_profile">全ての有効なプロファイルを同期する</string>
+    
+    <string name="msgs_scheduler_info_next_schedule_time">スケジュール同期　%s</string>
+    <string name="msgs_scheduler_info_sync_all_active_profile">アクティブなプロファイル全て</string>
+    <string name="msgs_scheduler_info_sync_selected_profile">プロファイル %s を同期</string>
 </resources>

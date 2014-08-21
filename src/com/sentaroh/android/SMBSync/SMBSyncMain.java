@@ -237,6 +237,7 @@ public class SMBSyncMain extends FragmentActivity {
 	protected void onNewIntent(Intent intent) {
 		super.onNewIntent(intent);
 		util.addDebugLogMsg(1,"I","onNewIntent entered, "+"resartStatus="+restartStatus);
+		SchedulerMain.setSchedulerInfo(mGp, mContext,null);
 		if (mGp.mirrorThreadActive) {
 			if (isAutoStartRequested(intent)) {
 				commonDlg.showCommonDialog(false, "W", "", 
@@ -259,9 +260,10 @@ public class SMBSyncMain extends FragmentActivity {
 		super.onResume();
 		util.addDebugLogMsg(1,"I","onResume entered, "+"resartStatus="+restartStatus+
 					", isActivityForeground="+util.isActivityForeground());
-		
 		util.setActivityIsForeground(true);
+		
 		if (restartStatus==1) {
+			SchedulerMain.setSchedulerInfo(mGp, mContext,null);
 			if (!mGp.freezeMessageViewScroll) {
 				mGp.uiHandler.post(new Runnable(){
 					@Override
@@ -301,6 +303,8 @@ public class SMBSyncMain extends FragmentActivity {
 					setHistoryViewItemClickListener();
 					setHistoryViewLongClickListener();
 
+					SchedulerMain.setSchedulerInfo(mGp, mContext,null);
+					
 					if (isAutoStartRequested(getIntent()) || mGp.settingAutoStart) {
 						if (restartStatus!=2) checkAutoStart(getIntent());
 					} else {
@@ -360,7 +364,7 @@ public class SMBSyncMain extends FragmentActivity {
 		super.onDestroy();
 		util.setActivityIsForeground(false);
 		
-			util.addDebugLogMsg(1,"I","onDestroy entered, " +
+		util.addDebugLogMsg(1,"I","onDestroy entered, " +
 					"isActivityForeground="+util.isActivityForeground()+
 					", isFinishing="+isFinishing());
 		clearScreenOn();
@@ -575,14 +579,14 @@ public class SMBSyncMain extends FragmentActivity {
 		mGp.mainViewProgressFilepath=(TextView)findViewById(R.id.profile_progress_spin_filepath);
 		mGp.mainViewProgressMessage=(TextView)findViewById(R.id.profile_progress_spin_status);
 
+		mGp.mainViewScheduleInfo=(TextView)findViewById(R.id.schedule_info);
 	};
 	
 	class OnTabChange implements OnTabChangeListener {
 		@Override
 		public void onTabChanged(String tabId){
 			
-				util.addDebugLogMsg(2,"I","onTabchanged entered. tab="+tabId+
-						",v="+currentViewType);
+			util.addDebugLogMsg(2,"I","onTabchanged entered. tab="+tabId+",v="+currentViewType);
 			
 			if (tabId.equals("prof")) {
 				currentViewType="P";
@@ -593,9 +597,7 @@ public class SMBSyncMain extends FragmentActivity {
 				currentViewType="H";
 			}
 			
-			
-				util.addDebugLogMsg(2,"I","onTabchanged exited. tab="+tabId+
-						",v="+currentViewType);
+			util.addDebugLogMsg(2,"I","onTabchanged exited. tab="+tabId+",v="+currentViewType);
 		};
 	};
 	
@@ -762,7 +764,7 @@ public class SMBSyncMain extends FragmentActivity {
 			}
 		}
 		return pli;
-	}
+	};
 	
 	private void checkMixedMountPoint(final ArrayList<LocalFileLastModifiedMaintListItem> maint_list) {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -1042,7 +1044,10 @@ public class SMBSyncMain extends FragmentActivity {
 		ntfy.setListener(new NotifyEventListener() {
 			@Override
 			public void positiveResponse(Context c,Object[] o) {
-				terminateApplication();
+//				terminateApplication();
+				deleteTaskData();
+				util.flushLogFile();
+				android.os.Process.killProcess(android.os.Process.myPid());
 			}
 			@Override
 			public void negativeResponse(Context c,Object[] o) {}
