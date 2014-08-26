@@ -1256,7 +1256,7 @@ public class SMBSyncMain extends FragmentActivity {
 				commonDlg.showCommonDialog(false, "W", "", m_txt, null);
 				util.addLogMsg("W",m_txt);
 			} else {
-				if (extraValueAutoStart) markAutoStartProfileList(extraValueSyncProfList);
+				if (extraValueSyncProfList!=null) markAutoStartProfileList(extraValueSyncProfList);
 				if (profMaint.getActiveSyncProfileCount(mGp.profileAdapter)>0) {
 					setScreenOn();
 					mGp.mirrorThreadActive=true;
@@ -1415,10 +1415,17 @@ public class SMBSyncMain extends FragmentActivity {
 	private boolean markAutoStartProfileList(String[] sync_profile) {
 		boolean prof_selected=false;
 		if (sync_profile!=null && sync_profile.length!=0) {
-			util.addLogMsg("I",mContext.getString(R.string.msgs_extra_data_sync_profile));
-			for (int pidx=0;pidx<mGp.profileAdapter.getCount();pidx++) {
-				mGp.profileAdapter.getItem(pidx).setChecked(false);
+			boolean supress=false;
+			for (int i=0;i<sync_profile.length;i++) {
+				if (!sync_profile[i].equals("")) {
+					if (!supress) {
+						util.addLogMsg("I",mContext.getString(R.string.msgs_extra_data_sync_profile));
+						supress=true;
+					}
+					util.addLogMsg("I", sync_profile[i]);
+				}
 			}
+			for (int pidx=0;pidx<mGp.profileAdapter.getCount();pidx++) mGp.profileAdapter.getItem(pidx).setChecked(false);
 			for (int sidx=0;sidx<sync_profile.length;sidx++) {
 				if (!sync_profile[sidx].equals("")) {
 					boolean selected=false;
