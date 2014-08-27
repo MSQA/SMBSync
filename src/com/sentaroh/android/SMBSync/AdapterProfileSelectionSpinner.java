@@ -40,7 +40,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-public class SpinnerAdapterProfileSelection extends ArrayAdapter<String> {
+public class AdapterProfileSelectionSpinner extends ArrayAdapter<String> {
 	
 //	private int mResourceId;
 	private Context mContext;
@@ -54,7 +54,7 @@ public class SpinnerAdapterProfileSelection extends ArrayAdapter<String> {
 	public void setTextColor(int color) {mTextColor=color;}
 	public void setTextSize(int size_sp) {mTextSize=size_sp;}
 	
-	public SpinnerAdapterProfileSelection(Context c, int textViewResourceId) {
+	public AdapterProfileSelectionSpinner(Context c, int textViewResourceId) {
 		super(c, textViewResourceId);
 //		mResourceId=textViewResourceId;
 		mContext=c;

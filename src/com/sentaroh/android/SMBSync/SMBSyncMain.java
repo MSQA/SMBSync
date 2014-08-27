@@ -331,7 +331,7 @@ public class SMBSyncMain extends FragmentActivity {
 	protected void onRestart() {
 		super.onRestart();
 		
-			util.addDebugLogMsg(1,"I","onRestart entered, "+"resartStatus="+restartStatus+
+		util.addDebugLogMsg(1,"I","onRestart entered, "+"resartStatus="+restartStatus+
 					", isActivityForeground="+util.isActivityForeground());
 	};
 
@@ -340,7 +340,7 @@ public class SMBSyncMain extends FragmentActivity {
 		super.onPause();
 		util.setActivityIsForeground(false);
 		
-			util.addDebugLogMsg(1,"I","onPause entered "+
+		util.addDebugLogMsg(1,"I","onPause entered "+
 					",currentView="+currentViewType+
 				", getChangingConfigurations="+getChangingConfigurations()+
 				", isActivityForeground="+util.isActivityForeground());
@@ -353,7 +353,7 @@ public class SMBSyncMain extends FragmentActivity {
 	protected void onStop() {
 		super.onStop();
 		
-			util.addDebugLogMsg(1,"I","onStop entered, " +
+		util.addDebugLogMsg(1,"I","onStop entered, " +
 					", isActivityForeground="+util.isActivityForeground());
 		util.setActivityIsForeground(false);
 //		saveTaskData();
@@ -445,10 +445,6 @@ public class SMBSyncMain extends FragmentActivity {
 		mGp.msgListView = (ListView) findViewById(R.id.message_view_list);
 		mGp.msgListView.setFastScrollEnabled(true);
 		mGp.profileListView =(ListView) findViewById(R.id.profile_view_list);
-//		if (glblParms.msgListAdapter==null) {
-//			ArrayList<MsgListItem> tml =new ArrayList<MsgListItem>();
-//			glblParms.msgListAdapter = new AdapterMessageList(this,R.layout.msg_list_item_view,tml);
-//		}
 		ArrayList<MsgListItem> tml =new ArrayList<MsgListItem>();
 		mGp.msgListAdapter = new AdapterMessageList(this,R.layout.msg_list_item_view,tml);
 		
@@ -460,16 +456,8 @@ public class SMBSyncMain extends FragmentActivity {
 		mGp.msgListView.setSelected(true);
 		setFastScrollListener(mGp.msgListView);
 		
-//		if (glblParms.profileAdapter==null) {
-//			ArrayList<ProfileListItem> tml1 =new ArrayList<ProfileListItem>();
-//			glblParms.profileAdapter=
-//					new AdapterProfileList(this, R.layout.profile_list_item_view, tml1,
-//							glblParms.SMBSync_External_Root_Dir);
-//			currentViewType="P";
-//		}
 		ArrayList<ProfileListItem> tml1 =new ArrayList<ProfileListItem>();
-		mGp.profileAdapter=
-				new AdapterProfileList(this, R.layout.profile_list_item_view, tml1,
+		mGp.profileAdapter=new AdapterProfileList(this, R.layout.profile_list_item_view, tml1,
 						mGp.SMBSync_External_Root_Dir);
 		currentViewType="P";
 		mGp.profileListView.setAdapter(mGp.profileAdapter);
@@ -486,7 +474,6 @@ public class SMBSyncMain extends FragmentActivity {
 		mGp.syncHistoryListView.setFocusableInTouchMode(true);
 		mGp.syncHistoryListView.setScrollBarStyle(View.SCROLLBARS_OUTSIDE_INSET);
 		setFastScrollListener(mGp.syncHistoryListView);
-
 	};
 	
 	private void setFastScrollListener(final ListView lv) {
@@ -585,9 +572,7 @@ public class SMBSyncMain extends FragmentActivity {
 	class OnTabChange implements OnTabChangeListener {
 		@Override
 		public void onTabChanged(String tabId){
-			
 			util.addDebugLogMsg(2,"I","onTabchanged entered. tab="+tabId+",v="+currentViewType);
-			
 			if (tabId.equals("prof")) {
 				currentViewType="P";
 //				glblParms.profileListView.setSelection(posglblParms.profileListView);
@@ -596,7 +581,6 @@ public class SMBSyncMain extends FragmentActivity {
 			} else if (tabId.equals("hst")) {
 				currentViewType="H";
 			}
-			
 			util.addDebugLogMsg(2,"I","onTabchanged exited. tab="+tabId+",v="+currentViewType);
 		};
 	};
@@ -607,7 +591,6 @@ public class SMBSyncMain extends FragmentActivity {
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.menu_top, menu);
 		return true;//super.onCreateOptionsMenu(menu);
-
 	};
 	
 	@Override
@@ -867,7 +850,6 @@ public class SMBSyncMain extends FragmentActivity {
 					mContext.getString(R.string.msgs_local_file_modified_maint_validation_msg)+
 					"\n"+m_line,ntfy);
 		}
-
 	};
 	
 	private void importProfileAndParms() {
@@ -1548,7 +1530,6 @@ public class SMBSyncMain extends FragmentActivity {
 	};
 
 	private void setHistoryViewItemClickListener() {
-		
 		mGp.syncHistoryListView
 			.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
@@ -1705,9 +1686,7 @@ public class SMBSyncMain extends FragmentActivity {
 				 if (out.length()>0) cm.setText(out);
 			}
 		});
-
 		ccMenu.createMenu();
-		
 	};
 
 	private void confirmDeleteHistory() {

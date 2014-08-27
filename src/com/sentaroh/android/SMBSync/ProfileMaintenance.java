@@ -1761,7 +1761,7 @@ public class ProfileMaintenance {
 	};
 
 	public void setSyncMasterProfileSpinner(Spinner spinner_master, String prof_master) {
-		final SpinnerAdapterProfileSelection adapter_spinner=new SpinnerAdapterProfileSelection(mContext, R.layout.custom_simple_spinner_item);
+		final AdapterProfileSelectionSpinner adapter_spinner=new AdapterProfileSelectionSpinner(mContext, R.layout.custom_simple_spinner_item);
 		adapter_spinner.setTextColor(Color.BLACK);
 		adapter_spinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		spinner_master.setPrompt(msgs_select_master_profile);
@@ -1783,7 +1783,7 @@ public class ProfileMaintenance {
 	};
 
 	public void setSyncTargetProfileSpinner(Spinner spinner_target, String prof_master, String prof_target) {
-		final SpinnerAdapterProfileSelection adapter_spinner=new SpinnerAdapterProfileSelection(mContext, R.layout.custom_simple_spinner_item);
+		final AdapterProfileSelectionSpinner adapter_spinner=new AdapterProfileSelectionSpinner(mContext, R.layout.custom_simple_spinner_item);
 		adapter_spinner.setTextColor(Color.BLACK);
 		adapter_spinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		spinner_target.setPrompt(msgs_select_target_profile);
