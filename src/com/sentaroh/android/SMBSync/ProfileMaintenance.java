@@ -1910,8 +1910,8 @@ public class ProfileMaintenance {
 //				else cbmpd.setText(mContext.getString(R.string.msgs_sync_profile_master_dir_cb_disable));
 //			}
 //		});
-		if (prof_dir_filter.size()!=0) cbmpd.setEnabled(true);
-		else cbmpd.setEnabled(false);
+		if (prof_dir_filter.size()!=0) cbmpd.setVisibility(CheckBox.VISIBLE);//.setEnabled(true);
+		else cbmpd.setVisibility(CheckBox.GONE);//.setEnabled(false);
 		
 		final CheckBox cbConf = (CheckBox)dialog.findViewById(R.id.sync_profile_confirm);
 		cbConf.setChecked(true);
@@ -2157,7 +2157,8 @@ public class ProfileMaintenance {
 		else prof_syncopt = SMBSYNC_SYNC_TYPE_COPY;
 
 		Boolean prof_mpd=true;
-		if (!cbmpd.isChecked())prof_mpd=false; 
+//		if (prof_dir_filter.size()>0) prof_mpd=cbmpd.isChecked();
+		prof_mpd=cbmpd.isChecked();
 
 		if (!profile_saved) {
 			dlg_msg.setText(audit_msg);
@@ -2604,9 +2605,9 @@ public class ProfileMaintenance {
 		if (prof_act.equals(SMBSYNC_PROF_ACTIVE)) tg.setChecked(true);
 			else tg.setChecked(false);
 		if (prof_dir_filter.size()!=0) {
-			cbmpd.setEnabled(true);
+			cbmpd.setVisibility(CheckBox.VISIBLE);//.setEnabled(true);
 			cbmpd.setChecked(true);
-		} else cbmpd.setEnabled(false);
+		} else cbmpd.setVisibility(CheckBox.GONE);//.setEnabled(false);
 
 		final CheckBox cbNotUseLastModRem = (CheckBox)dialog.findViewById(R.id.sync_profile_not_use_last_modified_remote_file_for_diff);
 		cbNotUseLastModRem.setChecked(nulm_remote);
@@ -2735,8 +2736,8 @@ public class ProfileMaintenance {
 			}
 		});
 		// Master Dir processボタンの指定
-		if (prof_dir_filter.size()!=0) cbmpd.setEnabled(true);
-			else cbmpd.setEnabled(false);
+		if (prof_dir_filter.size()!=0) cbmpd.setVisibility(CheckBox.VISIBLE);//.setEnabled(true);
+			else cbmpd.setVisibility(CheckBox.GONE);//.setEnabled(false);
 		if (prof_mpd) cbmpd.setChecked(true);
 			else cbmpd.setChecked(false);
 
@@ -3150,8 +3151,8 @@ public class ProfileMaintenance {
 				}
 				if (d_fl.length()==0)  d_fl=mContext.getString(R.string.msgs_filter_list_dlg_not_specified);
 				dlg_dir_filter.setText(d_fl);
-				if (n_dir_filter.size()!=0) cbmpd.setEnabled(true);
-				else cbmpd.setEnabled(false);
+				if (n_dir_filter.size()!=0) cbmpd.setVisibility(CheckBox.VISIBLE);//.setEnabled(true);
+				else cbmpd.setVisibility(CheckBox.GONE);//.setEnabled(false);
 			}
 			@Override
 			public void negativeResponse(Context arg0, Object[] arg1) {}

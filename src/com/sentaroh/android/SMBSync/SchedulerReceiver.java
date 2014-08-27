@@ -83,7 +83,7 @@ public class SchedulerReceiver extends BroadcastReceiver{
     static private void setTimer() {
     	if (mSched.debugLevel>0) addDebugMsg(1,"I", "setTimer entered");
     	cancelTimer();
-		if (mSched.scheduleEmabled) {
+		if (mSched.scheduleEnabled) {
 			long time=SchedulerUtil.getNextSchedule(mSched);
 			if (mSched.debugLevel>0) 
 				addDebugMsg(1,"I", "getNextSchedule result="+DateUtil.convDateTimeTo_YearMonthDayHourMinSec(time));

@@ -23,7 +23,7 @@ public class SchedulerUtil {
     final static public void loadScheduleData(SchedulerParms sp, Context c) {
     	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
     	sp.debugLevel=Integer.parseInt(prefs.getString(c.getString(R.string.settings_log_level), "0"));
-    	sp.scheduleEmabled=prefs.getBoolean(SCHEDULER_SCHEDULE_ENABLED_KEY, false);
+    	sp.scheduleEnabled=prefs.getBoolean(SCHEDULER_SCHEDULE_ENABLED_KEY, false);
     	sp.scheduleType=prefs.getString(SCHEDULER_SCHEDULE_TYPE_KEY, SCHEDULER_SCHEDULE_TYPE_EVERY_DAY);
     	sp.scheduleHours=prefs.getString(SCHEDULER_SCHEDULE_HOURS_KEY, "00");
     	sp.scheduleMinutes=prefs.getString(SCHEDULER_SCHEDULE_MINUTES_KEY, "00");
@@ -107,7 +107,7 @@ public class SchedulerUtil {
 
 class SchedulerParms {
 	public int debugLevel=0;
-    public boolean scheduleEmabled=false;
+    public boolean scheduleEnabled=false;
     public String scheduleType="";
     public String scheduleHours="";
     public String scheduleMinutes="";

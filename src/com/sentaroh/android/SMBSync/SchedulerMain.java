@@ -70,6 +70,7 @@ public class SchedulerMain {
 		final Button btn_ok = (Button) dialog.findViewById(R.id.scheduler_main_dlg_ok);
 		final Button btn_cancel = (Button) dialog.findViewById(R.id.scheduler_main_dlg_cancel);
 		final Button btn_edit = (Button) dialog.findViewById(R.id.scheduler_main_dlg_edit_sync_prof);
+		final TextView tv_msg=(TextView)dialog.findViewById(R.id.scheduler_main_dlg_msg);
 		
 		final CheckBox cb_sched_enabled=(CheckBox)dialog.findViewById(R.id.scheduler_main_dlg_enabled);
 		final Spinner sp_sched_type=(Spinner)dialog.findViewById(R.id.scheduler_main_dlg_date_time_type);
@@ -102,7 +103,7 @@ public class SchedulerMain {
 		
 		setViewVisibility(dialog);
 		
-		cb_sched_enabled.setChecked(mSched.scheduleEmabled);
+		cb_sched_enabled.setChecked(mSched.scheduleEnabled);
 		cb_auto_term.setChecked(mSched.syncOptionAutoterm);
 		cb_bg_exec.setChecked(mSched.syncOptionBgExec);
 
@@ -133,8 +134,8 @@ public class SchedulerMain {
 				dialog.dismiss();
 				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
 				String dw=buildDayOfWeekString(dialog);
-				mSched.scheduleEmabled=cb_sched_enabled.isChecked();
-		    	prefs.edit().putBoolean(SCHEDULER_SCHEDULE_ENABLED_KEY, mSched.scheduleEmabled).commit();
+				mSched.scheduleEnabled=cb_sched_enabled.isChecked();
+		    	prefs.edit().putBoolean(SCHEDULER_SCHEDULE_ENABLED_KEY, mSched.scheduleEnabled).commit();
 		    	
 		    	if (sp_sched_type.getSelectedItemPosition()==0) mSched.scheduleType=SCHEDULER_SCHEDULE_TYPE_EVERY_HOURS;
 		    	else if (sp_sched_type.getSelectedItemPosition()==1) mSched.scheduleType=SCHEDULER_SCHEDULE_TYPE_EVERY_DAY;
@@ -173,9 +174,18 @@ public class SchedulerMain {
 				if (isChecked) {
 					btn_edit.setVisibility(Button.GONE);//.setEnabled(false);
 					tv_sync_prof.setVisibility(TextView.GONE);//.setEnabled(false);
+					btn_ok.setEnabled(true);
+					tv_msg.setText("");
 				} else {
 					btn_edit.setVisibility(Button.VISIBLE);//.setEnabled(true);
 					tv_sync_prof.setVisibility(TextView.VISIBLE);//.setEnabled(true);
+					if (tv_sync_prof.getText().equals("")) {
+						btn_ok.setEnabled(false);
+						tv_msg.setText(mContext.getString(R.string.msgs_scheduler_edit_sync_prof_list_not_specified));
+					} else {
+						btn_ok.setEnabled(true);
+						tv_msg.setText("");
+					}
 				}
 			}
 		});
@@ -189,6 +199,13 @@ public class SchedulerMain {
 					public void positiveResponse(Context c, Object[] o) {
 						String prof_list=(String)o[0];
 						tv_sync_prof.setText(prof_list);
+						if (prof_list.equals("")) {
+							btn_ok.setEnabled(false);
+							tv_msg.setText(mContext.getString(R.string.msgs_scheduler_edit_sync_prof_list_not_specified));
+						} else {
+							btn_ok.setEnabled(true);
+							tv_msg.setText("");
+						}
 					}
 					@Override
 					public void negativeResponse(Context c, Object[] o) {
@@ -321,7 +338,8 @@ public class SchedulerMain {
 			sp=new SchedulerParms();
 			SchedulerUtil.loadScheduleData(sp, c);
 		}
-		long nst=SchedulerUtil.getNextSchedule(sp);
+		long nst=-1;
+		if (sp.scheduleEnabled) nst=SchedulerUtil.getNextSchedule(sp);
     	String sched_time="";
     	if (nst!=-1) {
     		gp.mainViewScheduleInfo.setVisibility(TextView.VISIBLE);
