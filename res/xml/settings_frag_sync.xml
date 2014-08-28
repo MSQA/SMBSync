@@ -8,7 +8,7 @@
 			android:dialogTitle="@string/settings_network_wifi_option_dialog_title"
 			android:entries="@array/settings_network_wifi_option_list_entries"
 			android:entryValues="@array/settings_network_wifi_option_list_values"/>
-	    	    
+
 	    <CheckBoxPreference
 			android:key="@string/settings_auto_start"
 			android:title="@string/settings_auto_start_title"
