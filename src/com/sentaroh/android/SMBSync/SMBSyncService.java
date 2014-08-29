@@ -54,8 +54,9 @@ public class SMBSyncService extends Service {
 		glblParms.svcContext=this.getApplicationContext();
 		NotificationUtil.initNotification(glblParms);
 		mUtil=new SMBSyncUtil(getApplicationContext(), "Service", glblParms);
-
 		
+		mUtil.addDebugLogMsg(1,"I","onCreate entered");
+
 		mPartialWakeLock=((PowerManager)getSystemService(Context.POWER_SERVICE))
     			.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK
 	    				| PowerManager.ACQUIRE_CAUSES_WAKEUP
@@ -70,7 +71,6 @@ public class SMBSyncService extends Service {
 //		} catch (NameNotFoundException e) {
 //			e.printStackTrace();
 //		}           
-		mUtil.addDebugLogMsg(1,"I","onCreate entered");
 		tcMirror=new ThreadCtrl(); 
 		tcConfirm=new ThreadCtrl();
 	}

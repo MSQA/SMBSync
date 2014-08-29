@@ -173,6 +173,8 @@ public class SMBSyncMain extends FragmentActivity {
 		mGp.enableMainUi=true;
 		mGp.uiHandler=new Handler();
 		mGp.SMBSync_External_Root_Dir=LocalMountPoint.getExternalStorageDir();
+		
+        startService(new Intent(mContext, SMBSyncService.class));
 
 		mScreenOnWakelock=((PowerManager)getSystemService(Context.POWER_SERVICE))
 	    			.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK
@@ -181,21 +183,18 @@ public class SMBSyncMain extends FragmentActivity {
 //	   	    				| PowerManager.ON_AFTER_RELEASE
 	    				, "SMBSync-ScreenOn");
 		
-		WifiManager mWifi = 
-				(WifiManager)mContext.getSystemService(Context.WIFI_SERVICE);
-		mWifiLock=mWifi.createWifiLock(WifiManager.WIFI_MODE_FULL, "SMBSync-wifi");
+		mWifiLock=((WifiManager)mContext.getSystemService(Context.WIFI_SERVICE))
+				.createWifiLock(WifiManager.WIFI_MODE_FULL, "SMBSync-wifi");
 
 		if (tcService==null) tcService=new ThreadCtrl();
 
 //		if (Build.VERSION.SDK_INT>=14)
 //			this.getActionBar().setHomeButtonEnabled(false);
 		
-		if (util==null)
-			util=new SMBSyncUtil(this.getApplicationContext(),"Main", mGp);
+		if (util==null) util=new SMBSyncUtil(this.getApplicationContext(),"Main", mGp);
 		util.setActivityIsForeground(true);
 
-		if (ccMenu ==null)
-			ccMenu = new CustomContextMenu(getResources(),getSupportFragmentManager());
+		if (ccMenu ==null) ccMenu = new CustomContextMenu(getResources(),getSupportFragmentManager());
 		commonDlg=new CommonDialog(mContext, getSupportFragmentManager());
 		
 		createTabView() ;
@@ -210,7 +209,6 @@ public class SMBSyncMain extends FragmentActivity {
 		util.openLogFile();
 		
 		initAdapterAndView();
-
 		
 		util.addDebugLogMsg(1,"I","onCreate entered, "+"resartStatus="+restartStatus+
 					", isActivityForeground="+util.isActivityForeground());
@@ -238,22 +236,28 @@ public class SMBSyncMain extends FragmentActivity {
 		super.onNewIntent(intent);
 		util.addDebugLogMsg(1,"I","onNewIntent entered, "+"resartStatus="+restartStatus);
 		SchedulerMain.setSchedulerInfo(mGp, mContext,null);
-		if (mGp.mirrorThreadActive) {
-			if (isAutoStartRequested(intent)) {
-				commonDlg.showCommonDialog(false, "W", "", 
-						mContext.getString(R.string.msgs_application_already_started), null);
-				util.addLogMsg("I",mContext.getString(R.string.msgs_application_already_started));
+		if (restartStatus!=2) {
+			if (mGp.mirrorThreadActive) {
+				if (isAutoStartRequested(intent)) {
+					commonDlg.showCommonDialog(false, "W", "", 
+							mContext.getString(R.string.msgs_application_already_started), null);
+					util.addLogMsg("I",mContext.getString(R.string.msgs_application_already_started));
+				}
+			} else {
+				if (isAutoStartRequested(intent)) {
+					util.addDebugLogMsg(1,"I","onNewIntent Extra data found.");
+					isExtraSpecAutoStart=false;
+					isExtraSpecAutoTerm=false;
+					isExtraSpecBgExec=false;
+					checkAutoStart(intent);
+				}
 			}
 		} else {
-			if (isAutoStartRequested(intent)) {
-				util.addDebugLogMsg(1,"I","onNewIntent Extra data found.");
-				isExtraSpecAutoStart=false;
-				isExtraSpecAutoTerm=false;
-				isExtraSpecBgExec=false;
-				checkAutoStart(intent);
-			}
+			mPendingRequestIntent=intent;
 		}
 	};
+	
+	private Intent mPendingRequestIntent=null;
 	
 	@Override
 	protected void onResume() {
@@ -305,8 +309,12 @@ public class SMBSyncMain extends FragmentActivity {
 
 					SchedulerMain.setSchedulerInfo(mGp, mContext,null);
 					
-					if (isAutoStartRequested(getIntent()) || mGp.settingAutoStart) {
-						if (restartStatus!=2) checkAutoStart(getIntent());
+					Intent intent=null;
+					if (restartStatus==2) intent=mPendingRequestIntent;
+					else intent=getIntent();
+
+					if (isAutoStartRequested(intent) || mGp.settingAutoStart) {
+						checkAutoStart(intent);
 					} else {
 						if (mGp.profileAdapter.getItem(0).getType().equals("")) {
 							ProfileCreationWizard sw=new ProfileCreationWizard(mGp, mContext, 
@@ -373,7 +381,8 @@ public class SMBSyncMain extends FragmentActivity {
 		deleteTaskData();
 		closeService();
 		util.flushLogFile();
-		if (mGp.settingExitClean) {
+		//move to service
+//		if (mGp.settingExitClean) {
 //			System.gc();
 //			android.os.Process.killProcess(android.os.Process.myPid());
 //			Handler hndl=new Handler();
@@ -383,7 +392,7 @@ public class SMBSyncMain extends FragmentActivity {
 //					android.os.Process.killProcess(android.os.Process.myPid());
 //				}
 //			}, 20);	
-		}
+//		}
 	};
 	
 	@Override
@@ -1256,18 +1265,20 @@ public class SMBSyncMain extends FragmentActivity {
 	@SuppressLint("DefaultLocale")
 	private boolean isAutoStartRequested(Intent in) {
 		boolean result=false;
-		Bundle bundle=in.getExtras();
-		if (bundle!=null) {
-			if (bundle.containsKey(SMBSYNC_EXTRA_PARM_AUTO_START)) {
-				result=true;
-			} else if (bundle.containsKey(SMBSYNC_EXTRA_PARM_AUTO_TERM)) {
-				result=true;
-			} else if (bundle.containsKey(SMBSYNC_EXTRA_PARM_BACKGROUND_EXECUTION)) {
-				result=true;
-			} else if (bundle.containsKey(SMBSYNC_EXTRA_PARM_STARTUP_PARMS)) {
-				result=true;
-			} else if (bundle.containsKey(SMBSYNC_EXTRA_PARM_SYNC_PROFILE)) {
-				result=true;
+		if (in!=null) {
+			Bundle bundle=in.getExtras();
+			if (bundle!=null) {
+				if (bundle.containsKey(SMBSYNC_EXTRA_PARM_AUTO_START)) {
+					result=true;
+				} else if (bundle.containsKey(SMBSYNC_EXTRA_PARM_AUTO_TERM)) {
+					result=true;
+				} else if (bundle.containsKey(SMBSYNC_EXTRA_PARM_BACKGROUND_EXECUTION)) {
+					result=true;
+				} else if (bundle.containsKey(SMBSYNC_EXTRA_PARM_STARTUP_PARMS)) {
+					result=true;
+				} else if (bundle.containsKey(SMBSYNC_EXTRA_PARM_SYNC_PROFILE)) {
+					result=true;
+				}
 			}
 		}
 		util.addDebugLogMsg(1,"I","isAutoStartRequested result="+result);
@@ -2597,8 +2608,7 @@ public class SMBSyncMain extends FragmentActivity {
 	private ISvcClient mSvcClient=null;
 	
 	private void openService(final NotifyEvent p_ntfy) {
-    	
-		util.addDebugLogMsg(1,"I","openService entered");
+ 		util.addDebugLogMsg(1,"I","openService entered");
         mSvcConnection = new ServiceConnection(){
     		public void onServiceConnected(ComponentName arg0, IBinder service) {
     	    	util.addDebugLogMsg(1,"I","onServiceConnected entered");

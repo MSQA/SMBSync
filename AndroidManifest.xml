@@ -32,9 +32,6 @@
  				<action android:name="android.intent.action.TIME_SET"/>
  				<action android:name="android.intent.action.PACKAGE_REPLACED" />
 				
-				<action android:name="android.intent.action.ACTION_SHUTDOWN" />
-				<action android:name="android.intent.action.LOCALE_CHANGED" />
-				<action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
 				<action android:name="com.sentaroh.android.SMBSync.ACTION_TIMER_EXPIRED" />
 				<action android:name="com.sentaroh.android.SMBSync.ACTION_SET_TIMER" />
 				<action android:name="com.sentaroh.android.SMBSync.ACTION_SET_TIMER_IF_NOT_SET" />
