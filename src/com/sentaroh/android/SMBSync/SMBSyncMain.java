@@ -26,6 +26,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 import static com.sentaroh.android.SMBSync.Constants.*;
 import static com.sentaroh.android.SMBSync.SchedulerConstants.*;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -34,9 +36,9 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Locale;
-
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.app.KeyguardManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -65,6 +67,7 @@ import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.text.ClipboardManager;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -176,7 +179,7 @@ public class SMBSyncMain extends FragmentActivity {
 		
         startService(new Intent(mContext, SMBSyncService.class));
 
-		mScreenOnWakelock=((PowerManager)getSystemService(Context.POWER_SERVICE))
+		mDimScreenWakelock=((PowerManager)getSystemService(Context.POWER_SERVICE))
 	    			.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK
 //	    				 PowerManager.PARTIAL_WAKE_LOCK
 	    				| PowerManager.ACQUIRE_CAUSES_WAKEUP
@@ -245,7 +248,7 @@ public class SMBSyncMain extends FragmentActivity {
 				}
 			} else {
 				if (isAutoStartRequested(intent)) {
-					util.addDebugLogMsg(1,"I","onNewIntent Extra data found.");
+					util.addDebugLogMsg(1,"I","onNewIntent Auto start data found.");
 					isExtraSpecAutoStart=false;
 					isExtraSpecAutoTerm=false;
 					isExtraSpecBgExec=false;
@@ -275,6 +278,7 @@ public class SMBSyncMain extends FragmentActivity {
 						mGp.msgListView.setSelection(mGp.msgListAdapter.getCount()-1);
 					}
 				});
+				setScreenOn();
 			}
 		} else {
 			setUiEnabled();
@@ -361,7 +365,7 @@ public class SMBSyncMain extends FragmentActivity {
 	protected void onStop() {
 		super.onStop();
 		
-		util.addDebugLogMsg(1,"I","onStop entered, " +
+		util.addDebugLogMsg(1,"I","onStop entered, "+
 					", isActivityForeground="+util.isActivityForeground());
 		util.setActivityIsForeground(false);
 //		saveTaskData();
@@ -1093,6 +1097,11 @@ public class SMBSyncMain extends FragmentActivity {
 			prefs.edit().putString(getString(R.string.settings_smb_tcp_nodelay),"true").commit();
 			prefs.edit().putString(getString(R.string.settings_io_buffers),"8").commit();
 		}
+
+		if (prefs.getString(getString(R.string.settings_keep_screen_on), "").equals("")) {
+			prefs.edit().putString(getString(R.string.settings_keep_screen_on), GlobalParameters.KEEP_SCREEN_ON_WHEN_SCREEN_UNLOCKED)
+				.commit();
+		}
 		
 		if (prefs.getString(getString(R.string.settings_smb_perform_class), "-1").equals("-1")) {
 			prefs.edit().putString(getString(R.string.settings_smb_perform_class), 
@@ -1194,9 +1203,9 @@ public class SMBSyncMain extends FragmentActivity {
 		mGp.settingRingtoneWhenSyncEnded=
 				prefs.getString(getString(R.string.settings_playback_ringtone_when_sync_ended), "0");
 
-		mGp.settingScreenOnEnabled=
-				prefs.getBoolean(getString(R.string.settings_ui_keep_screen_on), false);
-		
+		mGp.settingScreenOnOption=
+				prefs.getString(getString(R.string.settings_keep_screen_on), GlobalParameters.KEEP_SCREEN_ON_WHEN_SCREEN_UNLOCKED);
+
 		mGp.settingWifiLockRequired=
 				prefs.getBoolean(getString(R.string.settings_wifi_lock), false);
 
@@ -1252,6 +1261,7 @@ public class SMBSyncMain extends FragmentActivity {
 					setScreenOn();
 					mGp.mirrorThreadActive=true;
 					autoStartDlg();
+					Log.v("","isExtraSpecBgExec="+isExtraSpecBgExec+", extraValueBgExec="+extraValueBgExec);
 					if ((isExtraSpecBgExec && extraValueBgExec)) {
 						setScreenSwitchToHome();
 					} else if (!isExtraSpecBgExec && mGp.settingBackgroundExecution) {
@@ -1298,44 +1308,6 @@ public class SMBSyncMain extends FragmentActivity {
 			}
 			util.addLogMsg("I",
 					String.format(mContext.getString(R.string.msgs_extra_data_startup_by),sid));
-			if (bundle.containsKey(SMBSYNC_EXTRA_PARM_AUTO_START)) {
-				if (bundle.get(SMBSYNC_EXTRA_PARM_AUTO_START).getClass().getSimpleName().equals("Boolean")) {
-					isExtraSpecAutoStart=true;
-					extraValueAutoStart=bundle.getBoolean(SMBSYNC_EXTRA_PARM_AUTO_START);
-					util.addLogMsg("I","AutoStart="+extraValueAutoStart);
-				} else {
-					util.addLogMsg("W",mContext.getString(R.string.msgs_extra_data_auto_start_not_boolean));
-				}
-			}
-			if (bundle.containsKey(SMBSYNC_EXTRA_PARM_AUTO_TERM)) {
-				if (bundle.get(SMBSYNC_EXTRA_PARM_AUTO_TERM).getClass().getSimpleName().equals("Boolean")) {
-					if (extraValueAutoStart) {
-						isExtraSpecAutoTerm=true;
-						extraValueAutoTerm=bundle.getBoolean(SMBSYNC_EXTRA_PARM_AUTO_TERM);
-						util.addLogMsg("I","AutoTerm="+extraValueAutoTerm);
-					} else {
-						util.addLogMsg("W",String.format(
-								mContext.getString(R.string.msgs_extra_data_ignored),"AutoTerm"));
-					}
-				} else {
-					util.addLogMsg("W",mContext.getString(R.string.msgs_extra_data_auto_term_not_boolean));
-				}
-			}
-			if (bundle.containsKey(SMBSYNC_EXTRA_PARM_BACKGROUND_EXECUTION)) {
-				if (bundle.get(SMBSYNC_EXTRA_PARM_BACKGROUND_EXECUTION).getClass().getSimpleName().equals("Boolean")) {
-					if (extraValueAutoStart) {
-						isExtraSpecBgExec=true;
-						extraValueBgExec=bundle.getBoolean(SMBSYNC_EXTRA_PARM_BACKGROUND_EXECUTION);
-						util.addLogMsg("I","Background="+extraValueBgExec);
-					} else {
-						util.addLogMsg("W",String.format(
-								mContext.getString(R.string.msgs_extra_data_ignored),"Background"));
-					}
-
-				} else {
-					util.addLogMsg("W",mContext.getString(R.string.msgs_extra_data_back_ground_not_boolean));
-				}
-			}
 			if (bundle.containsKey(SMBSYNC_EXTRA_PARM_STARTUP_PARMS)) {
 				if (bundle.get(SMBSYNC_EXTRA_PARM_STARTUP_PARMS).getClass().getSimpleName().equals("String")) {
 					String op=bundle.getString(SMBSYNC_EXTRA_PARM_STARTUP_PARMS).replaceAll("\"", "").replaceAll("\'", "");
@@ -1368,38 +1340,92 @@ public class SMBSyncMain extends FragmentActivity {
 						}
 					}
 					if (!error) {
-						isExtraSpecAutoStart=true;
+						isExtraSpecAutoStart=isExtraSpecAutoTerm=isExtraSpecBgExec=true;
 						extraValueAutoStart=opa[0];
 						util.addLogMsg("I","AutoStart="+extraValueAutoStart);
 						if (isExtraSpecAutoStart && extraValueAutoStart) {
-							isExtraSpecAutoTerm=true;
 							extraValueAutoTerm=opa[1];
 							util.addLogMsg("I","AutoTerm="+extraValueAutoTerm);
 							
-							isExtraSpecBgExec=opa[2];
-							extraValueBgExec=isExtraSpecBgExec;
+							extraValueBgExec=opa[2];
 							util.addLogMsg("I","Background="+extraValueBgExec);
 						} else {
 							util.addLogMsg("W",String.format(
-									mContext.getString(R.string.msgs_extra_data_ignored),"AutoTerm"));
+									mContext.getString(R.string.msgs_extra_data_ignored_auto_start_disabled),"AutoTerm"));
 							util.addLogMsg("W",String.format(
-									mContext.getString(R.string.msgs_extra_data_ignored),"Background"));
+									mContext.getString(R.string.msgs_extra_data_ignored_auto_start_disabled),"Background"));
+						}
+						
+						if (bundle.containsKey(SMBSYNC_EXTRA_PARM_AUTO_START)) {
+							util.addLogMsg("W",String.format(
+									mContext.getString(R.string.msgs_extra_data_ignored_startup_parms_specified),SMBSYNC_EXTRA_PARM_AUTO_START));
+						}
+						if (bundle.containsKey(SMBSYNC_EXTRA_PARM_AUTO_TERM)) {
+							util.addLogMsg("W",String.format(
+									mContext.getString(R.string.msgs_extra_data_ignored_startup_parms_specified),SMBSYNC_EXTRA_PARM_AUTO_TERM));
+						}
+						if (bundle.containsKey(SMBSYNC_EXTRA_PARM_BACKGROUND_EXECUTION)) {
+							util.addLogMsg("W",String.format(
+									mContext.getString(R.string.msgs_extra_data_ignored_startup_parms_specified),SMBSYNC_EXTRA_PARM_BACKGROUND_EXECUTION));
+						}
+						if (bundle.containsKey(SMBSYNC_EXTRA_PARM_SYNC_PROFILE)) {
+							util.addLogMsg("W",String.format(
+									mContext.getString(R.string.msgs_extra_data_ignored_startup_parms_specified),SMBSYNC_EXTRA_PARM_SYNC_PROFILE));
 						}
 					}
 				} else {
 					util.addLogMsg("W",mContext.getString(R.string.msgs_extra_data_startup_parms_type_error));
 				}
-			}
-			if (bundle.containsKey(SMBSYNC_EXTRA_PARM_SYNC_PROFILE)) {
-				if (isExtraSpecAutoStart && extraValueAutoStart) {
-					if (bundle.get(SMBSYNC_EXTRA_PARM_SYNC_PROFILE).getClass().getSimpleName().equals("String[]")) {
-						extraValueSyncProfList=bundle.getStringArray(SMBSYNC_EXTRA_PARM_SYNC_PROFILE);
+			} else {
+				if (bundle.containsKey(SMBSYNC_EXTRA_PARM_AUTO_START)) {
+					if (bundle.get(SMBSYNC_EXTRA_PARM_AUTO_START).getClass().getSimpleName().equals("Boolean")) {
+						isExtraSpecAutoStart=true;
+						extraValueAutoStart=bundle.getBoolean(SMBSYNC_EXTRA_PARM_AUTO_START);
+						util.addLogMsg("I","AutoStart="+extraValueAutoStart);
 					} else {
-						util.addLogMsg("W",mContext.getString(R.string.msgs_extra_data_sync_profile_type_error));
+						util.addLogMsg("W",mContext.getString(R.string.msgs_extra_data_auto_start_not_boolean));
 					}
-				} else {
-					util.addLogMsg("W",String.format(
-							mContext.getString(R.string.msgs_extra_data_ignored),"SyncProfile"));
+				}
+				if (bundle.containsKey(SMBSYNC_EXTRA_PARM_AUTO_TERM)) {
+					if (bundle.get(SMBSYNC_EXTRA_PARM_AUTO_TERM).getClass().getSimpleName().equals("Boolean")) {
+						if (extraValueAutoStart) {
+							isExtraSpecAutoTerm=true;
+							extraValueAutoTerm=bundle.getBoolean(SMBSYNC_EXTRA_PARM_AUTO_TERM);
+							util.addLogMsg("I","AutoTerm="+extraValueAutoTerm);
+						} else {
+							util.addLogMsg("W",String.format(
+									mContext.getString(R.string.msgs_extra_data_ignored_auto_start_disabled),"AutoTerm"));
+						}
+					} else {
+						util.addLogMsg("W",mContext.getString(R.string.msgs_extra_data_auto_term_not_boolean));
+					}
+				}
+				if (bundle.containsKey(SMBSYNC_EXTRA_PARM_BACKGROUND_EXECUTION)) {
+					if (bundle.get(SMBSYNC_EXTRA_PARM_BACKGROUND_EXECUTION).getClass().getSimpleName().equals("Boolean")) {
+						if (extraValueAutoStart) {
+							isExtraSpecBgExec=true;
+							extraValueBgExec=bundle.getBoolean(SMBSYNC_EXTRA_PARM_BACKGROUND_EXECUTION);
+							util.addLogMsg("I","Background="+extraValueBgExec);
+						} else {
+							util.addLogMsg("W",String.format(
+									mContext.getString(R.string.msgs_extra_data_ignored_auto_start_disabled),"Background"));
+						}
+
+					} else {
+						util.addLogMsg("W",mContext.getString(R.string.msgs_extra_data_back_ground_not_boolean));
+					}
+				}
+				if (bundle.containsKey(SMBSYNC_EXTRA_PARM_SYNC_PROFILE)) {
+					if (isExtraSpecAutoStart && extraValueAutoStart) {
+						if (bundle.get(SMBSYNC_EXTRA_PARM_SYNC_PROFILE).getClass().getSimpleName().equals("String[]")) {
+							extraValueSyncProfList=bundle.getStringArray(SMBSYNC_EXTRA_PARM_SYNC_PROFILE);
+						} else {
+							util.addLogMsg("W",mContext.getString(R.string.msgs_extra_data_sync_profile_type_error));
+						}
+					} else {
+						util.addLogMsg("W",String.format(
+								mContext.getString(R.string.msgs_extra_data_ignored_auto_start_disabled),"SyncProfile"));
+					}
 				}
 			}
 		}
@@ -1451,7 +1477,7 @@ public class SMBSyncMain extends FragmentActivity {
 				", settingAutoTerm="+mGp.settingAutoTerm+
 				", settingErrorOption="+mGp.settingErrorOption+
 				", settingBackgroundExecution="+mGp.settingBackgroundExecution+
-				", settingScreenOnEnabled="+mGp.settingScreenOnEnabled+
+				", settingScreenOnOption="+mGp.settingScreenOnOption+
 				", settingWifiLockRequired="+mGp.settingWifiLockRequired+
 				", settingWifiOption="+mGp.settingWifiOption+
 
@@ -2366,7 +2392,7 @@ public class SMBSyncMain extends FragmentActivity {
 
 	};
 
-	private WakeLock mScreenOnWakelock=null;
+	private WakeLock mDimScreenWakelock=null;
 //	private void setScreenOn(int timeout) {
 //		if (mGp.settingScreenOnEnabled) {
 //			if (Build.VERSION.SDK_INT>=17) {
@@ -2423,35 +2449,47 @@ public class SMBSyncMain extends FragmentActivity {
 	};
 	
 	private void setScreenOn() {
-		if (mGp.settingScreenOnEnabled) {
-			try {
-				mSvcClient.aidlAcqWakeLock();
-			} catch (RemoteException e) {
-				e.printStackTrace();
-			}
-			if (!mScreenOnWakelock.isHeld()) {
-		    	mScreenOnWakelock.acquire();
-				util.addDebugLogMsg(1,"I","Wakelock acquired");
+		try {
+			mSvcClient.aidlAcqWakeLock();
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+		if (!mGp.settingScreenOnOption.equals(GlobalParameters.KEEP_SCREEN_ON_DISABLED)) {
+			if (mGp.settingScreenOnOption.equals(GlobalParameters.KEEP_SCREEN_ON_ALWAYS) ||
+					!isKeyguardEffective(mContext)) {
+				if (!mDimScreenWakelock.isHeld()) {
+			    	mDimScreenWakelock.acquire();
+					util.addDebugLogMsg(1,"I","Dim screen wakelock acquired");
+				} else {
+					util.addDebugLogMsg(1,"I","Dim screen wakelock not acquired, because Wakelock already acquired");
+				}
 			} else {
-				util.addDebugLogMsg(1,"I","Wakelock not acquired, because Wakelock already acquired");
+				util.addDebugLogMsg(1,"I","Dim screen wakelock not acquired, because screen is alread locked");
 			}
 		}
 	};
 	
+	static final private boolean isKeyguardEffective(Context mContext) {
+        KeyguardManager keyguardMgr=
+        		(KeyguardManager)mContext.getSystemService(Context.KEYGUARD_SERVICE);
+    	boolean result=keyguardMgr.inKeyguardRestrictedInputMode();
+    	return result;
+    };
+
 	private void clearScreenOn() {
-		if (mGp.settingScreenOnEnabled) {
-			try {
-				mSvcClient.aidlRelWakeLock();
-			} catch (RemoteException e) {
-				e.printStackTrace();
-			}
-			if (mScreenOnWakelock.isHeld()) {
-				util.addDebugLogMsg(1,"I","Wakelock released");
-				mScreenOnWakelock.release();
-			} else {
-				util.addDebugLogMsg(1,"I","Wakelock not relased, because Wakelock not acquired");
-			}
+		try {
+			mSvcClient.aidlRelWakeLock();
+		} catch (RemoteException e) {
+			e.printStackTrace();
 		}
+		if (mDimScreenWakelock.isHeld()) {
+			util.addDebugLogMsg(1,"I","Dim screen wakelock released");
+			mDimScreenWakelock.release();
+		} else {
+			util.addDebugLogMsg(1,"I","Dim screen wakelock not relased, because Wakelock not acquired");
+		}
+//		if (mGp.settingScreenOnEnabled) {
+//		}
 	};
 
 	private void mirrorTaskEnded(String result_code, String result_msg) {
@@ -2796,19 +2834,15 @@ public class SMBSyncMain extends FragmentActivity {
 		at_ne.setListener(new NotifyEventListener() {
 			@Override
 			public void positiveResponse(Context c,Object[] o) {
-				util.addLogMsg("I",getString(R.string.msgs_astart_expired));
-				showNotificationMsg(getString(R.string.msgs_astart_expired));
+				util.addDebugLogMsg(1,"I","Auto timer was expired.");
+//				showNotificationMsg(getString(R.string.msgs_astart_expired));
 				if (mGp.settingAutoStart || (isExtraSpecAutoStart && extraValueAutoStart)){
-					
-					util.addDebugLogMsg(1,"I","Auto synchronization was invoked.");
-//					saveTaskData();
+					util.addDebugLogMsg(1,"I","Auto sync was invoked.");
 					boolean sel_prof=false;
 					for (int i=0;i<mGp.profileAdapter.getCount();i++) {
 						if (mGp.profileAdapter.getItem(i).getType().equals(SMBSYNC_PROF_TYPE_SYNC) && 
 								mGp.profileAdapter.getItem(i).isChecked()) {
 							sel_prof=true;
-//							Log.v("","name="+mGp.profileAdapter.getItem(i).getName());
-//							break;
 						}
 					}
 					if (sel_prof) syncSelectedProfile();
@@ -3312,8 +3346,10 @@ public class SMBSyncMain extends FragmentActivity {
 				data.pl=mGp.profileAdapter.getAllItem();
 				try {
 				    FileOutputStream fos = openFileOutput(SMBSYNC_SERIALIZABLE_FILE_NAME, MODE_PRIVATE);
-				    ObjectOutputStream oos = new ObjectOutputStream(fos);
+				    BufferedOutputStream bos=new BufferedOutputStream(fos,4096*256);
+				    ObjectOutputStream oos = new ObjectOutputStream(bos);
 				    oos.writeObject(data);
+				    oos.flush();
 				    oos.close();
 				    util.addDebugLogMsg(1,"I", "Restart data was saved.");
 				} catch (Exception e) {
@@ -3333,7 +3369,8 @@ public class SMBSyncMain extends FragmentActivity {
 			try {
 	//		    FileInputStream fis = openFileInput(SMBSYNC_SERIALIZABLE_FILE_NAME);
 			    FileInputStream fis = new FileInputStream(lf); 
-			    ObjectInputStream ois = new ObjectInputStream(fis);
+			    BufferedInputStream bis=new BufferedInputStream(fis,4096*256);
+			    ObjectInputStream ois = new ObjectInputStream(bis);
 			    ActivityDataHolder data = (ActivityDataHolder) ois.readObject();
 			    ois.close();
 			    lf.delete();

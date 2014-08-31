@@ -153,12 +153,13 @@
 	<string name="msgs_menu_settings">Settings</string>
 	<string name="msgs_menu_kill">Kill the application</string>
 
-	<string name="msgs_extra_data_ignored"            >Canceled the synchronization, because %s was ignored due to AutoStart is disabled.</string>
+	<string name="msgs_extra_data_ignored_auto_start_disabled">Abort auto sync start-up, because %s was ignored due to AutoStart is disabled.</string>
 	<string name="msgs_extra_data_sync_profile"       >Following sync profile was specified by extra data</string>
 	<string name="msgs_extra_data_profile_selected"   >  Profile was selected : </string>
 	<string name="msgs_extra_data_profile_disabled"   >  Disabled profile was specified : </string>
 	<string name="msgs_extra_data_profile_not_exists" >  Specified profile does not exists : </string>
 	<string name="msgs_extra_data_no_profile_selected">Sync Profile was not selected, all active profile will be sync</string>
+	<string name="msgs_extra_data_ignored_startup_parms_specified">%s has been specified but has been ignored, because StartupParms is specified.</string>
 	
 	<string name="msgs_extra_data_startup_by">sync started by %s</string>
 	<string name="msgs_extra_data_auto_start_not_boolean">Canceled the synchronization, because AutoStart is not the boolean.</string>

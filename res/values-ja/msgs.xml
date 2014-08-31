@@ -154,12 +154,13 @@
 	<string name="msgs_menu_settings">設定</string>
 	<string name="msgs_menu_kill">強制終了</string>
 	
-	<string name="msgs_extra_data_ignored"            >AutoStartが無効のため%sを無視しました、同期を中止します。</string>
+	<string name="msgs_extra_data_ignored_auto_start_disabled">AutoStartが無効のため%sを無視しました、自動同期起動を中止します。</string>
 	<string name="msgs_extra_data_sync_profile"       >下記のプロファイルが指定されています</string>
 	<string name="msgs_extra_data_profile_selected"   >   選択されたプロファイル : </string>
 	<string name="msgs_extra_data_profile_disabled"   >   無効なプロファイルなため無視 : </string>
 	<string name="msgs_extra_data_profile_not_exists" >   存在しないプロファイル : </string>
 	<string name="msgs_extra_data_no_profile_selected">プロファイルが選択されていないため全ての有効なプロファイルを同期します。</string>
+	<string name="msgs_extra_data_ignored_startup_parms_specified">%sが指定されていますが、StartupParmsが指定されているため無視しました。</string>
 	
 	<string name="msgs_extra_data_startup_by">%sにより同期が開始されました。</string>
 	<string name="msgs_extra_data_auto_start_not_boolean">AutoStartはbooleanで指定されていません、同期を中止します。</string>

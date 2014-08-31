@@ -31,8 +31,13 @@
 
 	<string name="settings_ui_title">ユーザーインターフェース</string>
 	
-    <string name="settings_ui_keep_screen_on_title">画面ロック</string>
-    <string name="settings_ui_keep_screen_on_summary_ena">同期中は画面をロックさせない</string>
+	<string name="settings_keep_screen_on_title">スクリーンのロック</string>
+	<string name="settings_keep_screen_on_dialog_title">スクリーンロックオプションの選択</string>
+	<string-array name="settings_keep_screen_on_list_entries">
+		<item>同期中にスクリーンロックを可能にする</item>
+		<item>同期中はスクリーンロックを許可しない</item>
+		<item>画面がロックされていないときに同期を開始した場合はスクリーンロックを許可しない</item>
+    </string-array>
 		
     <string name="settings_wifi_lock_title">Wi-Fiロック</string>
     <string name="settings_wifi_lock_summary_ena">同期中はWi-Fiロックを取得する</string>

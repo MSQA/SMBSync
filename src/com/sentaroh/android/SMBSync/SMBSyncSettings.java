@@ -103,7 +103,7 @@ public class SMBSyncSettings extends PreferenceActivity{
 		initSettingValueBeforeHc(shared_pref,getString(R.string.settings_auto_term));
 		initSettingValueBeforeHc(shared_pref,getString(R.string.settings_backgroound_execution));
 		initSettingValueBeforeHc(shared_pref,getString(R.string.settings_error_option));
-		initSettingValueBeforeHc(shared_pref,getString(R.string.settings_ui_keep_screen_on));
+		initSettingValueBeforeHc(shared_pref,getString(R.string.settings_keep_screen_on));
 		initSettingValueBeforeHc(shared_pref,getString(R.string.settings_wifi_lock));
 		initSettingValueBeforeHc(shared_pref,getString(R.string.settings_remote_file_copy_by_rename));
 		initSettingValueBeforeHc(shared_pref,getString(R.string.settings_local_file_copy_by_rename));
@@ -299,8 +299,11 @@ public class SMBSyncSettings extends PreferenceActivity{
     		isChecked=true;
 		} else if (key_string.equals(c.getString(R.string.settings_error_option))) {
 			isChecked=true;
-		} else if (key_string.equals(c.getString(R.string.settings_ui_keep_screen_on))) {
+		} else if (key_string.equals(c.getString(R.string.settings_keep_screen_on))) {
 			isChecked=true;
+    		String kv=shared_pref.getString(key_string,GlobalParameters.KEEP_SCREEN_ON_WHEN_SCREEN_UNLOCKED);
+    		String[] ts=c.getResources().getStringArray(R.array.settings_keep_screen_on_list_entries);
+    		pref_key.setSummary(ts[Integer.parseInt(kv)]);
 		} else if (key_string.equals(c.getString(R.string.settings_wifi_lock))) {
 			isChecked=true;
 		} else if (key_string.equals(c.getString(R.string.settings_remote_file_copy_by_rename))) {
@@ -585,7 +588,7 @@ public class SMBSyncSettings extends PreferenceActivity{
     		initSettingValueAfterHc(shared_pref,getString(R.string.settings_auto_term));
     		initSettingValueAfterHc(shared_pref,getString(R.string.settings_backgroound_execution));
     		initSettingValueAfterHc(shared_pref,getString(R.string.settings_error_option));
-    		initSettingValueAfterHc(shared_pref,getString(R.string.settings_ui_keep_screen_on));
+    		initSettingValueAfterHc(shared_pref,getString(R.string.settings_keep_screen_on));
     		initSettingValueAfterHc(shared_pref,getString(R.string.settings_wifi_lock));
     		initSettingValueAfterHc(shared_pref,getString(R.string.settings_remote_file_copy_by_rename));
     		initSettingValueAfterHc(shared_pref,getString(R.string.settings_local_file_copy_by_rename));

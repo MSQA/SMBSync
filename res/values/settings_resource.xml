@@ -4,6 +4,7 @@
     
     <string name="settings_sync_title">Synchronization</string>
 
+	<string name="settings_network_wifi_option">settings_network_wifi_option</string>
 	<string name="settings_network_wifi_option_title">Wireless LAN Option</string>
 	<string name="settings_network_wifi_option_summary_adapter_off">Synchronization can be used when Wireless LAN is disabled</string>
 	<string name="settings_network_wifi_option_summary_adapter_on">Synchronization can be used when Wireless LAN is enabled and access point was not connected</string>
@@ -11,7 +12,6 @@
 	<string name="settings_network_wifi_option_summary_connected_spec_ap">Synchronization can be used when Wireless LAN is enabled and specific access point was connected</string>
 	<string name="settings_network_wifi_option_dialog_title">Select Wireless LAN Option</string>
     
-	<string name="settings_network_wifi_option">settings_network_wifi_option</string>
 	<string-array name="settings_network_wifi_option_list_entries">
 		<item>Synchronization can be used when Wireless LAN is disabled.</item>
 		<item>Synchronization can be used when Wireless LAN is enabled and access point was not connected.</item>
@@ -41,10 +41,21 @@
 
     <string name="settings_ui_title">User interface</string>
 
-    <string name="settings_ui_keep_screen_on_title">Screen lock</string>
-    <string name="settings_ui_keep_screen_on_summary_ena">Do not lock the screen during synchronization</string>
-	<string name="settings_ui_keep_screen_on">settings_ui_keep_screen_on</string>	
-    
+    <string name="settings_keep_screen_on">settings_keep_screen_on</string>
+	<string name="settings_keep_screen_on_title">Screen lock</string>
+	<string name="settings_keep_screen_on_dialog_title">Select Screen lock Option</string>
+	<string-array name="settings_keep_screen_on_list_entries">
+	    <item>Allow the screen lock during sync</item>
+		<item>Disallow the screen lock during sync</item>
+		<item>Disallow the screen lock if you start the sync when the screen is not locked</item>
+    </string-array>
+    <string-array name="settings_keep_screen_on_list_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>	    
+	
+	
     <string name="settings_wifi_lock_title">Wi-Fi lock</string>
     <string name="settings_wifi_lock_summary_ena">Acquire Wi-Fi lock during synchronization</string>
 	<string name="settings_wifi_lock">settings_wifi_lock</string>	

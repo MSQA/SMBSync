@@ -105,7 +105,10 @@ public class GlobalParameters extends Application{
 			settingScanExternalStorage,
 			settingExitClean,
 			settingBackgroundExecution=false;
-	public boolean settingScreenOnEnabled=true;
+	public String settingScreenOnOption=KEEP_SCREEN_ON_WHEN_SCREEN_UNLOCKED;
+	public static final String KEEP_SCREEN_ON_DISABLED="0";
+	public static final String KEEP_SCREEN_ON_ALWAYS="1";
+	public static final String KEEP_SCREEN_ON_WHEN_SCREEN_UNLOCKED="2";
 	public boolean settingWifiLockRequired=true;
 	public String settingWifiOption=SMBSYNC_SYNC_WIFI_OPTION_CONNECTED_ANY_AP;
 	public boolean settingAltUiEnabled=true;

@@ -6531,12 +6531,12 @@ public class ProfileMaintenance {
 		saveSettingsParmsToFileBoolean(group, pw, false, encrypt_required,cp,mContext.getString(R.string.settings_backgroound_execution));
 		saveSettingsParmsToFileString(group, pw, "0",    encrypt_required,cp,mContext.getString(R.string.settings_background_termination_notification));
 		saveSettingsParmsToFileBoolean(group, pw, false, encrypt_required,cp,mContext.getString(R.string.settings_error_option));
-		saveSettingsParmsToFileBoolean(group, pw, false, encrypt_required,cp,mContext.getString(R.string.settings_ui_keep_screen_on));
+		saveSettingsParmsToFileString(group, pw, GlobalParameters.KEEP_SCREEN_ON_WHEN_SCREEN_UNLOCKED, 
+				encrypt_required,cp,mContext.getString(R.string.settings_keep_screen_on));
 		saveSettingsParmsToFileBoolean(group, pw, false, encrypt_required,cp,mContext.getString(R.string.settings_wifi_lock));
 		saveSettingsParmsToFileBoolean(group, pw, false, encrypt_required,cp,mContext.getString(R.string.settings_remote_file_copy_by_rename));
 		saveSettingsParmsToFileBoolean(group, pw, false, encrypt_required,cp,mContext.getString(R.string.settings_local_file_copy_by_rename));
 
-		saveSettingsParmsToFileBoolean(group, pw, false, encrypt_required,cp,mContext.getString(R.string.settings_ui_keep_screen_on));
 		saveSettingsParmsToFileBoolean(group, pw, false, encrypt_required,cp,mContext.getString(R.string.settings_ui_alternate_ui));
 		saveSettingsParmsToFileBoolean(group, pw, false, encrypt_required,cp,mContext.getString(R.string.settings_debug_msg_diplay));
 		saveSettingsParmsToFileString(group, pw, "0",    encrypt_required,cp,mContext.getString(R.string.settings_log_option));
