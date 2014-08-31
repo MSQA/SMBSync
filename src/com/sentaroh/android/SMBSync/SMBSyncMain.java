@@ -67,7 +67,6 @@ import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.text.ClipboardManager;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -249,9 +248,7 @@ public class SMBSyncMain extends FragmentActivity {
 			} else {
 				if (isAutoStartRequested(intent)) {
 					util.addDebugLogMsg(1,"I","onNewIntent Auto start data found.");
-					isExtraSpecAutoStart=false;
-					isExtraSpecAutoTerm=false;
-					isExtraSpecBgExec=false;
+					isExtraSpecAutoStart=isExtraSpecAutoTerm=isExtraSpecBgExec=false;
 					checkAutoStart(intent);
 				}
 			}
@@ -318,6 +315,7 @@ public class SMBSyncMain extends FragmentActivity {
 					else intent=getIntent();
 
 					if (isAutoStartRequested(intent) || mGp.settingAutoStart) {
+						isExtraSpecAutoStart=isExtraSpecAutoTerm=isExtraSpecBgExec=false;
 						checkAutoStart(intent);
 					} else {
 						if (mGp.profileAdapter.getItem(0).getType().equals("")) {
@@ -1256,12 +1254,11 @@ public class SMBSyncMain extends FragmentActivity {
 				commonDlg.showCommonDialog(false, "W", "", m_txt, null);
 				util.addLogMsg("W",m_txt);
 			} else {
-				if (extraValueSyncProfList!=null) markAutoStartProfileList(extraValueSyncProfList);
+				markAutoStartProfileList(extraValueSyncProfList);
 				if (profMaint.getActiveSyncProfileCount(mGp.profileAdapter)>0) {
 					setScreenOn();
 					mGp.mirrorThreadActive=true;
 					autoStartDlg();
-					Log.v("","isExtraSpecBgExec="+isExtraSpecBgExec+", extraValueBgExec="+extraValueBgExec);
 					if ((isExtraSpecBgExec && extraValueBgExec)) {
 						setScreenSwitchToHome();
 					} else if (!isExtraSpecBgExec && mGp.settingBackgroundExecution) {
@@ -1346,14 +1343,13 @@ public class SMBSyncMain extends FragmentActivity {
 						if (isExtraSpecAutoStart && extraValueAutoStart) {
 							extraValueAutoTerm=opa[1];
 							util.addLogMsg("I","AutoTerm="+extraValueAutoTerm);
-							
 							extraValueBgExec=opa[2];
 							util.addLogMsg("I","Background="+extraValueBgExec);
 						} else {
 							util.addLogMsg("W",String.format(
-									mContext.getString(R.string.msgs_extra_data_ignored_auto_start_disabled),"AutoTerm"));
+									mContext.getString(R.string.msgs_extra_data_ignored_auto_start_not_specified),"AutoTerm"));
 							util.addLogMsg("W",String.format(
-									mContext.getString(R.string.msgs_extra_data_ignored_auto_start_disabled),"Background"));
+									mContext.getString(R.string.msgs_extra_data_ignored_auto_start_not_specified),"Background"));
 						}
 						
 						if (bundle.containsKey(SMBSYNC_EXTRA_PARM_AUTO_START)) {
@@ -1388,13 +1384,13 @@ public class SMBSyncMain extends FragmentActivity {
 				}
 				if (bundle.containsKey(SMBSYNC_EXTRA_PARM_AUTO_TERM)) {
 					if (bundle.get(SMBSYNC_EXTRA_PARM_AUTO_TERM).getClass().getSimpleName().equals("Boolean")) {
-						if (extraValueAutoStart) {
+						if (isExtraSpecAutoStart) {
 							isExtraSpecAutoTerm=true;
 							extraValueAutoTerm=bundle.getBoolean(SMBSYNC_EXTRA_PARM_AUTO_TERM);
 							util.addLogMsg("I","AutoTerm="+extraValueAutoTerm);
 						} else {
 							util.addLogMsg("W",String.format(
-									mContext.getString(R.string.msgs_extra_data_ignored_auto_start_disabled),"AutoTerm"));
+									mContext.getString(R.string.msgs_extra_data_ignored_auto_start_not_specified),"AutoTerm"));
 						}
 					} else {
 						util.addLogMsg("W",mContext.getString(R.string.msgs_extra_data_auto_term_not_boolean));
@@ -1402,13 +1398,13 @@ public class SMBSyncMain extends FragmentActivity {
 				}
 				if (bundle.containsKey(SMBSYNC_EXTRA_PARM_BACKGROUND_EXECUTION)) {
 					if (bundle.get(SMBSYNC_EXTRA_PARM_BACKGROUND_EXECUTION).getClass().getSimpleName().equals("Boolean")) {
-						if (extraValueAutoStart) {
+						if (isExtraSpecAutoStart) {
 							isExtraSpecBgExec=true;
 							extraValueBgExec=bundle.getBoolean(SMBSYNC_EXTRA_PARM_BACKGROUND_EXECUTION);
 							util.addLogMsg("I","Background="+extraValueBgExec);
 						} else {
 							util.addLogMsg("W",String.format(
-									mContext.getString(R.string.msgs_extra_data_ignored_auto_start_disabled),"Background"));
+									mContext.getString(R.string.msgs_extra_data_ignored_auto_start_not_specified),"Background"));
 						}
 
 					} else {
@@ -1416,7 +1412,7 @@ public class SMBSyncMain extends FragmentActivity {
 					}
 				}
 				if (bundle.containsKey(SMBSYNC_EXTRA_PARM_SYNC_PROFILE)) {
-					if (isExtraSpecAutoStart && extraValueAutoStart) {
+					if (isExtraSpecAutoStart) {
 						if (bundle.get(SMBSYNC_EXTRA_PARM_SYNC_PROFILE).getClass().getSimpleName().equals("String[]")) {
 							extraValueSyncProfList=bundle.getStringArray(SMBSYNC_EXTRA_PARM_SYNC_PROFILE);
 						} else {
@@ -1424,7 +1420,21 @@ public class SMBSyncMain extends FragmentActivity {
 						}
 					} else {
 						util.addLogMsg("W",String.format(
-								mContext.getString(R.string.msgs_extra_data_ignored_auto_start_disabled),"SyncProfile"));
+								mContext.getString(R.string.msgs_extra_data_ignored_auto_start_not_specified),"SyncProfile"));
+					}
+				}
+				if (isExtraSpecAutoStart) {
+					if (!isExtraSpecAutoTerm) {
+						isExtraSpecAutoTerm=true;
+						extraValueAutoTerm=false;
+						util.addLogMsg("W",mContext.getString(R.string.msgs_extra_data_assumed_auto_term_disabled));
+						util.addLogMsg("I","AutoTerm="+extraValueAutoTerm);
+					}
+					if (!isExtraSpecBgExec) {
+						isExtraSpecBgExec=true;
+						extraValueBgExec=false;
+						util.addLogMsg("W",mContext.getString(R.string.msgs_extra_data_assumed_bg_exec_disabled));
+						util.addLogMsg("I","Background="+extraValueBgExec);
 					}
 				}
 			}
@@ -1434,14 +1444,11 @@ public class SMBSyncMain extends FragmentActivity {
 	private boolean markAutoStartProfileList(String[] sync_profile) {
 		boolean prof_selected=false;
 		if (sync_profile!=null && sync_profile.length!=0) {
-			boolean supress=false;
 			for (int i=0;i<sync_profile.length;i++) {
 				if (!sync_profile[i].equals("")) {
-					if (!supress) {
-						util.addLogMsg("I",mContext.getString(R.string.msgs_extra_data_sync_profile));
-						supress=true;
-					}
-					util.addLogMsg("I", sync_profile[i]);
+					util.addLogMsg("I",mContext.getString(R.string.msgs_extra_data_sync_profile));
+//					util.addLogMsg("I", "  "+sync_profile[i]);
+					break;
 				}
 			}
 			for (int pidx=0;pidx<mGp.profileAdapter.getCount();pidx++) mGp.profileAdapter.getItem(pidx).setChecked(false);
@@ -1454,15 +1461,15 @@ public class SMBSyncMain extends FragmentActivity {
 							selected=true;
 							if (mGp.profileAdapter.getItem(pidx).getActive().equals(SMBSYNC_PROF_ACTIVE)) {
 								mGp.profileAdapter.getItem(pidx).setChecked(true);
-								util.addLogMsg("I",mContext.getString(R.string.msgs_extra_data_profile_selected)+sync_profile[sidx]);
+								util.addLogMsg("I","  "+mContext.getString(R.string.msgs_extra_data_profile_selected)+sync_profile[sidx]);
 								prof_selected=true;
 							} else {
-								util.addLogMsg("W",mContext.getString(R.string.msgs_extra_data_profile_disabled)+sync_profile[sidx]);								
+								util.addLogMsg("W","  "+mContext.getString(R.string.msgs_extra_data_profile_disabled)+sync_profile[sidx]);								
 							}
 						}
 					}
 					if (!selected) 
-						util.addLogMsg("W",mContext.getString(R.string.msgs_extra_data_profile_not_exists)+sync_profile[sidx]);								
+						util.addLogMsg("W","  "+mContext.getString(R.string.msgs_extra_data_profile_not_exists)+sync_profile[sidx]);								
 				}
 			}
 		}
