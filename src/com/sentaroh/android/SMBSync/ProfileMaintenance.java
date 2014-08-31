@@ -1200,7 +1200,7 @@ public class ProfileMaintenance {
 		
 		editname.setText(prof_name);
 		edituser.setText(prof_user);
-		if (prof_addr.equals("")) edithost.setText(prof_addr); 
+		if (!prof_addr.equals("")) edithost.setText(prof_addr); 
 		else edithost.setText(prof_host);
 		editpass.setText(prof_pass);
 		editshare.setText(prof_share);
@@ -6546,10 +6546,6 @@ public class ProfileMaintenance {
 		saveSettingsParmsToFileBoolean(group, pw, false, encrypt_required,cp,mContext.getString(R.string.settings_suppress_warning_mixed_mp));
 		saveSettingsParmsToFileString(group, pw, "0", encrypt_required,cp,mContext.getString(R.string.settings_playback_ringtone_when_sync_ended));
 		saveSettingsParmsToFileString(group, pw, "0", encrypt_required,cp,mContext.getString(R.string.settings_vibrate_when_sync_ended));
-
-		saveSettingsParmsToFileString(group, pw, "",     encrypt_required,cp,mContext.getString(R.string.settings_default_user));
-		saveSettingsParmsToFileString(group, pw, "",     encrypt_required,cp,mContext.getString(R.string.settings_default_pass));
-		saveSettingsParmsToFileString(group, pw, "",     encrypt_required,cp,mContext.getString(R.string.settings_default_addr));
 
 		saveSettingsParmsToFileString(group, pw, "0",    encrypt_required,cp,mContext.getString(R.string.settings_media_store_last_mod_time));
 		saveSettingsParmsToFileString(group, pw, "3",    encrypt_required,cp,mContext.getString(R.string.settings_file_diff_time_seconds));

@@ -31,12 +31,12 @@
 
 	<string name="settings_ui_title">ユーザーインターフェース</string>
 	
-	<string name="settings_keep_screen_on_title">スクリーンのロック</string>
-	<string name="settings_keep_screen_on_dialog_title">スクリーンロックオプションの選択</string>
+	<string name="settings_keep_screen_on_title">画面消灯</string>
+	<string name="settings_keep_screen_on_dialog_title">画面消灯オプションの選択</string>
 	<string-array name="settings_keep_screen_on_list_entries">
-		<item>同期中にスクリーンロックを可能にする</item>
-		<item>同期中はスクリーンロックを許可しない</item>
-		<item>画面がロックされていないときに同期を開始した場合はスクリーンロックを許可しない</item>
+		<item>同期中に画面消灯を許可する</item>
+		<item>同期中は画面消灯を許可しない</item>
+		<item>画面が消灯されていないときに同期を開始した場合は画面消灯を許可しない</item>
     </string-array>
 		
     <string name="settings_wifi_lock_title">Wi-Fiロック</string>
@@ -179,17 +179,6 @@
     
 	<string name="settings_smb_title">SMB設定</string>
 	
-    <string name="settings_default_smb_title">SMB省略時値</string>
-    
-	<string name="settings_default_user_title">SMBユーザー名</string>        
-    <string name="settings_default_user_summary">無指定=</string>
-    
-	<string name="settings_default_pass_title">SMBパスワード</string>        
-    <string name="settings_default_pass_summary">無指定</string>
-    
-	<string name="settings_default_addr_title">SMB IPアドレス</string>        
-    <string name="settings_default_addr_summary">無指定</string>
-    
     <string name="settings_other_title">その他</string>
     
     <string name="settings_exit_clean_title">終了時の処理</string>

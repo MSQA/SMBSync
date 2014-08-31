@@ -127,9 +127,6 @@ public class SMBSyncSettings extends PreferenceActivity{
     	initSettingValueBeforeHc(shared_pref,getString(R.string.settings_file_diff_time_seconds));
     	initSettingValueBeforeHc(shared_pref,getString(R.string.settings_media_store_last_mod_time));
 
-		initSettingValueBeforeHc(shared_pref,getString(R.string.settings_default_user));
-    	initSettingValueBeforeHc(shared_pref,getString(R.string.settings_default_pass));
-    	initSettingValueBeforeHc(shared_pref,getString(R.string.settings_default_addr));
     	initSettingValueBeforeHc(shared_pref,getString(R.string.settings_smb_use_extended_security));
     	initSettingValueBeforeHc(shared_pref,getString(R.string.settings_smb_lm_compatibility));
     	initSettingValueBeforeHc(shared_pref,getString(R.string.settings_smb_perform_class));
@@ -470,16 +467,7 @@ public class SMBSyncSettings extends PreferenceActivity{
 	private static boolean checkSmbSettings(Preference pref_key, 
 			SharedPreferences shared_pref, String key_string, Context c) {
 		boolean isChecked = false;
-		if (key_string.equals(c.getString(R.string.settings_default_pass))) {
-			isChecked=true;
-        	if (shared_pref.getString(key_string, "").equals("")) {
-        		pref_key
-    				.setSummary(c.getString(R.string.settings_default_current_setting)+" ");
-        	} else {
-        		pref_key
-    			.setSummary(c.getString(R.string.settings_default_current_setting)+"--------");
-        	}
-   		} else if (key_string.equals(c.getString(R.string.settings_smb_use_extended_security))) {
+		if (key_string.equals(c.getString(R.string.settings_smb_use_extended_security))) {
 			isChecked=true;
     	} else if (key_string.equals(c.getString(R.string.settings_smb_perform_class))) {
 			isChecked=true;
@@ -770,9 +758,6 @@ public class SMBSyncSettings extends PreferenceActivity{
 
     		SharedPreferences shared_pref = PreferenceManager.getDefaultSharedPreferences(mContext);
     		
-    		initSettingValueAfterHc(shared_pref,getString(R.string.settings_default_user));
-        	initSettingValueAfterHc(shared_pref,getString(R.string.settings_default_pass));
-        	initSettingValueAfterHc(shared_pref,getString(R.string.settings_default_addr));
         	initSettingValueAfterHc(shared_pref,getString(R.string.settings_smb_use_extended_security));
         	initSettingValueAfterHc(shared_pref,getString(R.string.settings_smb_lm_compatibility));
         	initSettingValueAfterHc(shared_pref,getString(R.string.settings_smb_perform_class));

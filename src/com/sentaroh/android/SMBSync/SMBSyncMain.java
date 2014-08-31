@@ -1075,16 +1075,7 @@ public class SMBSyncMain extends FragmentActivity {
 
 			prefs.edit().putBoolean(getString(R.string.settings_exit_clean), 
 					true).commit();
-			String c_ip=SMBSyncUtil.getLocalIpAddress();
-			if (c_ip.indexOf(":")>0) {//IP V6
-				prefs.edit().putString(getString(R.string.settings_default_addr),
-						c_ip).commit();
-			} else {//IP V4
-//				Log.v("","c_ip="+c_ip);
-				prefs.edit().putString(getString(R.string.settings_default_addr), 
-						c_ip.substring(0,c_ip.lastIndexOf("."))+".2").commit();				
-			}
-
+			
 			prefs.edit().putString(getString(R.string.settings_smb_lm_compatibility),"0").commit();
 			prefs.edit().putBoolean(getString(R.string.settings_smb_use_extended_security),false).commit();
 			prefs.edit().putString(getString(R.string.settings_smb_log_level),"0").commit();
@@ -1161,12 +1152,6 @@ public class SMBSyncMain extends FragmentActivity {
 			}
 		}
 		
-		mGp.settingUsername=
-				prefs.getString(getString(R.string.settings_default_user), "");
-		mGp.settingPassword=
-				prefs.getString(getString(R.string.settings_default_pass), "");
-		mGp.settingAddr=
-				prefs.getString(getString(R.string.settings_default_addr), "");
 		mGp.settingAutoStart=
 				prefs.getBoolean(getString(R.string.settings_auto_start), false);
 		mGp.settingDebugMsgDisplay=
@@ -1506,13 +1491,8 @@ public class SMBSyncMain extends FragmentActivity {
 				
 				", settingExportedProfileEncryptRequired="+mGp.settingExportedProfileEncryptRequired+
 				
-				", settingRemoteFileCopyByRename="+mGp.settingRemoteFileCopyByRename+
-				", settings_default_user="+mGp.settingUsername+
-				", settings_default_addr="+mGp.settingAddr
+				", settingRemoteFileCopyByRename="+mGp.settingRemoteFileCopyByRename
 				); 
-		if (mGp.debugLevel==9)
-			util.addDebugLogMsg(1,"I","settings_default_pass="+
-					mGp.settingPassword);
 	};
 
 	@SuppressLint("SdCardPath")
@@ -2125,9 +2105,9 @@ public class SMBSyncMain extends FragmentActivity {
 			.setOnClickListener(new CustomContextMenuOnClickListener() {
 				@Override
 				public void onClick(CharSequence menuTitle) {
+					String c_ip=SMBSyncUtil.getLocalIpAddress();
 					profMaint.addRemoteProfile(true, "",SMBSYNC_PROF_ACTIVE,
-							mGp.settingAddr,mGp.settingUsername,
-							mGp.settingPassword,"","","","","");
+							c_ip,"","","","","","","");
 					resetAllCheckedItem();
 				}
 		});
@@ -2439,7 +2419,7 @@ public class SMBSyncMain extends FragmentActivity {
 				mWifiLock.acquire();
 				util.addDebugLogMsg(1,"I","WifiLock acquired");
 			} else {
-				util.addDebugLogMsg(1,"I","Wifilock not acquired, because Wifilock already acquired");
+				util.addDebugLogMsg(1,"I","WifiLock not acquired, because WifiLock already acquired");
 			}
 		}
 	};
@@ -2450,7 +2430,7 @@ public class SMBSyncMain extends FragmentActivity {
 				mWifiLock.release();
 				util.addDebugLogMsg(1,"I","WifiLock released");
 			} else {
-				util.addDebugLogMsg(1,"I","Wifilock not releas, because Wifilock not acquired");
+				util.addDebugLogMsg(1,"I","WifiLock not released, because WifiLock not acquired");
 			}
 		}
 	};

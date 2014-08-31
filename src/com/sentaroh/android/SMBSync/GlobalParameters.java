@@ -97,7 +97,6 @@ public class GlobalParameters extends Application{
 	
 	//Parameters from Settings menu
 	public int debugLevel=0;
-	public String settingUsername, settingPassword,settingAddr;
 	public boolean settingAutoStart=false,
 			settingAutoTerm=false, settingErrorOption=false,
 			settingDebugMsgDisplay=false,

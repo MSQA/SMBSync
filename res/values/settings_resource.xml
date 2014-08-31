@@ -42,12 +42,12 @@
     <string name="settings_ui_title">User interface</string>
 
     <string name="settings_keep_screen_on">settings_keep_screen_on</string>
-	<string name="settings_keep_screen_on_title">Screen lock</string>
-	<string name="settings_keep_screen_on_dialog_title">Select Screen lock Option</string>
+	<string name="settings_keep_screen_on_title">Screen off</string>
+	<string name="settings_keep_screen_on_dialog_title">Select Screen off Option</string>
 	<string-array name="settings_keep_screen_on_list_entries">
-	    <item>Allow the screen lock during sync</item>
-		<item>Disallow the screen lock during sync</item>
-		<item>Disallow the screen lock if you start the sync when the screen is not locked</item>
+	    <item>Allow the screen off during sync</item>
+		<item>Disallow the screen off during sync</item>
+		<item>Disallow the screen off if you start the sync when the screen is on</item>
     </string-array>
     <string-array name="settings_keep_screen_on_list_values">
         <item>0</item>
@@ -261,20 +261,6 @@
 
     <string name="settings_smb_title">SMB settings</string>
     
-    <string name="settings_default_smb_title">Default SMB settings</string>
-    
-    <string name="settings_default_user">settings_default_user</string>
-	<string name="settings_default_user_title">Default SMB user name</string>        
-    <string name="settings_default_user_summary">Not specified=</string>
-    
-	<string name="settings_default_pass">settings_default_pass</string>
-	<string name="settings_default_pass_title">Default SMB password</string>        
-    <string name="settings_default_pass_summary">Not specified</string>
-    
-	<string name="settings_default_addr">settings_default_addr</string>
-	<string name="settings_default_addr_title">Default SMB IP address</string>        
-    <string name="settings_default_addr_summary">Not specified</string>
-
     <string name="settings_other_title">Other</string>
     
     <string name="settings_exit_clean_title">Exit cleanly</string>

@@ -2488,6 +2488,10 @@ lang=EN-US>Starting from other applications</span></h1>
 <p class=MsoNormal><span lang=EN-US>You can specify the parameters at startup.
 Setting will take effect If you do not specify.</span></p>
 
+<p class=MsoNormal><span lang=EN-US>Value that is specified in the StartupParms
+is take effect when you specified at the same time such as AutoStart / AutoTerm
+with StartupParms.</span></p>
+
 <p class=318pt><a name="_Toc396967398"><span lang=EN-US>5.1.1 AutoStart</span></a></p>
 
 <p class=MsoNormal><span lang=EN-US>To enable or disable the automatic
@@ -2504,8 +2508,8 @@ synchronization</span></p>
 
 <p class=318pt><a name="_Toc396967399"><span lang=EN-US>5.1.2 AutoTerm</span></a></p>
 
-<p class=MsoNormal><span lang=EN-US>If AutoStart=true, To enable or disable the
-automatic termination regardless of the setting.</span></p>
+<p class=MsoNormal><span lang=EN-US>If AutoStart is specified, To enable or
+disable the automatic termination regardless of the setting.</span></p>
 
 <p class=MsoNormal><span lang=EN-US>Type:boolean</span></p>
 
@@ -2517,8 +2521,8 @@ automatic termination regardless of the setting.</span></p>
 
 <p class=318pt><a name="_Toc396967400"><span lang=EN-US>5.1.3 Background</span></a></p>
 
-<p class=MsoNormal><span lang=EN-US>If AutoStart=true, To enable or disable the
-background execution regardless of the setting.</span></p>
+<p class=MsoNormal><span lang=EN-US>If AutoStart is specified, To enable or
+disable the background execution regardless of the setting.</span></p>
 
 <p class=MsoNormal><span lang=EN-US>Type:boolean</span></p>
 
@@ -2530,8 +2534,12 @@ background execution regardless of the setting.</span></p>
 
 <p class=318pt><a name="_Toc396967401"><span lang=EN-US>5.1.4 SyncProfile</span></a></p>
 
-<p class=MsoNormal><span lang=EN-US>If AutoStart=true, Specifies the profile to
-synchronize</span></p>
+<p class=MsoNormal><span lang=EN-US>If AutoStart is specified, you can specify
+the profile to be synchronized.</span></p>
+
+<p class=MsoNormal><span lang=EN-US>When it is ready to profile is not selected
+an invalid profile and profile that does not exist, all valid profile will be
+synchronized.</span></p>
 
 <p class=MsoNormal><span lang=EN-US>Type:String[]</span></p>
 
@@ -2651,7 +2659,8 @@ style='font-size:10.0pt'>&nbsp;</span></p>
 style='font-size:10.0pt'>PackageManager pm = getPackageManager();</span></p>
 
 <p class=MsoNormal style='text-indent:20.0pt'><span lang=EN-US
-style='font-size:10.0pt'>Intent in=pm.getLaunchIntentForPackage(&quot;com.sentaroh.android.SMBSync&quot;);</span></p>
+style='font-size:10.0pt'>Intent
+in=pm.getLaunchIntentForPackage(&quot;com.sentaroh.android.SMBSync&quot;);</span></p>
 
 <p class=MsoNormal style='text-indent:20.0pt'><span lang=EN-US
 style='font-size:10.0pt'>in.setAction(Intent.ACTION_MAIN);</span></p>

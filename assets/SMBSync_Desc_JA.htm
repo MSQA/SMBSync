@@ -2425,7 +2425,11 @@ style='font-family:"ＭＳ ゴシック"'>他のアプリケーションから�
 <h2 style='margin-top:18.0pt'><a name="_Toc396967448"><span lang=EN-US>5.1 </span></a><span
 style='font-family:"ＭＳ ゴシック"'>起動パラメーター</span></h2>
 
-<p class=MsoNormal><span style='font-family:"ＭＳ 明朝","serif"'>起動時にパラメーターを指定することができます。指定しなければ設定が有効になります。</span></p>
+<p class=MsoNormal style='word-break:break-all'><span style='font-family:"ＭＳ 明朝","serif"'>起動時にパラメーターを指定することができます。</span><span
+lang=EN-US>StartupParms</span><span style='font-family:"ＭＳ 明朝","serif"'>と</span><span
+lang=EN-US>AutoStart</span><span style='font-family:"ＭＳ 明朝","serif"'>や</span><span
+lang=EN-US>AutoTerm</span><span style='font-family:"ＭＳ 明朝","serif"'>などを同時に指定すると</span><span
+lang=EN-US>StartupParms</span><span style='font-family:"ＭＳ 明朝","serif"'>で指定された値が有効になります。</span></p>
 
 <h3 style='margin-top:18.0pt'><a name="_Toc396967449"><span lang=EN-US>5.1.1
 AutoStart</span></a></h3>
@@ -2449,9 +2453,9 @@ lang=EN-US style='font-family:"ＭＳ 明朝","serif"'><span lang=EN-US>目次�
 <h3 style='margin-top:18.0pt'><a name="_Toc396967450"><span lang=EN-US>5.1.2
 AutoTerm</span></a></h3>
 
-<p class=MsoNormal style='word-break:break-all'><span lang=EN-US>AutoStart=true</span><span
-style='font-family:"ＭＳ 明朝","serif"'>の場合、設定に拘わらず自動停止を有効</span><span lang=EN-US>/</span><span
-style='font-family:"ＭＳ 明朝","serif"'>無効にする。</span></p>
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US>AutoStart</span><span
+style='font-family:"ＭＳ 明朝","serif"'>が指定された場合、設定に拘わらず自動停止を有効</span><span
+lang=EN-US>/</span><span style='font-family:"ＭＳ 明朝","serif"'>無効にする。</span></p>
 
 <p class=MsoNormal style='word-break:break-all'><span style='font-family:"ＭＳ 明朝","serif"'>タイプ：</span><span
 lang=EN-US>boolean</span></p>
@@ -2468,8 +2472,8 @@ lang=EN-US style='font-family:"ＭＳ 明朝","serif"'><span lang=EN-US>目次�
 
 <h3 style='margin-top:18.0pt'><a name="_Toc396967451"><span lang=EN-US>5.1.3 Background</span></a></h3>
 
-<p class=MsoNormal style='word-break:break-all'><span lang=EN-US>AutoStart=true</span><span
-style='font-family:"ＭＳ 明朝","serif"'>の場合、設定に拘わらずバックグラウンド実行を有効</span><span
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US>AutoStart</span><span
+style='font-family:"ＭＳ 明朝","serif"'>が指定された場合、設定に拘わらずバックグラウンド実行を有効</span><span
 lang=EN-US>/</span><span style='font-family:"ＭＳ 明朝","serif"'>無効にする。</span></p>
 
 <p class=MsoNormal style='word-break:break-all'><span style='font-family:"ＭＳ 明朝","serif"'>タイプ：</span><span
@@ -2487,8 +2491,10 @@ lang=EN-US style='font-family:"ＭＳ 明朝","serif"'><span lang=EN-US>目次�
 
 <h3 style='margin-top:18.0pt'><a name="_Toc396967452"><span lang=EN-US>5.1.4 SyncProfile</span></a></h3>
 
-<p class=MsoNormal style='word-break:break-all'><span lang=EN-US>AutoStart=true</span><span
-style='font-family:"ＭＳ 明朝","serif"'>の場合、同期するプロファイルを指定することができます。</span></p>
+<p class=MsoNormal style='word-break:break-all'><span lang=EN-US>AutoStart</span><span
+style='font-family:"ＭＳ 明朝","serif"'>が指定された場合、同期するプロファイルを指定することができます。</span></p>
+
+<p class=MsoNormal style='word-break:break-all'><span style='font-family:"ＭＳ 明朝","serif"'>存在しないプロファイルや無効なプロファイルを指定しプロファイルが選択されていない状態になった時は、有効なプロファイル全てが同期されます。</span></p>
 
 <p class=MsoNormal style='word-break:break-all'><span style='font-family:"ＭＳ 明朝","serif"'>タイプ：</span><span
 lang=EN-US>String[]</span></p>
@@ -2619,8 +2625,7 @@ style='font-size:10.0pt'>&nbsp;</span></p>
 style='font-size:10.0pt'>PackageManager pm = getPackageManager();</span></p>
 
 <p class=MsoNormal style='text-indent:20.0pt'><span lang=EN-US
-style='font-size:10.0pt'>Intent
-in=pm.getLaunchIntentForPackage(&quot;com.sentaroh.android.SMBSync&quot;);</span></p>
+style='font-size:10.0pt'>Intent in=pm.getLaunchIntentForPackage(&quot;com.sentaroh.android.SMBSync&quot;);</span></p>
 
 <p class=MsoNormal style='text-indent:20.0pt'><span lang=EN-US
 style='font-size:10.0pt'>in.setAction(Intent.ACTION_MAIN);</span></p>
@@ -2638,8 +2643,7 @@ style='font-size:10.0pt'>in.putExtra(&quot;AutoTerm&quot;, true);</span></p>
 style='font-size:10.0pt'>in.putExtra(&quot;Background&quot;, true);</span></p>
 
 <p class=MsoNormal style='text-indent:20.0pt'><span lang=EN-US
-style='font-size:10.0pt'>String[] prof=new String[]
-{&quot;S-PGMS&quot;,&quot;S-Pictures&quot;};</span></p>
+style='font-size:10.0pt'>String[] prof=new String[] {&quot;S-PGMS&quot;,&quot;S-Pictures&quot;};</span></p>
 
 <p class=MsoNormal style='text-indent:20.0pt'><span lang=EN-US
 style='font-size:10.0pt'>in.putExtra(&quot;SyncProfile&quot;, prof);</span></p>
@@ -2733,7 +2737,7 @@ lang=EN-US>        </span><span style='font-family:"ＭＳ 明朝","serif
 lang=EN-US>PSWD</span></p>
 
 <p class=MsoNormal style='word-break:break-all'><span style='font-family:"ＭＳ 明朝","serif"'>共有名</span><span
-lang=EN-US>                </span><span style='font-family:"ＭＳ 明朝","serif"'>：</span><span
+lang=EN-US>                </span><span style='font-family:"ＭＳ 明朝","serif"'>：</span><span
 lang=EN-US>SHARE</span></p>
 
 <p class=MsoNormal style='word-break:break-all'><span style='font-family:"ＭＳ 明朝","serif"'>ディレクトリー：</span><span
