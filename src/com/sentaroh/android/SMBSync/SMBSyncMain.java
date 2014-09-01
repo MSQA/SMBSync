@@ -1453,12 +1453,15 @@ public class SMBSyncMain extends FragmentActivity {
 							}
 						}
 					}
-					if (!selected) 
-						util.addLogMsg("W","  "+mContext.getString(R.string.msgs_extra_data_profile_not_exists)+sync_profile[sidx]);								
+					if (!selected)
+							util.addLogMsg("W","  "+mContext.getString(R.string.msgs_extra_data_profile_not_exists)+sync_profile[sidx]);								
 				}
 			}
 		}
-		if (!prof_selected) util.addLogMsg("I",mContext.getString(R.string.msgs_extra_data_no_profile_selected));
+		if (!prof_selected) {
+			if (extraValueAutoStart)
+				util.addLogMsg("I",mContext.getString(R.string.msgs_extra_data_no_profile_selected));
+		}
 		return prof_selected;
 	};
 	
@@ -1654,7 +1657,7 @@ public class SMBSyncMain extends FragmentActivity {
 				}
 		});
 		
-		ccMenu.addMenuItem(msgs_sync_history_ccmeu_delete,R.drawable.menu_delete)
+		ccMenu.addMenuItem(msgs_sync_history_ccmeu_delete,R.drawable.menu_trash)
 		.setOnClickListener(new CustomContextMenuOnClickListener() {
 			@Override
 			public void onClick(CharSequence menuTitle) {
@@ -1796,7 +1799,7 @@ public class SMBSyncMain extends FragmentActivity {
 			});
 		}
 		
-		ccMenu.addMenuItem(msgs_sync_history_ccmeu_delete,R.drawable.menu_delete)
+		ccMenu.addMenuItem(msgs_sync_history_ccmeu_delete,R.drawable.menu_trash)
 			.setOnClickListener(new CustomContextMenuOnClickListener() {
 				@Override
 				public void onClick(CharSequence menuTitle) {
@@ -1987,7 +1990,7 @@ public class SMBSyncMain extends FragmentActivity {
 				}
 		});
 
-		ccMenu.addMenuItem(msgs_prof_cont_mult_delete,R.drawable.menu_delete)
+		ccMenu.addMenuItem(msgs_prof_cont_mult_delete,R.drawable.menu_trash)
 			.setOnClickListener(new CustomContextMenuOnClickListener() {
 				@Override
 				public void onClick(CharSequence menuTitle) {
@@ -2070,7 +2073,7 @@ public class SMBSyncMain extends FragmentActivity {
 				  }
 			});
 				
-		    ccMenu.addMenuItem(String.format(msgs_prof_cont_sngl_delete,i_name),R.drawable.menu_delete)
+		    ccMenu.addMenuItem(String.format(msgs_prof_cont_sngl_delete,i_name),R.drawable.menu_trash)
 				.setOnClickListener(new CustomContextMenuOnClickListener() {
 					@Override
 					public void onClick(CharSequence menuTitle) {
@@ -2485,10 +2488,11 @@ public class SMBSyncMain extends FragmentActivity {
 		final LinearLayout ll_spin=(LinearLayout)findViewById(R.id.profile_progress_spin);
 		ll_spin.setVisibility(LinearLayout.GONE);
 		
-		mGp.syncHistoryAdapter=new AdapterSyncHistory(mContext, R.layout.sync_history_list_item_view, 
-				mGp.syncHistoryList);
-		mGp.syncHistoryListView.setAdapter(mGp.syncHistoryAdapter);
-		setHistoryViewItemClickListener();
+//		mGp.syncHistoryAdapter=new AdapterSyncHistory(mContext, R.layout.sync_history_list_item_view, 
+//				mGp.syncHistoryList);
+//		mGp.syncHistoryListView.setAdapter(mGp.syncHistoryAdapter);
+//		setHistoryViewItemClickListener();
+		mGp.syncHistoryAdapter.setSyncHistoryList(mGp.syncHistoryList);
 		mGp.syncHistoryAdapter.notifyDataSetChanged();
 		
 //		playBackDefaultNotification();
@@ -2508,6 +2512,7 @@ public class SMBSyncMain extends FragmentActivity {
 				} else {
 					mGp.settingAutoTerm=false;
 					showMirrorThreadResult(result_code,result_msg);
+					if (!util.isActivityForeground()) saveTaskData();
 					util.rotateLogFile();
 					mGp.mirrorThreadActive=false;
 				}		
@@ -2515,7 +2520,7 @@ public class SMBSyncMain extends FragmentActivity {
 		} else {
 			showMirrorThreadResult(result_code,result_msg);
 			util.rotateLogFile();
-			saveTaskData();
+			if (!util.isActivityForeground()) saveTaskData();
 			mGp.mirrorThreadActive=false;
 		}
 	};
@@ -2922,7 +2927,7 @@ public class SMBSyncMain extends FragmentActivity {
 							} else {
 								NotificationUtil.clearNotification(mGp);
 							}
-							saveTaskData();
+//							saveTaskData();
 							util.flushLogFile();
 							terminateApplication();
 						}

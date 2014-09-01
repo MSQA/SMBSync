@@ -330,7 +330,7 @@ public class LogFileManagementFragment extends DialogFragment{
 			}
     	});
     	if (!lfm_adapter.getItem(pos).isCurrentLogFile) {
-        	ccMenu.addMenuItem(mContext.getString(R.string.msgs_log_management_menu_delete),R.drawable.menu_delete)
+        	ccMenu.addMenuItem(mContext.getString(R.string.msgs_log_management_menu_delete),R.drawable.menu_trash)
         	.setOnClickListener(new CustomContextMenuOnClickListener(){
     			@Override
     			public void onClick(CharSequence menuTitle) {
@@ -351,7 +351,7 @@ public class LogFileManagementFragment extends DialogFragment{
 				sendLogFile(lfm_adapter);
 			}
     	});
-    	ccMenu.addMenuItem(mContext.getString(R.string.msgs_log_management_menu_delete),R.drawable.menu_delete)
+    	ccMenu.addMenuItem(mContext.getString(R.string.msgs_log_management_menu_delete),R.drawable.menu_trash)
     	.setOnClickListener(new CustomContextMenuOnClickListener(){
 			@Override
 			public void onClick(CharSequence menuTitle) {
