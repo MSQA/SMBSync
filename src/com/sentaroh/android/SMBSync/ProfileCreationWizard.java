@@ -353,6 +353,7 @@ public class ProfileCreationWizard {
  						setProcessedFileSelectCheckBoxEnabled(dialog,false);
  						setProcessedFileSelectCheckBoxChecked(dialog, false);
 						dlg_msg.setText(mContext.getString(R.string.msgs_sync_wizard_profname_invalid));
+						btn_next.setEnabled(false);
 					}
 				} else {
 					dlg_msg.setText(mContext.getString(R.string.msgs_sync_wizard_specify_profname));
@@ -450,10 +451,10 @@ public class ProfileCreationWizard {
 		
 		final Button btn_local_dir=(Button) dialog.findViewById(R.id.sync_wizard_dlg_local_dir_btn);
 
-		final EditText et_remote_prof=(EditText) dialog.findViewById(R.id.sync_wizard_dlg_local_prof_name);
-		et_remote_prof.selectAll();
-		if (node_pos==0) et_remote_prof.setText(mWizData.master_name);
-		else et_remote_prof.setText(mWizData.target_name);
+		final EditText et_local_prof=(EditText) dialog.findViewById(R.id.sync_wizard_dlg_local_prof_name);
+		et_local_prof.selectAll();
+		if (node_pos==0) et_local_prof.setText(mWizData.master_name);
+		else et_local_prof.setText(mWizData.target_name);
 
 		final EditText et_local_dir=(EditText) dialog.findViewById(R.id.sync_wizard_dlg_local_dir);
 		
@@ -573,11 +574,14 @@ public class ProfileCreationWizard {
 					if (mWizData.prof_node[0].local_mount_point_name.equals(spinnerLmp.getSelectedItem().toString())) {
 						if (!mWizData.prof_node[0].local_dir_name.equals(et_local_dir.getText().toString())) {
 							btn_next.setEnabled(true);
+							setLocalProfileViewVisibility(dialog);
 						} else {
 							btn_next.setEnabled(false);
+							dlg_msg.setText(mContext.getString(R.string.msgs_sync_wizard_specify_another_local_dir));
 						}
 					} else {
 						btn_next.setEnabled(true);
+						setLocalProfileViewVisibility(dialog);
 					}
 				}
 			}
@@ -587,34 +591,58 @@ public class ProfileCreationWizard {
 			public void onTextChanged(CharSequence arg0, int arg1, int arg2,int arg3) {}
 		});
 
-		et_remote_prof.addTextChangedListener(new TextWatcher(){
+		et_local_prof.addTextChangedListener(new TextWatcher(){
 			@Override
 			public void afterTextChanged(Editable text) {
 				if (node_pos==0) {
 					if (text.length()>0) {
-						if (text.toString().equals(mWizData.sync_name)) btn_next.setEnabled(false);
-						else {
+						if (text.toString().equals(mWizData.sync_name)) {
+							btn_next.setEnabled(false);
+							setLocalProfileViewDisabled(dialog);
+						} else {
 							if (!profMaint.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_SYNC, text.toString()) &&
 									!profMaint.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_LOCAL, text.toString()) &&
 									!profMaint.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_REMOTE, text.toString()) ) {
 								btn_next.setEnabled(true);
-							} else btn_next.setEnabled(false);
+								setLocalProfileViewVisibility(dialog);
+							} else {
+								btn_next.setEnabled(false);
+								dlg_msg.setText(mContext.getString(R.string.msgs_sync_wizard_profname_invalid));
+								setLocalProfileViewDisabled(dialog);
+							}
 						}
-					} else btn_next.setEnabled(false);
+					} else {
+						btn_next.setEnabled(false);
+						dlg_msg.setText(mContext.getString(R.string.msgs_sync_wizard_specify_profname));
+						setLocalProfileViewDisabled(dialog);
+					}
 				} else {
 					if (text.length()>0) {
-						if (text.toString().equals(mWizData.sync_name)) btn_next.setEnabled(false);
-						else {
-							if (text.toString().equals(mWizData.master_name)) btn_next.setEnabled(false);
-							else {
+						if (text.toString().equals(mWizData.sync_name)) {
+							btn_next.setEnabled(false);
+							setLocalProfileViewDisabled(dialog);
+						} else {
+							if (text.toString().equals(mWizData.master_name)) {
+								btn_next.setEnabled(false);
+								setLocalProfileViewDisabled(dialog);
+							} else {
 								if (!profMaint.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_SYNC, text.toString()) &&
 										!profMaint.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_LOCAL, text.toString()) &&
 										!profMaint.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_REMOTE, text.toString()) ) {
 									btn_next.setEnabled(true);
-								} else btn_next.setEnabled(false);
+									setLocalProfileViewVisibility(dialog);
+								} else {
+									btn_next.setEnabled(false);
+									dlg_msg.setText(mContext.getString(R.string.msgs_sync_wizard_profname_invalid));
+									setLocalProfileViewDisabled(dialog);
+								}
 							}
 						}
-					} else btn_next.setEnabled(false);
+					} else {
+						btn_next.setEnabled(false);
+						dlg_msg.setText(mContext.getString(R.string.msgs_sync_wizard_specify_profname));
+						setLocalProfileViewDisabled(dialog);
+					}
 				}
 			}
 			@Override
@@ -646,8 +674,8 @@ public class ProfileCreationWizard {
 		btn_next.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View arg0) {
-				if (node_pos==0) mWizData.master_name=et_remote_prof.getText().toString();
-				else mWizData.target_name=et_remote_prof.getText().toString();
+				if (node_pos==0) mWizData.master_name=et_local_prof.getText().toString();
+				else mWizData.target_name=et_local_prof.getText().toString();
 
 				mWizData.prof_node[node_pos].local_dir_name=et_local_dir.getText().toString();
 				mWizData.prof_node[node_pos].local_mount_point_name=spinnerLmp.getSelectedItem().toString();
@@ -662,7 +690,43 @@ public class ProfileCreationWizard {
 		CommonDialog.setDlgBoxSizeLimit(dialog,true);
 		dialog.show();
 	};
+	
+	private void setLocalProfileViewDisabled(Dialog dialog) {
+//		final Button btn_ok=(Button)dialog.findViewById(R.id.sync_wizard_dlg_ok);
+//		final Button btn_back=(Button)dialog.findViewById(R.id.sync_wizard_dlg_back);
+//		final Button btn_cancel=(Button)dialog.findViewById(R.id.sync_wizard_dlg_cancel);
+//		final Button btn_next=(Button)dialog.findViewById(R.id.sync_wizard_dlg_next);
+//		final TextView dlg_msg=(TextView) dialog.findViewById(R.id.sync_wizard_dlg_msg);
+		final Button btn_local_dir=(Button) dialog.findViewById(R.id.sync_wizard_dlg_local_dir_btn);
+//		final EditText et_local_prof=(EditText) dialog.findViewById(R.id.sync_wizard_dlg_local_prof_name);
+		final EditText et_local_dir=(EditText) dialog.findViewById(R.id.sync_wizard_dlg_local_dir);
+		
+		btn_local_dir.setEnabled(false);
+		et_local_dir.setEnabled(false);
+	};
 
+	private void setLocalProfileViewVisibility(Dialog dialog) {
+//		final Button btn_ok=(Button)dialog.findViewById(R.id.sync_wizard_dlg_ok);
+//		final Button btn_back=(Button)dialog.findViewById(R.id.sync_wizard_dlg_back);
+//		final Button btn_cancel=(Button)dialog.findViewById(R.id.sync_wizard_dlg_cancel);
+//		final Button btn_next=(Button)dialog.findViewById(R.id.sync_wizard_dlg_next);
+		final TextView dlg_msg=(TextView) dialog.findViewById(R.id.sync_wizard_dlg_msg);
+		final Button btn_local_dir=(Button) dialog.findViewById(R.id.sync_wizard_dlg_local_dir_btn);
+//		final EditText et_local_prof=(EditText) dialog.findViewById(R.id.sync_wizard_dlg_local_prof_name);
+		final EditText et_local_dir=(EditText) dialog.findViewById(R.id.sync_wizard_dlg_local_dir);
+		
+		btn_local_dir.setEnabled(true);
+		et_local_dir.setEnabled(true);
+		dlg_msg.setText("");
+		
+		if (et_local_dir.getText().length()>0) {
+			dlg_msg.setText(mContext.getString(R.string.msgs_sync_wizard_press_next));
+		} else {
+			dlg_msg.setText(mContext.getString(R.string.msgs_sync_wizard_specify_local_dir));
+		}
+	};
+
+	
 	boolean remote_user_pass_verified=false;
 	private void buildRemoteProfile(final int node_pos) {
 		remote_user_pass_verified=false;
@@ -752,29 +816,53 @@ public class ProfileCreationWizard {
 			public void afterTextChanged(Editable text) {
 				if (node_pos==0) {
 					if (text.length()>0) {
-						if (text.toString().equals(mWizData.sync_name)) btn_next.setEnabled(false);
-						else {
+						if (text.toString().equals(mWizData.sync_name)) {
+							btn_next.setEnabled(false);
+							setRemoteProfileViewDisabled(dialog);
+						} else {
 							if (!profMaint.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_SYNC, text.toString()) &&
 									!profMaint.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_LOCAL, text.toString()) &&
 									!profMaint.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_REMOTE, text.toString()) ) {
 								btn_next.setEnabled(true);
-							} else btn_next.setEnabled(false);
+								setRemoteProfileViewVisibility(dialog);
+							} else {
+								btn_next.setEnabled(false);
+								dlg_msg.setText(mContext.getString(R.string.msgs_sync_wizard_profname_invalid));
+								setRemoteProfileViewDisabled(dialog);
+							}
 						}
-					} else btn_next.setEnabled(false);
+					} else {
+						btn_next.setEnabled(false);
+						dlg_msg.setText(mContext.getString(R.string.msgs_sync_wizard_specify_profname));
+						setRemoteProfileViewDisabled(dialog);
+					}
 				} else {
 					if (text.length()>0) {
-						if (text.toString().equals(mWizData.sync_name)) btn_next.setEnabled(false);
-						else {
-							if (text.toString().equals(mWizData.master_name)) btn_next.setEnabled(false);
-							else {
+						if (text.toString().equals(mWizData.sync_name)) {
+							btn_next.setEnabled(false);
+							setRemoteProfileViewDisabled(dialog);
+						} else {
+							if (text.toString().equals(mWizData.master_name)) {
+								btn_next.setEnabled(false);
+								setRemoteProfileViewDisabled(dialog);
+							} else {
 								if (!profMaint.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_SYNC, text.toString()) &&
 										!profMaint.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_LOCAL, text.toString()) &&
 										!profMaint.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_REMOTE, text.toString()) ) {
 									btn_next.setEnabled(true);
-								} else btn_next.setEnabled(false);
+									setRemoteProfileViewVisibility(dialog);
+								} else {
+									btn_next.setEnabled(false);
+									dlg_msg.setText(mContext.getString(R.string.msgs_sync_wizard_profname_invalid));
+									setRemoteProfileViewDisabled(dialog);
+								}
 							}
 						}
-					} else btn_next.setEnabled(false);
+					} else {
+						btn_next.setEnabled(false);
+						dlg_msg.setText(mContext.getString(R.string.msgs_sync_wizard_specify_profname));
+						setRemoteProfileViewDisabled(dialog);
+					}
 				}
 			}
 			@Override
@@ -1010,6 +1098,34 @@ public class ProfileCreationWizard {
 		CommonDialog.setDlgBoxSizeLimit(dialog,true);
 		dialog.show();
 	};
+
+	private void setRemoteProfileViewDisabled(Dialog dialog) {
+//		final TextView dlg_msg=(TextView) dialog.findViewById(R.id.sync_wizard_dlg_msg);
+//		final Button btn_scan_network=(Button)dialog.findViewById((R.id.sync_wizard_dlg_remote_get_addr_btn));
+		final EditText et_remote_hostname=(EditText)dialog.findViewById((R.id.sync_wizard_dlg_remote_server));
+		final CheckBox cb_use_user_pass=(CheckBox)dialog.findViewById((R.id.sync_wizard_dlg_remote_use_user_pass));
+		final EditText et_remote_user=(EditText)dialog.findViewById((R.id.sync_wizard_dlg_remote_user));
+		final EditText et_remote_pass=(EditText)dialog.findViewById((R.id.sync_wizard_dlg_remote_password));
+		final Button btn_remote_share=(Button)dialog.findViewById((R.id.sync_wizard_dlg_remote_share_btn));
+		final EditText et_remote_share=(EditText)dialog.findViewById((R.id.sync_wizard_dlg_remote_share));
+		final Button btn_remote_dir=(Button)dialog.findViewById((R.id.sync_wizard_dlg_remote_dir_btn));
+		final EditText et_remote_dir=(EditText)dialog.findViewById((R.id.sync_wizard_dlg_remote_dir));
+//		final Button btn_next=(Button)dialog.findViewById(R.id.sync_wizard_dlg_next);
+		final Button btnLogon = (Button) dialog.findViewById(R.id.sync_wizard_dlg_remote_logon);
+		final Button btn_scan_network=(Button)dialog.findViewById((R.id.sync_wizard_dlg_remote_get_addr_btn));
+		
+		et_remote_hostname.setEnabled(false);
+		cb_use_user_pass.setEnabled(false);
+		et_remote_user.setEnabled(false);
+		et_remote_pass.setEnabled(false);
+		btn_remote_share.setEnabled(false);
+		et_remote_share.setEnabled(false);
+		btn_remote_dir.setEnabled(false);
+		et_remote_dir.setEnabled(false);
+		btnLogon.setEnabled(false);
+		btn_scan_network.setEnabled(false);
+		
+	};
 	
 	private void setRemoteProfileViewVisibility(Dialog dialog) {
 		final TextView dlg_msg=(TextView) dialog.findViewById(R.id.sync_wizard_dlg_msg);
@@ -1024,6 +1140,18 @@ public class ProfileCreationWizard {
 		final EditText et_remote_dir=(EditText)dialog.findViewById((R.id.sync_wizard_dlg_remote_dir));
 		final Button btn_next=(Button)dialog.findViewById(R.id.sync_wizard_dlg_next);
 		final Button btnLogon = (Button) dialog.findViewById(R.id.sync_wizard_dlg_remote_logon);
+		final Button btn_scan_network=(Button)dialog.findViewById((R.id.sync_wizard_dlg_remote_get_addr_btn));
+		
+		et_remote_hostname.setEnabled(true);
+		cb_use_user_pass.setEnabled(true);
+		et_remote_user.setEnabled(true);
+		et_remote_pass.setEnabled(true);
+		btn_remote_share.setEnabled(true);
+		btn_remote_dir.setEnabled(true);
+		et_remote_dir.setEnabled(true);
+		btn_scan_network.setEnabled(true);
+
+		
 		btnLogon.setEnabled(false);
 		et_remote_share.setEnabled(false);
 		
@@ -1078,6 +1206,15 @@ public class ProfileCreationWizard {
 						}
 					}
 				}
+				if (remote_user_pass_verified) {
+					btn_remote_share.setEnabled(true);
+					btn_remote_dir.setEnabled(true);
+					et_remote_dir.setEnabled(true);
+				} else {
+					btn_remote_share.setEnabled(false);
+					btn_remote_dir.setEnabled(false);
+					et_remote_dir.setEnabled(false);
+				}
 			} else {
 				et_remote_user.setVisibility(CheckBox.GONE);
 				et_remote_pass.setVisibility(CheckBox.GONE);
@@ -1115,7 +1252,11 @@ public class ProfileCreationWizard {
 					} else {
 						if (et_remote_share.getText().length()==0) {
 							dlg_msg.setText(mContext.getString(R.string.msgs_sync_wizard_specify_remote_share));
+							btn_remote_dir.setEnabled(false);
+							et_remote_dir.setEnabled(false);
 						} else {
+							btn_remote_dir.setEnabled(true);
+							et_remote_dir.setEnabled(true);
 							if (et_remote_dir.getText().length()==0) {
 								dlg_msg.setText(mContext.getString(R.string.msgs_sync_wizard_specify_remote_dir));
 							} else {
@@ -1127,7 +1268,11 @@ public class ProfileCreationWizard {
 			} else {
 				if (et_remote_share.getText().length()==0) {
 					dlg_msg.setText(mContext.getString(R.string.msgs_sync_wizard_specify_remote_share));
+					btn_remote_dir.setEnabled(false);
+					et_remote_dir.setEnabled(false);
 				} else {
+					btn_remote_dir.setEnabled(true);
+					et_remote_dir.setEnabled(true);
 					if (et_remote_dir.getText().length()==0) {
 						dlg_msg.setText(mContext.getString(R.string.msgs_sync_wizard_specify_remote_dir));
 					} else {
@@ -1139,6 +1284,12 @@ public class ProfileCreationWizard {
 		} else {
 			cb_use_user_pass.setEnabled(false);
 			dlg_msg.setText(mContext.getString(R.string.msgs_sync_wizard_specify_server));
+			btn_next.setEnabled(false);
+			et_remote_user.setEnabled(false);
+			et_remote_pass.setEnabled(false);
+			btn_remote_share.setEnabled(false);
+			btn_remote_dir.setEnabled(false);
+			et_remote_dir.setEnabled(false);
 		}
 	};
 
@@ -1193,18 +1344,41 @@ public class ProfileCreationWizard {
 			public void afterTextChanged(Editable text) {
 				if (text.length()>0) {
 					mWizData.sync_name=text.toString();
-					if (text.toString().equals(mWizData.master_name)) btn_ok.setEnabled(false);
-					else {
-						if (text.toString().equals(mWizData.target_name)) btn_ok.setEnabled(false);
-						else {
+					if (text.toString().equals(mWizData.master_name)) {
+						btn_ok.setEnabled(false);
+						dlg_msg.setText(mContext.getString(R.string.msgs_sync_wizard_profname_invalid));
+						setSyncProfileViewDisabled(dialog);
+					} else {
+						if (text.toString().equals(mWizData.target_name)) {
+							btn_ok.setEnabled(false);
+							dlg_msg.setText(mContext.getString(R.string.msgs_sync_wizard_profname_invalid));
+							setSyncProfileViewDisabled(dialog);
+						} else {
 							if (!profMaint.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_SYNC, text.toString()) &&
 									!profMaint.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_LOCAL, text.toString()) &&
 									!profMaint.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_REMOTE, text.toString()) ) {
 								btn_ok.setEnabled(true);
-							} else btn_ok.setEnabled(false);
+								spinner_sync.setEnabled(true);
+								btn_file_filter.setEnabled(true);
+								btn_dir_filter.setEnabled(true);
+								cb_master_dir.setEnabled(true);
+								cb_confirm.setEnabled(true);
+								cb_last_modified.setEnabled(true);
+								cb_not_use_last_mod_remote.setEnabled(true);
+								et_sync_prof.setEnabled(true);
+
+							} else {
+								dlg_msg.setText(mContext.getString(R.string.msgs_sync_wizard_profname_invalid));
+								btn_ok.setEnabled(false);
+								setSyncProfileViewDisabled(dialog);
+							}
 						}
 					}
-				} else btn_ok.setEnabled(false);
+				} else {
+					btn_ok.setEnabled(false);
+					setSyncProfileViewDisabled(dialog);
+					dlg_msg.setText(mContext.getString(R.string.msgs_sync_wizard_specify_profname));
+				}
 			}
 			@Override
 			public void beforeTextChanged(CharSequence arg0, int arg1,int arg2, int arg3) {}
@@ -1362,6 +1536,28 @@ public class ProfileCreationWizard {
 		dialog.show();
 	};
 
+	private void setSyncProfileViewDisabled(Dialog dialog) {
+		final Spinner spinner_sync=(Spinner) dialog.findViewById(R.id.sync_wizard_dlg_sync_option);
+		final Button btn_file_filter=(Button) dialog.findViewById(R.id.sync_wizard_dlg_sync_file_filter_btn);
+//		final TextView tv_file_filter=(TextView) dialog.findViewById(R.id.sync_wizard_dlg_sync_file_filter);
+		final Button btn_dir_filter=(Button) dialog.findViewById(R.id.sync_wizard_dlg_sync_dir_filter_btn);
+//		final TextView tv_dir_filter=(TextView) dialog.findViewById(R.id.sync_wizard_dlg_sync_dir_filter);
+		final CheckBox cb_master_dir=(CheckBox) dialog.findViewById(R.id.sync_wizard_dlg_sync_master_dir_cb);
+		final CheckBox cb_confirm=(CheckBox) dialog.findViewById(R.id.sync_wizard_dlg_sync_confirm);
+		final CheckBox cb_last_modified=(CheckBox) dialog.findViewById(R.id.sync_wizard_dlg_sync_last_modified);
+		final CheckBox cb_not_use_last_mod_remote = (CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_not_use_last_modified_remote_file_for_diff);
+//		final EditText et_sync_prof=(EditText) dialog.findViewById(R.id.sync_wizard_dlg_sync_prof_name);
+		
+		spinner_sync.setEnabled(false);
+		btn_file_filter.setEnabled(false);
+		btn_dir_filter.setEnabled(false);
+		cb_master_dir.setEnabled(false);
+		cb_confirm.setEnabled(false);
+		cb_last_modified.setEnabled(false);
+		cb_not_use_last_mod_remote.setEnabled(false);
+
+	};
+	
 	private void confirmProfileCreation(Dialog dialog, NotifyEvent p_ntfy) {
 		String sync_prof_name=mWizData.sync_name;
 		String sd="";

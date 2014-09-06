@@ -31,7 +31,8 @@
 	<string name="msgs_sync_wizard_specify_profname">プロファイル名を入力してください</string>
 	<string name="msgs_sync_wizard_title_profname">プロファイル名</string>
 	
-	<string name="msgs_sync_wizard_specify_local_dir">ローカル ディレクトリーを入力してください</string>
+	<string name="msgs_sync_wizard_specify_local_dir">ローカル ディレクトリーを入力するか、次へボタンを押してください</string>
+	<string name="msgs_sync_wizard_specify_another_local_dir">ローカル ディレクトリーはマスターとして使用されています、違うローカル ディレクトリーを指定してください</string>
 	
 	<string name="msgs_sync_wizard_specify_server">サーバー名またはサーバーIPアドレスを入力するか、検索ボタンを押してください</string>
 	<string name="msgs_sync_wizard_specify_user_pass">ユーザー名およびパスワードを入力してください</string>

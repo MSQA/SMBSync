@@ -35,7 +35,8 @@
 	<string name="msgs_sync_wizard_specify_profname">Specify profile name</string>
 	<string name="msgs_sync_wizard_title_profname">Profile name</string>
 	
-	<string name="msgs_sync_wizard_specify_local_dir">Specify local directory</string>
+	<string name="msgs_sync_wizard_specify_local_dir">Specify local directory or press Next button</string>
+	<string name="msgs_sync_wizard_specify_another_local_dir">ローカル ディレクトリーはマスターとして使用されています、違うローカル ディレクトリーを指定してください</string>
 	
 	<string name="msgs_sync_wizard_specify_server">Specify remote server name, IP address or press Search remote server button</string>
 	<string name="msgs_sync_wizard_specify_user_pass">Specify user and/or password</string>
