@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:layout_marginRight="5dp"
+    android:layout_marginLeft="5dp"
+    tools:ignore="ButtonStyle" >
+
+    <Button
+        android:id="@+id/sync_profile_cancel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/msgs_dlg_cancel_btn" />
+
+    <Button
+        android:id="@+id/sync_profile_ok"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/msgs_dlg_save_btn" />
+
+</LinearLayout>

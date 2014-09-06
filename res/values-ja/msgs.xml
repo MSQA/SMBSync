@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE msg_string>
+<resources>
+    <string name="msgs_terminate_application">SMBSyncを終了しますか？</string>
+    
+    <string name="msgs_kill_application">SMBSyncを強制終了しますか？</string>
+
+    <string name="msgs_application_already_started">同期実行中ため、スケジュールまたは外部アプリケーションからの起動要求を無視しました。</string>
+    
+    <string name="msgs_sync_select_prof_no_active_profile">有効な同期プロファイルが選択されていません。</string>
+    
+    <string name="msgs_notification_sync_active">同期処理中です。</string>
+    <string name="msgs_notification_smbsync_active">SMBSyncが起動しています。</string>
+    
+    <string name="msgs_no_external_storage">外部メディアが使用できないため、いくつかの機能が使用できません。</string>
+    
+    <string name="msgs_sync_can_not_sync_wlan_option_not_satisfied">無線LANオプションの条件が成立しないため、同期できません。設定の無線LANオプションを変更してください。</string>
+    <string name="msgs_sync_can_not_sync_no_valid_profile">有効な同期プロファイルが存在していないため同期できません。同期プロファイルを作成してください。</string>
+    
+    <string name="msgs_no_profile_entry">長押しでプロファイルを追加できます</string>
+    
+    <string name="msgs_log_msg_cleared">ログメッセージをクリアしました。</string>
+    <string name="msgs_log_freeze_scroll">自動的にスクロールしない</string>
+    
+    <string name="msgs_sync_list_array_mtype_mirr">ミラー</string>
+    <string name="msgs_sync_list_array_mtype_copy">コピー</string>
+    <string name="msgs_sync_list_array_mtype_move">移動</string>
+    <string name="msgs_sync_list_array_activ_activ">有効</string>
+    <string name="msgs_sync_list_array_activ_inact">無効</string>
+    
+    <string name="msgs_sync_history_status_fail">失敗</string>
+    <string name="msgs_sync_history_status_cancel">中止</string>
+    <string name="msgs_sync_history_status_success">正常</string>
+    <string name="msgs_sync_history_count_files">ファイル数</string>
+    <string name="msgs_sync_history_count_copied">コピー:</string>
+    <string name="msgs_sync_history_count_deleted">削除:</string>
+    <string name="msgs_sync_history_count_ignored">無視:</string>
+    <string name="msgs_sync_history_ccmeu_show_log">ログ表示</string>
+    <string name="msgs_sync_history_ccmeu_delete">履歴の削除</string>
+    <string name="msgs_sync_history_ccmeu_selectall">全て選択</string>
+    <string name="msgs_sync_history_ccmeu_unselectall">全て選択解除</string>
+	<string name="msgs_sync_history_ccmeu_copy_clipboard">クリップボードにコピー</string>    
+	
+    <string name="msgs_sync_history_del_conf_all_history">全ての履歴を削除しますか?</string>
+    <string name="msgs_sync_history_del_conf_selected_history">下記の履歴を削除しますか?</string>
+    
+    <string name="profile_list_dir_const_string">DIR:</string>
+    
+	<string name="msgs_filelist_cancel"		>ファイルリスト作成は中断しました。</string>
+    <string name="msgs_filelist_error"		>リモートリスト作成中にエラーが発生しました。</string>
+    
+    <string name="msgs_smbsync_main_start"	>正常起動しました。</string>
+    <string name="msgs_smbsync_main_restart">再起動しました。</string>
+    <string name="msgs_smbsync_main_restart_msglost">再起動しましたが、メッセージを回復できませんでした。</string>
+    <string name="msgs_smbsync_main_end"	>正常終了します。</string>
+    <string name="msgs_smbsync_main_language_changed">システムの言語が変更されましたが、アプリケーションに動的反映されていない個所があります。(同期実行中のメッセージやプロファイル編集画面の表示など)\n変更を完全に反映するためにはアプリケーションの再起動が必要です。(同期を実行中ならば、同期が終了してから再起動してください)</string>
+    <string name="msgs_smbsync_main_settings_force_log_enabled"	>自動同期起動が有効なため、ログ記録を有効にしました。</string>
+    
+    <string name="msgs_smbsync_main_settings_jcifs_changed_restart"	>SMBパラメーターが変更されましたがアプリケーションを再起動するまでは反映されません。</string>
+    
+    <string name="msgs_create_profile_error">プロファイルリスト作成に失敗しました。ファイル=%s</string>
+    <string name="msgs_create_profile_not_found">指定されたファイルが見つからないためプロファイルリスト作成できません。ファイル=%s</string>
+    <string name="msgs_save_to_profile_error">"プロファイルの保存に失敗しました。ファイル=%s</string>
+    
+    <string name="msgs_dir_empty"			>--- ディレクトリは空です ---</string>
+	<string name="delete_msgs_no_profile"			>--- リモート/ローカル プロファイルがありません ---</string>
+ 	<string name="msgs_override"			>上書きしますか?</string>
+	<string name="msgs_active_sync_prof_not_found">有効な同期プロファイがありません。</string>
+	<string name="msgs_clear_log_message"	>ログメッセージのクリア</string>
+	<string name="msgs_current_dir"			>現ディレクトリ:</string>
+	<string name="msgs_delete_following_profile">下記プロファイルを削除します。</string>
+	<string name="msgs_duplicate_profile"	>プロファイル名が重複しています</string>
+	<string name="msgs_edit_local_profile"	>ローカルプロファイルの編集</string>
+
+	<string name="msgs_prof_cont_mult"		>複数選択</string>
+    <string name="msgs_prof_cont_sngl_act"	>有効 (%s)</string>
+	<string name="msgs_prof_cont_sngl_wizard">同期作成ウィザードの起動</string>    
+	<string name="msgs_prof_cont_mult_act"	>プロファイルを有効にする</string>
+	<string name="msgs_prof_cont_mult_inact">プロファイルを無効にする</string>
+	<string name="msgs_prof_cont_mult_sync" >同期する</string>
+	<string name="msgs_prof_cont_sngl_inact">無効 (%s)</string>
+	<string name="msgs_prof_cont_sngl_delete">削除 (%s)</string>
+	<string name="msgs_prof_cont_mult_delete">プロファイルを削除する</string>
+	<string name="msgs_prof_cont_sngl_edit">編集 (%s)</string>
+	<string name="msgs_prof_cont_add_local"	>ローカルプロファイルの追加</string>
+	<string name="msgs_prof_cont_add_remote">リモートプロファイルの追加</string>
+	<string name="msgs_prof_cont_add_sync"	>同期プロファイルの追加</string>
+	<string name="msgs_prof_cont_select_all">全プロファイルを選択</string>
+	<string name="msgs_prof_cont_unselect_all">全ての選択を解除</string>
+	<string name="msgs_prof_cont_copy">プロファイルのコピー</string>
+	<string name="msgs_prof_cont_rename">プロファイルの名前変更</string>
+	
+	<string name="msgs_add_local_profile"	>ローカルプロファイルの追加</string>
+	<string name="msgs_add_remote_profile"	>リモートプロファイルの追加</string>
+	<string name="msgs_add_sync_profile">同期プロファイルの追加</string>
+	<string name="msgs_copy_local_profile"	>ローカルプロファイルのコピー</string>
+	<string name="msgs_copy_remote_profile"	>リモートプロファイルのコピー</string>
+	<string name="msgs_copy_sync_profile"	>同期プロファイルのコピー</string>
+	<string name="msgs_rename_profile"	>プロファイル名前変更</string>
+	
+	<string name="msgs_edit_remote_profile"	>リモートプロファイルの編集</string>
+	<string name="msgs_edit_sync_profile"	>同期プロファイルの編集</string>
+	<string name="msgs_export_prof_title"	>プロファイルの書き出し</string>
+	<string name="msgs_export_prof_success"	>%s にプロファイルを書き出しました。 </string>
+	<string name="msgs_export_prof_fail"	>プロファイル書き出しが失敗しました。ファイル(%s)</string>
+	<string name="msgs_import_prof_fail"	>プロファイルの取り込が失敗しました。 ファイル(%s)</string>
+	<string name="msgs_import_prof_fail_no_valid_item">指定されたファイルには有効なプロファイル項目が存在しません。 ファイル(%s)</string>
+	<string name="msgs_move_to_top"			>先頭に移動</string>
+	<string name="msgs_move_to_bottom"		>最後に移動</string>
+	<string name="msgs_select_export_file"	>プロファイル書き出し先の選択</string>
+	<string name="msgs_select_import_file"	>取り込むプロファイルの選択</string>
+	<string name="msgs_select_local_dir"	>ローカルディレクトリの選択</string>
+	<string name="msgs_select_master_profile">マスタープロファイルの選択</string>
+	<string name="msgs_select_target_profile">ターゲットプロファイルの選択</string>
+	<string name="msgs_select_remote_share"	>共有の選択</string>
+	<string name="msgs_select_remote_dir"	>リモートディレクトリの選択</string>
+	<string name="msgs_sync_profile"		>同期実行 (%s)</string>
+	
+	<string name="msgs_prof_active_not_activated">マスター/ターゲット プロファイルが無効なため同期プロファイルを有効にできません。</string>
+	<string name="msgs_master_profile_not_found">%s マスタープロファイルが見つかりません。</string>
+	<string name="msgs_target_profile_not_found">%s ターゲットプロファイルが見つかりません。</string>
+	<string name="msgs_invalid_profile_combination">マスターとターゲットはリモート/ローカルまたはローカル/ローカルの組み合わせにしてください。</string>
+	
+	<string name="msgs_audit_share_not_spec">共有名を入力してください。</string>
+	<string name="msgs_audit_msgs_local_dir">ディレクトリに%s文字が含まれています、無効な文字を消しました。</string>
+	<string name="msgs_audit_hostname_not_spec">名前またはアドレスを入力してください。</string>
+	<string name="msgs_audit_hostport_not_spec">ポート番号を入力してください。</string>
+		
+	<string name="msgs_audit_msgs_address1">アドレスまたは名前に%s文字が含まれています、無効な文字を消しました。</string>
+	<string name="msgs_audit_msgs_address2">アドレスまたは名前が指定されていません。</string>
+	<string name="msgs_audit_msgs_dir1">ディレクトリに%s文字が含まれています、無効な文字を消しました。</string>
+	<string name="msgs_audit_msgs_master1">マスターに%s文字が含まれています、無効な文字を消しました。</string>
+	<string name="msgs_audit_msgs_master2">マスターが指定されていません。</string>
+	<string name="msgs_audit_msgs_password1">パスワードに%s文字が含まれています、無効な文字を消しました。</string>
+	<string name="msgs_audit_msgs_profilename1">プロファイル名に%s文字が含まれています、無効な文字を消しました。</string>
+	<string name="msgs_audit_msgs_profilename2">プロファイル名を指定してください。</string>
+	<string name="msgs_audit_msgs_share1">共有名に%s文字が含まれています、無効な文字を消しました。</string>
+	<string name="msgs_audit_msgs_share2">共有名を指定してください。</string>
+	<string name="msgs_audit_msgs_sync1">同期プロファイル名を指定してください。</string>
+	<string name="msgs_audit_msgs_target1">ターゲットプロファイル名に%s文字が含まれています、無効な文字を消しました。</string>
+	<string name="msgs_audit_msgs_target2">ターゲットプロファイル名を指定してください。</string>
+	<string name="msgs_audit_msgs_username1">ユーザー名に%s文字が含まれています、無効な文字を消しました。</string>
+	<string name="msgs_audit_msgs_master_target">マスタープロファイルとターゲットプロファイルが同じです、違うプロファイルを指定してください。</string>
+	<string name="msgs_filter_new_filter">フィルターに%s文字が含まれています、無効な文字を消しました。</string>
+	<string name="msgs_audit_msgs_user_or_pass_missing">ユーザー名とパスワードの両方、または、どちらかを指定してください。</string>		
+	
+	<string name="msgs_menu_sync">同期実行</string>
+	<string name="msgs_menu_browse_logfile">ログ表示</string>
+	<string name="msgs_menu_last_mod_list">最終更新時間データ</string>
+	<string name="msgs_menu_export">プロファイル書き出し</string>
+	<string name="msgs_menu_import">プロファイル取り込み</string>
+	<string name="msgs_menu_log_management">ログファイル管理</string>
+	<string name="msgs_menu_about">SMBSyncについて</string>
+	<string name="msgs_menu_settings">設定</string>
+	<string name="msgs_menu_kill">強制終了</string>
+	
+	<string name="msgs_extra_data_ignored_auto_start_not_specified">AutoStartが指定されていないため%sを無視しました、自動同期起動を中止します。</string>
+	<string name="msgs_extra_data_sync_profile"       >プロファイルの選択状況</string>
+	<string name="msgs_extra_data_profile_selected"   >   選択されたプロファイル : </string>
+	<string name="msgs_extra_data_profile_disabled"   >   無効なプロファイル : </string>
+	<string name="msgs_extra_data_profile_not_exists" >   存在しないプロファイル : </string>
+	<string name="msgs_extra_data_no_profile_selected">プロファイルが選択されていないため全ての有効なプロファイルを同期します。</string>
+	<string name="msgs_extra_data_ignored_startup_parms_specified">%sが指定されていますが、StartupParmsが指定されているため無視しました。</string>
+	<string name="msgs_extra_data_assumed_auto_term_disabled">AutoTermが指定されていないため、falseを適用しました</string>
+	<string name="msgs_extra_data_assumed_bg_exec_disabled">Backgroundが指定されていないため、falseを適用しました</string>
+	
+	<string name="msgs_extra_data_startup_by">%sにより同期開始が要求されました。</string>
+	<string name="msgs_extra_data_auto_start_not_boolean">AutoStartはbooleanで指定されていません、同期を中止します。</string>
+	<string name="msgs_extra_data_auto_term_not_boolean">AutoTermはbooleanで指定されていません、同期を中止します。</string>
+	<string name="msgs_extra_data_back_ground_not_boolean">Backgroundはbooleanで指定されていません、同期を中止します。</string>
+	<string name="msgs_extra_data_startup_parms_length_error">StartupParmsは最低3つの項目が指定されている必要があります、同期を中止します。parms=%s</string>
+	<string name="msgs_extra_data_startup_parms_value_error">StartupParmsの最初の3つの項目はtrueまたはfalseで指定してください、同期を中止します。値=%s</string>
+	<string name="msgs_extra_data_startup_parms_type_error">StartupParmsはStringで指定されていません、同期を中止します。</string>
+	<string name="msgs_extra_data_sync_profile_type_error">SyncProfileはString配列で指定されていません、同期を中止します。</string>
+</resources>

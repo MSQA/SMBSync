@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:gravity="center"
+            android:text="@string/msgs_sync_wizard_title_profname"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+        
+        <EditText
+            android:id="@+id/sync_wizard_dlg_sync_prof_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:layout_weight="1.0"
+            android:ems="10"
+            android:hint="@string/msgs_remote_profile_dlg_profile"
+            android:inputType="text"
+            android:scrollHorizontally="true" />
+
+    </LinearLayout>
+    
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="5dp"
+            android:gravity="center"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/msgs_sync_profile_dlg_syncopt"/>
+
+		<Spinner
+		    android:id="@+id/sync_wizard_dlg_sync_option"
+		    style="@android:style/Widget.Spinner"
+		    android:layout_width="0dp"
+		    android:layout_height="wrap_content"
+		    android:layout_marginBottom="5dp"
+		    android:layout_marginLeft="5dp"
+		    android:layout_marginRight="5dp"
+		    android:layout_weight="1"
+		    android:background="@drawable/spinner_color_background"
+		    android:minHeight="30dp"
+		    android:paddingLeft="5dp"/>
+        
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginBottom="5dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/msgs_sync_profile_dlg_filter"/>
+    
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/sync_wizard_dlg_sync_file_filter_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical|left"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/msgs_sync_profile_dlg_filefltr"/>
+
+        <TextView
+            android:id="@+id/sync_wizard_dlg_sync_file_filter"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:layout_gravity="center_vertical"
+            android:text="@string/msgs_filter_list_dlg_not_specified"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/sync_wizard_dlg_sync_dir_filter_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical|left"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/msgs_sync_profile_dlg_dirfltr"/>
+
+        <TextView
+            android:id="@+id/sync_wizard_dlg_sync_dir_filter"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:layout_gravity="center_vertical"
+            android:text="@string/msgs_filter_list_dlg_not_specified"/>
+    </LinearLayout>
+
+    <CheckBox
+        android:id="@+id/sync_wizard_dlg_sync_master_dir_cb"
+        style="@style/check_box_style"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="3dp"
+        android:text="@string/msgs_sync_profile_master_dir_cb_enable"/>
+
+    <CheckBox
+        android:id="@+id/sync_wizard_dlg_sync_confirm"
+        style="@style/check_box_style"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="3dp"
+        android:text="@string/msgs_sync_profile_confirm_required"/>
+    
+    <CheckBox
+        android:id="@+id/sync_wizard_dlg_not_use_last_modified_remote_file_for_diff"
+        style="@style/check_box_style"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="3dp"
+        android:text="@string/msgs_sync_profile_not_set_remote_file_last_modified"
+        />
+    
+    <CheckBox
+        android:id="@+id/sync_wizard_dlg_sync_last_modified"
+        style="@style/check_box_style"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="3dp"
+        android:text="@string/msgs_sync_profile_last_modified_smbsync"/>
+            
+    
+</LinearLayout>

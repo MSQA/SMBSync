@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    tools:ignore="HardcodedText" >
+
+    <CheckBox
+        android:id="@+id/export_import_profile_list_item_cb1"
+        style="@style/check_box_style"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center_vertical"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:text="" />
+
+    <TextView
+        android:id="@+id/export_import_profile_list_item_itemtype"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginLeft="5dp"
+        android:ellipsize="end"
+        android:lines="1"
+        android:text="S"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+    
+    <TextView
+        android:id="@+id/export_import_profile_list_item_itemname"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginLeft="5dp"
+        android:layout_weight="1"
+        android:ellipsize="end"
+        android:lines="1"
+        android:text="Entry name"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+</LinearLayout>

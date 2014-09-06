@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:ignore="HardcodedText,DisableBaselineAlignment" >
+
+    <TextView
+        android:id="@+id/scheduler_main_dlg_title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/msgs_scheduler_main_dlg_hdr_title"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <include layout="@layout/divider_line1_turquoise" />
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fadeScrollbars="false" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:orientation="vertical" >
+
+		    <TextView
+		        android:id="@+id/scheduler_main_dlg_msg"
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:text=""
+		        android:textColor="#ffff0000"
+		        android:textAppearance="?android:attr/textAppearanceMedium" />
+            
+            <CheckBox
+                android:id="@+id/scheduler_main_dlg_enabled"
+                style="@style/check_box_style"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/msgs_scheduler_main_dlg_hdr_enable"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp" >
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical" >
+			        <TextView
+			            android:layout_width="match_parent"
+			            android:layout_height="wrap_content"
+			            android:gravity="left"
+			            android:text="@string/msgs_scheduler_main_dlg_hdr_schedule_type"
+			            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+                    <Spinner
+                        android:id="@+id/scheduler_main_dlg_date_time_type"
+                        style="@android:style/Widget.Spinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/spinner_color_background"
+                        android:minHeight="40dp"
+                        android:paddingLeft="5dp"
+                        android:textAppearance="?android:attr/textAppearanceSmall" />
+                </LinearLayout>
+
+                <include
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    layout="@layout/scheduler_main_dlg_hh_mm" />
+                
+            </LinearLayout>
+            
+            
+            <include layout="@layout/scheduler_main_dlg_day_of_week" />
+
+            <CheckBox
+                android:id="@+id/scheduler_main_dlg_autoterm"
+                style="@style/check_box_style"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/settings_auto_term_summary_ena"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <CheckBox
+                android:id="@+id/scheduler_main_dlg_bgexec"
+                style="@style/check_box_style"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/settings_backgroound_execution_summary_ena"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+		    <CheckBox
+		        android:id="@+id/scheduler_main_dlg_sync_all_sync_profile"
+		        style="@style/check_box_style"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:text="@string/msgs_scheduler_edit_synclist_dlg_hdr_sync_all_sync_profile"
+		        android:textAppearance="?android:attr/textAppearanceMedium" />
+            
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+                <Button
+                    android:id="@+id/scheduler_main_dlg_edit_sync_prof"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/msgs_scheduler_main_dlg_hdr_edit_prof" 
+                    android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+                <TextView
+                    android:id="@+id/scheduler_main_dlg_sync_prof_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+            </LinearLayout>
+            
+		    <CheckBox
+		        android:id="@+id/scheduler_main_dlg_wifi_on"
+		        style="@style/check_box_style"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:text="@string/msgs_scheduler_main_dlg_hdr_wifi_on"
+		        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <RadioGroup
+                android:id="@+id/scheduler_main_dlg_wifi_on_rg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:orientation="horizontal" >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/msgs_scheduler_main_dlg_hdr_wifi_on_delayed_t"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                
+                <RadioButton
+                    android:id="@+id/scheduler_main_dlg_wifi_on_rg_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:checked="true"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/msgs_scheduler_main_dlg_hdr_wifi_on_delayed_1" />
+
+                <RadioButton
+                    android:id="@+id/scheduler_main_dlg_wifi_on_rg_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/msgs_scheduler_main_dlg_hdr_wifi_on_delayed_2" />
+
+                <RadioButton
+                    android:id="@+id/scheduler_main_dlg_wifi_on_rg_3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/msgs_scheduler_main_dlg_hdr_wifi_on_delayed_3" />
+            </RadioGroup>
+		    		    
+		    <CheckBox
+		        android:id="@+id/scheduler_main_dlg_wifi_off"
+		        style="@style/check_box_style"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:text="@string/msgs_scheduler_main_dlg_hdr_wifi_off"
+		        android:textAppearance="?android:attr/textAppearanceMedium" />
+		    
+            
+        </LinearLayout>
+    </ScrollView>
+
+    <include layout="@layout/scheduler_main_dlg_ok_cancel" />
+
+</LinearLayout>

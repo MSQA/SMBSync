@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE msg_string>
+<resources>
+    <string name="msgs_terminate_application">Terminate application?</string>
+    
+	<string name="msgs_kill_application">Kill the application？</string>
+
+	<string name="msgs_application_already_started">Ignored the start request from an external application or scheduled, ｂecause sync is already running.</string>
+		    
+	<string name="msgs_sync_select_prof_no_active_profile">Active sync profile was not found.</string>
+	
+    <string name="msgs_notification_sync_active">Synchronization is active.</string>
+    <string name="msgs_notification_smbsync_active">SMBSync was started.</string>
+    
+    <string name="msgs_no_external_storage">External storage was not mounted. Some functions are not available.</string>
+    
+    <string name="msgs_sync_can_not_sync_wlan_option_not_satisfied">Can not be synchronized because the condition of the wireless LAN option is not satisfied. Please chahnge you setting by Menu->Settings->WirelessLAN option.</string>
+    <string name="msgs_sync_can_not_sync_no_valid_profile">It can not be synchronized for a valid sync profile does not exist. Please create a valid sync profile.</string>
+    
+    <string name="msgs_no_profile_entry">Long click for add profile</string>
+    
+    <string name="msgs_log_msg_cleared">Log message was cleared.</string>
+	<string name="msgs_log_freeze_scroll">Freeze scroll</string>    
+    <string name="msgs_sync_list_array_mtype_mirr">MIRR</string>
+    <string name="msgs_sync_list_array_mtype_copy">COPY</string>
+    <string name="msgs_sync_list_array_mtype_move">MOVE</string>
+    <string name="msgs_sync_list_array_activ_activ">ACTIV</string>
+    <string name="msgs_sync_list_array_activ_inact">INACT</string>
+    
+    <string name="msgs_sync_history_status_fail">Fail</string>
+    <string name="msgs_sync_history_status_cancel">Cancel</string>
+    <string name="msgs_sync_history_status_success">Successful</string>
+	<string name="msgs_sync_history_count_files">Files</string>    
+    <string name="msgs_sync_history_count_copied">Copied:</string>
+    <string name="msgs_sync_history_count_deleted">Deleted:</string>
+    <string name="msgs_sync_history_count_ignored">Ignored:</string>
+    <string name="msgs_sync_history_ccmeu_show_log">Show log</string>
+    <string name="msgs_sync_history_ccmeu_delete">Delete history</string>
+    <string name="msgs_sync_history_ccmeu_selectall">Select all histories</string>
+    <string name="msgs_sync_history_ccmeu_unselectall">Unselect all histories</string>
+    <string name="msgs_sync_history_ccmeu_copy_clipboard">Copy clipboard</string>
+    
+    <string name="msgs_sync_history_del_conf_all_history">Do you want to delete all history?</string>
+    <string name="msgs_sync_history_del_conf_selected_history">Do you want to delete following history?</string>
+    
+    <string name="profile_list_dir_const_string">DIR:</string>
+    
+    <string name="msgs_filelist_cancel">Creating remote file list was cancelled.</string>
+    <string name="msgs_filelist_error">An error occurred while creating the remote file list.</string>
+    
+    <string name="msgs_smbsync_main_start">Application was successfully started.</string>
+    <string name="msgs_smbsync_main_restart">Application was restarted.</string>
+    <string name="msgs_smbsync_main_restart_msglost">Application was restarted, but message was lost.</string>
+    <string name="msgs_smbsync_main_end">Application was being terminated.</string>
+    <string name="msgs_smbsync_main_language_changed">Language of the system has been changed, but there is a point where the application has not been reflected dynamically. (For example, the profile edit dialog appearance and message of synchronous execution)\nYou must restart the application in order to fully reflect the modified. (If running synchronization, please restart synchronization from the end)</string>    
+    <string name="msgs_smbsync_main_settings_force_log_enabled"	>To enable logging because Auto sync startup was enabled.</string>
+	<string name="msgs_smbsync_main_settings_jcifs_changed_restart"	>SMB parameters have been changed, but will not take effect until you restart the application.</string>    
+    
+    <string name="msgs_create_profile_error">create profile was failed. file=%s</string>
+    <string name="msgs_create_profile_not_found">"create profile was failed. Because specified file was not found. file=%s</string>
+    <string name="msgs_save_to_profile_error">"Save profile was failed. file=%s</string>
+    
+    <string name="msgs_dir_empty"			>--- Directory is empty ---</string>
+	<string name="delete_msgs_no_profile"			>--- No remote or local profile ---</string>
+ 	<string name="msgs_override"			>override?</string>
+	<string name="msgs_active_sync_prof_not_found">Active sync profile can not be found.</string>
+	<string name="msgs_clear_log_message"	>Clear log messages</string>
+	<string name="msgs_current_dir"			>Current dir:</string>
+	<string name="msgs_delete_following_profile">Delete the following profile(s)</string>
+	<string name="msgs_duplicate_profile"	>The profile name is duplicated</string>
+	<string name="msgs_edit_local_profile"	>Edit local profile</string>
+
+	<string name="msgs_prof_cont_mult"		>Multiple selection</string>
+    <string name="msgs_prof_cont_sngl_act"	>Active (%s)</string>
+    <string name="msgs_prof_cont_sngl_wizard">Start a Sync creation wizard</string>
+	<string name="msgs_prof_cont_mult_act"	>Activate selected profiles</string>
+	<string name="msgs_prof_cont_mult_inact">Inactive selected profiles</string>
+	<string name="msgs_prof_cont_mult_sync" >Sync selected profiles</string>
+	<string name="msgs_prof_cont_sngl_inact">Inactive (%s)</string>
+	<string name="msgs_prof_cont_sngl_delete">Delete profile (%s)</string>
+	<string name="msgs_prof_cont_mult_delete">Delete Selected profiles</string>
+	<string name="msgs_prof_cont_sngl_edit"	>Edit profile (%s)</string>
+	<string name="msgs_prof_cont_add_local"	>Add local profile</string>
+	<string name="msgs_prof_cont_add_remote">Add remote profile</string>
+	<string name="msgs_prof_cont_add_sync"	>Add Sync profile</string>
+	<string name="msgs_prof_cont_select_all">Select all profiles</string>
+	<string name="msgs_prof_cont_unselect_all">Unselect all profiles</string>
+	<string name="msgs_prof_cont_copy">Copy profile</string>
+	<string name="msgs_prof_cont_rename">Rename profile</string>
+	
+	<string name="msgs_add_local_profile"	>Add local profile</string>
+	<string name="msgs_add_remote_profile"	>Add remote profile</string>
+	<string name="msgs_add_sync_profile"	>Add Sync profile</string>
+	<string name="msgs_copy_local_profile"	>Copy local profile</string>
+	<string name="msgs_copy_remote_profile"	>Copy remote profile</string>
+	<string name="msgs_copy_sync_profile"	>Copy Sync profile</string>
+	<string name="msgs_rename_profile"	>Rename profile</string>
+		
+	<string name="msgs_edit_remote_profile"	>Edit remote profile</string>
+	<string name="msgs_edit_sync_profile"	>Edit sync profile</string>
+	<string name="msgs_export_prof_title"	>Export profile</string>
+	<string name="msgs_export_prof_success"	>Export profile to %s was successful</string>
+	<string name="msgs_export_prof_fail"	>Export profile to %s was failed</string>
+	<string name="msgs_import_prof_fail"	>Import from %s was failed</string>
+	<string name="msgs_import_prof_fail_no_valid_item">File %s has include no valid profile items.</string>
+	<string name="msgs_move_to_top"			>Move to top</string>
+	<string name="msgs_move_to_bottom"		>Move to bottom</string>
+	<string name="msgs_select_export_file"	>Select export file</string>
+	<string name="msgs_select_import_file"	>Select import file</string>
+	<string name="msgs_select_local_dir"	>Select local directory</string>
+	<string name="msgs_select_master_profile">Select master profile</string>
+	<string name="msgs_select_target_profile">Select target profile</string>
+	<string name="msgs_select_remote_share"	>Select remote share</string>
+	<string name="msgs_select_remote_dir"	>Select remote directory</string>
+	<string name="msgs_sync_profile"		>Sync profile (%s)</string>
+	
+	<string name="msgs_prof_active_not_activated">Sync profile not activated.(Master/Local profile was inactive or does not existed)</string>	
+	<string name="msgs_master_profile_not_found">%s Master profile can not be found.</string>
+	<string name="msgs_target_profile_not_found">%s Target profile can not be found.</string>
+	<string name="msgs_invalid_profile_combination">Master and target profile combination is must remote-local, local-remote or local-local.</string>
+	
+	<string name="msgs_audit_share_not_spec">Specify share name.</string>
+	<string name="msgs_audit_hostname_not_spec">Specify remote server name or address.</string>
+	<string name="msgs_audit_hostport_not_spec">Specify remote server port number.</string>
+	
+	<string name="msgs_audit_msgs_local_dir">Local directory has contains %s character, invalid character was removed.</string>	
+	<string name="msgs_audit_msgs_address1">Remote address or name has contains $s character, invalid character was removed.</string>
+	<string name="msgs_audit_msgs_address2">Specify remote server address or name.</string>
+	<string name="msgs_audit_msgs_dir1">Directory has contains %s character, invalid character was removed.</string>
+	<string name="msgs_audit_msgs_master1">Master profile has contains $s character, invalid character was removed.</string>
+	<string name="msgs_audit_msgs_master2">Specify master profile name.</string>
+	<string name="msgs_audit_msgs_password1">Password has contains $s character, invalid character was removed.</string>
+	<string name="msgs_audit_msgs_profilename1">Profile name has contains $s character, invalid character was removed.</string>
+	<string name="msgs_audit_msgs_profilename2">Specify profile name.</string>
+	<string name="msgs_audit_msgs_share1">Share has contains $s character, invalid character was removed.</string>
+	<string name="msgs_audit_msgs_share2">Specify share name.</string>
+	<string name="msgs_audit_msgs_sync1">Specify sync profile name.</string>
+	<string name="msgs_audit_msgs_target1">Target profile has contains $s character, invalid character was removed.</string>
+	<string name="msgs_audit_msgs_target2">Specify target profile name.</string>
+	<string name="msgs_audit_msgs_username1">User name has contains $s character, invalid character was removed.</string>
+	<string name="msgs_audit_msgs_master_target">Specified master and target profile is same. Specify different profile.</string>
+	<string name="msgs_filter_new_filter">Filter has contains $s character, invalid character was removed.</string>
+	<string name="msgs_audit_msgs_user_or_pass_missing">Please specify either or both of the user name or password.</string>		
+	
+				
+	<string name="msgs_menu_sync">Sync</string>
+	<string name="msgs_menu_browse_logfile">Show log</string>
+	<string name="msgs_menu_export">Export profile to sdcard</string>
+	<string name="msgs_menu_last_mod_list">File last modified time</string>
+	<string name="msgs_menu_import">Import profile from sdcard</string>
+	<string name="msgs_menu_log_management">Manage log file</string>
+	<string name="msgs_menu_about">About SMBSync</string>
+	<string name="msgs_menu_settings">Settings</string>
+	<string name="msgs_menu_kill">Kill the application</string>
+
+	<string name="msgs_extra_data_ignored_auto_start_not_specified">Abort auto sync start-up, because %s was ignored due to AutoStart is not specified.</string>
+	<string name="msgs_extra_data_sync_profile"       >Status of sync profile selection</string>
+	<string name="msgs_extra_data_profile_selected"   >  Profile was selected : </string>
+	<string name="msgs_extra_data_profile_disabled"   >  Disabled profile was specified : </string>
+	<string name="msgs_extra_data_profile_not_exists" >  Specified profile does not exists : </string>
+	<string name="msgs_extra_data_no_profile_selected">Sync Profile was not selected, all active profile will be sync</string>
+	<string name="msgs_extra_data_ignored_startup_parms_specified">%s has been specified but has been ignored, because StartupParms is specified.</string>
+	<string name="msgs_extra_data_assumed_auto_term_disabled">AutoTerm is not specified, assumed false</string>
+	<string name="msgs_extra_data_assumed_bg_exec_disabled">Background is not specified, assumed false</string>
+	
+	
+	<string name="msgs_extra_data_startup_by">Sync requested by %s</string>
+	<string name="msgs_extra_data_auto_start_not_boolean">Canceled the synchronization, because AutoStart is not the boolean.</string>
+	<string name="msgs_extra_data_auto_term_not_boolean">Canceled the synchronization, because AutoTerm is not the boolean.</string>
+	<string name="msgs_extra_data_back_ground_not_boolean">Canceled the synchronization, because Background is not the boolean.</string>
+	<string name="msgs_extra_data_startup_parms_length_error">Canceled the synchronization, because StartupParms count is less than 3. parms=%s</string>
+	<string name="msgs_extra_data_startup_parms_value_error">Canceled the synchronization, because StartupParms first 3 item is other than true or false. value=%s</string>
+	<string name="msgs_extra_data_startup_parms_type_error">Canceled the synchronization, because StartupParms not String.</string>
+	<string name="msgs_extra_data_sync_profile_type_error">Canceled the synchronization, because StartupParms not String array.</string>
+			
+</resources>
