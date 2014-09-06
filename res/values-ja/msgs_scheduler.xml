@@ -39,4 +39,6 @@
     <string name="msgs_scheduler_info_next_schedule_time">スケジュール同期　%s</string>
     <string name="msgs_scheduler_info_sync_all_active_profile">アクティブなプロファイル全て</string>
     <string name="msgs_scheduler_info_sync_selected_profile">プロファイル %s を同期</string>
+    
+    <string name="msgs_scheduler_main_dw_not_selected">少なくても一つの曜日を選択してください</string>
 </resources>

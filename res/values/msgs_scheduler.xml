@@ -40,4 +40,6 @@
     <string name="msgs_scheduler_info_next_schedule_time">Scheduled sync is %s</string>
     <string name="msgs_scheduler_info_sync_all_active_profile">Sync all active profiles</string>
     <string name="msgs_scheduler_info_sync_selected_profile">Sync profile(s) %s</string>
+    
+    <string name="msgs_scheduler_main_dw_not_selected">Please select at least one day of the week.</string>
 </resources>

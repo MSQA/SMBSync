@@ -170,38 +170,32 @@ public class SchedulerMain {
 		btn_ok.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
+				if (sp_sched_type.getSelectedItemPosition()==2 && 
+						buildDayOfWeekString(dialog).equals("0000000")) {
+					tv_msg.setText(mContext.getString(R.string.msgs_scheduler_main_dw_not_selected));
+					return;
+				}
+				
 				dialog.dismiss();
-				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-				String dw=buildDayOfWeekString(dialog);
+		    	mSched.scheduleDayOfTheWeek=buildDayOfWeekString(dialog);
 				mSched.scheduleEnabled=cb_sched_enabled.isChecked();
-		    	prefs.edit().putBoolean(SCHEDULER_SCHEDULE_ENABLED_KEY, mSched.scheduleEnabled).commit();
 		    	
 		    	if (sp_sched_type.getSelectedItemPosition()==0) mSched.scheduleType=SCHEDULER_SCHEDULE_TYPE_EVERY_HOURS;
 		    	else if (sp_sched_type.getSelectedItemPosition()==1) mSched.scheduleType=SCHEDULER_SCHEDULE_TYPE_EVERY_DAY;
 		    	else if (sp_sched_type.getSelectedItemPosition()==2) mSched.scheduleType=SCHEDULER_SCHEDULE_TYPE_DAY_OF_THE_WEEK;
-		    	prefs.edit().putString(SCHEDULER_SCHEDULE_TYPE_KEY, mSched.scheduleType).commit();
 		    	
 		    	mSched.scheduleHours=sp_sched_hours.getSelectedItem().toString();
-		    	prefs.edit().putString(SCHEDULER_SCHEDULE_HOURS_KEY, mSched.scheduleHours).commit();
 		    	
 		    	mSched.scheduleMinutes=sp_sched_minutes.getSelectedItem().toString();
-		    	prefs.edit().putString(SCHEDULER_SCHEDULE_MINUTES_KEY, mSched.scheduleMinutes).commit();
-		    	
-		    	mSched.scheduleDayOfTheWeek=dw;
-		    	prefs.edit().putString(SCHEDULER_SCHEDULE_TYPE_DAY_OF_THE_WEEK, mSched.scheduleDayOfTheWeek).commit();
 
 		    	if (cb_sync_all_prof.isChecked()) mSched.syncProfile="";
 		    	else mSched.syncProfile=tv_sync_prof.getText().toString();
-		    	prefs.edit().putString(SCHEDULER_SYNC_PROFILE_KEY, mSched.syncProfile).commit();
 		    	
 		    	mSched.syncOptionAutoterm=cb_auto_term.isChecked();
-		    	prefs.edit().putBoolean(SCHEDULER_SYNC_OPTION_AUTOTERM_KEY, mSched.syncOptionAutoterm).commit();
 		    	
 		    	mSched.syncOptionBgExec=cb_bg_exec.isChecked();
-		    	prefs.edit().putBoolean(SCHEDULER_SYNC_OPTION_BGEXEC_KEY, mSched.syncOptionBgExec).commit();
 		    	
 		    	mSched.syncWifiOnBeforeSyncStart=cb_wifi_on.isChecked();
-		    	prefs.edit().putBoolean(SCHEDULER_SYNC_WIFI_ON_BEFORE_SYNC_START_KEY, mSched.syncWifiOnBeforeSyncStart).commit();
 		    	
 		    	if (rg_wifi_on.getCheckedRadioButtonId()==R.id.scheduler_main_dlg_wifi_on_rg_1) {
 		    		mSched.syncDelayedSecondForWifiOn=5;
@@ -212,16 +206,12 @@ public class SchedulerMain {
 		    	} else {
 		    		mSched.syncDelayedSecondForWifiOn=5;
 		    	}
-		    	prefs.edit().putString(SCHEDULER_SYNC_DELAYED_TIME_FOR_WIFI_ON_KEY, 
-		    			String.valueOf(mSched.syncDelayedSecondForWifiOn)).commit();
 		
-		    	if (cb_wifi_on.isChecked()) {
-			    	mSched.syncWifiOffAfterSyncEnd=cb_wifi_off.isChecked();
-		    	} else {
-		    		mSched.syncWifiOffAfterSyncEnd=false;
-		    	}
-		    	prefs.edit().putBoolean(SCHEDULER_SYNC_WIFI_OFF_AFTER_SYNC_END_KEY, mSched.syncWifiOffAfterSyncEnd).commit();
+		    	if (cb_wifi_on.isChecked()) mSched.syncWifiOffAfterSyncEnd=cb_wifi_off.isChecked();
+		    	else mSched.syncWifiOffAfterSyncEnd=false;
 
+		    	SchedulerUtil.saveScheduleData(mSched, mContext);
+		    	
 		    	setTimer(mContext, SCHEDULER_INTENT_SET_TIMER);
 		    	
 		    	setSchedulerInfo(mGp, mContext, mSched);

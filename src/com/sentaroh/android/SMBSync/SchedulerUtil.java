@@ -41,7 +41,27 @@ public class SchedulerUtil {
     			prefs.getString(SCHEDULER_SYNC_DELAYED_TIME_FOR_WIFI_ON_KEY, "5"));
     	
     };
-    
+
+    final static public void saveScheduleData(SchedulerParms sp, Context c) {
+    	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
+    	prefs.edit().putBoolean(SCHEDULER_SCHEDULE_ENABLED_KEY, sp.scheduleEnabled).commit();
+    	prefs.edit().putString(SCHEDULER_SCHEDULE_TYPE_KEY, sp.scheduleType).commit();
+    	prefs.edit().putString(SCHEDULER_SCHEDULE_HOURS_KEY, sp.scheduleHours).commit();
+    	prefs.edit().putString(SCHEDULER_SCHEDULE_MINUTES_KEY, sp.scheduleMinutes).commit();
+    	prefs.edit().putString(SCHEDULER_SCHEDULE_TYPE_DAY_OF_THE_WEEK, sp.scheduleDayOfTheWeek).commit();
+    	
+    	prefs.edit().putString(SCHEDULER_SYNC_PROFILE_KEY, sp.syncProfile).commit();
+    	prefs.edit().putBoolean(SCHEDULER_SYNC_OPTION_AUTOSTART_KEY, sp.syncOptionAutostart).commit();
+    	prefs.edit().putBoolean(SCHEDULER_SYNC_OPTION_AUTOTERM_KEY, sp.syncOptionAutoterm).commit();
+    	prefs.edit().putBoolean(SCHEDULER_SYNC_OPTION_BGEXEC_KEY, sp.syncOptionBgExec).commit();
+
+    	prefs.edit().putBoolean(SCHEDULER_SYNC_WIFI_ON_BEFORE_SYNC_START_KEY, sp.syncWifiOnBeforeSyncStart).commit();
+    	prefs.edit().putBoolean(SCHEDULER_SYNC_WIFI_OFF_AFTER_SYNC_END_KEY, sp.syncWifiOffAfterSyncEnd).commit();
+    	
+    	prefs.edit().putString(SCHEDULER_SYNC_DELAYED_TIME_FOR_WIFI_ON_KEY, 
+    			String.valueOf(sp.syncDelayedSecondForWifiOn)).commit();
+    };
+
     final static public long getNextSchedule(SchedulerParms sp) {
     	Calendar cal=Calendar.getInstance();
     	cal.setTimeInMillis(System.currentTimeMillis());
@@ -51,7 +71,7 @@ public class SchedulerUtil {
 		int c_year=cal.get(Calendar.YEAR);
 		int c_month=cal.get(Calendar.MONTH);
 		int c_day=cal.get(Calendar.DAY_OF_MONTH);
-		int c_dw=cal.get(Calendar.DAY_OF_WEEK);
+		int c_dw=cal.get(Calendar.DAY_OF_WEEK)-1;
 		int c_hr=cal.get(Calendar.HOUR_OF_DAY);
 		int c_mm=cal.get(Calendar.MINUTE);
 		if (sp.scheduleType.equals(SCHEDULER_SCHEDULE_TYPE_EVERY_HOURS)) {
@@ -71,39 +91,72 @@ public class SchedulerUtil {
     	} else if (sp.scheduleType.equals(SCHEDULER_SCHEDULE_TYPE_DAY_OF_THE_WEEK)) {
     		boolean[] dwa=new boolean[]{false,false,false,false,false,false,false};
     		for (int i=0;i<sp.scheduleDayOfTheWeek.length();i++) {
-    			if (sp.scheduleDayOfTheWeek.substring(i, i+1).equals("1")) dwa[i]=true;
+    			String dw_s=sp.scheduleDayOfTheWeek.substring(i, i+1);
+    			if (dw_s.equals("1")) dwa[i]=true;
+//    			Log.v("","i="+i+", de_s="+dw_s+", dwa="+dwa[i]);
     		}
         	int s_hhmm=Integer.parseInt(sp.scheduleHours)*100+s_min;
         	int c_hhmm=c_hr*100+c_mm;
-//        	Log.v("","c_hhmm="+c_hhmm+", s_hhmm="+s_hhmm);
-        	if (c_hhmm>=s_hhmm) c_dw++;
-        	int s_dw=-1;
-    		if (c_dw>=7) {//sat
-    			if (dwa[6]) s_dw=1;
-    		} else {
-//    			Log.v("","c_dw="+c_dw);
-        		if (c_dw>=7) {//sat
-        			if (dwa[6]) s_dw=1;
-        		} else {
-        			for (int i=c_dw-1;i<7;i++) {
+//        	Log.v("","c_hhmm="+c_hhmm+", s_hhmm="+s_hhmm+", c_dw="+c_dw);
+        	int s_dw=0;
+        	if (c_hhmm>=s_hhmm) {
+        		if (c_dw==6) {
+        			c_dw=0;
+        			s_dw=1;
+        			for (int i=c_dw;i<7;i++) {
         				if (dwa[i]) {
-            				s_dw=i-1;
-//            				Log.v("","i1="+i);
-            				break;
+        					break;
         				}
+        				s_dw++;
         			}
-        			if (s_dw==-1) {
-            			for (int i=0;i<c_dw-1;i++) {
+//        			Log.v("","c1 s_dw="+s_dw);
+        		} else {
+        			c_dw++;
+        			s_dw=1;
+        			boolean found=false;
+        			for (int i=c_dw;i<7;i++) {
+        				if (dwa[i]) {
+//        					Log.v("","c2 s_dw="+s_dw+", i="+i);
+        					found=true;
+        					break;
+        				}
+        				s_dw++;
+        			}
+        			if (!found) {
+            			for (int i=0;i<c_dw;i++) {
             				if (dwa[i]) {
-                				s_dw=i+(7-c_dw)+1;
-//                				Log.v("","i2="+i);
-                				break;
+//            					Log.v("","c3 s_dw="+s_dw+", i="+i);
+            					found=true;
+            					break;
             				}
+            				s_dw++;
             			}
         			}
         		}
-//        		Log.v("","s_dw="+s_dw);
-    		}
+        	} else {
+    			s_dw=0;
+    			boolean found=false;
+//				Log.v("","c_dw="+c_dw);
+    			for (int i=c_dw;i<7;i++) {
+    				if (dwa[i]) {
+//    					Log.v("","c4 s_dw="+s_dw);
+    					found=true;
+    					break;
+    				}
+    				s_dw++;
+    			}
+    			if (!found) {
+        			for (int i=0;i<c_dw;i++) {
+        				if (dwa[i]) {
+//        					Log.v("","c5 s_dw="+s_dw);
+        					found=true;
+        					break;
+        				}
+        				s_dw++;
+        			}
+    			}
+        	}
+//    		Log.v("","s_dw="+s_dw);
     		cal.set(c_year, c_month, c_day, s_hrs, 0, 0);
     		result=cal.getTimeInMillis()+s_dw*(60*1000*60*24)+(60*1000*s_min);
     	}
