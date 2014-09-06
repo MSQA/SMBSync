@@ -1212,12 +1212,18 @@ public class MirrorIO implements Runnable {
 						File[] children = lf.listFiles();
 						for (File element : children) {
 							String tmp = element.getName();
-							if (tmp.lastIndexOf("/")>0) tmp=tmp.substring(0,tmp.lastIndexOf("/"));
-							mirrorCopyLocalToRemote(allcopy, masterUrl + "/"
-									+ tmp,targetUrl + "/" + tmp, copiedFileList);
-							if (checkErrorStatus()!=0) return checkErrorStatus();
+							if (!tmp.equals(".android_secure")) {
+								if (tmp.lastIndexOf("/")>0) tmp=tmp.substring(0,tmp.lastIndexOf("/"));
+								mirrorCopyLocalToRemote(allcopy, masterUrl + "/"
+										+ tmp,targetUrl + "/" + tmp, copiedFileList);
+								if (checkErrorStatus()!=0) return checkErrorStatus();
+							} else {
+								addDebugLogMsg(1,"I","Android system directory is ignored, fp="+element.getPath());
+							}
 						}
-					} 
+					} else { 
+						if (!lf.canRead()) addDebugLogMsg(1,"I","Directory ignored because can not read, fp="+masterUrl);
+					}
 				} else { // file copy
 					if (isDirFiltered(masterUrl.replace(localUrl, "")) &&
 							isFileFiltered(masterUrl)) {
@@ -1437,19 +1443,27 @@ public class MirrorIO implements Runnable {
 						File[] children = mf.listFiles();
 						for (File element : children) {
 							String tmp = element.getName();
-							if (tmp.lastIndexOf("/")>0) tmp=tmp.substring(0,tmp.lastIndexOf("/"));
-							String n_master=(masterUrl + "/"+ tmp).replaceAll("//", "/");
-							String n_target=(targetUrl + "/" + tmp).replaceAll("//", "/");
 							
-							if (!n_master.equals(target_fp_base)) {
-								mirrorCopyLocalToLocal(allcopy, n_master, n_target, target_fp_base,
-										copiedFileList);
-								if (checkErrorStatus()!=0) return checkErrorStatus();
+							if (!tmp.equals(".android_secure")) {
+								if (tmp.lastIndexOf("/")>0) tmp=tmp.substring(0,tmp.lastIndexOf("/"));
+								String n_master=(masterUrl + "/"+ tmp).replaceAll("//", "/");
+								String n_target=(targetUrl + "/" + tmp).replaceAll("//", "/");
+								
+								if (!n_master.equals(target_fp_base)) {
+									mirrorCopyLocalToLocal(allcopy, n_master, n_target, target_fp_base,
+											copiedFileList);
+									if (checkErrorStatus()!=0) return checkErrorStatus();
+								} else {
+									addLogMsg("W","",
+											String.format(msgs_mirror_same_directory_ignored,n_master));
+								}
 							} else {
-								addLogMsg("W","",
-										String.format(msgs_mirror_same_directory_ignored,n_master));
+								addDebugLogMsg(1,"I","Android system directory is ignored, fp="+element.getPath());
 							}
+
 						}
+					} else {
+						if (!mf.canRead()) addDebugLogMsg(1,"I","Directory ignored because can not read, fp="+masterUrl);
 					} 
 				} else { // file copy
 					if (isDirFiltered(masterUrl.replace(localUrl, "")) &&
@@ -1622,6 +1636,8 @@ public class MirrorIO implements Runnable {
 							addLogMsg("W","","SmbException occured during SmbFile#listFiles(), name="+masterUrl+
 										", jcifs error="+e.getMessage());
 						}
+					} else {
+						if (!hf.canRead()) addDebugLogMsg(1,"I","Directory ignored because can not read, fp="+masterUrl);
 					}
 				} else { // file copy
 					if (isDirFiltered(masterUrl.replace(remoteUrl, "")) &&
@@ -1915,6 +1931,8 @@ public class MirrorIO implements Runnable {
 							addLogMsg("W","","SmbException occured during SmbFile#listFiles(), name="+masterUrl+
 									", jcifs error="+e.getMessage());
 						}
+					} else {
+						if (!hf.canRead()) addDebugLogMsg(1,"I","Directory ignored because can not read, fp="+masterUrl);
 					}
 				} else { // file copy
 					if (isDirFiltered(masterUrl.replace(remoteUrl, "")) &&
@@ -2064,11 +2082,19 @@ public class MirrorIO implements Runnable {
 						File[] children = lf.listFiles();
 						for (File element : children) {
 							String tmp = element.getName();
-							if (tmp.lastIndexOf("/")>0) tmp=tmp.substring(0,tmp.lastIndexOf("/"));
-							mirrorMoveLocalToRemote(allcopy, masterUrl + "/"
-									+ tmp,targetUrl + "/" + tmp, moved_dirs);
-							if (checkErrorStatus()!=0) return checkErrorStatus();
+							
+							if (!tmp.equals(".android_secure")) {
+								if (tmp.lastIndexOf("/")>0) tmp=tmp.substring(0,tmp.lastIndexOf("/"));
+								mirrorMoveLocalToRemote(allcopy, masterUrl + "/"
+										+ tmp,targetUrl + "/" + tmp, moved_dirs);
+								if (checkErrorStatus()!=0) return checkErrorStatus();
+							} else {
+								addDebugLogMsg(1,"I","Android system directory is ignored, fp="+element.getPath());
+							}
+
 						}
+					} else {
+						if (!lf.canRead()) addDebugLogMsg(1,"I","Directory ignored because can not read, fp="+masterUrl);
 					}
 				} else { // file copy
 					if (isDirFiltered(targetUrl.replace(localUrl, "")) &&
@@ -2206,22 +2232,25 @@ public class MirrorIO implements Runnable {
 						File[] children = mf.listFiles();
 						for (File element : children) {
 							String tmp = element.getName();
-							if (tmp.lastIndexOf("/")>0) tmp=tmp.substring(0,tmp.lastIndexOf("/"));
-							String n_master=(masterUrl + "/"+ tmp).replaceAll("//", "/");
-							String n_target=(targetUrl + "/" + tmp).replaceAll("//", "/");;
-//							Log.v("","n_master="+n_master+", n_target="+n_target);
-//							Log.v("","target_fp_base="+target_fp_base);
-							if (!n_master.equals(target_fp_base)) {
-								mirrorMoveLocalToLocal(allcopy, n_master, n_target, target_fp_base,
-										moved_dirs);
-								if (checkErrorStatus()!=0) return checkErrorStatus();
+							
+							if (!tmp.equals(".android_secure")) {
+								if (tmp.lastIndexOf("/")>0) tmp=tmp.substring(0,tmp.lastIndexOf("/"));
+								String n_master=(masterUrl + "/"+ tmp).replaceAll("//", "/");
+								String n_target=(targetUrl + "/" + tmp).replaceAll("//", "/");;
+								if (!n_master.equals(target_fp_base)) {
+									mirrorMoveLocalToLocal(allcopy, n_master, n_target, target_fp_base,
+											moved_dirs);
+									if (checkErrorStatus()!=0) return checkErrorStatus();
+								} else {
+									addLogMsg("W","",
+											String.format(msgs_mirror_same_directory_ignored,n_master));
+								}
 							} else {
-//								isExceptionOccured=true;
-								addLogMsg("W","",
-										String.format(msgs_mirror_same_directory_ignored,n_master));
-//								break;
+								addDebugLogMsg(1,"I","Android system directory is ignored, fp="+element.getPath());
 							}
 						}
+					} else {
+						if (!mf.canRead()) addDebugLogMsg(1,"I","Directory ignored because can not read, fp="+masterUrl);
 					}
 				} else { // file copy
 					if (isDirFiltered(targetUrl.replace(localUrl, "")) &&
