@@ -4784,6 +4784,7 @@ public class ProfileMaintenance {
 		TreeFilelistItem tfi=null;
 		if (ff!=null) {
 			for (int i=0;i<ff.length;i++){
+//				Log.v("","name="+ff[i].getName()+", d="+ff[i].isDirectory()+", r="+ff[i].canRead());
 				if (ff[i].canRead()) {
 					int dirct=0;
 					if (ff[i].isDirectory()) {

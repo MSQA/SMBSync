@@ -691,6 +691,8 @@ public class MirrorIO implements Runnable {
 				+ ", syncRemoteShare=" + syncRemoteShare
 				+ ", syncRemoteDir=" + syncRemoteDir
 				+ ", syncLocalDir=" + syncLocalDir
+				+ ", localUrl=" + localUrl
+				+ ", remoteUrl=" + remoteUrl
 				+ ", syncMasterLocalDir=" + syncMasterLocalDir
 				+ ", syncTargetLocalDir=" + syncTargetLocalDir
 				+ ", syncRemoteUserid=" + syncRemoteUserid
@@ -701,7 +703,6 @@ public class MirrorIO implements Runnable {
 				+ ", fileFilter=" + mipl.getFileFilter()
 				+ ", dirFilter=" + mipl.getDirFilter());
  			addDebugLogMsg(9,"I","syncRemotePassword=" + syncRemotePassword);
- 			addDebugLogMsg(1,"I","remoteUrl="+remoteUrl+", localUrl="+localUrl);
 		}
 	};
 	
