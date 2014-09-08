@@ -18,6 +18,7 @@
     <string name="msgs_mirror_prof_master_not_found">Master directory was not found.</string>
     <string name="msgs_mirror_prof_dir_deleted">directory was deleted.</string>
     <string name="msgs_mirror_prof_dir_create">directory was created.</string>
+    <string name="msgs_mirror_prof_dir_create_failed">directory create failed.</string>
     <string name="msgs_mirror_prof_file_copying" >Copying file. %s %% complete.</string>
     <string name="msgs_mirror_prof_file_bypass_media_store_change">The files last modification time was different, media store option was valid but ignores the update for.</string>
     <string name="msgs_mirror_task_ended">Sync task was ended.</string>

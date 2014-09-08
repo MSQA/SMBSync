@@ -1517,6 +1517,9 @@ public class ProfileCreationWizard {
 						mWizData.mirror_type=spinner_sync.getSelectedItemPosition();
 						syncWizardCreateProfile(profileAdapter);
 						profileAdapter.sort();
+						
+						if (profileAdapter.getItem(0).getType().equals("")) profileAdapter.remove(0);
+						
 						profileAdapter.notifyDataSetChanged();
 						profMaint.saveProfileToFile(false,"","",profileAdapter,false);
 						

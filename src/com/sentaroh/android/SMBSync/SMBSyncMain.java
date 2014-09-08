@@ -220,7 +220,13 @@ public class SMBSyncMain extends FragmentActivity {
 		if (profMaint==null) 
 			profMaint=new ProfileMaintenance(util,this, commonDlg,ccMenu, mGp);
 		
-		SchedulerMain.setTimer(mContext, SCHEDULER_INTENT_SET_TIMER_IF_NOT_SET);		
+		SchedulerMain.setTimer(mContext, SCHEDULER_INTENT_SET_TIMER_IF_NOT_SET);
+		
+//		if (Build.VERSION.SDK_INT >= 19) {
+//		    File[] extDirs = getExternalFilesDirs(null);//Environment.DIRECTORY_DOWNLOADS);
+//		    String extSdDirPath = extDirs[extDirs.length-1].getAbsolutePath();
+//		    Log.v("", "last extSdDirPath="+extSdDirPath+", "+extDirs[extDirs.length-1].toString());
+//		}
 	};
 	
 	@Override

@@ -1469,29 +1469,30 @@ public class MirrorIO implements Runnable {
 				} else { // file copy
 					if (isDirFiltered(masterUrl.replace(localUrl, "")) &&
 							isFileFiltered(masterUrl)) {
-						createLocalDir(targetUrl,null,masterUrl);
-						copiedFileList.add(masterUrl);
-						mf = new File(masterUrl);
-						tf = new File(targetUrl);
-//						String t_fp=masterUrl;//.replace(localUrl, "");
-						if (isFileChanged(targetUrl,tf,mf,allcopy)) {							
-							// copy was done
-							if (confirmCopy(targetUrl)) {
-								long file_byte=mf.length();
-								String t_fn=mf.getName().replace("/","");
+						if (createLocalDir(targetUrl,null,masterUrl)) {
+							copiedFileList.add(masterUrl);
+							mf = new File(masterUrl);
+							tf = new File(targetUrl);
+//							String t_fp=masterUrl;//.replace(localUrl, "");
+							if (isFileChanged(targetUrl,tf,mf,allcopy)) {							
+								// copy was done
+								if (confirmCopy(targetUrl)) {
+									long file_byte=mf.length();
+									String t_fn=mf.getName().replace("/","");
 
-								if (mGp.settingLocalFileCopyByRename) {
-									tmp_target=makeTempFilePath(targetUrl);
+									if (mGp.settingLocalFileCopyByRename) {
+										tmp_target=makeTempFilePath(targetUrl);
+									}
+									copyFileLocalToLocal(mf,tf,file_byte,t_fn,masterUrl, tmp_target);
+									if (checkErrorStatus()!=0) return checkErrorStatus();
+									tf.setLastModified(mf.lastModified());
+									updateLocalFileLastModifiedList(currentFileLastModifiedList,newFileLastModifiedList,
+											targetUrl,mf.lastModified());
+									copyCount++;
+//									mHistoryCopiedList.add(targetUrl);
+								} else {
+									addLogMsg("W",targetUrl,msgs_mirror_confirm_copy_cancel);
 								}
-								copyFileLocalToLocal(mf,tf,file_byte,t_fn,masterUrl, tmp_target);
-								if (checkErrorStatus()!=0) return checkErrorStatus();
-								tf.setLastModified(mf.lastModified());
-								updateLocalFileLastModifiedList(currentFileLastModifiedList,newFileLastModifiedList,
-										targetUrl,mf.lastModified());
-								copyCount++;
-//								mHistoryCopiedList.add(targetUrl);
-							} else {
-								addLogMsg("W",targetUrl,msgs_mirror_confirm_copy_cancel);
 							}
 						}
 						if (!tcMirror.isEnabled()) return -10;
@@ -1643,39 +1644,40 @@ public class MirrorIO implements Runnable {
 				} else { // file copy
 					if (isDirFiltered(masterUrl.replace(remoteUrl, "")) &&
 							isFileFiltered(masterUrl)) {
-						createLocalDir(targetUrl,null,masterUrl);
-						copiedFileList.add(masterUrl);
-						lf = new File(targetUrl);
-//						String t_fp=masterUrl;//.replace("smb://"+syncRemoteAddr, "");
-						if (isFileChanged(masterUrl,lf,hf,allcopy)) {
-							// copy 
-							if (confirmCopy(targetUrl)) {
-								long file_byte=hf.length();
-								String t_fn =hf.getName().replace("/", "");
-								if (mGp.settingLocalFileCopyByRename) {
-									tmp_target=makeTempFilePath(targetUrl);
+						if (createLocalDir(targetUrl,null,masterUrl)) {
+							copiedFileList.add(masterUrl);
+							lf = new File(targetUrl);
+//							String t_fp=masterUrl;//.replace("smb://"+syncRemoteAddr, "");
+							if (isFileChanged(masterUrl,lf,hf,allcopy)) {
+								// copy 
+								if (confirmCopy(targetUrl)) {
+									long file_byte=hf.length();
+									String t_fn =hf.getName().replace("/", "");
+									if (mGp.settingLocalFileCopyByRename) {
+										tmp_target=makeTempFilePath(targetUrl);
+									}
+									copyFileRemoteToLocal(hf,lf,file_byte,t_fn,masterUrl, tmp_target);
+									updateLocalFileLastModifiedList(currentFileLastModifiedList,newFileLastModifiedList,
+											targetUrl,hf.getLastModified());
+									if (checkErrorStatus()!=0) return checkErrorStatus();
+//									mHistoryCopiedList.add(targetUrl);
+									if (syncProfileUseJavaLastModified) {
+										if (!lf.setLastModified(hf.lastModified())) {
+											addLogMsg("W",targetUrl,
+												mGp.svcContext.getString(R.string.msgs_mirror_prof_local_file_set_last_modified_failed));
+										}
+									}
+//									if (isMediaStoreDir(lf.getParent()))
+									scanMediaStoreLibrary(targetUrl);
+									copyCount++;
+								} else {
+									copiedFileList.remove(targetUrl);
+									addLogMsg("W",targetUrl,msgs_mirror_confirm_delete_cancel);
 								}
-								copyFileRemoteToLocal(hf,lf,file_byte,t_fn,masterUrl, tmp_target);
+							} else {
 								updateLocalFileLastModifiedList(currentFileLastModifiedList,newFileLastModifiedList,
 										targetUrl,hf.getLastModified());
-								if (checkErrorStatus()!=0) return checkErrorStatus();
-//								mHistoryCopiedList.add(targetUrl);
-								if (syncProfileUseJavaLastModified) {
-									if (!lf.setLastModified(hf.lastModified())) {
-										addLogMsg("W",targetUrl,
-											mGp.svcContext.getString(R.string.msgs_mirror_prof_local_file_set_last_modified_failed));
-									}
-								}
-//								if (isMediaStoreDir(lf.getParent()))
-								scanMediaStoreLibrary(targetUrl);
-								copyCount++;
-							} else {
-								copiedFileList.remove(targetUrl);
-								addLogMsg("W",targetUrl,msgs_mirror_confirm_delete_cancel);
 							}
-						} else {
-							updateLocalFileLastModifiedList(currentFileLastModifiedList,newFileLastModifiedList,
-									targetUrl,hf.getLastModified());
 						}
 						if (checkErrorStatus()!=0) return checkErrorStatus();					}
 				}
@@ -1938,32 +1940,47 @@ public class MirrorIO implements Runnable {
 				} else { // file copy
 					if (isDirFiltered(masterUrl.replace(remoteUrl, "")) &&
 							isFileFiltered(masterUrl)) {
-						createLocalDir(targetUrl,moved_dirs,masterUrl);
-						lf = new File(targetUrl);
-						String t_fn=hf.getName().replace("/", "");
-//						String t_fp=masterUrl;//.replace("smb://"+syncRemoteAddr, "");
-						if (isFileChanged(masterUrl,lf,hf,allcopy)) {
-							// copy
-							if (confirmCopy(targetUrl)) {
-								long file_byte=hf.length();
-								if (mGp.settingLocalFileCopyByRename) {
-									tmp_target=makeTempFilePath(targetUrl);
+						if (createLocalDir(targetUrl,moved_dirs,masterUrl)) {
+							lf = new File(targetUrl);
+							String t_fn=hf.getName().replace("/", "");
+//							String t_fp=masterUrl;//.replace("smb://"+syncRemoteAddr, "");
+							if (isFileChanged(masterUrl,lf,hf,allcopy)) {
+								// copy
+								if (confirmCopy(targetUrl)) {
+									long file_byte=hf.length();
+									if (mGp.settingLocalFileCopyByRename) {
+										tmp_target=makeTempFilePath(targetUrl);
+									}
+									copyFileRemoteToLocal(hf,lf,file_byte,t_fn,masterUrl, tmp_target);
+									updateLocalFileLastModifiedList(currentFileLastModifiedList,newFileLastModifiedList,
+											targetUrl,hf.lastModified());
+									if (checkErrorStatus()!=0) return checkErrorStatus();
+//									mHistoryCopiedList.add(targetUrl);
+									if (!lf.setLastModified(hf.lastModified())) {
+										if (mGp.debugLevel>=1) 
+											addDebugLogMsg(1,"E","setLastModified() was failed. File name=", targetUrl);
+									}
+//									if (isMediaStoreDir(lf.getParent()))
+									scanMediaStoreLibrary(targetUrl);
+									copyCount++;
+									
+									// delete master file
+									if (confirmDelete(masterUrl)) {
+										addMovedDirList(moved_dirs,hf.getParent());
+										deleteRemoteItem(true,masterUrl);
+//										mHistoryDeletedList.add(masterUrl);
+										addMsgToProgDlg(false,"I",t_fn,msgs_mirror_prof_file_deleted);
+									} else {
+										addLogMsg("W",masterUrl,msgs_mirror_confirm_delete_cancel);
+									}
+								} else {
+									addLogMsg("W",targetUrl,msgs_mirror_confirm_copy_cancel);
 								}
-								copyFileRemoteToLocal(hf,lf,file_byte,t_fn,masterUrl, tmp_target);
+							} else {
 								updateLocalFileLastModifiedList(currentFileLastModifiedList,newFileLastModifiedList,
 										targetUrl,hf.lastModified());
-								if (checkErrorStatus()!=0) return checkErrorStatus();
-//								mHistoryCopiedList.add(targetUrl);
-								if (!lf.setLastModified(hf.lastModified())) {
-									if (mGp.debugLevel>=1) 
-										addDebugLogMsg(1,"E","setLastModified() was failed. File name=", targetUrl);
-								}
-//								if (isMediaStoreDir(lf.getParent()))
-								scanMediaStoreLibrary(targetUrl);
-								copyCount++;
-								
-								// delete master file
 								if (confirmDelete(masterUrl)) {
+									// delete master file
 									addMovedDirList(moved_dirs,hf.getParent());
 									deleteRemoteItem(true,masterUrl);
 //									mHistoryDeletedList.add(masterUrl);
@@ -1971,20 +1988,6 @@ public class MirrorIO implements Runnable {
 								} else {
 									addLogMsg("W",masterUrl,msgs_mirror_confirm_delete_cancel);
 								}
-							} else {
-								addLogMsg("W",targetUrl,msgs_mirror_confirm_copy_cancel);
-							}
-						} else {
-							updateLocalFileLastModifiedList(currentFileLastModifiedList,newFileLastModifiedList,
-									targetUrl,hf.lastModified());
-							if (confirmDelete(masterUrl)) {
-								// delete master file
-								addMovedDirList(moved_dirs,hf.getParent());
-								deleteRemoteItem(true,masterUrl);
-//								mHistoryDeletedList.add(masterUrl);
-								addMsgToProgDlg(false,"I",t_fn,msgs_mirror_prof_file_deleted);
-							} else {
-								addLogMsg("W",masterUrl,msgs_mirror_confirm_delete_cancel);
 							}
 						}
 						if (checkErrorStatus()!=0) return checkErrorStatus();
@@ -2256,28 +2259,41 @@ public class MirrorIO implements Runnable {
 				} else { // file copy
 					if (isDirFiltered(targetUrl.replace(localUrl, "")) &&
 							isFileFiltered(masterUrl)) {
-						createLocalDir(targetUrl,moved_dirs,masterUrl);
-						mf = new File(masterUrl);
-						tf = new File(targetUrl);
-						String t_fn=mf.getName().replace("/","");
-//						String t_fp=masterUrl.replace(SMBSync_External_Root_Dir, "");
-//						String t_fp=masterUrl;//.replace(localUrl, "");
-//						if (isFileChanged(masterUrl,mf,tf,allcopy)) {
-						if (isFileChanged(targetUrl,tf,mf,allcopy)) {							
-							// copy done
-							if (confirmCopy(targetUrl)) {
-								long file_byte=mf.length();
-								if (mGp.settingLocalFileCopyByRename) {
-									tmp_target=makeTempFilePath(targetUrl);
+						if (createLocalDir(targetUrl,moved_dirs,masterUrl)) {
+							mf = new File(masterUrl);
+							tf = new File(targetUrl);
+							String t_fn=mf.getName().replace("/","");
+//							String t_fp=masterUrl.replace(SMBSync_External_Root_Dir, "");
+//							String t_fp=masterUrl;//.replace(localUrl, "");
+//							if (isFileChanged(masterUrl,mf,tf,allcopy)) {
+							if (isFileChanged(targetUrl,tf,mf,allcopy)) {							
+								// copy done
+								if (confirmCopy(targetUrl)) {
+									long file_byte=mf.length();
+									if (mGp.settingLocalFileCopyByRename) {
+										tmp_target=makeTempFilePath(targetUrl);
+									}
+									copyFileLocalToLocal(mf,tf,file_byte,t_fn,masterUrl,tmp_target);
+									if (checkErrorStatus()!=0) return checkErrorStatus();
+//									mHistoryCopiedList.add(targetUrl);
+									tf.setLastModified(mf.lastModified());
+									updateLocalFileLastModifiedList(currentFileLastModifiedList,newFileLastModifiedList,
+											targetUrl,mf.lastModified());
+									copyCount++;
+									
+									if (confirmDelete(masterUrl)) {
+										// delete master file
+										addMovedDirList(moved_dirs,mf.getParent());
+										deleteLocalItem(true,masterUrl);
+//										mHistoryDeletedList.add(masterUrl);
+										addMsgToProgDlg(false,"I",t_fn,msgs_mirror_prof_file_deleted);
+									} else {
+										addLogMsg("W",masterUrl,msgs_mirror_confirm_delete_cancel);
+									}
+								} else {
+									addLogMsg("W",masterUrl,msgs_mirror_confirm_copy_cancel);								
 								}
-								copyFileLocalToLocal(mf,tf,file_byte,t_fn,masterUrl,tmp_target);
-								if (checkErrorStatus()!=0) return checkErrorStatus();
-//								mHistoryCopiedList.add(targetUrl);
-								tf.setLastModified(mf.lastModified());
-								updateLocalFileLastModifiedList(currentFileLastModifiedList,newFileLastModifiedList,
-										targetUrl,mf.lastModified());
-								copyCount++;
-								
+							} else {
 								if (confirmDelete(masterUrl)) {
 									// delete master file
 									addMovedDirList(moved_dirs,mf.getParent());
@@ -2287,18 +2303,6 @@ public class MirrorIO implements Runnable {
 								} else {
 									addLogMsg("W",masterUrl,msgs_mirror_confirm_delete_cancel);
 								}
-							} else {
-								addLogMsg("W",masterUrl,msgs_mirror_confirm_copy_cancel);								
-							}
-						} else {
-							if (confirmDelete(masterUrl)) {
-								// delete master file
-								addMovedDirList(moved_dirs,mf.getParent());
-								deleteLocalItem(true,masterUrl);
-//								mHistoryDeletedList.add(masterUrl);
-								addMsgToProgDlg(false,"I",t_fn,msgs_mirror_prof_file_deleted);
-							} else {
-								addLogMsg("W",masterUrl,msgs_mirror_confirm_delete_cancel);
 							}
 						}
 						if (checkErrorStatus()!=0) return checkErrorStatus();
@@ -2382,19 +2386,30 @@ public class MirrorIO implements Runnable {
 			ArrayList<String> moved_dirs,String masterUrl) {
 		boolean result=false;
 		String target_dir="",master_dir="";
-		if (targetUrl.lastIndexOf("/")<=0) return false;
-		else target_dir=targetUrl.substring(0,targetUrl.lastIndexOf("/"));
-		if (masterUrl.lastIndexOf("/")<=0) return false;
-		else master_dir=masterUrl.substring(0,masterUrl.lastIndexOf("/"));
+		if (targetUrl.lastIndexOf("/")<=0) {
+			addDebugLogMsg(1,"I","targetDir is root dir");
+			return true;
+		} else target_dir=targetUrl.substring(0,targetUrl.lastIndexOf("/"));
+		if (masterUrl.lastIndexOf("/")<=0) {
+			addDebugLogMsg(1,"I","masterDir is root dir");
+			return true;
+		} else master_dir=masterUrl.substring(0,masterUrl.lastIndexOf("/"));
 		
 		File lf = new File(target_dir);
 		if (!lf.exists()) {
-			lf.mkdirs();
-			if (moved_dirs!=null) addMovedDirList(moved_dirs,master_dir + "/");
-			if (mGp.settingShowSyncDetailMessage)  
-				addLogMsg("I",target_dir,msgs_mirror_prof_dir_create);
-			result=true;
+			result=lf.mkdirs();
+			if (result) {
+				if (moved_dirs!=null) addMovedDirList(moved_dirs,master_dir + "/");
+				if (mGp.settingShowSyncDetailMessage)  
+					addLogMsg("I",target_dir,msgs_mirror_prof_dir_create);
+			} else {
+				addLogMsg("E",target_dir,msgs_mirror_prof_dir_create_failed+" write="+lf.canWrite());
+				isExceptionOccured=true;
+			}
+		} else {
+			addDebugLogMsg(1,"I","Local directory already created, dir="+target_dir);
 		}
+		
 		return result;
 	};
 
@@ -3423,6 +3438,7 @@ public class MirrorIO implements Runnable {
 	static private String	msgs_mirror_prof_master_not_found;
 	static private String	msgs_mirror_prof_dir_deleted	;
 	static private String	msgs_mirror_prof_dir_create	;
+	static private String	msgs_mirror_prof_dir_create_failed;
 	static private String  msgs_mirror_prof_file_copying;
 	static private String  msgs_mirror_prof_file_bypass_media_store_change;
 	static private String  msgs_mirror_task_result_stats;
@@ -3473,6 +3489,7 @@ public class MirrorIO implements Runnable {
 		msgs_mirror_prof_master_not_found=glblParms.svcContext.getString(R.string.msgs_mirror_prof_master_not_found);
 		msgs_mirror_prof_dir_deleted=glblParms.svcContext.getString(R.string.msgs_mirror_prof_dir_deleted);
 		msgs_mirror_prof_dir_create=glblParms.svcContext.getString(R.string.msgs_mirror_prof_dir_create);
+		msgs_mirror_prof_dir_create_failed=glblParms.svcContext.getString(R.string.msgs_mirror_prof_dir_create_failed);
 		msgs_mirror_prof_file_copying=glblParms.svcContext.getString(R.string.msgs_mirror_prof_file_copying);
 		
 		msgs_mirror_master_local_mount_point_not_readable=glblParms.svcContext.getString(R.string.msgs_mirror_master_local_mount_point_not_readable);

@@ -18,6 +18,7 @@
     <string name="msgs_mirror_prof_master_not_found">マスターのディレクトリーが見つかりません。</string>
     <string name="msgs_mirror_prof_dir_deleted">ディレクトリーを削除しました。</string>
     <string name="msgs_mirror_prof_dir_create">ディレクトリーを作成しました。</string>
+    <string name="msgs_mirror_prof_dir_create_failed">ディレクトリー作成に失敗しました。</string>
     <string name="msgs_mirror_prof_file_copying">ファイル コピー中、 %s%%終了。</string>
     <string name="msgs_mirror_prof_file_bypass_media_store_change">ファイルの最終更新時間が違っていましたが、メディアストアオプションが有効なため更新を無視しました。</string>
     <string name="msgs_mirror_task_ended">同期タスクが終了しました。</string>
