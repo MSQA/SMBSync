@@ -32,6 +32,14 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
         android:text="@string/msgs_export_import_profile_import_settings" />
+
+    <CheckBox
+        android:id="@+id/export_import_profile_list_cb_import_schedule"
+        style="@style/check_box_style"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:text="@string/msgs_export_import_profile_import_schedule" />
     
 	<include layout="@layout/divider_line3" />
 

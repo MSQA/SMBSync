@@ -991,8 +991,10 @@ public class ProfileCreationWizard {
 					@Override
 					public void negativeResponse(Context arg0, Object[] arg1) {
 						if (arg1!=null) dlg_msg.setText((String)arg1[0]);
-						else dlg_msg.setText("");
-						setRemoteProfileViewVisibility(dialog);
+						else {
+							dlg_msg.setText("");
+							setRemoteProfileViewVisibility(dialog);
+						}
 					}
 					
 				});

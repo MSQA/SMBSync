@@ -69,6 +69,7 @@ import android.os.Build;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.webkit.MimeTypeMap;
 
 import com.sentaroh.android.Utilities.DateUtil;
@@ -1449,12 +1450,10 @@ public class MirrorIO implements Runnable {
 						if (children!=null) {
 							for (File element : children) {
 								String tmp = element.getName();
-								
 								if (!tmp.equals(".android_secure")) {
 									if (tmp.lastIndexOf("/")>0) tmp=tmp.substring(0,tmp.lastIndexOf("/"));
 									String n_master=(masterUrl + "/"+ tmp).replaceAll("//", "/");
 									String n_target=(targetUrl + "/" + tmp).replaceAll("//", "/");
-									
 									if (!n_master.equals(target_fp_base)) {
 										mirrorCopyLocalToLocal(allcopy, n_master, n_target, target_fp_base,
 												copiedFileList);
@@ -1562,25 +1561,26 @@ public class MirrorIO implements Runnable {
 	};
 
 	final private int mirrorDeleteLocalToLocalFile(String masterUrl, String targetUrl) {
-		File hf;
+		File mf;
 		File lf;
 
 		if (mGp.debugLevel>=1) 
-			addDebugLogMsg(2,"I","mirrorDeleteRemoteFile master=", masterUrl,
+			addDebugLogMsg(2,"I","mirrorDeleteLocalToLocalFile master=", masterUrl,
 				", target=", targetUrl);
 		if (checkErrorStatus()!=0) return checkErrorStatus();
 
-		hf = new File(targetUrl);
+		mf = new File(targetUrl);
 		String t_dir="";
-		if (hf.isDirectory()) t_dir=hf.getPath();
-			else t_dir=hf.getParent();
-		if (!isDirExcluded(t_dir.replace(remoteUrl, "")) &&
-				isDirectoryToBeProcessed(t_dir.replace(remoteUrl, ""))){ 
-			if (hf.isDirectory()) { // Directory Delete
+		if (mf.isDirectory()) t_dir=mf.getPath();
+			else t_dir=mf.getParent();
+		Log.v("","tdir="+t_dir.replace(syncTargetLocalDir+"/", ""));
+		if (!isDirExcluded(t_dir.replace(syncTargetLocalDir+"/", "")) &&
+				isDirectoryToBeProcessed(t_dir.replace(syncTargetLocalDir+"/", ""))){ 
+			if (mf.isDirectory()) { // Directory Delete
 				lf = new File(masterUrl);
 				if (lf.exists()) {
-					hf = new File(targetUrl + "/");
-					File[] children = hf.listFiles();
+					mf = new File(targetUrl + "/");
+					File[] children = mf.listFiles();
 					for (File element : children) {
 						String tmp = element.getName();
 						if (tmp.lastIndexOf("/")>0) tmp=tmp.substring(0,tmp.lastIndexOf("/"));
@@ -1602,7 +1602,8 @@ public class MirrorIO implements Runnable {
 				if (mGp.debugLevel>=1) 
 					addDebugLogMsg(3,"I","Local file exists="+lf.exists());
 				if (!lf.exists()) {
-					String m_dir=targetUrl.replace(remoteMasterDir+"/","");
+					String m_dir=targetUrl.replace(syncTargetLocalDir+"/","");
+					Log.v("","mdir="+m_dir);
 					if (!(m_dir.indexOf("/")<0 && !syncMasterDirFileProcess)) { 
 						if (confirmDelete(targetUrl)) {
 							deleteLocalItem(true,targetUrl);
@@ -2625,11 +2626,13 @@ public class MirrorIO implements Runnable {
 				prefix=ff.get(j).substring(0,1);
 				filter=ff.get(j).substring(1,ff.get(j).length());
 				
+				String pre_str="";
+				if (!filter.startsWith("*")) pre_str="^";
 				if (prefix.equals("I")) {
-					ffinc = ffinc+cni+convertRegExp(filter);
+					ffinc = ffinc+cni+pre_str+convertRegExp(filter);
 					cni="|";
 				} else {
-					ffexc = ffexc+cne+convertRegExp(filter);
+					ffexc = ffexc+cne+pre_str+convertRegExp(filter);
 					cne="|";
 				}
 			}
@@ -2664,7 +2667,11 @@ public class MirrorIO implements Runnable {
 	
 	final private void createDirFilterList(String prefix, String filter) {
 		int flags = Pattern.CASE_INSENSITIVE | Pattern.MULTILINE;
-		String[] filter_array=filter.split("/");
+//		String[] filter_array=filter.split("/");
+		String[] filter_array=null;
+		if (filter.startsWith("/")) filter_array=filter.replaceFirst("/", "").split("/"); 
+		else filter_array=filter.split("/");
+		
 		Pattern[] pattern_array=new Pattern[filter_array.length];
 		
 		for (int k=0;k<filter_array.length;k++) 
@@ -3018,6 +3025,7 @@ public class MirrorIO implements Runnable {
 		}
 		
 		String temp_fid = url.substring(url.lastIndexOf("/") + 1, url.length());
+		Log.v("","t="+temp_fid+", url="+url+", pattern="+fileFilterInclude);
 		if (fileFilterInclude == null) {
 			// nothing filter
 			filtered = true;
@@ -3103,19 +3111,23 @@ public class MirrorIO implements Runnable {
 		if (dir.length()!=0) {
 			if (dir.endsWith("/")) filter_dir=dir;
 			else filter_dir=dir+"/";
-			String[] dir_array=filter_dir.split("/");
+			String[] dir_array=null;
+			if (filter_dir.startsWith("/")) dir_array=filter_dir.replaceFirst("/", "").split("/");
+			else dir_array=filter_dir.split("/");
 			if (dirIncludeFilterList.size()==0) inc=true;
 			else {
 				for (int i=0;i<dirIncludeFilterList.size();i++) {
 					Pattern[] pattern_array=dirIncludeFilterList.get(i);
 					boolean found=true;
 					for (int j=0;j<Math.min(dir_array.length,pattern_array.length);j++) {
+//						Log.v("","j="+j);
 						Matcher mt = pattern_array[j].matcher(dir_array[j]);
+//						Log.v("","l="+dir_array[j].length());
 						if (dir_array[j].length()!=0) {
-							if (!mt.find()) {
-								found=false;
-//								sendDebugLogMsg(0,"I","dir_array="+dir_array[j]+
-//										", pattern="+pattern_array[j]);
+							found=mt.find();
+//							Log.v("","found="+found+", dir="+dir+
+//									", dir_array="+dir_array[j]+", pattern="+pattern_array[j]);
+							if (!found) {
 								break;
 							} 
 						}
@@ -3150,6 +3162,8 @@ public class MirrorIO implements Runnable {
 		if (mGp.debugLevel>=2) 
 			addDebugLogMsg(2,"I","isDirectoryToBeProcessed"+
 				" include="+inc+", exclude="+exc+", result="+result+", fp="+dir);
+//		Log.v("","isDirectoryToBeProcessed"+" name="+dir+
+//				", include="+inc+", exclude="+exc+", result="+result+", fp="+dir);
 		return result;
 	}
 
@@ -3200,10 +3214,10 @@ public class MirrorIO implements Runnable {
 			} else
 				out = out + temp;
 		}
+		String result=out;
 		if (mGp.debugLevel>=2) 
-			addDebugLogMsg(2,"I","convertRegExp out="+out+", in="+filter);
-		return out;
-
+			addDebugLogMsg(2,"I","convertRegExp out="+result+", in="+filter);
+		return result;
 	};
 
 	final private void notifyThreadTerminate() {

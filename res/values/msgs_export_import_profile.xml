@@ -3,12 +3,14 @@
     <string name="msgs_export_import_profile_title">Select profile item for import</string>
     <string name="msgs_export_import_profile_listing">List file</string>
     <string name="msgs_export_import_profile_setting_parms">Setting parameters</string>
+    <string name="msgs_export_import_profile_schedule_parms">Schedule parameters</string>
     <string name="msgs_export_import_profile_select_all">Select all item</string>
     <string name="msgs_export_import_profile_unselect_all">Unselect all item</string>
     <string name="msgs_export_import_profile_confirm_override">The following items have been registered in the profile. Are you sure you want to overwrite the profile that has been read.</string>
     <string name="msgs_export_import_profile_import_success">Following profile item(s) are imported.</string>
     <string name="msgs_export_import_profile_reset_current_profile">All of the current profile was removed and to import profile.</string>
 	<string name="msgs_export_import_profile_import_settings">Import settings parameter</string>
+	<string name="msgs_export_import_profile_import_schedule">Import schedule parameter</string>
     
     <string name="msgs_export_import_pswd_password_title">Profile password protection</string>
     <string name="msgs_export_import_pswd_password_protect">To protect the file with a password.</string>

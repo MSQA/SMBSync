@@ -108,5 +108,9 @@ public class Constants {
 	public static final String SMBSYNC_VIBRATE_WHEN_SYNC_ENDED_SUCCESS = GlobalParameters.VIBRATE_WHEN_SYNC_ENDED_SUCCESS;
 	public static final String SMBSYNC_VIBRATE_WHEN_SYNC_ENDED_ERROR = GlobalParameters.VIBRATE_WHEN_SYNC_ENDED_ERROR;
 	public static final String SMBSYNC_VIBRATE_WHEN_SYNC_ENDED_NO = GlobalParameters.VIBRATE_WHEN_SYNC_ENDED_NONE;
+	
+	public static final String SMBSYNC_PROFILE_CONFIRM_COPY_DELETE = "system_nr_profile_confirm_copy_delete";
+	public static final String SMBSYNC_PROFILE_CONFIRM_COPY_DELETE_NOT_REQUIRED = "NOT_REQUIRED";
+	public static final String SMBSYNC_PROFILE_CONFIRM_COPY_DELETE_REQUIRED = "REQUIRED";
 
 }

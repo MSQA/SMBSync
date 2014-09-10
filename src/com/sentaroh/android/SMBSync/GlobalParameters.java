@@ -54,6 +54,8 @@ public class GlobalParameters extends Application{
 	
 	public boolean mirrorThreadActive=false;
 	
+	public boolean supressAutoStart=false;
+	
 	public Handler uiHandler=null;
 	public TextView mainViewProgressProf=null;
 	public TextView mainViewProgressFilepath=null;

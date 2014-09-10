@@ -82,12 +82,14 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.Color;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -527,7 +529,9 @@ public class ProfileMaintenance {
 		final RadioButton rb_unselect_all=(RadioButton)dialog.findViewById(R.id.export_import_profile_list_rb_unselect_all);
 		final CheckBox cb_reset_profile=(CheckBox)dialog.findViewById(R.id.export_import_profile_list_cb_reset_profile);
 		final CheckBox cb_import_settings=(CheckBox)dialog.findViewById(R.id.export_import_profile_list_cb_import_settings);
+		final CheckBox cb_import_schedule=(CheckBox)dialog.findViewById(R.id.export_import_profile_list_cb_import_schedule);
 		cb_import_settings.setChecked(true);
+		cb_import_schedule.setChecked(true);
 		
 		final AdapterExportImportProfileList imp_list_adapt=
 				new AdapterExportImportProfileList(mContext, R.layout.export_import_profile_list_item, eipl);
@@ -619,7 +623,9 @@ public class ProfileMaintenance {
 			public void onClick(View arg0) {
 				if (cb_reset_profile.isChecked()) mGp.profileAdapter.clear();
 				importSelectedProfileItem(imp_list_adapt,tfl,
-						cb_import_settings.isChecked(),p_ntfy);
+						cb_import_settings.isChecked(),
+						cb_import_schedule.isChecked(),
+						p_ntfy);
 				dialog.dismiss();
 			}
 		});
@@ -636,7 +642,9 @@ public class ProfileMaintenance {
 	
 	private void importSelectedProfileItem(
 			final AdapterExportImportProfileList imp_list_adapt,
-			final AdapterProfileList tfl, final boolean import_settings,
+			final AdapterProfileList tfl, 
+			final boolean import_settings,
+			final boolean import_schedule,
 			final NotifyEvent p_ntfy) {
 		String repl_list="";
 		for (int i=0;i<imp_list_adapt.getCount();i++) {
@@ -669,9 +677,14 @@ public class ProfileMaintenance {
 					}
 				}
 //				ExportImportProfileListItem eipli=imp_list_adapt.getItem(imp_list_adapt.getCount()-1);
+				restoreImportedSystemOption();
 				if (import_settings) {
 					restoreImportedSettingParms();
 					imp_list+=mContext.getString(R.string.msgs_export_import_profile_setting_parms)+"\n";
+				}
+				if (import_schedule) {
+					restoreImportedScheduleParms();
+					imp_list+=mContext.getString(R.string.msgs_export_import_profile_schedule_parms)+"\n";
 				}
 				if (imp_list.length()>0) imp_list+=" ";
 				mGp.profileAdapter.sort();
@@ -697,6 +710,82 @@ public class ProfileMaintenance {
 		
 	};
 
+	private void restoreImportedSystemOption() {
+		final HashMap<Integer, String[]> spl=importedSettingParmList;
+		
+		if (spl.size()==0) {
+			util.addDebugLogMsg(2,"I","Import setting parms can not be not found.");
+			return;
+		}
+		final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+		final Editor pe= prefs.edit();
+		
+		if (spl.size()>=0) {
+			for (int i=0;i<spl.size();i++) {
+				if (spl.get(i)[0].startsWith("system_rest")) {
+					if (spl.get(i)[1].equals(SMBSYNC_SETTINGS_TYPE_STRING)) {
+						pe.putString(spl.get(i)[0],spl.get(i)[2]);
+						util.addDebugLogMsg(2,"I","Imported System option="+
+								spl.get(i)[0]+"="+spl.get(i)[2]);
+					} else if (spl.get(i)[1].equals(SMBSYNC_SETTINGS_TYPE_BOOLEAN)) {
+						boolean b_val = false;
+						if (spl.get(i)[2].equals("false")) b_val = false;
+						else b_val = true;
+						pe.putBoolean(spl.get(i)[0],b_val);
+						util.addDebugLogMsg(2,"I","Imported System option="+
+								spl.get(i)[0]+"="+spl.get(i)[2]);
+					} else if (spl.get(i)[1].equals(SMBSYNC_SETTINGS_TYPE_INT)) {
+						int i_val = 0;
+						i_val = Integer.parseInt(spl.get(i)[2]);;
+						pe.putInt(spl.get(i)[0],i_val);
+						util.addDebugLogMsg(2,"I","Imported System option="+
+								spl.get(i)[0]+"="+spl.get(i)[2]);
+					}
+				}
+			}
+			pe.commit();
+//			applySettingParms();
+		}
+	};
+
+	private void restoreImportedScheduleParms() {
+		final HashMap<Integer, String[]> spl=importedSettingParmList;
+		
+		if (spl.size()==0) {
+			util.addDebugLogMsg(2,"I","Import setting parms can not be not found.");
+			return;
+		}
+		final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+		final Editor pe= prefs.edit();
+		
+		if (spl.size()>=0) {
+			for (int i=0;i<spl.size();i++) {
+				if (spl.get(i)[0].startsWith("schedule")) {
+					if (spl.get(i)[1].equals(SMBSYNC_SETTINGS_TYPE_STRING)) {
+						pe.putString(spl.get(i)[0],spl.get(i)[2]);
+						util.addDebugLogMsg(2,"I","Imported Schedule parms="+
+								spl.get(i)[0]+"="+spl.get(i)[2]);
+					} else if (spl.get(i)[1].equals(SMBSYNC_SETTINGS_TYPE_BOOLEAN)) {
+						boolean b_val = false;
+						if (spl.get(i)[2].equals("false")) b_val = false;
+						else b_val = true;
+						pe.putBoolean(spl.get(i)[0],b_val);
+						util.addDebugLogMsg(2,"I","Imported Schedule parms="+
+								spl.get(i)[0]+"="+spl.get(i)[2]);
+					} else if (spl.get(i)[1].equals(SMBSYNC_SETTINGS_TYPE_INT)) {
+						int i_val = 0;
+						i_val = Integer.parseInt(spl.get(i)[2]);;
+						pe.putInt(spl.get(i)[0],i_val);
+						util.addDebugLogMsg(2,"I","Imported Schedule parms="+
+								spl.get(i)[0]+"="+spl.get(i)[2]);
+					}
+				}
+			}
+			pe.commit();
+//			applySettingParms();
+		}
+	};
+
 	private void restoreImportedSettingParms() {
 		final HashMap<Integer, String[]> spl=importedSettingParmList;
 		
@@ -705,28 +794,32 @@ public class ProfileMaintenance {
 			return;
 		}
 		final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+		final Editor pe= prefs.edit();
 		
 		if (spl.size()>=0) {
 			for (int i=0;i<spl.size();i++) {
-				if (spl.get(i)[1].equals(SMBSYNC_SETTINGS_TYPE_STRING)) {
-					prefs.edit().putString(spl.get(i)[0],spl.get(i)[2]).commit();
-					util.addDebugLogMsg(2,"I","Imported Settings="+
-							spl.get(i)[0]+"="+spl.get(i)[2]);
-				} else if (spl.get(i)[1].equals(SMBSYNC_SETTINGS_TYPE_BOOLEAN)) {
-					boolean b_val = false;
-					if (spl.get(i)[2].equals("false")) b_val = false;
-					else b_val = true;
-					prefs.edit().putBoolean(spl.get(i)[0],b_val).commit();
-					util.addDebugLogMsg(2,"I","Imported Settings="+
-							spl.get(i)[0]+"="+spl.get(i)[2]);
-				} else if (spl.get(i)[1].equals(SMBSYNC_SETTINGS_TYPE_INT)) {
-					int i_val = 0;
-					i_val = Integer.parseInt(spl.get(i)[2]);;
-					prefs.edit().putInt(spl.get(i)[0],i_val).commit();
-					util.addDebugLogMsg(2,"I","Imported Settings="+
-							spl.get(i)[0]+"="+spl.get(i)[2]);
+				if (spl.get(i)[0].startsWith("settings")) {
+					if (spl.get(i)[1].equals(SMBSYNC_SETTINGS_TYPE_STRING)) {
+						pe.putString(spl.get(i)[0],spl.get(i)[2]);
+						util.addDebugLogMsg(2,"I","Imported Settings="+
+								spl.get(i)[0]+"="+spl.get(i)[2]);
+					} else if (spl.get(i)[1].equals(SMBSYNC_SETTINGS_TYPE_BOOLEAN)) {
+						boolean b_val = false;
+						if (spl.get(i)[2].equals("false")) b_val = false;
+						else b_val = true;
+						pe.putBoolean(spl.get(i)[0],b_val);
+						util.addDebugLogMsg(2,"I","Imported Settings="+
+								spl.get(i)[0]+"="+spl.get(i)[2]);
+					} else if (spl.get(i)[1].equals(SMBSYNC_SETTINGS_TYPE_INT)) {
+						int i_val = 0;
+						i_val = Integer.parseInt(spl.get(i)[2]);;
+						pe.putInt(spl.get(i)[0],i_val);
+						util.addDebugLogMsg(2,"I","Imported Settings="+
+								spl.get(i)[0]+"="+spl.get(i)[2]);
+					}
 				}
 			}
+			pe.commit();
 //			applySettingParms();
 		}
 	};
@@ -1808,7 +1901,7 @@ public class ProfileMaintenance {
 						cnt++;
 						adapter_spinner.add(pli.getType()+" "+pli.getName());
 						if (prof_target.equals(pli.getName())) pos=cnt;
-					} else {
+					} else if (pli.getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
 						if (!prof_master.equals(pli.getName())) {
 							String m_path=m_pli.getLocalMountPoint()+"/"+m_pli.getDir();
 							String t_path=pli.getLocalMountPoint()+"/"+pli.getDir();
@@ -1964,7 +2057,7 @@ public class ProfileMaintenance {
 				if (spinner_master.getSelectedItem()!=null) 
 					c_mst=spinner_master.getSelectedItem().toString().substring(2);
 				setSyncTargetProfileSpinner(spinner_target,c_mst,c_tgt);
-//				Log.v("","c_mst="+c_mst+", c_tgt="+c_tgt);
+				Log.v("","c_mst="+c_mst+", c_tgt="+c_tgt);
 				setMasterProfileEditButtonListener(dialog, c_mst);
 				setTargetProfileEditButtonListener(dialog, c_tgt);
 			}
@@ -6578,6 +6671,10 @@ public class ProfileMaintenance {
     	saveSettingsParmsToFileBoolean(group, pw, false,   encrypt_required,cp,SCHEDULER_SYNC_OPTION_AUTOSTART_KEY);
     	saveSettingsParmsToFileBoolean(group, pw, false,   encrypt_required,cp,SCHEDULER_SYNC_OPTION_AUTOTERM_KEY);
     	saveSettingsParmsToFileBoolean(group, pw, false,   encrypt_required,cp,SCHEDULER_SYNC_OPTION_BGEXEC_KEY);
+    	
+		saveSettingsParmsToFileString(group, pw, SMBSYNC_PROFILE_CONFIRM_COPY_DELETE_REQUIRED, 
+				encrypt_required,cp,SMBSYNC_PROFILE_CONFIRM_COPY_DELETE);
+
 	};
 
 	

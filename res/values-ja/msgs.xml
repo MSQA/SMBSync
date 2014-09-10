@@ -172,4 +172,7 @@
 	<string name="msgs_extra_data_startup_parms_value_error">StartupParmsの最初の3つの項目はtrueまたはfalseで指定してください、同期を中止します。値=%s</string>
 	<string name="msgs_extra_data_startup_parms_type_error">StartupParmsはStringで指定されていません、同期を中止します。</string>
 	<string name="msgs_extra_data_sync_profile_type_error">SyncProfileはString配列で指定されていません、同期を中止します。</string>
+	
+	<string name="msgs_set_profile_confirm_delete">アプリケーションのバージョンアップに伴い下記同期プロファイルの「上書きコピーまたは削除の前に確認する」を有効にしました。同期を行い問題が無ければ同期プロファイルを編集し確認を無効にしてください。</string>
+	<string name="msgs_main_auto_start_ignored_by_other_msg">確認が必要なメッセージが表示されているため同期開始を無視しました。</string>
 </resources>
