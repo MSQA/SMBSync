@@ -24,4 +24,5 @@ public class SchedulerConstants {
 	public static final String SCHEDULER_SYNC_WIFI_ON_BEFORE_SYNC_START_KEY="scheduler_sync_wifi_on_before_sync_start_key";
 	public static final String SCHEDULER_SYNC_WIFI_OFF_AFTER_SYNC_END_KEY="scheduler_sync_wifi_off_after_sync_end_key";
 	public static final String SCHEDULER_SYNC_DELAYED_TIME_FOR_WIFI_ON_KEY="scheduler_sync_delayed_time_for_wifi_on_key";
+	public static final String SCHEDULER_SYNC_DELAYED_TIME_FOR_WIFI_ON_DEFAULT_VALUE="5";
 }

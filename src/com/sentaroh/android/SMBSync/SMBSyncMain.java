@@ -45,6 +45,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -67,6 +68,7 @@ import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.text.ClipboardManager;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -221,13 +223,21 @@ public class SMBSyncMain extends FragmentActivity {
 			profMaint=new ProfileMaintenance(util,this, commonDlg,ccMenu, mGp);
 		
 		SchedulerMain.setTimer(mContext, SCHEDULER_INTENT_SET_TIMER_IF_NOT_SET);
-		
 //		if (Build.VERSION.SDK_INT >= 19) {
-//		    File[] extDirs = getExternalFilesDirs(null);//Environment.DIRECTORY_DOWNLOADS);
-//		    String extSdDirPath = extDirs[extDirs.length-1].getAbsolutePath();
-//		    Log.v("", "last extSdDirPath="+extSdDirPath+", "+extDirs[extDirs.length-1].toString());
+//		    File[] extDirs = getExternalFilesDirs(Environment.DIRECTORY_DOWNLOADS);
+//		    for (int i=0;i<extDirs.length;i++)
+//				try {
+//					Log.v("", "i="+i+", path="+extDirs[i].getPath()+
+//							", absolute path="+extDirs[i].getAbsolutePath()+
+//							", canonical path="+extDirs[i].getCanonicalPath()+
+//							", "+extDirs[extDirs.length-1].toString());
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
 //		}
-		
+		File lf1=new File("/");
+		File lf2=new File("/test");
+		Log.v("","canRead="+lf1.canRead()+", canWrite="+lf1.canWrite()+", exists="+lf2.exists());
 	};
 	
 	@Override
@@ -475,6 +485,7 @@ public class SMBSyncMain extends FragmentActivity {
 		
 		if (prefs.getString(SMBSYNC_PROFILE_CONFIRM_COPY_DELETE, SMBSYNC_PROFILE_CONFIRM_COPY_DELETE_REQUIRED)
 				.equals(SMBSYNC_PROFILE_CONFIRM_COPY_DELETE_REQUIRED)) {
+			prefs.edit().putString(SMBSYNC_PROFILE_CONFIRM_COPY_DELETE, SMBSYNC_PROFILE_CONFIRM_COPY_DELETE_NOT_REQUIRED).commit();
 			String c_prof="";
 			String c_sep="";
 			for(int i=0;i<mGp.profileAdapter.getCount();i++) {
@@ -510,7 +521,6 @@ public class SMBSyncMain extends FragmentActivity {
 				result=true;
 			}
 		} else {
-			prefs.edit().putString(SMBSYNC_PROFILE_CONFIRM_COPY_DELETE, SMBSYNC_PROFILE_CONFIRM_COPY_DELETE_NOT_REQUIRED).commit();
 			result=true;
 		}
 		return result;
@@ -1118,39 +1128,34 @@ public class SMBSyncMain extends FragmentActivity {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		
 		if (prefs.getString(getString(R.string.settings_log_dir), "-1").equals("-1")) {
+			Editor pe=prefs.edit();
 			
 			isApplicationFirstTimeRunning=true;
-			
 			mGp.sampleProfileCreateRequired=true;
 			
-			prefs.edit().putString(getString(R.string.settings_log_dir),
-					mGp.SMBSync_External_Root_Dir+"/SMBSync/").commit();
-			prefs.edit().putString(getString(R.string.settings_network_wifi_option),
-					SMBSYNC_SYNC_WIFI_OPTION_CONNECTED_ANY_AP).commit();
-			prefs.edit().putString(getString(R.string.settings_file_diff_time_seconds), 
-					"3").commit();
-			prefs.edit().putString(getString(R.string.settings_media_store_last_mod_time), 
-					"0").commit();
+			pe.putString(getString(R.string.settings_log_dir), mGp.SMBSync_External_Root_Dir+"/SMBSync/");
+			pe.putString(getString(R.string.settings_network_wifi_option), SMBSYNC_SYNC_WIFI_OPTION_CONNECTED_ANY_AP);
+			pe.putString(getString(R.string.settings_file_diff_time_seconds), "3");
+			pe.putString(getString(R.string.settings_media_store_last_mod_time), "0");
 
-			prefs.edit().putBoolean(getString(R.string.settings_media_scanner_non_media_files_scan), 
-					true).commit();
-			prefs.edit().putBoolean(getString(R.string.settings_media_scanner_scan_extstg), 
-					true).commit();
+			pe.putBoolean(getString(R.string.settings_media_scanner_non_media_files_scan), true);
+			pe.putBoolean(getString(R.string.settings_media_scanner_scan_extstg), true);
 
-			prefs.edit().putBoolean(getString(R.string.settings_exit_clean), 
-					true).commit();
+			pe.putBoolean(getString(R.string.settings_exit_clean), true);
 			
-			prefs.edit().putString(getString(R.string.settings_smb_lm_compatibility),"0").commit();
-			prefs.edit().putBoolean(getString(R.string.settings_smb_use_extended_security),false).commit();
-			prefs.edit().putString(getString(R.string.settings_smb_log_level),"0").commit();
-			prefs.edit().putString(getString(R.string.settings_smb_rcv_buf_size),"66576").commit();
-			prefs.edit().putString(getString(R.string.settings_smb_snd_buf_size),"66576").commit();
-			prefs.edit().putString(getString(R.string.settings_smb_listSize),"65535").commit();
-			prefs.edit().putString(getString(R.string.settings_smb_maxBuffers),"100").commit();
-			prefs.edit().putString(getString(R.string.settings_smb_tcp_nodelay),"true").commit();
-			prefs.edit().putString(getString(R.string.settings_io_buffers),"8").commit();
+			pe.putString(getString(R.string.settings_smb_lm_compatibility),"0");
+			pe.putBoolean(getString(R.string.settings_smb_use_extended_security),false);
+			pe.putString(getString(R.string.settings_smb_log_level),"0");
+			pe.putString(getString(R.string.settings_smb_rcv_buf_size),"66576");
+			pe.putString(getString(R.string.settings_smb_snd_buf_size),"66576");
+			pe.putString(getString(R.string.settings_smb_listSize),"65535");
+			pe.putString(getString(R.string.settings_smb_maxBuffers),"100");
+			pe.putString(getString(R.string.settings_smb_tcp_nodelay),"true");
+			pe.putString(getString(R.string.settings_io_buffers),"8");
 			
-			prefs.edit().putString(SMBSYNC_PROFILE_CONFIRM_COPY_DELETE, SMBSYNC_PROFILE_CONFIRM_COPY_DELETE_NOT_REQUIRED).commit();
+			pe.putString(SMBSYNC_PROFILE_CONFIRM_COPY_DELETE, SMBSYNC_PROFILE_CONFIRM_COPY_DELETE_NOT_REQUIRED);
+			
+			pe.commit();
 		}
 
 		if (prefs.getString(getString(R.string.settings_keep_screen_on), "").equals("")) {

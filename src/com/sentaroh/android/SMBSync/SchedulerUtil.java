@@ -27,7 +27,7 @@ public class SchedulerUtil {
     	sp.scheduleType=prefs.getString(SCHEDULER_SCHEDULE_TYPE_KEY, SCHEDULER_SCHEDULE_TYPE_EVERY_DAY);
     	sp.scheduleHours=prefs.getString(SCHEDULER_SCHEDULE_HOURS_KEY, "00");
     	sp.scheduleMinutes=prefs.getString(SCHEDULER_SCHEDULE_MINUTES_KEY, "00");
-    	sp.scheduleDayOfTheWeek=prefs.getString(SCHEDULER_SCHEDULE_TYPE_DAY_OF_THE_WEEK, "0000000");
+    	sp.scheduleDayOfTheWeek=prefs.getString(SCHEDULER_SCHEDULE_DAY_OF_THE_WEEK_KEY, "0000000");
     	
     	sp.syncProfile=prefs.getString(SCHEDULER_SYNC_PROFILE_KEY, "");
     	sp.syncOptionAutostart=prefs.getBoolean(SCHEDULER_SYNC_OPTION_AUTOSTART_KEY, false);
@@ -38,7 +38,8 @@ public class SchedulerUtil {
     	sp.syncWifiOffAfterSyncEnd=prefs.getBoolean(SCHEDULER_SYNC_WIFI_OFF_AFTER_SYNC_END_KEY, false);
 
     	sp.syncDelayedSecondForWifiOn=Integer.parseInt(
-    			prefs.getString(SCHEDULER_SYNC_DELAYED_TIME_FOR_WIFI_ON_KEY, "5"));
+    			prefs.getString(SCHEDULER_SYNC_DELAYED_TIME_FOR_WIFI_ON_KEY, 
+    					SCHEDULER_SYNC_DELAYED_TIME_FOR_WIFI_ON_DEFAULT_VALUE));
     	
     };
 
@@ -48,7 +49,7 @@ public class SchedulerUtil {
     	prefs.edit().putString(SCHEDULER_SCHEDULE_TYPE_KEY, sp.scheduleType).commit();
     	prefs.edit().putString(SCHEDULER_SCHEDULE_HOURS_KEY, sp.scheduleHours).commit();
     	prefs.edit().putString(SCHEDULER_SCHEDULE_MINUTES_KEY, sp.scheduleMinutes).commit();
-    	prefs.edit().putString(SCHEDULER_SCHEDULE_TYPE_DAY_OF_THE_WEEK, sp.scheduleDayOfTheWeek).commit();
+    	prefs.edit().putString(SCHEDULER_SCHEDULE_DAY_OF_THE_WEEK_KEY, sp.scheduleDayOfTheWeek).commit();
     	
     	prefs.edit().putString(SCHEDULER_SYNC_PROFILE_KEY, sp.syncProfile).commit();
     	prefs.edit().putBoolean(SCHEDULER_SYNC_OPTION_AUTOSTART_KEY, sp.syncOptionAutostart).commit();

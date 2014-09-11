@@ -228,8 +228,8 @@ public class MirrorIO implements Runnable {
 			};
 			@Override
 			public void onScanCompleted(final String fp, final Uri uri) {
-				if (mGp.debugLevel>=1) 
-					addDebugLogMsg(1,"I","MediaScanner scan completed. fn=",
+				if (mGp.debugLevel>=2) 
+					addDebugLogMsg(2,"I","MediaScanner scan completed. fn=",
 							fp,", Uri="+uri);
 //				checkMediaScannerReult(fp,uri);
 			};
@@ -545,10 +545,8 @@ public class MirrorIO implements Runnable {
 		else syncRemoteAddr = mipl.getHostName();
 		
 		if (mipl.isForceLastModifiedUseSmbsync()) syncProfileUseJavaLastModified=false;
-		else {
-			syncProfileUseJavaLastModified=
-					isSetLastModifiedFunctional(mipl.getLocalMountPoint());
-		}
+		else syncProfileUseJavaLastModified=isSetLastModifiedFunctional(mipl.getLocalMountPoint());
+
 		syncProfileNotUseLastModifiedForRemote=mipl.isNotUseLastModifiedForRemote();
 		
 		syncRemotePort="";
@@ -625,8 +623,11 @@ public class MirrorIO implements Runnable {
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
+				String msg=String.format(msgs_mirror_physcal_access_check_create_error,mipl.getTargetLocalMountPoint());
+				addLogMsg("E",mipl.getLocalMountPoint(),msg+"\n"+e.getMessage());
+				tcMirror.setThreadMessage(msg+"\n"+e.getMessage());
+				isSyncParmError=true;
 			}
-			
 		} else {
 			if (syncMasterProfType.equals("L")) {
 				File lf=new File(mipl.getLocalMountPoint());
@@ -980,22 +981,22 @@ public class MirrorIO implements Runnable {
 				if	(mt.startsWith("audio") || mt.startsWith("video") ||
 						 mt.startsWith("image") ) { 
 					File lf=new File(fp);
-					if (mGp.debugLevel>=1) 
-						addDebugLogMsg(1,"I",
+					if (mGp.debugLevel>=2) 
+						addDebugLogMsg(2,"I",
 							"scanMediaStoreLibrary MediaScanner invoked. fn=",fp,
 							", lastModified="+lf.lastModified()+
 							", date=",
 							DateUtil.convDateTimeTo_YearMonthDayHourMinSec(lf.lastModified()));
 					mediaScanner.scanFile(fp, mt);
 				} else {
-					if (mGp.debugLevel>=1) 
-						addDebugLogMsg(1,"I",
+					if (mGp.debugLevel>=2) 
+						addDebugLogMsg(2,"I",
 							"scanMediaStoreLibrary Mime type was not audio/image/video, " ,
 							"MediaScanner not invoked. mime type=",mt);
 				}
 			} else {
-				if (mGp.debugLevel>=1) 
-					addDebugLogMsg(1,"I",
+				if (mGp.debugLevel>=2) 
+					addDebugLogMsg(2,"I",
 							"scanMediaStoreLibrary hidden directory or .nomedia found, " ,
 							"MediaScanner not invoked.");
 			}
@@ -1004,31 +1005,31 @@ public class MirrorIO implements Runnable {
 					 mt.startsWith("image") ) {
 				if (!isNoMediaPath(fp)) {
 					File lf=new File(fp);
-					if (mGp.debugLevel>=1) 
-						addDebugLogMsg(1,"I",
+					if (mGp.debugLevel>=2) 
+						addDebugLogMsg(2,"I",
 							"scanMediaStoreLibrary MediaScanner invoked. fn=",fp,
 							", lastModified="+lf.lastModified(),
 							", date=",
 							DateUtil.convDateTimeTo_YearMonthDayHourMinSec(lf.lastModified()));
 					mediaScanner.scanFile(fp, mt);
 				} else {
-					if (mGp.debugLevel>=1) 
-						addDebugLogMsg(1,"I",
+					if (mGp.debugLevel>=2) 
+						addDebugLogMsg(2,"I",
 							"scanMediaStoreLibrary hidden directory or .nomedia found, ",
 							"MediaScanner not invoked.");
 				}
 			} else {
 				if (settingsMediaFiles) {
 					File lf=new File(fp);
-					if (mGp.debugLevel>=1) 
-						addDebugLogMsg(1,"I",
+					if (mGp.debugLevel>=2) 
+						addDebugLogMsg(2,"I",
 							"scanMediaStoreLibrary MediaScanner invoked. fn=",fp,
 							", lastModified="+lf.lastModified(),
 							", date=",DateUtil.convDateTimeTo_YearMonthDayHourMinSec(lf.lastModified()));
 					mediaScanner.scanFile(fp, mt);
 				} else {
-					if (mGp.debugLevel>=1) 
-						addDebugLogMsg(1,"I",
+					if (mGp.debugLevel>=2) 
+						addDebugLogMsg(2,"I",
 							"scanMediaStoreLibrary scan MediaFiles disabled, " ,
 							"MediaScanner not invoked.");
 				}
@@ -1459,7 +1460,8 @@ public class MirrorIO implements Runnable {
 												copiedFileList);
 										if (checkErrorStatus()!=0) return checkErrorStatus();
 									} else {
-										addLogMsg("W","",
+//										addLogMsg("W","",
+										addDebugLogMsg(1,"W",
 												String.format(msgs_mirror_same_directory_ignored,n_master));
 									}
 								} else {
@@ -2259,7 +2261,8 @@ public class MirrorIO implements Runnable {
 												moved_dirs);
 										if (checkErrorStatus()!=0) return checkErrorStatus();
 									} else {
-										addLogMsg("W","",
+//										addLogMsg("W","",
+										addDebugLogMsg(1,"W",
 												String.format(msgs_mirror_same_directory_ignored,n_master));
 									}
 								} else {
@@ -3004,8 +3007,8 @@ public class MirrorIO implements Runnable {
 					found=true;
 			}
 		}
-		if (mGp.debugLevel>=1) 
-			addDebugLogMsg(1,"I","isMediaStoreDir="+found+",dir="+path);
+		if (mGp.debugLevel>=2) 
+			addDebugLogMsg(2,"I","isMediaStoreDir="+found+",dir="+path);
 		return found;
 	};
 
@@ -3025,7 +3028,7 @@ public class MirrorIO implements Runnable {
 		}
 		
 		String temp_fid = url.substring(url.lastIndexOf("/") + 1, url.length());
-		Log.v("","t="+temp_fid+", url="+url+", pattern="+fileFilterInclude);
+//		Log.v("","t="+temp_fid+", url="+url+", pattern="+fileFilterInclude);
 		if (fileFilterInclude == null) {
 			// nothing filter
 			filtered = true;

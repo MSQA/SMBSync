@@ -723,24 +723,7 @@ public class ProfileMaintenance {
 		if (spl.size()>=0) {
 			for (int i=0;i<spl.size();i++) {
 				if (spl.get(i)[0].startsWith("system_rest")) {
-					if (spl.get(i)[1].equals(SMBSYNC_SETTINGS_TYPE_STRING)) {
-						pe.putString(spl.get(i)[0],spl.get(i)[2]);
-						util.addDebugLogMsg(2,"I","Imported System option="+
-								spl.get(i)[0]+"="+spl.get(i)[2]);
-					} else if (spl.get(i)[1].equals(SMBSYNC_SETTINGS_TYPE_BOOLEAN)) {
-						boolean b_val = false;
-						if (spl.get(i)[2].equals("false")) b_val = false;
-						else b_val = true;
-						pe.putBoolean(spl.get(i)[0],b_val);
-						util.addDebugLogMsg(2,"I","Imported System option="+
-								spl.get(i)[0]+"="+spl.get(i)[2]);
-					} else if (spl.get(i)[1].equals(SMBSYNC_SETTINGS_TYPE_INT)) {
-						int i_val = 0;
-						i_val = Integer.parseInt(spl.get(i)[2]);;
-						pe.putInt(spl.get(i)[0],i_val);
-						util.addDebugLogMsg(2,"I","Imported System option="+
-								spl.get(i)[0]+"="+spl.get(i)[2]);
-					}
+					restorePreferenceParms(pe,spl.get(i));
 				}
 			}
 			pe.commit();
@@ -748,6 +731,24 @@ public class ProfileMaintenance {
 		}
 	};
 
+	private void restorePreferenceParms(Editor pe, String[] pa) {
+		if (pa[1].equals(SMBSYNC_SETTINGS_TYPE_STRING)) {
+			pe.putString(pa[0],pa[2]);
+			util.addDebugLogMsg(2,"I","Restored parms="+pa[0]+"="+pa[2]);
+		} else if (pa[1].equals(SMBSYNC_SETTINGS_TYPE_BOOLEAN)) {
+			boolean b_val = false;
+			if (pa[2].equals("false")) b_val = false;
+			else b_val = true;
+			pe.putBoolean(pa[0],b_val);
+			util.addDebugLogMsg(2,"I","Restored parms="+pa[0]+"="+pa[2]);
+		} else if (pa[1].equals(SMBSYNC_SETTINGS_TYPE_INT)) {
+			int i_val = 0;
+			i_val = Integer.parseInt(pa[2]);;
+			pe.putInt(pa[0],i_val);
+			util.addDebugLogMsg(2,"I","Restored parms="+pa[0]+"="+pa[2]);
+		}
+	};
+	
 	private void restoreImportedScheduleParms() {
 		final HashMap<Integer, String[]> spl=importedSettingParmList;
 		
@@ -761,24 +762,7 @@ public class ProfileMaintenance {
 		if (spl.size()>=0) {
 			for (int i=0;i<spl.size();i++) {
 				if (spl.get(i)[0].startsWith("schedule")) {
-					if (spl.get(i)[1].equals(SMBSYNC_SETTINGS_TYPE_STRING)) {
-						pe.putString(spl.get(i)[0],spl.get(i)[2]);
-						util.addDebugLogMsg(2,"I","Imported Schedule parms="+
-								spl.get(i)[0]+"="+spl.get(i)[2]);
-					} else if (spl.get(i)[1].equals(SMBSYNC_SETTINGS_TYPE_BOOLEAN)) {
-						boolean b_val = false;
-						if (spl.get(i)[2].equals("false")) b_val = false;
-						else b_val = true;
-						pe.putBoolean(spl.get(i)[0],b_val);
-						util.addDebugLogMsg(2,"I","Imported Schedule parms="+
-								spl.get(i)[0]+"="+spl.get(i)[2]);
-					} else if (spl.get(i)[1].equals(SMBSYNC_SETTINGS_TYPE_INT)) {
-						int i_val = 0;
-						i_val = Integer.parseInt(spl.get(i)[2]);;
-						pe.putInt(spl.get(i)[0],i_val);
-						util.addDebugLogMsg(2,"I","Imported Schedule parms="+
-								spl.get(i)[0]+"="+spl.get(i)[2]);
-					}
+					restorePreferenceParms(pe,spl.get(i));
 				}
 			}
 			pe.commit();
@@ -799,24 +783,7 @@ public class ProfileMaintenance {
 		if (spl.size()>=0) {
 			for (int i=0;i<spl.size();i++) {
 				if (spl.get(i)[0].startsWith("settings")) {
-					if (spl.get(i)[1].equals(SMBSYNC_SETTINGS_TYPE_STRING)) {
-						pe.putString(spl.get(i)[0],spl.get(i)[2]);
-						util.addDebugLogMsg(2,"I","Imported Settings="+
-								spl.get(i)[0]+"="+spl.get(i)[2]);
-					} else if (spl.get(i)[1].equals(SMBSYNC_SETTINGS_TYPE_BOOLEAN)) {
-						boolean b_val = false;
-						if (spl.get(i)[2].equals("false")) b_val = false;
-						else b_val = true;
-						pe.putBoolean(spl.get(i)[0],b_val);
-						util.addDebugLogMsg(2,"I","Imported Settings="+
-								spl.get(i)[0]+"="+spl.get(i)[2]);
-					} else if (spl.get(i)[1].equals(SMBSYNC_SETTINGS_TYPE_INT)) {
-						int i_val = 0;
-						i_val = Integer.parseInt(spl.get(i)[2]);;
-						pe.putInt(spl.get(i)[0],i_val);
-						util.addDebugLogMsg(2,"I","Imported Settings="+
-								spl.get(i)[0]+"="+spl.get(i)[2]);
-					}
+					restorePreferenceParms(pe,spl.get(i));
 				}
 			}
 			pe.commit();
@@ -2003,8 +1970,8 @@ public class ProfileMaintenance {
 //				else cbmpd.setText(mContext.getString(R.string.msgs_sync_profile_master_dir_cb_disable));
 //			}
 //		});
-		if (prof_dir_filter.size()!=0) cbmpd.setVisibility(CheckBox.VISIBLE);//.setEnabled(true);
-		else cbmpd.setVisibility(CheckBox.GONE);//.setEnabled(false);
+//		if (prof_dir_filter.size()!=0) cbmpd.setVisibility(CheckBox.VISIBLE);//.setEnabled(true);
+//		else cbmpd.setVisibility(CheckBox.GONE);//.setEnabled(false);
 		
 		final CheckBox cbConf = (CheckBox)dialog.findViewById(R.id.sync_profile_confirm);
 		cbConf.setChecked(true);
@@ -2697,10 +2664,10 @@ public class ProfileMaintenance {
 
 		if (prof_act.equals(SMBSYNC_PROF_ACTIVE)) tg.setChecked(true);
 			else tg.setChecked(false);
-		if (prof_dir_filter.size()!=0) {
-			cbmpd.setVisibility(CheckBox.VISIBLE);//.setEnabled(true);
-			cbmpd.setChecked(true);
-		} else cbmpd.setVisibility(CheckBox.GONE);//.setEnabled(false);
+//		if (prof_dir_filter.size()!=0) {
+//			cbmpd.setVisibility(CheckBox.VISIBLE);//.setEnabled(true);
+//			cbmpd.setChecked(true);
+//		} else cbmpd.setVisibility(CheckBox.GONE);//.setEnabled(false);
 
 		final CheckBox cbNotUseLastModRem = (CheckBox)dialog.findViewById(R.id.sync_profile_not_use_last_modified_remote_file_for_diff);
 		cbNotUseLastModRem.setChecked(nulm_remote);
@@ -2829,8 +2796,8 @@ public class ProfileMaintenance {
 			}
 		});
 		// Master Dir processボタンの指定
-		if (prof_dir_filter.size()!=0) cbmpd.setVisibility(CheckBox.VISIBLE);//.setEnabled(true);
-			else cbmpd.setVisibility(CheckBox.GONE);//.setEnabled(false);
+//		if (prof_dir_filter.size()!=0) cbmpd.setVisibility(CheckBox.VISIBLE);//.setEnabled(true);
+//			else cbmpd.setVisibility(CheckBox.GONE);//.setEnabled(false);
 		if (prof_mpd) cbmpd.setChecked(true);
 			else cbmpd.setChecked(false);
 
@@ -3225,7 +3192,7 @@ public class ProfileMaintenance {
 	
 	private void invokeEditDirFilterDlg(Dialog dialog,
 			final ArrayList<String> n_dir_filter) {
-		final CheckBox cbmpd = (CheckBox)dialog.findViewById(R.id.sync_profile_master_dir_cb);
+//		final CheckBox cbmpd = (CheckBox)dialog.findViewById(R.id.sync_profile_master_dir_cb);
 		final TextView dlg_dir_filter=(TextView) dialog.findViewById(R.id.sync_profile_dir_filter);
 		final TextView dlg_msg=(TextView) dialog.findViewById(R.id.sync_profile_dlg_msg);
 
@@ -3244,8 +3211,8 @@ public class ProfileMaintenance {
 				}
 				if (d_fl.length()==0)  d_fl=mContext.getString(R.string.msgs_filter_list_dlg_not_specified);
 				dlg_dir_filter.setText(d_fl);
-				if (n_dir_filter.size()!=0) cbmpd.setVisibility(CheckBox.VISIBLE);//.setEnabled(true);
-				else cbmpd.setVisibility(CheckBox.GONE);//.setEnabled(false);
+//				if (n_dir_filter.size()!=0) cbmpd.setVisibility(CheckBox.VISIBLE);//.setEnabled(true);
+//				else cbmpd.setVisibility(CheckBox.GONE);//.setEnabled(false);
 			}
 			@Override
 			public void negativeResponse(Context arg0, Object[] arg1) {}
@@ -6663,7 +6630,9 @@ public class ProfileMaintenance {
 		saveSettingsParmsToFileString(group, pw, "false",encrypt_required,cp,mContext.getString(R.string.settings_smb_tcp_nodelay));
 		
     	saveSettingsParmsToFileBoolean(group, pw, false,   encrypt_required,cp,SCHEDULER_SCHEDULE_ENABLED_KEY);
-    	saveSettingsParmsToFileString(group, pw, "D",      encrypt_required,cp,SCHEDULER_SCHEDULE_TYPE_KEY);
+    	
+    	saveSettingsParmsToFileString(group, pw, SCHEDULER_SCHEDULE_TYPE_EVERY_DAY,
+    													   encrypt_required,cp,SCHEDULER_SCHEDULE_TYPE_KEY);
     	saveSettingsParmsToFileString(group, pw, "00",     encrypt_required,cp,SCHEDULER_SCHEDULE_HOURS_KEY);
     	saveSettingsParmsToFileString(group, pw, "00",     encrypt_required,cp,SCHEDULER_SCHEDULE_MINUTES_KEY);
     	saveSettingsParmsToFileString(group, pw, "0000000",encrypt_required,cp,SCHEDULER_SCHEDULE_DAY_OF_THE_WEEK_KEY);
@@ -6671,9 +6640,13 @@ public class ProfileMaintenance {
     	saveSettingsParmsToFileBoolean(group, pw, false,   encrypt_required,cp,SCHEDULER_SYNC_OPTION_AUTOSTART_KEY);
     	saveSettingsParmsToFileBoolean(group, pw, false,   encrypt_required,cp,SCHEDULER_SYNC_OPTION_AUTOTERM_KEY);
     	saveSettingsParmsToFileBoolean(group, pw, false,   encrypt_required,cp,SCHEDULER_SYNC_OPTION_BGEXEC_KEY);
+    	saveSettingsParmsToFileBoolean(group, pw, false,   encrypt_required,cp,SCHEDULER_SYNC_WIFI_ON_BEFORE_SYNC_START_KEY);
+    	saveSettingsParmsToFileBoolean(group, pw, false,   encrypt_required,cp,SCHEDULER_SYNC_WIFI_OFF_AFTER_SYNC_END_KEY);
+    	saveSettingsParmsToFileString(group, pw, SCHEDULER_SYNC_DELAYED_TIME_FOR_WIFI_ON_DEFAULT_VALUE,
+    													   encrypt_required,cp,SCHEDULER_SYNC_DELAYED_TIME_FOR_WIFI_ON_KEY);
     	
 		saveSettingsParmsToFileString(group, pw, SMBSYNC_PROFILE_CONFIRM_COPY_DELETE_REQUIRED, 
-				encrypt_required,cp,SMBSYNC_PROFILE_CONFIRM_COPY_DELETE);
+														   encrypt_required,cp,SMBSYNC_PROFILE_CONFIRM_COPY_DELETE);
 
 	};
 
