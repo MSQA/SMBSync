@@ -2557,7 +2557,7 @@ public class SMBSyncMain extends FragmentActivity {
 
 	private void clearScreenOn() {
 		try {
-			mSvcClient.aidlRelWakeLock();
+			if (mSvcClient!=null) mSvcClient.aidlRelWakeLock();
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}

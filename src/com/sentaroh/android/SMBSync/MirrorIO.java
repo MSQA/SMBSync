@@ -651,9 +651,15 @@ public class MirrorIO implements Runnable {
 		}
 
 // Check remote connection		
+		mRemoteHostName=mRemoteHostAddress="";
+		mRemoteHostPort=-1;
+		mRemoteHostParmsAvailable=false;
 		if (syncMasterProfType.equals("R") || syncTargetProfType.equals("R")) {
 			if (mipl.getHostName().equals("")) {
 				if (mipl.getRemotePort().length()>0) {//Check for report port specified
+					mRemoteHostParmsAvailable=true;
+					mRemoteHostAddress=mipl.getRemoteAddr();
+					mRemoteHostPort=Integer.parseInt(mipl.getRemotePort());
 					if (!SMBSyncUtil.isSmbHostAddressConnected(mipl.getRemoteAddr(),
 							Integer.parseInt(mipl.getRemotePort()))) {
 						String msg=String.format(mGp.svcContext.getString(R.string.msgs_mirror_remote_addr_not_connected_with_port),
@@ -663,6 +669,8 @@ public class MirrorIO implements Runnable {
 						isSyncParmError=true;
 					}
 				} else {//Check for default report port
+					mRemoteHostParmsAvailable=true;
+					mRemoteHostAddress=mipl.getRemoteAddr();
 					if (!SMBSyncUtil.isSmbHostAddressConnected(mipl.getRemoteAddr())) {
 						String msg=String.format(mGp.svcContext.getString(R.string.msgs_mirror_remote_addr_not_connected),
 								mipl.getRemoteAddr());
@@ -672,6 +680,8 @@ public class MirrorIO implements Runnable {
 					}
 				}
 			} else {
+				mRemoteHostName=mipl.getHostName();
+				mRemoteHostParmsAvailable=true;
 				if (resolveHostName(mipl.getHostName())==null) {
 					String msg=mGp.svcContext.getString(R.string.msgs_mirror_remote_name_not_found)+
 							mipl.getHostName();
@@ -705,6 +715,30 @@ public class MirrorIO implements Runnable {
 				+ ", fileFilter=" + mipl.getFileFilter()
 				+ ", dirFilter=" + mipl.getDirFilter());
  			addDebugLogMsg(9,"I","syncRemotePassword=" + syncRemotePassword);
+		}
+	};
+	
+	private String mRemoteHostName="", mRemoteHostAddress="";
+	private int mRemoteHostPort=-1;
+	private boolean mRemoteHostParmsAvailable=false;
+	
+	private void checkRemoteHostAvailable() {
+		if (mRemoteHostParmsAvailable) {
+			boolean result=false;
+			String msg_txt="";
+			if (mRemoteHostPort!=-1) {
+				result=SMBSyncUtil.isSmbHostAddressConnected(mRemoteHostAddress, mRemoteHostPort);
+				msg_txt="Currently, remote server "+mRemoteHostAddress+"("+String.valueOf(mRemoteHostPort)+") is ";
+			} else if (mRemoteHostName.equals("")) {
+				result=SMBSyncUtil.isSmbHostAddressConnected(mRemoteHostAddress);
+				msg_txt="Currently, remote server "+mRemoteHostAddress+" is ";
+			} else {
+				if (resolveHostName(mRemoteHostName)!=null) result=true;
+				msg_txt="Currently, remote server "+mRemoteHostName+" is ";
+			}
+			if (result) msg_txt+="can be connected.";
+			else msg_txt+="the connection impossible.";
+			addLogMsg("I","",msg_txt);
 		}
 	};
 	
@@ -1297,6 +1331,7 @@ public class MirrorIO implements Runnable {
 			String[] e_msg=NetworkUtil.analyzeNtStatusCode(e, mGp.svcContext, 
 					targetUrl,ntlmPasswordAuth.getUsername());
 			addLogMsg("E","",e_msg[0]);//e.toString());
+			checkRemoteHostAvailable();
 			printStackTraceElement(e.getStackTrace());
 			isExceptionOccured=true;
 			tcMirror.setThreadMessage(e_msg[0]);
@@ -1423,6 +1458,7 @@ public class MirrorIO implements Runnable {
 			String[] e_msg=NetworkUtil.analyzeNtStatusCode(e, mGp.svcContext, 
 					targetUrl,ntlmPasswordAuth.getUsername());
 			addLogMsg("E","",e_msg[0]);//e.toString());
+			checkRemoteHostAvailable();
 			printStackTraceElement(e.getStackTrace());
 			isExceptionOccured=true;
 			tcMirror.setThreadMessage(e_msg[0]);
@@ -1529,6 +1565,7 @@ public class MirrorIO implements Runnable {
 //		} catch (SmbException e) {
 //			addLogMsg("E","","mirrorCopyLocalToRemote From="+masterUrl+", To="+targetUrl);
 //			addLogMsg("E","",e.getMessage());//e.toString());
+//			checkRemoteHostAvailable();
 //			printStackTraceElement(e.getStackTrace());
 //			isExceptionOccured=true;
 //			tcMirror.setThreadMessage(e.getMessage());
@@ -1702,7 +1739,7 @@ public class MirrorIO implements Runnable {
 				return -1;
 			}
 		} catch (MalformedURLException e) {
-			addLogMsg("E","","mirrorCopyRemoteToLocal From="+masterUrl+", To="+targetUrl);
+			addLogMsg("E","","mirrorCopyRemoteToLocal MFURL From="+masterUrl+", To="+targetUrl);
 			addLogMsg("E","",e.getMessage());//e.toString());
 			printStackTraceElement(e.getStackTrace());
 			isExceptionOccured=true;
@@ -1710,17 +1747,18 @@ public class MirrorIO implements Runnable {
 			if (!tmp_target.equals("")) deleteLocalTempFile(tmp_target);
 			return -1;
 		} catch (SmbException e) {
-			addLogMsg("E","","mirrorCopyRemoteToLocal From="+masterUrl+", To="+targetUrl);
+			addLogMsg("E","","mirrorCopyRemoteToLocal SMBE From="+masterUrl+", To="+targetUrl);
 			String[] e_msg=NetworkUtil.analyzeNtStatusCode(e, mGp.svcContext, 
 					masterUrl,ntlmPasswordAuth.getUsername());
 			addLogMsg("E","",e_msg[0]);//e.toString());
+			checkRemoteHostAvailable();
 			printStackTraceElement(e.getStackTrace());
 			isExceptionOccured=true;
 			tcMirror.setThreadMessage(e_msg[0]);
 			if (!tmp_target.equals("")) deleteLocalTempFile(tmp_target);
 			return -1;
 		} catch (UnknownHostException e) {
-			addLogMsg("E","","mirrorCopyRemoteToLocal From="+masterUrl+", To="+targetUrl);
+			addLogMsg("E","","mirrorCopyRemoteToLocal UKH From="+masterUrl+", To="+targetUrl);
 			addLogMsg("E","",e.getMessage());//e.toString());
 			printStackTraceElement(e.getStackTrace());
 			isExceptionOccured=true;
@@ -1728,7 +1766,7 @@ public class MirrorIO implements Runnable {
 			if (!tmp_target.equals("")) deleteLocalTempFile(tmp_target);
 			return -1;
 		} catch (FileNotFoundException e) {
-			addLogMsg("E","","mirrorCopyRemoteToLocal From="+masterUrl+", To="+targetUrl);
+			addLogMsg("E","","mirrorCopyRemoteToLocal FNFND From="+masterUrl+", To="+targetUrl);
 			addLogMsg("E","",e.getMessage());//e.toString());
 			printStackTraceElement(e.getStackTrace());
 			isExceptionOccured=true;
@@ -1736,7 +1774,7 @@ public class MirrorIO implements Runnable {
 			if (!tmp_target.equals("")) deleteLocalTempFile(tmp_target);
 			return -1;
 		} catch (IOException e) {
-			addLogMsg("E","","mirrorCopyRemoteToLocal From="+masterUrl+", To="+targetUrl);
+			addLogMsg("E","","mirrorCopyRemoteToLocal IOE From="+masterUrl+", To="+targetUrl);
 			addLogMsg("E","",e.getMessage());//e.toString());
 			printStackTraceElement(e.getStackTrace());
 			isExceptionOccured=true;
@@ -1897,6 +1935,7 @@ public class MirrorIO implements Runnable {
 		} catch (SmbException e) {
 			addLogMsg("E","",e.getMessage());//e.toString());
 			addLogMsg("E","","From="+masterUrl+", To="+targetUrl);
+			checkRemoteHostAvailable();
 			printStackTraceElement(e.getStackTrace());
 			isExceptionOccured=true;
 			String[] e_msg=NetworkUtil.analyzeNtStatusCode(e, mGp.svcContext, 
@@ -2027,6 +2066,7 @@ public class MirrorIO implements Runnable {
 			String[] e_msg=NetworkUtil.analyzeNtStatusCode(e, mGp.svcContext, 
 					masterUrl,ntlmPasswordAuth.getUsername());
 			addLogMsg("E","",e_msg[0]);//e.toString());
+			checkRemoteHostAvailable();
 			printStackTraceElement(e.getStackTrace());
 			isExceptionOccured=true;
 			tcMirror.setThreadMessage(e_msg[0]);
@@ -2200,6 +2240,7 @@ public class MirrorIO implements Runnable {
 			String[] e_msg=NetworkUtil.analyzeNtStatusCode(e, mGp.svcContext, 
 					targetUrl,ntlmPasswordAuth.getUsername());
 			addLogMsg("E","",e_msg[0]);//e.toString());
+			checkRemoteHostAvailable();
 			isExceptionOccured=true;
 			tcMirror.setThreadMessage(e_msg[0]);
 			if (!tmp_target.equals("")) deleteRemoteTempFile(tmp_target);
@@ -2350,6 +2391,7 @@ public class MirrorIO implements Runnable {
 //			printStackTraceElement(e.getStackTrace());
 //			addLogMsg("E","",e.getMessage());//e.toString());
 //			addLogMsg("E","","From="+masterUrl+", To="+targetUrl);
+//			checkRemoteHostAvailable();
 //			isExceptionOccured=true;
 //			tcMirror.setThreadMessage(e.getMessage());
 //			if (!tmp_target.equals("")) deleteLocalTempFile(tmp_target);
@@ -3304,6 +3346,7 @@ public class MirrorIO implements Runnable {
 			String[] e_msg=NetworkUtil.analyzeNtStatusCode(e, mGp.svcContext, 
 					hf.getPath(),ntlmPasswordAuth.getUsername());
 			addLogMsg("E","",e_msg[0]);//e.toString());
+			checkRemoteHostAvailable();
 			printStackTraceElement(e.getStackTrace());
 			isExceptionOccured=true;
 			tcMirror.setThreadMessage(e_msg[0]);
