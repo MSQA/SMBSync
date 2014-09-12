@@ -68,7 +68,6 @@ import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.text.ClipboardManager;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -205,7 +204,6 @@ public class SMBSyncMain extends FragmentActivity {
 		loadMsgString();
 		initSettingsParms();
 		applySettingParms();
-		initJcifsOption();
 		
 		checkExternalStorage();
 		mGp.SMBSync_Internal_Root_Dir=getFilesDir().toString();
@@ -216,6 +214,8 @@ public class SMBSyncMain extends FragmentActivity {
 		
 		util.addDebugLogMsg(1,"I","onCreate entered, "+"resartStatus="+restartStatus+
 					", isActivityForeground="+util.isActivityForeground());
+		
+		initJcifsOption();
 		
 		getApplVersionName();
 
@@ -235,9 +235,6 @@ public class SMBSyncMain extends FragmentActivity {
 //					e.printStackTrace();
 //				}
 //		}
-		File lf1=new File("/");
-		File lf2=new File("/test");
-		Log.v("","canRead="+lf1.canRead()+", canWrite="+lf1.canWrite()+", exists="+lf2.exists());
 	};
 	
 	@Override
@@ -943,6 +940,7 @@ public class SMBSyncMain extends FragmentActivity {
 			@Override
 			public void positiveResponse(Context c, Object[] o) {
 				applySettingParms();
+				checkJcifsOptionChanged();
 				SchedulerMain.setTimer(mContext, SCHEDULER_INTENT_SET_TIMER);
 			}
 
@@ -1283,10 +1281,10 @@ public class SMBSyncMain extends FragmentActivity {
 		
 		if (!mGp.settingAutoStart) mGp.settingAutoTerm=false;
 		
-		if (isJcifsOptionChanged() && restartStatus!=0) {
-			commonDlg.showCommonDialog(false,"W",
-					"",mContext.getString(R.string.msgs_smbsync_main_settings_jcifs_changed_restart),null);
-		}
+//		if (isJcifsOptionChanged() && restartStatus!=0) {
+//			commonDlg.showCommonDialog(false,"W",
+//					"",mContext.getString(R.string.msgs_smbsync_main_settings_jcifs_changed_restart),null);
+//		}
 		
 //		refreshOptionMenu();
 //		
@@ -1623,6 +1621,7 @@ public class SMBSyncMain extends FragmentActivity {
 			util.addDebugLogMsg(1,"I","Return from Settings.");
 			util.setActivityIsForeground(true);
 			applySettingParms();
+			checkJcifsOptionChanged();
 			listSMBSyncOption();
 			enableProfileConfirmCopyDeleteIfRequired();
 		} else if (requestCode==1) {
@@ -3284,8 +3283,8 @@ public class SMBSyncMain extends FragmentActivity {
 		return alp;
 	};
 	
-	final private boolean isJcifsOptionChanged() {
-		boolean result=false;
+	final private boolean checkJcifsOptionChanged() {
+		boolean changed=false;
 		
 		String prevSmbLogLevel=settingsSmbLogLevel,	prevSmbRcvBufSize=settingsSmbRcvBufSize,
 				prevSmbSndBufSize=settingsSmbSndBufSize, prevSmbListSize=settingsSmbListSize,
@@ -3296,43 +3295,48 @@ public class SMBSyncMain extends FragmentActivity {
 		
 		initJcifsOption();
 		
-		if (!settingsSmbLmCompatibility.equals(prevSmbLmCompatibility)) result=true;
-		else if (!settingsSmbUseExtendedSecurity.equals(prevSmbUseExtendedSecurity)) result=true;
+		if (!settingsSmbLmCompatibility.equals(prevSmbLmCompatibility)) changed=true;
+		else if (!settingsSmbUseExtendedSecurity.equals(prevSmbUseExtendedSecurity)) changed=true;
 		
-		if (!result) {
+		if (!changed) {
 			if (settingsSmbPerfClass.equals("0") || settingsSmbPerfClass.equals("1") ||
 					settingsSmbPerfClass.equals("2")) {
 				if (!settingsSmbPerfClass.equals(prevSmbPerfClass)) {
-					result=true;
+					changed=true;
 //					Log.v("","perfClass");
 				}
 			} else {
 				if (!settingsSmbLogLevel.equals(prevSmbLogLevel)) {
-					result=true;
+					changed=true;
 //					Log.v("","logLevel");
 				} else if (!settingsSmbRcvBufSize.equals(prevSmbRcvBufSize)) {
-					result=true;
+					changed=true;
 //					Log.v("","rcvBuff");
 				}
 				else if (!settingsSmbSndBufSize.equals(prevSmbSndBufSize)) {
-					result=true;
+					changed=true;
 //					Log.v("","sndBuff");
 				}
 				else if (!settingsSmbListSize.equals(prevSmbListSize)) {
-					result=true;
+					changed=true;
 //					Log.v("","listSize");
 				}
 				else if (!settingsSmbMaxBuffers.equals(prevSmbMaxBuffers)) {
-					result=true;
+					changed=true;
 //					Log.v("","maxBuff");
 				}
 				else if (!settingsSmbTcpNodelay.equals(prevSmbTcpNodelay)) {
-					result=true;
+					changed=true;
 //					Log.v("","tcpNodelay");
 				}
 			}
 		}
-		return result;
+		if (changed) {
+			commonDlg.showCommonDialog(false,"W",
+					"",mContext.getString(R.string.msgs_smbsync_main_settings_jcifs_changed_restart),null);
+		}
+
+		return changed;
 	};
 
 	private String settingsSmbLogLevel="0",	settingsSmbRcvBufSize="16644",
