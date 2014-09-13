@@ -54,4 +54,7 @@
 	<string name="msgs_mirror_remote_addr_not_connected">Can not be connecting to specified remote SMB host. IP Address=%s</string>
 	<string name="msgs_mirror_remote_addr_not_connected_with_port" formatted="false">Can not be connecting to specified remote SMB host. IP Address=%s, Port=%s</string>
 							
+	<string name="msgs_mirror_remote_server_can_be_connected">Remote server %s is can be connected</string>
+	<string name="msgs_mirror_remote_server_the_connection_impossible">Remote server %s is the connection impossible</string>
+	
 </resources>

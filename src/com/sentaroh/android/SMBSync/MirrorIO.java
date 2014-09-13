@@ -727,19 +727,20 @@ public class MirrorIO implements Runnable {
 		if (mRemoteHostParmsAvailable) {
 			boolean result=false;
 			String msg_txt="";
+			String srv="";
 			if (mRemoteHostPort!=-1) {
 				result=SMBSyncUtil.isSmbHostAddressConnected(mRemoteHostAddress, mRemoteHostPort);
-				msg_txt="Currently, remote server "+mRemoteHostAddress+"("+String.valueOf(mRemoteHostPort)+") is ";
+				srv=mRemoteHostAddress+"("+String.valueOf(mRemoteHostPort)+")";
 			} else if (mRemoteHostName.equals("")) {
 				result=SMBSyncUtil.isSmbHostAddressConnected(mRemoteHostAddress);
-				msg_txt="Currently, remote server "+mRemoteHostAddress+" is ";
+				srv=mRemoteHostAddress;
 			} else {
 				if (resolveHostName(mRemoteHostName)!=null) result=true;
-				msg_txt="Currently, remote server "+mRemoteHostName+" is ";
+				srv=mRemoteHostName;
 			}
-			if (result) msg_txt+="can be connected.";
-			else msg_txt+="the connection impossible.";
-			addLogMsg("I","",msg_txt);
+			if (result) msg_txt=mGp.svcContext.getString(R.string.msgs_mirror_remote_server_can_be_connected);
+			else msg_txt=mGp.svcContext.getString(R.string.msgs_mirror_remote_server_the_connection_impossible);
+			addLogMsg("I","",String.format(msg_txt, srv));
 		}
 	};
 	
