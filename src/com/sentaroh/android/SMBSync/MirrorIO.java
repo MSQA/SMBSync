@@ -74,6 +74,7 @@ import android.webkit.MimeTypeMap;
 
 import com.sentaroh.android.Utilities.DateUtil;
 import com.sentaroh.android.Utilities.LocalMountPoint;
+import com.sentaroh.android.Utilities.MiscUtil;
 import com.sentaroh.android.Utilities.NetworkUtil;
 import com.sentaroh.android.Utilities.NotifyEvent;
 import com.sentaroh.android.Utilities.ThreadCtrl;
@@ -2674,10 +2675,10 @@ public class MirrorIO implements Runnable {
 				String pre_str="";
 				if (!filter.startsWith("*")) pre_str="^";
 				if (prefix.equals("I")) {
-					ffinc = ffinc+cni+pre_str+convertRegExp(filter);
+					ffinc = ffinc+cni+pre_str+MiscUtil.convertRegExp(filter);
 					cni="|";
 				} else {
-					ffexc = ffexc+cne+pre_str+convertRegExp(filter);
+					ffexc = ffexc+cne+pre_str+MiscUtil.convertRegExp(filter);
 					cne="|";
 				}
 			}
@@ -2692,10 +2693,10 @@ public class MirrorIO implements Runnable {
 				filter="/"+df.get(j).substring(1,df.get(j).length())+"/";
 				createDirFilterList(prefix,filter);
 				if (prefix.equals("I")) {
-					dfinc = dfinc+cni+convertRegExp(filter);
+					dfinc = dfinc+cni+MiscUtil.convertRegExp(filter);
 					cni="|";
 				} else {
-					dfexc = dfexc+cne+convertRegExp(filter);
+					dfexc = dfexc+cne+MiscUtil.convertRegExp(filter);
 					cne="|";
 				}
 			}
@@ -2721,7 +2722,7 @@ public class MirrorIO implements Runnable {
 		
 		for (int k=0;k<filter_array.length;k++) 
 			pattern_array[k] = 
-				Pattern.compile("^"+convertRegExp(filter_array[k]), flags);
+				Pattern.compile("^"+MiscUtil.convertRegExp(filter_array[k]), flags);
 		
 		boolean[] pattern_notreg=new boolean[pattern_array.length];
 		
@@ -2737,7 +2738,7 @@ public class MirrorIO implements Runnable {
 //			Log.v("","filter="+filter+", conv="+convertRegExp(filter)+
 //					", comp="+Pattern.compile(convertRegExp(filter), flags));
 			dirExcludeFilterList.add(
-					Pattern.compile(convertRegExp(filter), flags));
+					Pattern.compile(MiscUtil.convertRegExp(filter), flags));
 		}
 	};
 	
@@ -3211,59 +3212,6 @@ public class MirrorIO implements Runnable {
 //				", include="+inc+", exclude="+exc+", result="+result+", fp="+dir);
 		return result;
 	}
-
-	final private String convertRegExp(String filter) {
-
-		if (filter==null || filter.equals("")) return "";
-		
-		// 正規表現に変換
-		String out = "";
-
-		for (int i = 0; i < filter.length(); i++) {
-			String temp = filter.substring(i, i + 1);
-			if (temp.equals(";")) {// 区切り文字
-				if ((i + 1) > filter.length()) {
-					// 終了
-					break;
-				} else {
-					out = out + "|";
-				}
-			} else if (temp.equals("\\")) {
-				out = out + "\\\\";
-			} else if (temp.equals("*")) {
-				out = out + ".*";
-			} else if (temp.equals(".")) {
-				out = out + "\\.";
-			} else if (temp.equals("?")) {
-				out = out + ".";
-			} else if (temp.equals("+")) {
-				out = out + "\\+";
-			} else if (temp.equals("{")) {
-				out = out + "\\{";
-			} else if (temp.equals("}")) {
-				out = out + "\\}";
-			} else if (temp.equals("(")) {
-				out = out + "\\(";
-			} else if (temp.equals(")")) {
-				out = out + "\\)";
-			} else if (temp.equals("[")) {
-				out = out + "\\[";
-			} else if (temp.equals("]")) {
-				out = out + "\\]";
-			} else if (temp.equals("^")) {
-				out = out + "\\^";
-			} else if (temp.equals("$")) {
-				out = out + "\\$";
-			} else if (temp.equals("[")) {
-				out = out + "\\[";
-			} else
-				out = out + temp;
-		}
-		String result=out;
-		if (mGp.debugLevel>=2) 
-			addDebugLogMsg(2,"I","convertRegExp out="+result+", in="+filter);
-		return result;
-	};
 
 	final private void notifyThreadTerminate() {
 		mUtil.flushLogFile();
