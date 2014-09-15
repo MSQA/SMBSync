@@ -303,6 +303,11 @@ class ProfileListItem implements Serializable,Comparable<ProfileListItem>{
 	private ArrayList<String> profileFileFilter =new ArrayList<String>();
 	private ArrayList<String> profileDirFilter =new ArrayList<String>();
 	
+	private String profileRetryCount="0";
+	private boolean profileExcludeEmptyDir=false;
+	private boolean profileExcludeHiddenFile=false;
+	private boolean profileExcludeHiddenDir=false;
+	
 	
 	// constructor for local profile
 	public ProfileListItem(String pfg, String pft,String pfn, 
@@ -339,7 +344,8 @@ class ProfileListItem implements Serializable,Comparable<ProfileListItem>{
 			String pf_synctype,String pf_master_type,String pf_master_name,
 			String pf_target_type,String pf_target_name,
 			ArrayList<String> ff, ArrayList<String> df, boolean pd, boolean cnf, 
-			boolean jlm, boolean nulm_remote, boolean ic)
+			boolean jlm, boolean nulm_remote, String retry_count, boolean exclude_empty_dir, 
+			boolean exclude_hidden_dir, boolean exclude_hidden_file, boolean ic)
 	{
 		profileGroup=pfg;
 		profileType = pft;
@@ -357,6 +363,12 @@ class ProfileListItem implements Serializable,Comparable<ProfileListItem>{
 		profileForceLastModifiedUseSmbsync=jlm;
 		profileChk = ic;
 		profileNotUsedLastModifiedForRemote=nulm_remote;
+		profileRetryCount=retry_count;
+		profileExcludeEmptyDir=exclude_empty_dir;
+		
+		profileExcludeHiddenFile=exclude_hidden_file;
+		profileExcludeHiddenDir=exclude_hidden_dir;
+
 	};
 
 	public String getGroup()	{return profileGroup;}
@@ -408,6 +420,18 @@ class ProfileListItem implements Serializable,Comparable<ProfileListItem>{
 	public void setChecked(boolean p)		{profileChk=p;}
 	public void setLocalMountPoint(String p) {profileLocalMountPoint=p;}
 	public String getLocalMountPoint() {return profileLocalMountPoint;}
+
+	public String getRetryCount() {return profileRetryCount;}
+	public void setRetryCount(String p) {profileRetryCount=p;}
+
+	public boolean isExcludeEmptyDirectory() {return profileExcludeEmptyDir;}
+	public void setExcludeEmptyDirectory(boolean p) {profileExcludeEmptyDir=p;}
+
+	public boolean isExcludeHiddenFile() {return profileExcludeHiddenFile;}
+	public void setExcludeHiddenFile(boolean p) {profileExcludeHiddenFile=p;}
+
+	public boolean isExcludeHiddenDirectory() {return profileExcludeHiddenDir;}
+	public void setExcludeHiddenDirectory(boolean p) {profileExcludeHiddenDir=p;}
 
 	@SuppressLint("DefaultLocale")
 	@Override

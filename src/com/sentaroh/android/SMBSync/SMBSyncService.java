@@ -129,7 +129,10 @@ public class SMBSyncService extends Service {
 		@Override
 		public void aidlCancelThread() throws RemoteException {
 			mUtil.addDebugLogMsg(1, "I", "aidlCancelThread entered");
-			tcMirror.setDisabled();
+			synchronized(tcMirror) {
+				tcMirror.setDisabled();
+				tcMirror.notify();
+			}
 		}
 
 		@Override

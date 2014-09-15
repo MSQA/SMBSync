@@ -2322,7 +2322,11 @@ public class SMBSyncMain extends FragmentActivity {
 					item.getFileFilter(),item.getDirFilter(),
 					item.isMasterDirFileProcess(),item.isConfirmRequired(),
 					item.isForceLastModifiedUseSmbsync(),
-					item.isNotUseLastModifiedForRemote(), "");
+					item.isNotUseLastModifiedForRemote(),
+					item.getRetryCount(), 
+					item.isExcludeEmptyDirectory(),
+					item.isExcludeHiddenDirectory(),
+					item.isExcludeHiddenFile(),"");
 		}
 
 	};
@@ -3260,7 +3264,11 @@ public class SMBSyncMain extends FragmentActivity {
 					item.isMasterDirFileProcess(),
 					item.isConfirmRequired(),
 					item.isForceLastModifiedUseSmbsync(),
-					item.isNotUseLastModifiedForRemote());
+					item.isNotUseLastModifiedForRemote(),
+					Integer.parseInt(item.getRetryCount()),
+					item.isExcludeEmptyDirectory(),
+					item.isExcludeHiddenDirectory(),
+					item.isExcludeHiddenFile());
 					if (mirror_prof_master_type.equals("L") && mirror_prof_target_type.equals("L")) {
 						alp.setMasterLocalDir(master_local_dir);
 						alp.setMasterLocalMountPoint(master_local_mp);

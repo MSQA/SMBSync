@@ -56,5 +56,8 @@
 	
 	<string name="msgs_mirror_remote_server_can_be_connected">リモートサーバー%sに接続できます</string>
 	<string name="msgs_mirror_remote_server_the_connection_impossible">リモートサーバー%sに接続できません</string>
+	
+	<string name="msgs_mirror_retry_issued">同期をリトライします</string>
+	<string name="msgs_mirror_retry_ignored_by_limit">同期リトライ回数を超えましたので、リトライを中止します</string>
 		
 </resources>

@@ -52,6 +52,7 @@ public class Constants {
 	public final static String SMBSYNC_PROFILE_FILE_NAME_V3="profile_v3.txt";
 	public final static String SMBSYNC_PROFILE_FILE_NAME_V4="profile_v4.txt";
 	public final static String SMBSYNC_PROFILE_FILE_NAME_V5="profile_v5.txt";
+	public final static String SMBSYNC_PROFILE_FILE_NAME_V6="profile_v6.txt";
 	
 	public final static String SMBSYNC_SERIALIZABLE_FILE_NAME="serial.txt";
 	public final static String SMBSYNC_LOCAL_FILE_LAST_MODIFIED_NAME_V1=".SMBSync_lastmod_holder.";
@@ -71,6 +72,7 @@ public class Constants {
 	public final static String SMBSYNC_PROF_VER3="PROF 3";
 	public final static String SMBSYNC_PROF_VER4="PROF 4";
 	public final static String SMBSYNC_PROF_VER5="PROF 5";
+	public final static String SMBSYNC_PROF_VER6="PROF 6";
 	public final static String SMBSYNC_PROF_ENC="ENC";
 	public final static String SMBSYNC_PROF_DEC="DEC";
 	
@@ -113,4 +115,5 @@ public class Constants {
 	public static final String SMBSYNC_PROFILE_CONFIRM_COPY_DELETE_NOT_REQUIRED = "NOT_REQUIRED";
 	public static final String SMBSYNC_PROFILE_CONFIRM_COPY_DELETE_REQUIRED = "REQUIRED";
 
+	public static final String SMBSYNC_PROFILE_RETRY_COUNT="3";
 }

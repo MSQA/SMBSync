@@ -57,4 +57,7 @@
 	<string name="msgs_mirror_remote_server_can_be_connected">Remote server %s is can be connected</string>
 	<string name="msgs_mirror_remote_server_the_connection_impossible">Remote server %s is the connection impossible</string>
 	
+	<string name="msgs_mirror_retry_issued">Sync is retried</string>
+	<string name="msgs_mirror_retry_ignored_by_limit">Abort the retry because exceeded the number of retries</string>
+	
 </resources>

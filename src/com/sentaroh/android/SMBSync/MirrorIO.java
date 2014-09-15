@@ -140,6 +140,16 @@ public class MirrorIO implements Runnable {
 			syncProfileConfirmRequired=false, syncProfileUseJavaLastModified=true;
 	private boolean syncProfileNotUseLastModifiedForRemote=false;
 	
+	private boolean syncProfileExcludeEmptyDirectory=true,
+			syncProfileExcludeHiddenDirectory=false,
+			syncProfileExcludeHiddenFile=false;
+	
+	private boolean isExceptionRetryRequired=false;
+	private boolean syncProfileRetryEffective=false;
+	private int syncProfileRetryCount=1;
+	private int syncExecRetryCount=0;
+	private int syncProfileRetryIntervalTime=30; 
+	
 	private ArrayList<String> mediaStoreImageList = new ArrayList<String>();
 	private ArrayList<String> mediaStoreAudioList = new ArrayList<String>();
 	private ArrayList<String> mediaStoreVideoList = new ArrayList<String>();
@@ -150,8 +160,6 @@ public class MirrorIO implements Runnable {
 	
 	private int timeZone;
 
-	private ArrayList<String> copiedFileList;
-	
 //	private ArrayList<String> mHistoryCopiedList,mHistoryDeletedList,mHistoryIgnoredList;
 	
 	private boolean isSyncParmError;
@@ -347,12 +355,12 @@ public class MirrorIO implements Runnable {
         
 		NotificationUtil.showOngoingMsg(mGp,msgs_mirror_task_started);
 		waitMediaScanner(true);//wait for media scanner service connection
-		copiedFileList = new ArrayList<String>();
 		totalCopyCnt=totalDeleteCnt=totalIgnoreCnt=totalWarningMsgCnt=totalErrorMsgCnt=0;
 		boolean error_occured_but_ignored=false;
 		for (int i = 0; i < syncList.size(); i++) {
 			totalTransferByte = totalTransferTime= 0;
 			isExceptionOccured=isSyncParmError=false;
+			isExceptionRetryRequired=false;
 			copyCount=deleteCount=ignoreCount=0;
 //			mHistoryCopiedList=new ArrayList<String>();
 //			mHistoryDeletedList=new ArrayList<String>();
@@ -370,17 +378,13 @@ public class MirrorIO implements Runnable {
 					//sync 開始
 					if (LocalMountPoint.isMountPointAvailable(localUrl)) {
 						if (syncType.equals(SMBSYNC_SYNC_TYPE_MIRROR)) { // mirror
-							copiedFileList.clear();
 							doSyncMirror(syncList.get(i));
 						} else if (syncType.equals(SMBSYNC_SYNC_TYPE_COPY)) { // copy
-							copiedFileList.clear();
 							doSyncCopy(syncList.get(i));
 						} else if (syncType.equals(SMBSYNC_SYNC_TYPE_MOVE)) { // move
-							copiedFileList.clear();
 							doSyncMove(syncList.get(i));
 						} else if (syncType.equals(SMBSYNC_SYNC_TYPE_SYNC)) { // sync
 							// sync process
-							copiedFileList.clear();
 						} else {
 							// invalid mirror type was specified
 							addLogMsg("E","",
@@ -550,6 +554,10 @@ public class MirrorIO implements Runnable {
 
 		syncProfileNotUseLastModifiedForRemote=mipl.isNotUseLastModifiedForRemote();
 		
+		syncProfileExcludeEmptyDirectory=mipl.isExcludeEmptyDirectory();
+		syncProfileExcludeHiddenDirectory=mipl.isExcludeHiddenDirectory();
+		syncProfileExcludeHiddenFile=mipl.isExcludeHiddenFile();
+
 		syncRemotePort="";
 		String sep="";
 		if (!mipl.getRemotePort().equals("")) {
@@ -572,13 +580,19 @@ public class MirrorIO implements Runnable {
 		
 //		compileFilter(mipl.getFileFilter(),mipl.getDirFilter());
 		
-		
 		if (syncMasterProfType.equals("L") && syncTargetProfType.equals("L")) {
+			syncProfileRetryEffective=false;
 			syncLocalToLocal=true;
 			localUrl=syncLocalDir=mipl.getTargetLocalMountPoint();
 			syncMasterLocalDir=mipl.getMasterLocalMountPoint()+"/"+mipl.getMasterLocalDir();
 			syncTargetLocalDir=mipl.getTargetLocalMountPoint()+"/"+mipl.getTargetLocalDir();
-		} else syncLocalToLocal=false;
+		} else {
+			syncLocalToLocal=false;
+			if (mipl.getReryCount()>0) {
+				syncProfileRetryEffective=true;
+				syncProfileRetryCount=3;
+			}
+		}
 
 // Check local directory access		
 		if (syncMasterProfType.equals("L") && syncTargetProfType.equals("L")) {
@@ -713,6 +727,9 @@ public class MirrorIO implements Runnable {
 				+ ", syncProfileConfirmRequired="+syncProfileConfirmRequired
 				+ ", syncProfileUseJavaLastModified="+syncProfileUseJavaLastModified
 				+ ", syncProfileNotUseLastModifiedForRemote="+syncProfileNotUseLastModifiedForRemote
+				+ ", syncProfileExcludeEmptyDirectory="+syncProfileExcludeEmptyDirectory
+				+ ", syncProfileExcludeHiddenDirectory="+syncProfileExcludeHiddenDirectory
+				+ ", syncProfileExcludeHiddenFile="+syncProfileExcludeHiddenFile
 				+ ", fileFilter=" + mipl.getFileFilter()
 				+ ", dirFilter=" + mipl.getDirFilter());
  			addDebugLogMsg(9,"I","syncRemotePassword=" + syncRemotePassword);
@@ -723,9 +740,10 @@ public class MirrorIO implements Runnable {
 	private int mRemoteHostPort=-1;
 	private boolean mRemoteHostParmsAvailable=false;
 	
-	private void checkRemoteHostAvailable() {
+	@SuppressWarnings("unused")
+	private boolean checkRemoteHostAvailable(boolean msg) {
+		boolean result=false;
 		if (mRemoteHostParmsAvailable) {
-			boolean result=false;
 			String msg_txt="";
 			String srv="";
 			if (mRemoteHostPort!=-1) {
@@ -738,10 +756,13 @@ public class MirrorIO implements Runnable {
 				if (resolveHostName(mRemoteHostName)!=null) result=true;
 				srv=mRemoteHostName;
 			}
-			if (result) msg_txt=mGp.svcContext.getString(R.string.msgs_mirror_remote_server_can_be_connected);
-			else msg_txt=mGp.svcContext.getString(R.string.msgs_mirror_remote_server_the_connection_impossible);
-			addLogMsg("I","",String.format(msg_txt, srv));
+			if (msg) {
+				if (result) msg_txt=mGp.svcContext.getString(R.string.msgs_mirror_remote_server_can_be_connected);
+				else msg_txt=mGp.svcContext.getString(R.string.msgs_mirror_remote_server_the_connection_impossible);
+				addLogMsg("I","",String.format(msg_txt, srv));
+			}
 		}
+		return result;
 	};
 	
 	private String resolveHostName(String hn) {
@@ -762,7 +783,7 @@ public class MirrorIO implements Runnable {
 			if (!isExceptionOccured) {
 				compileFilter(mipl.getFileFilter(),mipl.getDirFilter());
 				mirrorCopyLocalToLocal(false, syncMasterLocalDir,
-						syncTargetLocalDir, syncTargetLocalDir, copiedFileList);
+						syncTargetLocalDir, syncTargetLocalDir);
 				if (!isExceptionOccured && !isSyncParmError) {
 					mirrorDeleteLocalToLocalFile(syncMasterLocalDir, syncTargetLocalDir);
 				}
@@ -772,16 +793,33 @@ public class MirrorIO implements Runnable {
 				// Mirror remote -> local
 				mirrorIoRootDir=remoteUrl;
 				compileFilter(mipl.getFileFilter(),mipl.getDirFilter());
-				mirrorCopyRemoteToLocal(false, remoteUrl, localUrl,copiedFileList);
-				if (!isExceptionOccured && !isSyncParmError)
-					mirrorDeleteLocalFile(remoteUrl, localUrl);
+				syncExecRetryCount=0;
+				while(true) {
+					mirrorCopyRemoteToLocal(false, remoteUrl, localUrl);
+					if (!checkRetry()) break;
+				}
+				if (!isExceptionOccured && !isSyncParmError) {
+					syncExecRetryCount=0;
+					while(true) {
+						mirrorDeleteLocalFile(remoteUrl, localUrl);
+						if (!checkRetry()) break;
+					}
+				}
 			} else if (syncMasterProfType.equals(SMBSYNC_PROF_TYPE_LOCAL)) { 
 				// Mirror local -> remote
 				mirrorIoRootDir=localUrl;
 				compileFilter(mipl.getFileFilter(),mipl.getDirFilter());
-				mirrorCopyLocalToRemote(false, localUrl,remoteUrl, copiedFileList);
+				syncExecRetryCount=0;
+				while(true) {
+					mirrorCopyLocalToRemote(false, localUrl,remoteUrl);
+					if (!checkRetry()) break;
+				}
 				if (!isExceptionOccured && !isSyncParmError) {
-					mirrorDeleteRemoteFile(localUrl, remoteUrl);
+					syncExecRetryCount=0;
+					while(true) {
+						mirrorDeleteRemoteFile(localUrl, remoteUrl);
+						if (!checkRetry()) break;
+					}
 				}
 			} else { 
 				addLogMsg("E","","invalid master profile type specified:"+syncMasterProfType);
@@ -803,19 +841,27 @@ public class MirrorIO implements Runnable {
 			if (!isExceptionOccured) {
 				compileFilter(mipl.getFileFilter(),mipl.getDirFilter());
 				mirrorCopyLocalToLocal(false, syncMasterLocalDir,
-						syncTargetLocalDir, syncTargetLocalDir, copiedFileList);
+						syncTargetLocalDir, syncTargetLocalDir);
 			}
 		} else {
 			if (syncMasterProfType.equals(SMBSYNC_PROF_TYPE_REMOTE)) { 
 				// Copy remote -> local
 				mirrorIoRootDir=remoteUrl;
 				compileFilter(mipl.getFileFilter(),mipl.getDirFilter());
-				mirrorCopyRemoteToLocal(false, remoteUrl, localUrl,copiedFileList);
+				syncExecRetryCount=0;
+				while(true) {
+					mirrorCopyRemoteToLocal(false, remoteUrl, localUrl);
+					if (!checkRetry()) break;
+				}
 			} else if (syncMasterProfType.equals(SMBSYNC_PROF_TYPE_LOCAL)) { 
 				// copy local -> remote
 				mirrorIoRootDir=localUrl;
 				compileFilter(mipl.getFileFilter(),mipl.getDirFilter());
-				mirrorCopyLocalToRemote(false, localUrl,remoteUrl, copiedFileList);
+				syncExecRetryCount=0;
+				while(true) {
+					mirrorCopyLocalToRemote(false, localUrl,remoteUrl);
+					if (!checkRetry()) break;
+				}
 			} else {
 				addLogMsg("E","","invalid master profile type specified:"+syncMasterProfType);
 				tcMirror.setThreadMessage("invalid master profile type specified:"+syncMasterProfType);
@@ -829,6 +875,8 @@ public class MirrorIO implements Runnable {
 			addDebugLogMsg(1,"I","doSyncMove entered ",
 				"errorStatus="+checkErrorStatus(),
 				", isExceptionOccured="+isExceptionOccured);
+		ArrayList<String> moved_dir_list = new ArrayList<String>();
+
 		if (syncLocalToLocal) {
 			// Mirror local -> Local
 			mirrorIoRootDir=syncMasterLocalDir;
@@ -836,14 +884,14 @@ public class MirrorIO implements Runnable {
 			if (!isExceptionOccured) {
 				compileFilter(mipl.getFileFilter(),mipl.getDirFilter());
 				mirrorMoveLocalToLocal(false, syncMasterLocalDir,
-						syncTargetLocalDir, syncTargetLocalDir, copiedFileList);
+						syncTargetLocalDir, syncTargetLocalDir, moved_dir_list);
 				if (copyCount>=0 && !isExceptionOccured && !isSyncParmError) {
-					Collections.sort(copiedFileList);
-					for (int j=copiedFileList.size()-1;j>=0;j--) {
-						if (localUrl.equals(copiedFileList.get(j)))
+					Collections.sort(moved_dir_list);
+					for (int j=moved_dir_list.size()-1;j>=0;j--) {
+						if (localUrl.equals(moved_dir_list.get(j)))
 							break;
-						if (isLocalDirEmpty(copiedFileList.get(j))) 
-							deleteLocalItem(true,copiedFileList.get(j));
+						if (isLocalDirEmpty(moved_dir_list.get(j))) 
+							deleteLocalItem(true,moved_dir_list.get(j));
 					}
 				}
 			}
@@ -852,28 +900,49 @@ public class MirrorIO implements Runnable {
 				// Move remote -> local
 				mirrorIoRootDir=remoteUrl;
 				compileFilter(mipl.getFileFilter(),mipl.getDirFilter());
-				mirrorMoveRemoteToLocal(false, remoteUrl, localUrl,copiedFileList);
+				syncExecRetryCount=0;
+				while(true) {
+					mirrorMoveRemoteToLocal(false, remoteUrl, localUrl,moved_dir_list);
+					if (!checkRetry()) break;
+				}
 				if (copyCount>=0 && !isExceptionOccured && !isSyncParmError) {
-					Collections.sort(copiedFileList);
-					for (int j=copiedFileList.size()-1;j>=0;j--) {
-						if ((remoteUrl+"/").equals(copiedFileList.get(j)))
-							break;
-						if (isRemoteDirEmpty(copiedFileList.get(j))) 
-							deleteRemoteItem(true,copiedFileList.get(j));
+					Collections.sort(moved_dir_list);
+					for (int j=moved_dir_list.size()-1;j>=0;j--) {
+						if ((remoteUrl+"/").equals(moved_dir_list.get(j))) break;
+						boolean dir_empty=false;
+						syncExecRetryCount=0;
+						while(true) {
+							dir_empty=isRemoteDirEmpty(moved_dir_list.get(j));
+							if (!checkRetry()) break;
+						}
+						if (!isExceptionOccured) {
+							if (dir_empty) {
+								syncExecRetryCount=0;
+								while(true) {
+									deleteRemoteItem(true,moved_dir_list.get(j));
+									if (!checkRetry()) break;
+								}
+							}
+						}
 					}
 				} 
 			} else if (syncMasterProfType.equals(SMBSYNC_PROF_TYPE_LOCAL)) { 
 				// Move local -> remote
 				mirrorIoRootDir=localUrl;
 				compileFilter(mipl.getFileFilter(),mipl.getDirFilter());
-				mirrorMoveLocalToRemote(false, localUrl,remoteUrl, copiedFileList);
+				syncExecRetryCount=0;
+				while(true) {
+					mirrorMoveLocalToRemote(false, localUrl,remoteUrl, moved_dir_list);
+					if (!checkRetry()) break;
+				}
 				if (copyCount>=0 && !isExceptionOccured && !isSyncParmError) {
-					Collections.sort(copiedFileList);
-					for (int j=copiedFileList.size()-1;j>=0;j--) {
-						if (localUrl.equals(copiedFileList.get(j)))
+					Collections.sort(moved_dir_list);
+					for (int j=moved_dir_list.size()-1;j>=0;j--) {
+						if (localUrl.equals(moved_dir_list.get(j)))
 							break;
-						if (isLocalDirEmpty(copiedFileList.get(j))) 
-							deleteLocalItem(true,copiedFileList.get(j));
+						if (isLocalDirEmpty(moved_dir_list.get(j))) {
+							deleteLocalItem(true,moved_dir_list.get(j));
+						}
 					}
 				}
 			} else {
@@ -1230,8 +1299,7 @@ public class MirrorIO implements Runnable {
 		return rc;
 	};
 	
-	final private int mirrorCopyLocalToRemote(boolean allcopy, String masterUrl,
-			String targetUrl, ArrayList<String> copiedFileList) {
+	final private int mirrorCopyLocalToRemote(boolean allcopy, String masterUrl, String targetUrl) {
 		SmbFile hf = null;
 		File lf;
 		
@@ -1246,16 +1314,25 @@ public class MirrorIO implements Runnable {
 			lf = new File(masterUrl);
 			if (lf.exists()) {
 				if (lf.isDirectory()) { // Directory copy
-					if (lf.canRead() && 
+					if (lf.canRead() && !isHiddenDirectory(lf) &&
 							isDirectoryToBeProcessed(masterUrl.replace(mirrorIoRootDir, ""))) {
+						if (!syncProfileExcludeEmptyDirectory) {
+							createRemoteDirByDir(targetUrl);
+							if (checkErrorStatus()!=0) return checkErrorStatus();
+						}
 						File[] children = lf.listFiles();
 						if (children!=null) {
 							for (File element : children) {
 								String tmp = element.getName();
 								if (!tmp.equals(".android_secure")) {
 									if (tmp.lastIndexOf("/")>0) tmp=tmp.substring(0,tmp.lastIndexOf("/"));
-									mirrorCopyLocalToRemote(allcopy, masterUrl + "/"
-											+ tmp,targetUrl + "/" + tmp, copiedFileList);
+									String n_master=masterUrl + "/"+ tmp;
+									String n_target=targetUrl + "/"+ tmp;
+									syncExecRetryCount=0;
+									while(true) {
+										mirrorCopyLocalToRemote(allcopy, n_master, n_target);
+										if (!checkRetry()) break;
+									}
 									if (checkErrorStatus()!=0) return checkErrorStatus();
 								} else {
 									addDebugLogMsg(1,"I","Android system directory is ignored, fp="+element.getPath());
@@ -1268,10 +1345,11 @@ public class MirrorIO implements Runnable {
 						if (!lf.canRead()) addDebugLogMsg(1,"I","Directory ignored because can not read, fp="+masterUrl);
 					}
 				} else { // file copy
-					if (isDirFiltered(masterUrl.replace(localUrl, "")) &&
+					if (//isDirFiltered(masterUrl.replace(localUrl, "")) &&
+							!isHiddenFile(lf) &&
 							isFileFiltered(masterUrl)) {
-						createRemoteDir(targetUrl,null,masterUrl);
-						copiedFileList.add(masterUrl);
+						createRemoteDirByFilePath(targetUrl,null,masterUrl);
+//						copiedFileList.add(masterUrl);
 						lf = new File(masterUrl);
 						hf = new SmbFile(targetUrl,ntlmPasswordAuth);
 //						String t_fp=masterUrl;//.replace(localUrl, "");
@@ -1321,52 +1399,84 @@ public class MirrorIO implements Runnable {
 				
 			}
 		} catch (MalformedURLException e) {
-			addLogMsg("E","","mirrorCopyLocalToRemote From="+masterUrl+", To="+targetUrl);
+			addLogMsg("E","","mirrorCopyLocalToRemote MFUE From="+masterUrl+", To="+targetUrl);
 			addLogMsg("E","",e.getMessage());//e.toString());
 			printStackTraceElement(e.getStackTrace());
-			isExceptionOccured=true;
-			tcMirror.setThreadMessage(e.getMessage());
 			if (!tmp_target.equals("")) deleteRemoteTempFile(tmp_target);
-			return -1;
+			return setErrorStatusRetry(e.getMessage());
 		} catch (SmbException e) {
-			addLogMsg("E","","mirrorCopyLocalToRemote From="+masterUrl+", To="+targetUrl);
+			addLogMsg("E","","mirrorCopyLocalToRemote SMBE From="+masterUrl+", To="+targetUrl);
 			String[] e_msg=NetworkUtil.analyzeNtStatusCode(e, mGp.svcContext, 
 					targetUrl,ntlmPasswordAuth.getUsername());
 			addLogMsg("E","",e_msg[0]);//e.toString());
-			checkRemoteHostAvailable();
 			printStackTraceElement(e.getStackTrace());
-			isExceptionOccured=true;
-			tcMirror.setThreadMessage(e_msg[0]);
 			if (!tmp_target.equals("")) deleteRemoteTempFile(tmp_target);
-			return -1;
+			return setErrorStatusRetry(e_msg[0]);
 		} catch (UnknownHostException e) {
-			addLogMsg("E","","mirrorCopyLocalToRemote From="+masterUrl+", To="+targetUrl);
+			addLogMsg("E","","mirrorCopyLocalToRemote UKHE From="+masterUrl+", To="+targetUrl);
 			addLogMsg("E","",e.getMessage());//e.toString());
 			printStackTraceElement(e.getStackTrace());
-			isExceptionOccured=true;
-			tcMirror.setThreadMessage(e.getMessage());
 			if (!tmp_target.equals("")) deleteRemoteTempFile(tmp_target);
-			return -1;
+			return setErrorStatusRetry(e.getMessage());
 		} catch (FileNotFoundException e) {
-			addLogMsg("E","","mirrorCopyLocalToRemote From="+masterUrl+", To="+targetUrl);
+			addLogMsg("E","","mirrorCopyLocalToRemote FNFD From="+masterUrl+", To="+targetUrl);
 			addLogMsg("E","",e.getMessage());//e.toString());
 			printStackTraceElement(e.getStackTrace());
-			isExceptionOccured=true;
-			tcMirror.setThreadMessage(e.getMessage());
 			if (!tmp_target.equals("")) deleteRemoteTempFile(tmp_target);
-			return -1;
+			return setErrorStatusRetry(e.getMessage());
 		} catch (IOException e) {
-			addLogMsg("E","","mirrorCopyLocalToRemote From="+masterUrl+", To="+targetUrl);
+			addLogMsg("E","","mirrorCopyLocalToRemote IOE From="+masterUrl+", To="+targetUrl);
 			addLogMsg("E","",e.getMessage());//e.toString());
 			printStackTraceElement(e.getStackTrace());
-			isExceptionOccured=true;
-			tcMirror.setThreadMessage(e.getMessage());
 			if (!tmp_target.equals("")) deleteRemoteTempFile(tmp_target);
-			return -1;
+			return setErrorStatusRetry(e.getMessage());
 		}
 		return 0;
 	};
 
+	private int setErrorStatusRetry(String msg) {
+		isExceptionRetryRequired=true;
+		isExceptionOccured=true;
+		tcMirror.setThreadMessage(msg);
+		return -1;
+	};
+
+	private boolean checkRetry() {
+		if (syncProfileRetryEffective) {
+			if (isExceptionRetryRequired) {
+				isExceptionRetryRequired=false;
+				syncExecRetryCount++;
+				if (syncExecRetryCount>syncProfileRetryCount) {
+					addLogMsg("I","",mGp.svcContext.getString(R.string.msgs_mirror_retry_ignored_by_limit));
+					return false;//Retry abort
+				} else {
+					addDebugLogMsg(1,"I","Retry wait entered");
+					synchronized(tcMirror) {
+						try {
+							tcMirror.wait(syncProfileRetryIntervalTime*1000);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+					if (tcMirror.isEnabled()) {
+						addLogMsg("I","",mGp.svcContext.getString(R.string.msgs_mirror_retry_issued));
+						isExceptionOccured=false;
+						tcMirror.setThreadMessage("");
+						return true;//Retry required
+					} else {
+						addDebugLogMsg(1,"I","Cancel detected while retry wait");
+						return false;//Retry not required
+					}
+				}
+			} else {
+				return false;
+			}
+		} else {
+			isExceptionRetryRequired=false;
+			return false;//Retry not required
+		}
+	};
+	
 	private void deleteRemoteTempFile(String tmp_target) {
 		SmbFile hf_tmp=null;
 		try {
@@ -1407,7 +1517,8 @@ public class MirrorIO implements Runnable {
 			String t_dir="";
 			if (hf.isDirectory()) t_dir=hf.getPath();
 				else t_dir=hf.getParent();
-			if (!isDirExcluded(t_dir.replace(remoteUrl, "")) &&
+			if (!isDirExcluded(t_dir.replace(remoteUrl, "")) && 
+					!isHiddenDirectory(hf, hf.isHidden()) &&
 					isDirectoryToBeProcessed(t_dir.replace(remoteUrl, ""))){ 
 				if (hf.isDirectory()) { // Directory Delete
 					lf = new File(masterUrl);
@@ -1417,7 +1528,11 @@ public class MirrorIO implements Runnable {
 						for (SmbFile element : children) {
 							String tmp = element.getName();
 							if (tmp.lastIndexOf("/")>0) tmp=tmp.substring(0,tmp.lastIndexOf("/"));
-							mirrorDeleteRemoteFile(masterUrl + "/"+tmp,targetUrl+"/"+tmp);
+							syncExecRetryCount=0;
+							while(true) {
+								mirrorDeleteRemoteFile(masterUrl + "/"+tmp,targetUrl+"/"+tmp);
+								if (!checkRetry()) break;
+							}
 							if (checkErrorStatus()!=0) return checkErrorStatus();
 						}
 					} else {
@@ -1431,46 +1546,43 @@ public class MirrorIO implements Runnable {
 						if (checkErrorStatus()!=0) return checkErrorStatus();
 					}
 				} else { // file Delete
-					lf = new File(masterUrl);
-					if (mGp.debugLevel>=1) 
-						addDebugLogMsg(3,"I","Local file exists="+lf.exists());
-					if (!lf.exists()) {
-						String m_dir=targetUrl.replace(remoteMasterDir+"/","");
-						if (!(m_dir.indexOf("/")<0 && !syncMasterDirFileProcess)) { 
-							if (confirmDelete(targetUrl)) {
-								deleteRemoteItem(true,targetUrl);
-//								mHistoryDeletedList.add(targetUrl);
-							} else {
-								addLogMsg("W",masterUrl,msgs_mirror_confirm_delete_cancel);
+					if (!isHiddenFile(hf, hf.isHidden())) {
+						lf = new File(masterUrl);
+						if (mGp.debugLevel>=1) 
+							addDebugLogMsg(3,"I","Local file exists="+lf.exists());
+						if (!lf.exists()) {
+							String m_dir=targetUrl.replace(remoteMasterDir+"/","");
+							if (!(m_dir.indexOf("/")<0 && !syncMasterDirFileProcess)) { 
+								if (confirmDelete(targetUrl)) {
+									deleteRemoteItem(true,targetUrl);
+//									mHistoryDeletedList.add(targetUrl);
+								} else {
+									addLogMsg("W",masterUrl,msgs_mirror_confirm_delete_cancel);
+								}
 							}
+							if (checkErrorStatus()!=0) return checkErrorStatus();
 						}
-						if (checkErrorStatus()!=0) return checkErrorStatus();
 					}
 				}
 			}
 		} catch (MalformedURLException e) {
-			addLogMsg("E","","mirrorDeleteRemoteFile From="+masterUrl+", To="+targetUrl);
+			addLogMsg("E","","mirrorDeleteRemoteFile MFUE From="+masterUrl+", To="+targetUrl);
 			addLogMsg("E","",e.getMessage());//e.toString());
 			printStackTraceElement(e.getStackTrace());
-			isExceptionOccured=true;
-			tcMirror.setThreadMessage(e.getMessage());
-			return -1;
+			return setErrorStatusRetry(e.getMessage());
 		} catch (SmbException e) {
-			addLogMsg("E","","mirrorDeleteRemoteFile From="+masterUrl+", To="+targetUrl);
+			addLogMsg("E","","mirrorDeleteRemoteFile SMBE From="+masterUrl+", To="+targetUrl);
 			String[] e_msg=NetworkUtil.analyzeNtStatusCode(e, mGp.svcContext, 
 					targetUrl,ntlmPasswordAuth.getUsername());
 			addLogMsg("E","",e_msg[0]);//e.toString());
-			checkRemoteHostAvailable();
 			printStackTraceElement(e.getStackTrace());
-			isExceptionOccured=true;
-			tcMirror.setThreadMessage(e_msg[0]);
-			return -1;
+			return setErrorStatusRetry(e_msg[0]);
 		}
 		return deleteCount;
 	};
 
 	final private int mirrorCopyLocalToLocal(boolean allcopy, String masterUrl,
-			String targetUrl, String target_fp_base, ArrayList<String> copiedFileList) {
+			String targetUrl, String target_fp_base) {
 		File tf;
 		File mf;
 		
@@ -1483,8 +1595,12 @@ public class MirrorIO implements Runnable {
 			mf = new File(masterUrl);
 			if (mf.exists()) {
 				if (mf.isDirectory()) { // Directory copy
-					if (mf.canRead() && 
+					if (mf.canRead() && !isHiddenDirectory(mf) &&
 							isDirectoryToBeProcessed(masterUrl.replace(mirrorIoRootDir, ""))) {
+						if (!syncProfileExcludeEmptyDirectory) {
+							createLocalDirByDir(targetUrl);
+							if (checkErrorStatus()!=0) return checkErrorStatus();
+						}
 						File[] children = mf.listFiles();
 						if (children!=null) {
 							for (File element : children) {
@@ -1494,8 +1610,7 @@ public class MirrorIO implements Runnable {
 									String n_master=(masterUrl + "/"+ tmp).replaceAll("//", "/");
 									String n_target=(targetUrl + "/" + tmp).replaceAll("//", "/");
 									if (!n_master.equals(target_fp_base)) {
-										mirrorCopyLocalToLocal(allcopy, n_master, n_target, target_fp_base,
-												copiedFileList);
+										mirrorCopyLocalToLocal(allcopy, n_master, n_target, target_fp_base);
 										if (checkErrorStatus()!=0) return checkErrorStatus();
 									} else {
 //										addLogMsg("W","",
@@ -1514,10 +1629,10 @@ public class MirrorIO implements Runnable {
 						if (!mf.canRead()) addDebugLogMsg(1,"I","Directory ignored because can not read, fp="+masterUrl);
 					} 
 				} else { // file copy
-					if (isDirFiltered(masterUrl.replace(localUrl, "")) &&
+					if (//isDirFiltered(masterUrl.replace(localUrl, "")) &&
+							!isHiddenFile(mf) &&
 							isFileFiltered(masterUrl)) {
-						if (createLocalDir(targetUrl,null,masterUrl)) {
-							copiedFileList.add(masterUrl);
+						if (createLocalDirByFilePath(targetUrl,null,masterUrl)) {
 							mf = new File(masterUrl);
 							tf = new File(targetUrl);
 //							String t_fp=masterUrl;//.replace(localUrl, "");
@@ -1567,7 +1682,6 @@ public class MirrorIO implements Runnable {
 //		} catch (SmbException e) {
 //			addLogMsg("E","","mirrorCopyLocalToRemote From="+masterUrl+", To="+targetUrl);
 //			addLogMsg("E","",e.getMessage());//e.toString());
-//			checkRemoteHostAvailable();
 //			printStackTraceElement(e.getStackTrace());
 //			isExceptionOccured=true;
 //			tcMirror.setThreadMessage(e.getMessage());
@@ -1614,8 +1728,8 @@ public class MirrorIO implements Runnable {
 		String t_dir="";
 		if (mf.isDirectory()) t_dir=mf.getPath();
 			else t_dir=mf.getParent();
-		Log.v("","tdir="+t_dir.replace(syncTargetLocalDir+"/", ""));
-		if (!isDirExcluded(t_dir.replace(syncTargetLocalDir+"/", "")) &&
+		if (!isDirExcluded(t_dir.replace(syncTargetLocalDir+"/", "")) && 
+				!isHiddenDirectory(mf) &&
 				isDirectoryToBeProcessed(t_dir.replace(syncTargetLocalDir+"/", ""))){ 
 			if (mf.isDirectory()) { // Directory Delete
 				lf = new File(masterUrl);
@@ -1639,29 +1753,76 @@ public class MirrorIO implements Runnable {
 					if (checkErrorStatus()!=0) return checkErrorStatus();
 				}
 			} else { // file Delete
-				lf = new File(masterUrl);
-				if (mGp.debugLevel>=1) 
-					addDebugLogMsg(3,"I","Local file exists="+lf.exists());
-				if (!lf.exists()) {
-					String m_dir=targetUrl.replace(syncTargetLocalDir+"/","");
-					Log.v("","mdir="+m_dir);
-					if (!(m_dir.indexOf("/")<0 && !syncMasterDirFileProcess)) { 
-						if (confirmDelete(targetUrl)) {
-							deleteLocalItem(true,targetUrl);
-//								mHistoryDeletedList.add(targetUrl);
-						} else {
-							addLogMsg("W",masterUrl,msgs_mirror_confirm_delete_cancel);
+				if (!isHiddenFile(mf)) {
+					lf = new File(masterUrl);
+					if (mGp.debugLevel>=1) 
+						addDebugLogMsg(3,"I","Local file exists="+lf.exists());
+					if (!lf.exists()) {
+						String m_dir=targetUrl.replace(syncTargetLocalDir+"/","");
+						Log.v("","mdir="+m_dir);
+						if (!(m_dir.indexOf("/")<0 && !syncMasterDirFileProcess)) { 
+							if (confirmDelete(targetUrl)) {
+								deleteLocalItem(true,targetUrl);
+//									mHistoryDeletedList.add(targetUrl);
+							} else {
+								addLogMsg("W",masterUrl,msgs_mirror_confirm_delete_cancel);
+							}
 						}
+						if (checkErrorStatus()!=0) return checkErrorStatus();
 					}
-					if (checkErrorStatus()!=0) return checkErrorStatus();
 				}
 			}
 		}
 		return deleteCount;
 	};
 
-	final private int mirrorCopyRemoteToLocal(boolean allcopy, String masterUrl,
-			String targetUrl, ArrayList<String> copiedFileList) {
+	private boolean isHiddenDirectory(File lf) {
+		boolean result=false;
+		String name=lf.getName();
+		if (syncProfileExcludeHiddenDirectory) {
+			if (name.startsWith(".")) result=true;
+		}
+		if (mGp.debugLevel>=2) 
+			addDebugLogMsg(2,"I","isHiddenDirectory(Local) result="+result+", Name="+name);
+		return result;
+	};
+
+	private boolean isHiddenDirectory(SmbFile hf, boolean isHidden) {
+		boolean result=false;
+		String name=hf.getName();
+		if (syncProfileExcludeHiddenDirectory) {
+			result=isHidden;
+//			result=hf.isHidden();
+		}
+		if (mGp.debugLevel>=2) 
+			addDebugLogMsg(2,"I","isHiddenDirectory(Remote) result="+result+", Name="+name);
+		return result;
+	};
+
+	private boolean isHiddenFile(File lf) {
+		boolean result=false;
+		String name=lf.getName();
+		if (syncProfileExcludeHiddenFile) {
+			if (name.startsWith(".")) result=true;
+		}
+		if (mGp.debugLevel>=2) 
+			addDebugLogMsg(2,"I","isHiddenFile(Local) result="+result+", Name="+name);
+		return result;
+	};
+
+	private boolean isHiddenFile(SmbFile hf, boolean isHidden) {
+		boolean result=false;
+		String name=hf.getName();
+		if (syncProfileExcludeHiddenFile) {
+			result=isHidden;
+//			result=hf.isHidden();
+		}
+		if (mGp.debugLevel>=2) 
+			addDebugLogMsg(2,"I","isHiddenFile(Remote) result="+result+", Name="+name);
+		return result;
+	};
+
+	final private int mirrorCopyRemoteToLocal(boolean allcopy, String masterUrl, String targetUrl) {
 		SmbFile hf;
 		File lf;
 
@@ -1673,16 +1834,28 @@ public class MirrorIO implements Runnable {
 			hf = new SmbFile(masterUrl,ntlmPasswordAuth);
 			if (hf.exists()) {
 				if (hf.isDirectory()) { // Directory copy
-					if (hf.canRead() && isDirectoryToBeProcessed(masterUrl.replace(mirrorIoRootDir, ""))) {
+					if (hf.canRead() && !isHiddenDirectory(hf, hf.isHidden()) && 
+							isDirectoryToBeProcessed(masterUrl.replace(mirrorIoRootDir, ""))) {
+						if (!syncProfileExcludeEmptyDirectory) {
+							createLocalDirByDir(targetUrl);
+							if (checkErrorStatus()!=0) return checkErrorStatus();
+						}
 						hf = new SmbFile(masterUrl + "/",ntlmPasswordAuth);
 						try {
 							SmbFile[] children = hf.listFiles();
 							for (SmbFile element : children) {
-								String tmp = element.getName();
-								if (tmp.lastIndexOf("/")>0) tmp=tmp.substring(0,tmp.lastIndexOf("/"));
-								mirrorCopyRemoteToLocal(allcopy, masterUrl + "/"+ tmp,
-										targetUrl + "/"+ tmp, copiedFileList);
-								if (checkErrorStatus()!=0) return checkErrorStatus();
+								if (!isHiddenDirectory(element, element.isHidden())) {
+									String tmp = element.getName();
+									if (tmp.lastIndexOf("/")>0) tmp=tmp.substring(0,tmp.lastIndexOf("/"));
+									String n_master=masterUrl+"/"+tmp;
+									String n_target=targetUrl+"/"+tmp;
+									syncExecRetryCount=0;
+									while(true) {
+										mirrorCopyRemoteToLocal(allcopy, n_master, n_target);
+										if (!checkRetry()) break;
+									}
+									if (checkErrorStatus()!=0) return checkErrorStatus();
+								}
 							}
 						} catch (SmbException e) {
 							addLogMsg("W","","SmbException occured during SmbFile#listFiles(), name="+masterUrl+
@@ -1692,10 +1865,10 @@ public class MirrorIO implements Runnable {
 						if (!hf.canRead()) addDebugLogMsg(1,"I","Directory ignored because can not read, fp="+masterUrl);
 					}
 				} else { // file copy
-					if (isDirFiltered(masterUrl.replace(remoteUrl, "")) &&
+					if (//isDirFiltered(masterUrl.replace(remoteUrl, "")) &&
+							!isHiddenFile(hf, hf.isHidden()) &&
 							isFileFiltered(masterUrl)) {
-						if (createLocalDir(targetUrl,null,masterUrl)) {
-							copiedFileList.add(masterUrl);
+						if (createLocalDirByFilePath(targetUrl,null,masterUrl)) {
 							lf = new File(targetUrl);
 //							String t_fp=masterUrl;//.replace("smb://"+syncRemoteAddr, "");
 							if (isFileChanged(masterUrl,lf,hf,allcopy)) {
@@ -1721,7 +1894,7 @@ public class MirrorIO implements Runnable {
 									scanMediaStoreLibrary(targetUrl);
 									copyCount++;
 								} else {
-									copiedFileList.remove(targetUrl);
+//									copiedFileList.remove(targetUrl);
 									addLogMsg("W",targetUrl,msgs_mirror_confirm_delete_cancel);
 								}
 							} else {
@@ -1729,7 +1902,8 @@ public class MirrorIO implements Runnable {
 										targetUrl,hf.getLastModified());
 							}
 						}
-						if (checkErrorStatus()!=0) return checkErrorStatus();					}
+						if (checkErrorStatus()!=0) return checkErrorStatus();
+					}
 				}
 			} else {
 				if (mGp.debugLevel>=1) 
@@ -1741,48 +1915,37 @@ public class MirrorIO implements Runnable {
 				return -1;
 			}
 		} catch (MalformedURLException e) {
-			addLogMsg("E","","mirrorCopyRemoteToLocal MFURL From="+masterUrl+", To="+targetUrl);
+			addLogMsg("E","","mirrorCopyRemoteToLocal MFUE From="+masterUrl+", To="+targetUrl);
 			addLogMsg("E","",e.getMessage());//e.toString());
 			printStackTraceElement(e.getStackTrace());
-			isExceptionOccured=true;
-			tcMirror.setThreadMessage(e.getMessage());
 			if (!tmp_target.equals("")) deleteLocalTempFile(tmp_target);
-			return -1;
+			return setErrorStatusRetry(e.getMessage());
 		} catch (SmbException e) {
 			addLogMsg("E","","mirrorCopyRemoteToLocal SMBE From="+masterUrl+", To="+targetUrl);
 			String[] e_msg=NetworkUtil.analyzeNtStatusCode(e, mGp.svcContext, 
 					masterUrl,ntlmPasswordAuth.getUsername());
 			addLogMsg("E","",e_msg[0]);//e.toString());
-			checkRemoteHostAvailable();
 			printStackTraceElement(e.getStackTrace());
-			isExceptionOccured=true;
-			tcMirror.setThreadMessage(e_msg[0]);
 			if (!tmp_target.equals("")) deleteLocalTempFile(tmp_target);
-			return -1;
+			return setErrorStatusRetry(e_msg[0]);
 		} catch (UnknownHostException e) {
-			addLogMsg("E","","mirrorCopyRemoteToLocal UKH From="+masterUrl+", To="+targetUrl);
+			addLogMsg("E","","mirrorCopyRemoteToLocal UKHE From="+masterUrl+", To="+targetUrl);
 			addLogMsg("E","",e.getMessage());//e.toString());
 			printStackTraceElement(e.getStackTrace());
-			isExceptionOccured=true;
-			tcMirror.setThreadMessage(e.getMessage());
 			if (!tmp_target.equals("")) deleteLocalTempFile(tmp_target);
-			return -1;
+			return setErrorStatusRetry(e.getMessage());
 		} catch (FileNotFoundException e) {
-			addLogMsg("E","","mirrorCopyRemoteToLocal FNFND From="+masterUrl+", To="+targetUrl);
+			addLogMsg("E","","mirrorCopyRemoteToLocal FNFD From="+masterUrl+", To="+targetUrl);
 			addLogMsg("E","",e.getMessage());//e.toString());
 			printStackTraceElement(e.getStackTrace());
-			isExceptionOccured=true;
-			tcMirror.setThreadMessage(e.getMessage());
 			if (!tmp_target.equals("")) deleteLocalTempFile(tmp_target);
-			return -1;
+			return setErrorStatusRetry(e.getMessage());
 		} catch (IOException e) {
 			addLogMsg("E","","mirrorCopyRemoteToLocal IOE From="+masterUrl+", To="+targetUrl);
 			addLogMsg("E","",e.getMessage());//e.toString());
 			printStackTraceElement(e.getStackTrace());
-			isExceptionOccured=true;
-			tcMirror.setThreadMessage(e.getMessage());
 			if (!tmp_target.equals("")) deleteLocalTempFile(tmp_target);
-			return -1;
+			return setErrorStatusRetry(e.getMessage());
 		}
 		return 0;
 	};
@@ -1884,7 +2047,8 @@ public class MirrorIO implements Runnable {
 			String t_dir="";
 			if (lf.isDirectory()) t_dir=lf.getPath();
 				else t_dir=lf.getParent();
-			if (!isDirExcluded(t_dir.replace(localUrl, "")+"/") &&
+			if (!isDirExcluded(t_dir.replace(localUrl, "")+"/") && 
+					!isHiddenDirectory(lf) &&
 					isDirectoryToBeProcessed(t_dir.replace(localUrl, "")+"/")){ 
 				if (lf.isDirectory()) { // Directory Delete
 					lf = new File(targetUrl + "/");
@@ -1895,8 +2059,10 @@ public class MirrorIO implements Runnable {
 							String tmp = element.getName();
 							if (tmp.lastIndexOf("/")>0) 
 								tmp=tmp.substring(0,tmp.lastIndexOf("/"));
-							mirrorDeleteLocalFile(masterUrl + "/"
-									+ tmp,targetUrl + "/" + tmp);
+							while(true) {
+								mirrorDeleteLocalFile(masterUrl + "/"+ tmp,targetUrl + "/" + tmp);
+								if (!checkRetry()) break;
+							}
 							if (checkErrorStatus()!=0) return checkErrorStatus();
 						}
 					} else {
@@ -1910,20 +2076,22 @@ public class MirrorIO implements Runnable {
 						if (checkErrorStatus()!=0) return checkErrorStatus();
 					}
 				} else { // file Delete
-					hf = new SmbFile(masterUrl,ntlmPasswordAuth);
-					if (mGp.debugLevel>=3) 
-						addDebugLogMsg(3,"I","Remote file exists="+hf.exists());
-					if (!hf.exists() ) {
-						String m_dir=targetUrl.replace(syncLocalDir+"/","");
-						if (!(m_dir.indexOf("/")<0 && !syncMasterDirFileProcess)) { 
-							if (confirmDelete(targetUrl)) {
-								deleteLocalItem(true,targetUrl);
-//								mHistoryDeletedList.add(targetUrl);
-							} else {
-								addLogMsg("W",masterUrl,msgs_mirror_confirm_delete_cancel);
+					if (!isHiddenFile(lf)) {
+						hf = new SmbFile(masterUrl,ntlmPasswordAuth);
+						if (mGp.debugLevel>=3) 
+							addDebugLogMsg(3,"I","Remote file exists="+hf.exists());
+						if (!hf.exists() ) {
+							String m_dir=targetUrl.replace(syncLocalDir+"/","");
+							if (!(m_dir.indexOf("/")<0 && !syncMasterDirFileProcess)) { 
+								if (confirmDelete(targetUrl)) {
+									deleteLocalItem(true,targetUrl);
+//									mHistoryDeletedList.add(targetUrl);
+								} else {
+									addLogMsg("W",masterUrl,msgs_mirror_confirm_delete_cancel);
+								}
 							}
+							if (checkErrorStatus()!=0) return checkErrorStatus();
 						}
-						if (checkErrorStatus()!=0) return checkErrorStatus();
 					}
 				}
 			}
@@ -1931,19 +2099,14 @@ public class MirrorIO implements Runnable {
 			addLogMsg("E","",e.getMessage());//e.toString());
 			addLogMsg("E","","From="+masterUrl+", To="+targetUrl);
 			printStackTraceElement(e.getStackTrace());
-			isExceptionOccured=true;
-			tcMirror.setThreadMessage(e.getMessage());
-			return -1;
+			return setErrorStatusRetry(e.getMessage());
 		} catch (SmbException e) {
 			addLogMsg("E","",e.getMessage());//e.toString());
 			addLogMsg("E","","From="+masterUrl+", To="+targetUrl);
-			checkRemoteHostAvailable();
 			printStackTraceElement(e.getStackTrace());
-			isExceptionOccured=true;
 			String[] e_msg=NetworkUtil.analyzeNtStatusCode(e, mGp.svcContext, 
 					masterUrl,ntlmPasswordAuth.getUsername());
-			tcMirror.setThreadMessage(e_msg[0]);
-			return -1;
+			return setErrorStatusRetry(e_msg[0]);
 		}
 		return deleteCount;
 	};
@@ -1970,16 +2133,26 @@ public class MirrorIO implements Runnable {
 			hf = new SmbFile(masterUrl,ntlmPasswordAuth);
 			if (hf.exists()) {
 				if (hf.isDirectory()) { // Directory copy
-					if (hf.canRead() && 
+					if (hf.canRead() && !isHiddenDirectory(hf, hf.isHidden()) &&
 							isDirectoryToBeProcessed(masterUrl.replace(mirrorIoRootDir, ""))) {
+						if (!syncProfileExcludeEmptyDirectory) {
+							createLocalDirByDir(targetUrl);
+							if (checkErrorStatus()!=0) return checkErrorStatus();
+						}
 						hf = new SmbFile(masterUrl + "/",ntlmPasswordAuth);
 						try {
 							SmbFile[] children = hf.listFiles();
 							for (SmbFile element : children) {
 								String tmp = element.getName();
 								if (tmp.lastIndexOf("/")>0) tmp=tmp.substring(0,tmp.lastIndexOf("/"));
-								mirrorMoveRemoteToLocal(allcopy, masterUrl + "/"+ tmp,
-										targetUrl + "/"+ tmp,moved_dirs);
+								
+								String n_master=masterUrl + "/"+ tmp;
+								String n_target=targetUrl + "/"+ tmp;
+								syncExecRetryCount=0;
+								while(true) {
+									mirrorMoveRemoteToLocal(allcopy, n_master, n_target, moved_dirs);
+									if (!checkRetry()) break;
+								}
 								if (checkErrorStatus()!=0) return checkErrorStatus();
 							}
 						} catch (SmbException e) {
@@ -1990,9 +2163,10 @@ public class MirrorIO implements Runnable {
 						if (!hf.canRead()) addDebugLogMsg(1,"I","Directory ignored because can not read, fp="+masterUrl);
 					}
 				} else { // file copy
-					if (isDirFiltered(masterUrl.replace(remoteUrl, "")) &&
+					if (//isDirFiltered(masterUrl.replace(remoteUrl, "")) &&
+							!isHiddenFile(hf, hf.isHidden()) &&
 							isFileFiltered(masterUrl)) {
-						if (createLocalDir(targetUrl,moved_dirs,masterUrl)) {
+						if (createLocalDirByFilePath(targetUrl,moved_dirs,masterUrl)) {
 							lf = new File(targetUrl);
 							String t_fn=hf.getName().replace("/", "");
 //							String t_fp=masterUrl;//.replace("smb://"+syncRemoteAddr, "");
@@ -2056,48 +2230,37 @@ public class MirrorIO implements Runnable {
 				
 			}
 		} catch (MalformedURLException e) {
-			addLogMsg("E","","From="+masterUrl+", To="+targetUrl);
+			addLogMsg("E","","mirrorMoveRemoteToLocal MFUE From="+masterUrl+", To="+targetUrl);
 			addLogMsg("E","",e.getMessage());//e.toString());
 			printStackTraceElement(e.getStackTrace());
-			isExceptionOccured=true;
-			tcMirror.setThreadMessage(e.getMessage());
 			if (!tmp_target.equals("")) deleteLocalTempFile(tmp_target);
-			return -1;
+			return setErrorStatusRetry(e.getMessage());
 		} catch (SmbException e) {
-			addLogMsg("E","","From="+masterUrl+", To="+targetUrl);
+			addLogMsg("E","","mirrorMoveRemoteToLocal SMBE From="+masterUrl+", To="+targetUrl);
 			String[] e_msg=NetworkUtil.analyzeNtStatusCode(e, mGp.svcContext, 
 					masterUrl,ntlmPasswordAuth.getUsername());
 			addLogMsg("E","",e_msg[0]);//e.toString());
-			checkRemoteHostAvailable();
 			printStackTraceElement(e.getStackTrace());
-			isExceptionOccured=true;
-			tcMirror.setThreadMessage(e_msg[0]);
 			if (!tmp_target.equals("")) deleteLocalTempFile(tmp_target);
-			return -1;
+			return setErrorStatusRetry(e_msg[0]);
 		} catch (UnknownHostException e) {
-			addLogMsg("E","","From="+masterUrl+", To="+targetUrl);
+			addLogMsg("E","","mirrorMoveRemoteToLocal UKHE From="+masterUrl+", To="+targetUrl);
 			addLogMsg("E","",e.getMessage());//e.toString());
 			printStackTraceElement(e.getStackTrace());
-			isExceptionOccured=true;
-			tcMirror.setThreadMessage(e.getMessage());
 			if (!tmp_target.equals("")) deleteLocalTempFile(tmp_target);
-			return -1;
+			return setErrorStatusRetry(e.getMessage());
 		} catch (FileNotFoundException e) {
-			addLogMsg("E","","From="+masterUrl+", To="+targetUrl);
+			addLogMsg("E","","mirrorMoveRemoteToLocal FNFD From="+masterUrl+", To="+targetUrl);
 			addLogMsg("E","",e.getMessage());//e.toString());
 			printStackTraceElement(e.getStackTrace());
-			isExceptionOccured=true;
-			tcMirror.setThreadMessage(e.getMessage());
 			if (!tmp_target.equals("")) deleteLocalTempFile(tmp_target);
-			return -1;
+			return setErrorStatusRetry(e.getMessage());
 		} catch (IOException e) {
-			addLogMsg("E","","From="+masterUrl+", To="+targetUrl);
+			addLogMsg("E","","mirrorMoveRemoteToLocal IOE From="+masterUrl+", To="+targetUrl);
 			addLogMsg("E","",e.getMessage());//e.toString());
 			printStackTraceElement(e.getStackTrace());
-			isExceptionOccured=true;
-			tcMirror.setThreadMessage(e.getMessage());
 			if (!tmp_target.equals("")) deleteLocalTempFile(tmp_target);
-			return -1;
+			return setErrorStatusRetry(e.getMessage());
 		}
 		return 0;
 	};
@@ -2134,8 +2297,12 @@ public class MirrorIO implements Runnable {
 			lf = new File(masterUrl);
 			if (lf.exists()) {
 				if (lf.isDirectory()) { // Directory copy
-					if (lf.canRead() && 
+					if (lf.canRead() && !isHiddenDirectory(lf) &&
 							isDirectoryToBeProcessed(masterUrl.replace(mirrorIoRootDir, ""))) {
+						if (!syncProfileExcludeEmptyDirectory) {
+							createRemoteDirByDir(targetUrl);
+							if (checkErrorStatus()!=0) return checkErrorStatus();
+						}
 						File[] children = lf.listFiles();
 						if (children!=null) {
 							for (File element : children) {
@@ -2143,8 +2310,13 @@ public class MirrorIO implements Runnable {
 								
 								if (!tmp.equals(".android_secure")) {
 									if (tmp.lastIndexOf("/")>0) tmp=tmp.substring(0,tmp.lastIndexOf("/"));
-									mirrorMoveLocalToRemote(allcopy, masterUrl + "/"
-											+ tmp,targetUrl + "/" + tmp, moved_dirs);
+									String n_master=masterUrl + "/"+ tmp;
+									String n_target=targetUrl + "/" + tmp;
+									syncExecRetryCount=0;
+									while(true) {
+										mirrorMoveLocalToRemote(allcopy, n_master, n_target, moved_dirs);
+										if (!checkRetry()) break;
+									}
 									if (checkErrorStatus()!=0) return checkErrorStatus();
 								} else {
 									addDebugLogMsg(1,"I","Android system directory is ignored, fp="+element.getPath());
@@ -2158,9 +2330,10 @@ public class MirrorIO implements Runnable {
 						if (!lf.canRead()) addDebugLogMsg(1,"I","Directory ignored because can not read, fp="+masterUrl);
 					}
 				} else { // file copy
-					if (isDirFiltered(targetUrl.replace(localUrl, "")) &&
+					if (//isDirFiltered(targetUrl.replace(localUrl, "")) &&
+							!isHiddenFile(lf) &&
 							isFileFiltered(masterUrl)) {
-						createRemoteDir(targetUrl,moved_dirs,masterUrl);
+						createRemoteDirByFilePath(targetUrl,moved_dirs,masterUrl);
 						lf = new File(masterUrl);
 						hf = new SmbFile(targetUrl,ntlmPasswordAuth);
 						String t_fn=lf.getName().replace("/","");
@@ -2230,47 +2403,36 @@ public class MirrorIO implements Runnable {
 			}
 		} catch (MalformedURLException e) {
 			printStackTraceElement(e.getStackTrace());
-			addLogMsg("E","","From="+masterUrl+", To="+targetUrl);
+			addLogMsg("E","","mirrorMoveLocalToRemote MFUE From="+masterUrl+", To="+targetUrl);
 			addLogMsg("E","",e.getMessage());//e.toString());
-			isExceptionOccured=true;
-			tcMirror.setThreadMessage(e.getMessage());
 			if (!tmp_target.equals("")) deleteRemoteTempFile(tmp_target);
-			return -1;
+			return setErrorStatusRetry(e.getMessage());
 		} catch (SmbException e) {
 			printStackTraceElement(e.getStackTrace());
-			addLogMsg("E","","From="+masterUrl+", To="+targetUrl);
+			addLogMsg("E","","mirrorMoveLocalToRemote SMBE From="+masterUrl+", To="+targetUrl);
 			String[] e_msg=NetworkUtil.analyzeNtStatusCode(e, mGp.svcContext, 
 					targetUrl,ntlmPasswordAuth.getUsername());
 			addLogMsg("E","",e_msg[0]);//e.toString());
-			checkRemoteHostAvailable();
-			isExceptionOccured=true;
-			tcMirror.setThreadMessage(e_msg[0]);
 			if (!tmp_target.equals("")) deleteRemoteTempFile(tmp_target);
-			return -1;
+			return setErrorStatusRetry(e_msg[0]);
 		} catch (UnknownHostException e) {
 			printStackTraceElement(e.getStackTrace());
-			addLogMsg("E","","From="+masterUrl+", To="+targetUrl);
+			addLogMsg("E","","mirrorMoveLocalToRemote UKHE From="+masterUrl+", To="+targetUrl);
 			addLogMsg("E","",e.getMessage());//e.toString());
-			isExceptionOccured=true;
-			tcMirror.setThreadMessage(e.getMessage());
 			if (!tmp_target.equals("")) deleteRemoteTempFile(tmp_target);
-			return -1;
+			return setErrorStatusRetry(e.getMessage());
 		} catch (FileNotFoundException e) {
 			printStackTraceElement(e.getStackTrace());
-			addLogMsg("E","","From="+masterUrl+", To="+targetUrl);
+			addLogMsg("E","","mirrorMoveLocalToRemote FNFD From="+masterUrl+", To="+targetUrl);
 			addLogMsg("E","",e.getMessage());//e.toString());
-			isExceptionOccured=true;
-			tcMirror.setThreadMessage(e.getMessage());
 			if (!tmp_target.equals("")) deleteRemoteTempFile(tmp_target);
-			return -1;
+			return setErrorStatusRetry(e.getMessage());
 		} catch (IOException e) {
 			printStackTraceElement(e.getStackTrace());
-			addLogMsg("E","","From="+masterUrl+", To="+targetUrl);
+			addLogMsg("E","","mirrorMoveLocalToRemote IOE From="+masterUrl+", To="+targetUrl);
 			addLogMsg("E","",e.getMessage());//e.toString());
-			isExceptionOccured=true;
-			tcMirror.setThreadMessage(e.getMessage());
 			if (!tmp_target.equals("")) deleteRemoteTempFile(tmp_target);
-			return -1;
+			return setErrorStatusRetry(e.getMessage());
 		}
 		return copyCount;
 	};
@@ -2289,8 +2451,12 @@ public class MirrorIO implements Runnable {
 			mf = new File(masterUrl);
 			if (mf.exists()) {
 				if (mf.isDirectory()) { // Directory copy
-					if (mf.canRead() && 
+					if (mf.canRead() && !isHiddenDirectory(mf) &&
 							isDirectoryToBeProcessed(masterUrl.replace(mirrorIoRootDir, ""))) {
+						if (!syncProfileExcludeEmptyDirectory) {
+							createLocalDirByDir(targetUrl);
+							if (checkErrorStatus()!=0) return checkErrorStatus();
+						}
 						File[] children = mf.listFiles();
 						if (children!=null) {
 							for (File element : children) {
@@ -2298,7 +2464,7 @@ public class MirrorIO implements Runnable {
 								if (!tmp.equals(".android_secure")) {
 									if (tmp.lastIndexOf("/")>0) tmp=tmp.substring(0,tmp.lastIndexOf("/"));
 									String n_master=(masterUrl + "/"+ tmp).replaceAll("//", "/");
-									String n_target=(targetUrl + "/" + tmp).replaceAll("//", "/");;
+									String n_target=(targetUrl + "/" + tmp).replaceAll("//", "/");
 									if (!n_master.equals(target_fp_base)) {
 										mirrorMoveLocalToLocal(allcopy, n_master, n_target, target_fp_base,
 												moved_dirs);
@@ -2320,9 +2486,10 @@ public class MirrorIO implements Runnable {
 						if (!mf.canRead()) addDebugLogMsg(1,"I","Directory ignored because can not read, fp="+masterUrl);
 					}
 				} else { // file copy
-					if (isDirFiltered(targetUrl.replace(localUrl, "")) &&
+					if (//isDirFiltered(targetUrl.replace(localUrl, "")) &&
+							!isHiddenFile(mf) &&
 							isFileFiltered(masterUrl)) {
-						if (createLocalDir(targetUrl,moved_dirs,masterUrl)) {
+						if (createLocalDirByFilePath(targetUrl,moved_dirs,masterUrl)) {
 							mf = new File(masterUrl);
 							tf = new File(targetUrl);
 							String t_fn=mf.getName().replace("/","");
@@ -2393,7 +2560,6 @@ public class MirrorIO implements Runnable {
 //			printStackTraceElement(e.getStackTrace());
 //			addLogMsg("E","",e.getMessage());//e.toString());
 //			addLogMsg("E","","From="+masterUrl+", To="+targetUrl);
-//			checkRemoteHostAvailable();
 //			isExceptionOccured=true;
 //			tcMirror.setThreadMessage(e.getMessage());
 //			if (!tmp_target.equals("")) deleteLocalTempFile(tmp_target);
@@ -2426,27 +2592,33 @@ public class MirrorIO implements Runnable {
 		return copyCount;
 	};
 
-	final private boolean createRemoteDir(String targetUrl,
+	final private void createRemoteDirByFilePath(String targetUrl,
 			ArrayList<String> moved_dirs,String masterUrl) 
 					throws MalformedURLException, SmbException {
-		boolean result=false;
 		String target_dir="",master_dir="";
-		if (targetUrl.lastIndexOf("/")<=0) return false;
+		if (targetUrl.lastIndexOf("/")<=0) return ;
 		else target_dir=targetUrl.substring(0,targetUrl.lastIndexOf("/"));
-		if (masterUrl.lastIndexOf("/")<=0) return false;
+		if (masterUrl.lastIndexOf("/")<=0) return ;
 		else master_dir=masterUrl.substring(0,masterUrl.lastIndexOf("/"));
 
 		SmbFile hf = new SmbFile(target_dir + "/",ntlmPasswordAuth);
 		if (!hf.exists()) {
-			hf.mkdirs();
+			createRemoteDirByDir(target_dir);
 			if (moved_dirs!=null) addMovedDirList(moved_dirs,master_dir);
+		}
+	};
+
+	final private void createRemoteDirByDir(String target_dir) 
+					throws MalformedURLException, SmbException {
+		SmbFile hf = new SmbFile(target_dir + "/",ntlmPasswordAuth);
+		if (!hf.exists()) {
+			hf.mkdirs();
 			if (mGp.settingShowSyncDetailMessage)  
 				addLogMsg("I",target_dir,msgs_mirror_prof_dir_create);
 		}
-		return result;
 	};
-	
-	final private boolean createLocalDir(String targetUrl,
+
+	final private boolean createLocalDirByFilePath(String targetUrl,
 			ArrayList<String> moved_dirs,String masterUrl) {
 		boolean result=false;
 		String target_dir="",master_dir="";
@@ -2461,9 +2633,24 @@ public class MirrorIO implements Runnable {
 		
 		File lf = new File(target_dir);
 		if (!lf.exists()) {
-			result=lf.mkdirs();
+			result=createLocalDirByDir(target_dir);
 			if (result) {
 				if (moved_dirs!=null) addMovedDirList(moved_dirs,master_dir + "/");
+			}
+		} else {
+//			addDebugLogMsg(1,"I","Local directory already created, dir="+target_dir);
+			result=true;
+		}
+		
+		return result;
+	};
+
+	final private boolean createLocalDirByDir(String target_dir) {
+		boolean result=false;
+		File lf = new File(target_dir);
+		if (!lf.exists()) {
+			result=lf.mkdirs();
+			if (result) {
 				if (mGp.settingShowSyncDetailMessage)  
 					addLogMsg("I",target_dir,msgs_mirror_prof_dir_create);
 			} else {
@@ -2478,6 +2665,7 @@ public class MirrorIO implements Runnable {
 		return result;
 	};
 
+	
 	final private int copyFileLocalToRemote(File in_file, SmbFile out_file, 
 			long file_byte, String t_fn, String t_fp, String tmp_target) throws IOException {
 		long fileReadBytes = 0;
@@ -2998,7 +3186,8 @@ public class MirrorIO implements Runnable {
 			cli.new_list.addAll(newFileLastModifiedList);
 			mLocalFileLastModifiedCache.add(cli);
 		}
-	}
+	};
+	
 	final private void loadLocalFileLastModifiedList(String lmp) {
 		if (syncProfileUseJavaLastModified) return;
 		if (!loadedLocalMountPoint.equals(lmp)) {
@@ -3095,12 +3284,14 @@ public class MirrorIO implements Runnable {
 		return filtered;
 	};
 
+	@SuppressWarnings("unused")
 	final private boolean isDirFiltered(String url) {
 		boolean filtered = false;
 		Matcher mt;
 		
 //		String tmp_d=url.replace(mirrorIoRootDir+"/","");
 //		String tmp_d=url;
+		Log.v("","url="+url+", mirrorIoRootDir="+mirrorIoRootDir);
 		if (url.equals(mirrorIoRootDir)) {
 			//not filtered
 			filtered = true;
@@ -3161,19 +3352,16 @@ public class MirrorIO implements Runnable {
 			String[] dir_array=null;
 			if (filter_dir.startsWith("/")) dir_array=filter_dir.replaceFirst("/", "").split("/");
 			else dir_array=filter_dir.split("/");
+
 			if (dirIncludeFilterList.size()==0) inc=true;
 			else {
 				for (int i=0;i<dirIncludeFilterList.size();i++) {
 					Pattern[] pattern_array=dirIncludeFilterList.get(i);
 					boolean found=true;
 					for (int j=0;j<Math.min(dir_array.length,pattern_array.length);j++) {
-//						Log.v("","j="+j);
 						Matcher mt = pattern_array[j].matcher(dir_array[j]);
-//						Log.v("","l="+dir_array[j].length());
 						if (dir_array[j].length()!=0) {
 							found=mt.find();
-//							Log.v("","found="+found+", dir="+dir+
-//									", dir_array="+dir_array[j]+", pattern="+pattern_array[j]);
 							if (!found) {
 								break;
 							} 
@@ -3209,10 +3397,8 @@ public class MirrorIO implements Runnable {
 		if (mGp.debugLevel>=2) 
 			addDebugLogMsg(2,"I","isDirectoryToBeProcessed"+
 				" include="+inc+", exclude="+exc+", result="+result+", fp="+dir);
-//		Log.v("","isDirectoryToBeProcessed"+" name="+dir+
-//				", include="+inc+", exclude="+exc+", result="+result+", fp="+dir);
 		return result;
-	}
+	};
 
 	final private void notifyThreadTerminate() {
 		mUtil.flushLogFile();
@@ -3235,12 +3421,14 @@ public class MirrorIO implements Runnable {
 			
 
 		} catch (MalformedURLException e) {
+			addLogMsg("E","","deleteRemoteFile MFUE url="+url);
 			addLogMsg("E","",e.getMessage());//e.toString());
 			addLogMsg("E","","url="+url);
 			printStackTraceElement(e.getStackTrace());
-			isExceptionOccured=true;
-			tcMirror.setThreadMessage(e.getMessage());
-			return -1;
+			return setErrorStatusRetry(e.getMessage());
+//			isExceptionOccured=true;
+//			tcMirror.setThreadMessage(e.getMessage());
+//			return -1;
 		}
 		return deleteCount;
 	};
@@ -3251,8 +3439,11 @@ public class MirrorIO implements Runnable {
 				// ディレクトリにあるすべてのファイルを処理する
 				String[] children = (new SmbFile(hf.getPath()+"/",ntlmPasswordAuth)).list();
 				for (int i = 0; i < children.length; i++) {
-					deleteRemoteFile(rootpath, 
-						(new SmbFile(hf.getPath()+"/"+children[i],ntlmPasswordAuth)));
+					syncExecRetryCount=0;
+					while(true) {
+						deleteRemoteFile(rootpath, (new SmbFile(hf.getPath()+"/"+children[i],ntlmPasswordAuth)));
+						if (!checkRetry()) break;
+					}
 					if (checkErrorStatus()!=0) return checkErrorStatus();
 				}
 			}
@@ -3286,20 +3477,17 @@ public class MirrorIO implements Runnable {
 				if (checkErrorStatus()!=0) return checkErrorStatus();
 			}
 		} catch (MalformedURLException e) {
+			addLogMsg("E","","deleteRemoteFile MFUE url="+hf.getPath());
 			addLogMsg("E","",e.getMessage());//e.toString());
 			printStackTraceElement(e.getStackTrace());
-			isExceptionOccured=true;
-			tcMirror.setThreadMessage(e.getMessage());
-			return -1;
+			return setErrorStatusRetry(e.getMessage());
 		} catch (SmbException e) {
+			addLogMsg("E","","deleteRemoteFile SMBE url="+hf.getPath());
 			String[] e_msg=NetworkUtil.analyzeNtStatusCode(e, mGp.svcContext, 
 					hf.getPath(),ntlmPasswordAuth.getUsername());
 			addLogMsg("E","",e_msg[0]);//e.toString());
-			checkRemoteHostAvailable();
 			printStackTraceElement(e.getStackTrace());
-			isExceptionOccured=true;
-			tcMirror.setThreadMessage(e_msg[0]);
-			return -1;
+			return setErrorStatusRetry(e_msg[0]);
 		}
 		return deleteCount;
 	};
@@ -3318,6 +3506,7 @@ public class MirrorIO implements Runnable {
 				deleteLocalFile(sf.getPath(), sf); //not delete specified dir
 
 		} catch (Exception e) {
+			addLogMsg("E","","deleteLocalItem EXCEP url="+url);
 			addLogMsg("E","",e.getMessage());//e.toString());
 			addLogMsg("E","","url="+url);
 			printStackTraceElement(e.getStackTrace());
@@ -3381,11 +3570,21 @@ public class MirrorIO implements Runnable {
 			hf = new SmbFile(url,ntlmPasswordAuth);
 			String[] list=hf.list();
 			if (list.length==0) dirEmpty=true; 
-		} catch (Exception e) {
+		} catch (MalformedURLException e) {
+			addLogMsg("E","","isRemoteDirEmpty MFUE url="+url);
 			addLogMsg("E","",e.getMessage());//e.toString());
-			isExceptionOccured=true;
 			printStackTraceElement(e.getStackTrace());
-			tcMirror.setThreadMessage(e.getMessage());
+			setErrorStatusRetry(e.getMessage());
+//			isExceptionOccured=true;
+//			tcMirror.setThreadMessage(e.getMessage());
+			return false;
+		} catch (SmbException e) {
+			addLogMsg("E","","isRemoteDirEmpty SMBE url="+url);
+			addLogMsg("E","",e.getMessage());//e.toString());
+			printStackTraceElement(e.getStackTrace());
+			setErrorStatusRetry(e.getMessage());
+//			isExceptionOccured=true;
+//			tcMirror.setThreadMessage(e.getMessage());
 			return false;
 		}
 		if (mGp.debugLevel>=1) 
@@ -3403,6 +3602,7 @@ public class MirrorIO implements Runnable {
 			if (list==null) dirEmpty=true; 
 			else if (list!=null && list.length==0) dirEmpty=true;
 		} catch (Exception e) {
+			addLogMsg("E","","isLocalDirEmpty EXCEP url="+url);
 			isExceptionOccured=true;
 			addLogMsg("E","",e.getMessage());//e.toString());
 			printStackTraceElement(e.getStackTrace());
@@ -3554,6 +3754,10 @@ class MirrorIoParmList {
 	private boolean mp_confirm_required =true;
 	private boolean mp_force_last_modified_use_smbsync =true;
 	private boolean mp_not_use_last_modified_for_remote =false;
+	private int mp_retry_count =0;
+	private boolean mp_exc_empty_dir=false;
+	private boolean mp_exc_hidden_dir=false;
+	private boolean mp_exc_hidden_file=false;
 	
 	public MirrorIoParmList (
 			String profname,
@@ -3575,7 +3779,9 @@ class MirrorIoParmList {
 			boolean mdp,
 			boolean conf,
 			boolean ujlm,
-			boolean nulm_remote) {
+			boolean nulm_remote,
+			int rc,
+			boolean exc_empty_dir, boolean exc_hidden_dir, boolean exc_hidden_file) {
 
 		mp_profname=profname;
 		mp_master_type=master_type;
@@ -3597,6 +3803,10 @@ class MirrorIoParmList {
 		mp_confirm_required=conf;
 		mp_force_last_modified_use_smbsync=ujlm;
 		mp_not_use_last_modified_for_remote=nulm_remote;
+		mp_retry_count=rc;
+		mp_exc_empty_dir=exc_empty_dir;
+		mp_exc_hidden_dir=exc_hidden_dir;
+		mp_exc_hidden_file=exc_hidden_file;
 	}
 
 	public String getProfname() { return mp_profname;}
@@ -3648,6 +3858,19 @@ class MirrorIoParmList {
 	public void setMasterDirFileProcessed(boolean p) {mp_master_dir_proc=p;}
 	public void setConfirmRequired(boolean p) {mp_confirm_required=p;}
 	public void setForceLastModifiedUseSmbsync(boolean p) {mp_force_last_modified_use_smbsync=p;}
+	
+	public int getReryCount() {return mp_retry_count;}
+	public void setRetryCount(int p) {mp_retry_count=p;};
+
+	public boolean isExcludeEmptyDirectory() {return mp_exc_empty_dir;}
+	public void setExcludeEmptyDirectory(boolean p) {mp_exc_empty_dir=p;};
+
+	public boolean isExcludeHiddenDirectory() {return mp_exc_hidden_dir;}
+	public void setExcludeHiddenDirectory(boolean p) {mp_exc_hidden_dir=p;};
+
+	public boolean isExcludeHiddenFile() {return mp_exc_hidden_file;}
+	public void setExcludeHiddenFile(boolean p) {mp_exc_hidden_file=p;};
+
 }
 
 class LocalFileLastModifiedListCacheItem {

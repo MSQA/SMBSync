@@ -150,5 +150,39 @@
         android:layout_marginBottom="3dp"
         android:text="@string/msgs_sync_profile_last_modified_smbsync"/>
             
+    <CheckBox
+        android:id="@+id/sync_wizard_dlg_sync_retry_if_error_occured"
+        style="@style/check_box_style"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="3dp"
+        android:text="@string/msgs_sync_profile_retry_if_error_occured"/>
+
+    <CheckBox
+        android:id="@+id/sync_wizard_dlg_sync_exclude_empty_directory"
+        style="@style/check_box_style"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="3dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/msgs_sync_profile_exclude_empty_directory"/>
+    
+    <CheckBox
+        android:id="@+id/sync_wizard_dlg_sync_exclude_hidden_directory"
+        style="@style/check_box_style"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="3dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/msgs_sync_profile_exclude_hidden_directory"/>
+    
+    <CheckBox
+        android:id="@+id/sync_wizard_dlg_sync_exclude_hidden_file"
+        style="@style/check_box_style"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="3dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/msgs_sync_profile_exclude_hidden_file"/>
     
 </LinearLayout>
