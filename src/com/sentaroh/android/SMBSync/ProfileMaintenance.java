@@ -89,7 +89,6 @@ import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -1041,7 +1040,7 @@ public class ProfileMaintenance {
 
 		setLocalMountPointSpinner(spinner, prof_lmp);
 		
-		CommonDialog.setDlgBoxSizeCompact(dialog);
+		CommonDialog.setDlgBoxSizeLimit(dialog,true);
 		
 		if (prof_act.equals("A")) tg.setChecked(true);
 		else tg.setChecked(false);
@@ -1256,7 +1255,7 @@ public class ProfileMaintenance {
 			editport.setEnabled(false);
 		}
 		
-		CommonDialog.setDlgBoxSizeCompact(dialog);
+		CommonDialog.setDlgBoxSizeLimit(dialog,true);
 		
 		editname.setText(prof_name);
 		edituser.setText(prof_user);
@@ -1930,7 +1929,12 @@ public class ProfileMaintenance {
 
 	public void addSyncProfile(boolean add_op, String prof_name, String prof_act,
 			String prof_master, String prof_target, String prof_syncopt,
-			final ArrayList<String> ff,final ArrayList<String> df,String dialog_msg) {
+			final ArrayList<String> ff,final ArrayList<String> df,
+			boolean prof_mpd, 
+			boolean prof_conf, boolean prof_ujlm, boolean nulm_remote, String prof_retry_count, 
+			boolean sync_empty_dir, boolean sync_hidden_dir, boolean sync_hidden_file,
+			boolean sync_sub_dir, String dialog_msg) {
+
 		final ArrayList<String>prof_file_filter;
 		final ArrayList<String>prof_dir_filter;
 		if (ff==null) prof_file_filter=new ArrayList<String>();
@@ -1959,27 +1963,50 @@ public class ProfileMaintenance {
 		final Spinner spinnerSyncOption=(Spinner)dialog.findViewById(R.id.sync_profile_sync_option);
 		setSyncOptionSpinner(spinnerSyncOption, prof_syncopt); 
 
-		final CheckBox cbmpd = (CheckBox)dialog.findViewById(R.id.sync_profile_master_dir_cb);
-		cbmpd.setChecked(true);
-//		cbmpd.setText(mContext.getString(R.string.msgs_sync_profile_master_dir_cb_enable));
-//		cbmpd.setOnCheckedChangeListener(new OnCheckedChangeListener(){
-//			@Override
-//			public void onCheckedChanged(CompoundButton buttonView,
-//					boolean isChecked) {
-//				if (isChecked) cbmpd.setText(mContext.getString(R.string.msgs_sync_profile_master_dir_cb_enable));
-//				else cbmpd.setText(mContext.getString(R.string.msgs_sync_profile_master_dir_cb_disable));
-//			}
-//		});
-//		if (prof_dir_filter.size()!=0) cbmpd.setVisibility(CheckBox.VISIBLE);//.setEnabled(true);
-//		else cbmpd.setVisibility(CheckBox.GONE);//.setEnabled(false);
-		
+		final CheckBox cbmpd = (CheckBox)dialog.findViewById(R.id.sync_profile_sync_master_root_dir_file);
+
 		final CheckBox cbConf = (CheckBox)dialog.findViewById(R.id.sync_profile_confirm);
-		cbConf.setChecked(true);
+		cbConf.setChecked(prof_conf);
 		final CheckBox cbLastMod = (CheckBox)dialog.findViewById(R.id.sync_profile_last_modified);
-		cbLastMod.setChecked(false);
+		cbLastMod.setChecked(prof_ujlm);
 		final CheckBox cbNotUseLastModRem = (CheckBox)dialog.findViewById(R.id.sync_profile_not_use_last_modified_remote_file_for_diff);
-		cbNotUseLastModRem.setChecked(false);
-		CommonDialog.setDlgBoxSizeCompact(dialog);
+		cbNotUseLastModRem.setChecked(nulm_remote);
+		
+		final CheckBox cbRetry = (CheckBox)dialog.findViewById(R.id.sync_profile_retry_if_error_occured);
+		final CheckBox cbSyncEmptyDir = (CheckBox)dialog.findViewById(R.id.sync_profile_sync_empty_directory);
+		final CheckBox cbSyncHiddenDir = (CheckBox)dialog.findViewById(R.id.sync_profile_sync_hidden_directory);
+		final CheckBox cbSyncHiddenFile = (CheckBox)dialog.findViewById(R.id.sync_profile_sync_hidden_file);
+		final CheckBox cbSyncSubDir = (CheckBox)dialog.findViewById(R.id.sync_profile_sync_sub_dir);
+
+		if (prof_retry_count==null || prof_retry_count.equals("0")) cbRetry.setChecked(false);
+		else cbRetry.setChecked(true);
+		
+		cbSyncEmptyDir.setChecked(sync_empty_dir);
+		cbSyncHiddenDir.setChecked(sync_hidden_dir);
+		cbSyncHiddenFile.setChecked(sync_hidden_file);
+
+		if (prof_mpd) {
+			cbmpd.setChecked(true);
+			cbSyncSubDir.setChecked(sync_sub_dir);
+		} else {
+			cbmpd.setChecked(false);
+			cbSyncSubDir.setChecked(true);
+		}
+
+		cbmpd.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				if (!isChecked) {
+					cbSyncSubDir.setEnabled(false);
+					cbSyncSubDir.setChecked(true);
+				} else {
+					cbSyncSubDir.setEnabled(true);
+				}
+			}
+		});
+
+		CommonDialog.setDlgBoxSizeLimit(dialog,true);
 
 		final CheckBox tg = (CheckBox)dialog.findViewById(R.id.sync_profile_active);
 		if (prof_act.equals(SMBSYNC_PROF_ACTIVE)) tg.setChecked(true);
@@ -2024,7 +2051,7 @@ public class ProfileMaintenance {
 				if (spinner_master.getSelectedItem()!=null) 
 					c_mst=spinner_master.getSelectedItem().toString().substring(2);
 				setSyncTargetProfileSpinner(spinner_target,c_mst,c_tgt);
-				Log.v("","c_mst="+c_mst+", c_tgt="+c_tgt);
+//				Log.v("","c_mst="+c_mst+", c_tgt="+c_tgt);
 				setMasterProfileEditButtonListener(dialog, c_mst);
 				setTargetProfileEditButtonListener(dialog, c_tgt);
 			}
@@ -2175,14 +2202,15 @@ public class ProfileMaintenance {
 //		final TextView dlg_dir_filter=(TextView) dialog.findViewById(R.id.sync_profile_dir_filter);
 		final EditText editname = (EditText)dialog.findViewById(R.id.sync_profile_name);
 		final Spinner spinnerSyncOption=(Spinner)dialog.findViewById(R.id.sync_profile_sync_option);
-		final CheckBox cbmpd = (CheckBox)dialog.findViewById(R.id.sync_profile_master_dir_cb);
+		final CheckBox cbmpd = (CheckBox)dialog.findViewById(R.id.sync_profile_sync_master_root_dir_file);
 		final CheckBox cbConf = (CheckBox)dialog.findViewById(R.id.sync_profile_confirm);
 		final CheckBox cbLastMod = (CheckBox)dialog.findViewById(R.id.sync_profile_last_modified);
 		final CheckBox cbNotUseLastModRem = (CheckBox)dialog.findViewById(R.id.sync_profile_not_use_last_modified_remote_file_for_diff);
 		final CheckBox cbRetry = (CheckBox)dialog.findViewById(R.id.sync_profile_retry_if_error_occured);
-		final CheckBox cbCreateEmptyDir = (CheckBox)dialog.findViewById(R.id.sync_profile_exclude_empty_directory);
-		final CheckBox cbExcHiddenDir = (CheckBox)dialog.findViewById(R.id.sync_profile_exclude_hidden_directory);
-		final CheckBox cbExcHiddenFile = (CheckBox)dialog.findViewById(R.id.sync_profile_exclude_hidden_file);
+		final CheckBox cbSyncEmptyDir = (CheckBox)dialog.findViewById(R.id.sync_profile_sync_empty_directory);
+		final CheckBox cbSyncHiddenDir = (CheckBox)dialog.findViewById(R.id.sync_profile_sync_hidden_directory);
+		final CheckBox cbSyncHiddenFile = (CheckBox)dialog.findViewById(R.id.sync_profile_sync_hidden_file);
+		final CheckBox cbSyncSubDir = (CheckBox)dialog.findViewById(R.id.sync_profile_sync_sub_dir);
 		final CheckBox tg = (CheckBox)dialog.findViewById(R.id.sync_profile_active);
 		final Spinner spinner_master=(Spinner)dialog.findViewById(R.id.sync_profile_master_spinner);
 		final Spinner spinner_target=(Spinner)dialog.findViewById(R.id.sync_profile_target_spinner);
@@ -2238,8 +2266,8 @@ public class ProfileMaintenance {
 					prof_file_filter,prof_dir_filter,prof_mpd,
 					cbConf.isChecked(),cbLastMod.isChecked(),
 					cbNotUseLastModRem.isChecked(),retry_count,
-					cbCreateEmptyDir.isChecked(),
-					cbExcHiddenDir.isChecked(),cbExcHiddenFile.isChecked(),
+					cbSyncEmptyDir.isChecked(),
+					cbSyncHiddenDir.isChecked(),cbSyncHiddenFile.isChecked(),cbSyncSubDir.isChecked(),
 					false,prof_pos);
 			mGp.profileAdapter.sort();
 			mGp.profileAdapter.notifyDataSetChanged();
@@ -2279,7 +2307,7 @@ public class ProfileMaintenance {
 		
 		setLocalMountPointSpinner(spinner, prof_lmp);
 		
-		CommonDialog.setDlgBoxSizeCompact(dialog);
+		CommonDialog.setDlgBoxSizeLimit(dialog,true);
 		
 		// GET_btn1ボタンの指定
 		Button btnGet1 = (Button) dialog.findViewById(R.id.local_profile_get_btn1);
@@ -2489,7 +2517,7 @@ public class ProfileMaintenance {
 			}
 		});
 
-		CommonDialog.setDlgBoxSizeCompact(dialog);
+		CommonDialog.setDlgBoxSizeLimit(dialog,true);
 
 		final Button btn_ok = (Button) dialog.findViewById(R.id.remote_profile_ok);
 		setRemoteProfileCommonListener(dialog);
@@ -2609,10 +2637,11 @@ public class ProfileMaintenance {
 				final int prof_num, String prof_act, 
 				final String prof_master, final String prof_target, String prof_syncopt,
 				ArrayList<String> prof_file_filter, 
-				ArrayList<String> prof_dir_filter,boolean prof_mpd, 
+				ArrayList<String> prof_dir_filter,
+				boolean prof_mpd, 
 				boolean prof_conf, boolean prof_ujlm, boolean nulm_remote, String prof_retry_count, 
-				boolean exclude_empty_dir, boolean exc_hidden_dir, boolean exc_hidden_file, 
-				String dialog_msg) {
+				boolean sync_empty_dir, boolean sync_hidden_dir, boolean sync_hidden_file,
+				boolean sync_sub_dir, String dialog_msg) {
 	
 		String f_fl="", d_fl="";
 		if (prof_file_filter!=null) {
@@ -2658,21 +2687,22 @@ public class ProfileMaintenance {
 		editname.setText(prof_name);
 		editname.setTextColor(Color.LTGRAY);
 		editname.setEnabled(false);
-		final CheckBox cbmpd = (CheckBox)dialog.findViewById(R.id.sync_profile_master_dir_cb);
+		final CheckBox cbmpd = (CheckBox)dialog.findViewById(R.id.sync_profile_sync_master_root_dir_file);
 		final CheckBox tg = (CheckBox)dialog.findViewById(R.id.sync_profile_active);
 		final CheckBox cbConf = (CheckBox)dialog.findViewById(R.id.sync_profile_confirm);
 		final CheckBox cbLastMod = (CheckBox)dialog.findViewById(R.id.sync_profile_last_modified);
 		final CheckBox cbRetry = (CheckBox)dialog.findViewById(R.id.sync_profile_retry_if_error_occured);
-		final CheckBox cbExcludeEmptyDir = (CheckBox)dialog.findViewById(R.id.sync_profile_exclude_empty_directory);
-		final CheckBox cbExcHiddenDir = (CheckBox)dialog.findViewById(R.id.sync_profile_exclude_hidden_directory);
-		final CheckBox cbExcHiddenFile = (CheckBox)dialog.findViewById(R.id.sync_profile_exclude_hidden_file);
+		final CheckBox cbSyncEmptyDir = (CheckBox)dialog.findViewById(R.id.sync_profile_sync_empty_directory);
+		final CheckBox cbSyncHiddenDir = (CheckBox)dialog.findViewById(R.id.sync_profile_sync_hidden_directory);
+		final CheckBox cbSyncHiddenFile = (CheckBox)dialog.findViewById(R.id.sync_profile_sync_hidden_file);
+		final CheckBox cbSyncSubDir = (CheckBox)dialog.findViewById(R.id.sync_profile_sync_sub_dir);
 		
 		if (prof_retry_count.equals("0")) cbRetry.setChecked(false);
 		else cbRetry.setChecked(true);
 		
-		cbExcludeEmptyDir.setChecked(exclude_empty_dir);
-		cbExcHiddenDir.setChecked(exc_hidden_dir);
-		cbExcHiddenFile.setChecked(exc_hidden_file);
+		cbSyncEmptyDir.setChecked(sync_empty_dir);
+		cbSyncHiddenDir.setChecked(sync_hidden_dir);
+		cbSyncHiddenFile.setChecked(sync_hidden_file);
 		
 		cbConf.setChecked(prof_conf);
 		cbLastMod.setChecked(prof_ujlm);
@@ -2683,7 +2713,7 @@ public class ProfileMaintenance {
 		final Spinner spinnerSyncOption=(Spinner)dialog.findViewById(R.id.sync_profile_sync_option);
 		setSyncOptionSpinner(spinnerSyncOption, prof_syncopt); 
 
-		CommonDialog.setDlgBoxSizeCompact(dialog);
+		CommonDialog.setDlgBoxSizeLimit(dialog,true);
 
 		if (prof_act.equals(SMBSYNC_PROF_ACTIVE)) tg.setChecked(true);
 			else tg.setChecked(false);
@@ -2821,9 +2851,27 @@ public class ProfileMaintenance {
 		// Master Dir processボタンの指定
 //		if (prof_dir_filter.size()!=0) cbmpd.setVisibility(CheckBox.VISIBLE);//.setEnabled(true);
 //			else cbmpd.setVisibility(CheckBox.GONE);//.setEnabled(false);
-		if (prof_mpd) cbmpd.setChecked(true);
-			else cbmpd.setChecked(false);
+		if (prof_mpd) {
+			cbmpd.setChecked(true);
+			cbSyncSubDir.setChecked(sync_sub_dir);
+		} else {
+			cbmpd.setChecked(false);
+			cbSyncSubDir.setChecked(true);
+		}
 
+		cbmpd.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				if (!isChecked) {
+					cbSyncSubDir.setEnabled(false);
+					cbSyncSubDir.setChecked(true);
+				} else {
+					cbSyncSubDir.setEnabled(true);
+				}
+			}
+		});
+		
 		// CANCELボタンの指定
 		final Button btn_cancel = (Button) dialog.findViewById(R.id.sync_profile_cancel);
 		btn_cancel.setOnClickListener(new View.OnClickListener() {
@@ -2865,10 +2913,20 @@ public class ProfileMaintenance {
 		} else if (pli.getType().equals(SMBSYNC_PROF_TYPE_SYNC)) {
 			addSyncProfile(false, pli.getName(),pli.getActive(),
 					pli.getMasterName(),pli.getTargetName(),
-					pli.getSyncType(),pli.getFileFilter(),pli.getDirFilter(),"");
+					pli.getSyncType(),pli.getFileFilter(),pli.getDirFilter(),
+					pli.isMasterDirFileProcess(),
+					pli.isConfirmRequired(),
+					pli.isForceLastModifiedUseSmbsync(),
+					pli.isNotUseLastModifiedForRemote(),
+					pli.getRetryCount(),
+					pli.isSyncEmptyDirectory(),
+					pli.isSyncHiddenDirectory(),
+					pli.isSyncHiddenFile(),
+					pli.isSyncSubDirectory(),					
+					"");
 		}
 	};
-	
+
 	public void renameProfile(final ProfileListItem pli) {
 		
 		// カスタムダイアログの生成
@@ -5503,11 +5561,14 @@ public class ProfileMaintenance {
 							addProfileList(pl, sync, rem, lcl);
 						} else if (pl.startsWith(SMBSYNC_PROF_VER3) || 
 								pl.startsWith(SMBSYNC_PROF_VER4) ||
-								pl.startsWith(SMBSYNC_PROF_VER5)) {
+								pl.startsWith(SMBSYNC_PROF_VER5) ||
+								pl.startsWith(SMBSYNC_PROF_VER6)
+								) {
 							String prof_pre="";
 							if (pl.startsWith(SMBSYNC_PROF_VER3)) prof_pre=SMBSYNC_PROF_VER3;
 							else if (pl.startsWith(SMBSYNC_PROF_VER4)) prof_pre=SMBSYNC_PROF_VER4;
 							else if (pl.startsWith(SMBSYNC_PROF_VER5)) prof_pre=SMBSYNC_PROF_VER5;
+							else if (pl.startsWith(SMBSYNC_PROF_VER6)) prof_pre=SMBSYNC_PROF_VER6;
 							if (!pl.startsWith(prof_pre+SMBSYNC_PROF_ENC) &&
 									!pl.startsWith(prof_pre+SMBSYNC_PROF_DEC)) {
 								if (prof_encrypted) {
@@ -5630,7 +5691,7 @@ public class ProfileMaintenance {
 				SMBSYNC_PROF_TYPE_SYNC,"S-SAMP-DOWNLOAD", SMBSYNC_PROF_ACTIVE,
 				SMBSYNC_SYNC_TYPE_MIRROR,"R","R-SAMP-DOWNLOAD",
 				"L","L-SAMP-DOWNLOAD",new ArrayList<String>(), 
-				new ArrayList<String>(), true, true,false,false,"0",true,false,false,false));
+				new ArrayList<String>(), true, true,false,false,"0",false,true,true,true,false));
 		pfl.add(new ProfileListItem(SMBSYNC_PROF_GROUP_DEFAULT, 
 				SMBSYNC_PROF_TYPE_LOCAL,"L-SAMP-DOWNLOAD", SMBSYNC_PROF_ACTIVE, 
 				mGp.SMBSync_External_Root_Dir,"SAMPLEDIR", false));
@@ -5647,7 +5708,7 @@ public class ProfileMaintenance {
 		pfl.add(new ProfileListItem(SMBSYNC_PROF_GROUP_DEFAULT, 
 				SMBSYNC_PROF_TYPE_SYNC,"S-SAMP-UPLOAD-WITH-FILTER", SMBSYNC_PROF_ACTIVE,
 				SMBSYNC_SYNC_TYPE_MIRROR,"L","L-SAMP-UPLOAD",
-				"R","R-SAMP-UPLOAD",ff1,df1, true, true,false,false,"0",true,false,false,false));
+				"R","R-SAMP-UPLOAD",ff1,df1, true, true,false,false,"0",false,true,true,true,false));
 		pfl.add(new ProfileListItem(SMBSYNC_PROF_GROUP_DEFAULT, 
 				SMBSYNC_PROF_TYPE_LOCAL,"L-SAMP-UPLOAD", SMBSYNC_PROF_ACTIVE, 
 				mGp.SMBSync_External_Root_Dir,"DCIM", false));
@@ -5659,7 +5720,7 @@ public class ProfileMaintenance {
 		pfl.add(new ProfileListItem(SMBSYNC_PROF_GROUP_DEFAULT, 
 				SMBSYNC_PROF_TYPE_SYNC,"S-SAMP-LOCAL-LOCAL", SMBSYNC_PROF_ACTIVE,
 				SMBSYNC_SYNC_TYPE_MIRROR,"L","L-SAMP-LOCAL",
-				"L","L-SAMP-USBDISK",ff2,df2, true, true,false,false,"0",true,false,false,false));
+				"L","L-SAMP-USBDISK",ff2,df2, true, true,false,false,"0",false,true,true,true,false));
 		pfl.add(new ProfileListItem(SMBSYNC_PROF_GROUP_DEFAULT, 
 				SMBSYNC_PROF_TYPE_LOCAL,"L-SAMP-LOCAL", SMBSYNC_PROF_ACTIVE, 
 				mGp.SMBSync_External_Root_Dir,"DCIM", false));
@@ -5764,8 +5825,7 @@ public class ProfileMaintenance {
 						false,
 						true,
 						false,
-						"0",true,
-						false,false,
+						"0",false,true,true,true,
 						false));
 			}
 		}
@@ -5853,8 +5913,7 @@ public class ProfileMaintenance {
 						conf,
 						ujlm,
 						false,
-						"0",true,
-						false,false,
+						"0",false,true,true,true,
 						false));
 			}
 		}
@@ -5942,8 +6001,7 @@ public class ProfileMaintenance {
 						conf,
 						ujlm,
 						false,
-						"0",true,
-						false,false,
+						"0",false,true,true,true,
 						false));
 			}
 		}
@@ -6044,8 +6102,7 @@ public class ProfileMaintenance {
 						conf,
 						ujlm,
 						false,
-						"0",true,
-						false,false,
+						"0",false,true,true,true,
 						false));
 			}
 		}
@@ -6147,8 +6204,7 @@ public class ProfileMaintenance {
 						conf,
 						ujlm,
 						nulm_remote,
-						"0",true,
-						false,false,
+						"0",false,true,true,true,
 						false));
 			}
 		}
@@ -6252,8 +6308,7 @@ public class ProfileMaintenance {
 						conf,
 						ujlm,
 						nulm_remote,
-						"0",true,
-						false,false,
+						"0",false,true,true,true,
 						false));
 			}
 		}
@@ -6342,12 +6397,15 @@ public class ProfileMaintenance {
 				if (parm[10].equals("1")) conf=true;
 				if (parm[11].equals("1")) ujlm=true;
 				if (parm[12].equals("1")) nulm_remote=true;
-				boolean exc_empty_dir=false;
-				if (parm[14].equals("1")) exc_empty_dir=true;
-				boolean exc_hidden_dir=false;
-				if (parm[15].equals("1")) exc_hidden_dir=true;
-				boolean exc_hidden_file=false;
-				if (parm[16].equals("1")) exc_hidden_file=true;
+				boolean sync_empty_dir=false;
+				if (parm[14].equals("1")) sync_empty_dir=true;
+				boolean sync_hidden_dir=false;
+				if (parm[15].equals("1")) sync_hidden_dir=true;
+				boolean sync_hidden_file=false;
+				if (parm[16].equals("1")) sync_hidden_file=true;
+				boolean sync_sub_dir=false;
+				if (parm[17].equals("1")) sync_sub_dir=true;
+//				Log.v("","17="+parm[17]);
 				sync.add(createSyncProfilelistItem(
 						parm[0],//group
 						parm[ 2],//Name
@@ -6364,8 +6422,8 @@ public class ProfileMaintenance {
 						ujlm,
 						nulm_remote,
 						parm[13],//Retry count
-						exc_empty_dir,
-						exc_hidden_dir, exc_hidden_file,
+						sync_empty_dir,
+						sync_hidden_dir, sync_hidden_file, sync_sub_dir,
 						false));
 			}
 		}
@@ -6411,8 +6469,8 @@ public class ProfileMaintenance {
 			String prof_target_typ,String prof_target, 
 			ArrayList<String> file_filter, ArrayList<String> dir_filter,
 			boolean prof_mpd, boolean prof_conf, boolean prof_ujlm, boolean nulm_remote,
-			String retry_count, boolean exc_empty_dir, boolean exc_hidden_file, 
-			boolean exc_hidden_dir, boolean isChk, int pos) {
+			String retry_count, boolean sync_empty_dir, boolean sync_hidden_file, 
+			boolean sync_hidden_dir, boolean sync_sub_dir, boolean isChk, int pos) {
 		String prof_group=SMBSYNC_PROF_GROUP_DEFAULT;
 		boolean isExists=isProfileExists(prof_group,
 				 SMBSYNC_PROF_TYPE_SYNC, prof_name);
@@ -6420,14 +6478,16 @@ public class ProfileMaintenance {
 			ProfileListItem pfli=createSyncProfilelistItem(prof_group,prof_name,prof_act,
 					prof_syncopt,prof_master_typ,prof_master,prof_target_typ,prof_target,
 					file_filter, dir_filter,prof_mpd,prof_conf,prof_ujlm,nulm_remote,
-					retry_count, exc_empty_dir, exc_hidden_file, exc_hidden_dir, isChk);
+					retry_count, sync_empty_dir, sync_hidden_file, sync_hidden_dir, 
+					sync_sub_dir, isChk);
 			mGp.profileAdapter.add(pfli);
 		} else {
 //			glblParms.profileAdapter.remove(glblParms.profileAdapter.getItem(pos));
 			ProfileListItem pfli=createSyncProfilelistItem(prof_group,prof_name,prof_act,
 					prof_syncopt,prof_master_typ,prof_master,prof_target_typ,prof_target,
 					file_filter, dir_filter, prof_mpd,prof_conf,prof_ujlm,nulm_remote,
-					retry_count, exc_empty_dir, exc_hidden_file, exc_hidden_dir,isChk);
+					retry_count, sync_empty_dir, sync_hidden_file, sync_hidden_dir,
+					sync_sub_dir, isChk);
 			mGp.profileAdapter.replace(pfli,pos);
 		}
 	};
@@ -6437,8 +6497,8 @@ public class ProfileMaintenance {
 			String prof_target_typ,String prof_target, 
 			ArrayList<String> ff, ArrayList<String> df,boolean prof_mpd, 
 			boolean prof_conf, boolean prof_ujlm, boolean nulm_remote, 
-			String retry_count, boolean exc_empty_dir, boolean exc_hidden_file, 
-			boolean exc_hidden_dir, boolean isChk) {
+			String retry_count, boolean sync_empty_dir, boolean sync_hidden_file, 
+			boolean sync_hidden_dir, boolean sync_sub_dir, boolean isChk) {
 		return new ProfileListItem(prof_group,SMBSYNC_PROF_TYPE_SYNC,prof_name,prof_act,
 				prof_syncopt,
 				prof_master_typ,
@@ -6452,9 +6512,10 @@ public class ProfileMaintenance {
 				prof_ujlm,
 				nulm_remote,
 				retry_count,
-				exc_empty_dir,
-				exc_hidden_file,
-				exc_hidden_dir,
+				sync_empty_dir,
+				sync_hidden_file,
+				sync_hidden_dir,
+				sync_sub_dir,
 				isChk);
 	};
 
@@ -6545,9 +6606,9 @@ public class ProfileMaintenance {
 					String enc_str = 
 							Base64Compat.encodeToString(enc_array, Base64Compat.NO_WRAP);
 //					MiscUtil.hexString("", enc_array, 0, enc_array.length);
-					pw.println(SMBSYNC_PROF_VER5+SMBSYNC_PROF_ENC+enc_str);
+					pw.println(SMBSYNC_PROF_VER6+SMBSYNC_PROF_ENC+enc_str);
 				}
-				else pw.println(SMBSYNC_PROF_VER5+SMBSYNC_PROF_DEC);
+				else pw.println(SMBSYNC_PROF_VER6+SMBSYNC_PROF_DEC);
 			} else {
 //				OutputStream out = context.openFileOutput(SMBSYNC_PROFILE_FILE_NAME,
 //						Context.MODE_PRIVATE);
@@ -6625,11 +6686,13 @@ public class ProfileMaintenance {
 							String nulm_remote="0";
 							if (item.isNotUseLastModifiedForRemote()) nulm_remote="1";
 							String empty_dir="0";
-							if (item.isExcludeEmptyDirectory()) empty_dir="1";
-							String exc_hidden_dir="0";
-							if (item.isExcludeHiddenDirectory()) exc_hidden_dir="1";
-							String exc_hidden_file="0";
-							if (item.isExcludeHiddenFile()) exc_hidden_file="1";
+							if (item.isSyncEmptyDirectory()) empty_dir="1";
+							String sync_hidden_dir="0";
+							if (item.isSyncHiddenDirectory()) sync_hidden_dir="1";
+							String sync_hidden_file="0";
+							if (item.isSyncHiddenFile()) sync_hidden_file="1";
+							String sync_sub_dir="0";
+							if (item.isSyncSubDirectory()) sync_sub_dir="1";
 							pl =item.getGroup()+"\t"+
 									SMBSYNC_PROF_TYPE_SYNC+ "\t" + pl_name + "\t"+
 									pl_active + "\t" +
@@ -6646,8 +6709,9 @@ public class ProfileMaintenance {
 									nulm_remote+"\t"+
 									pl_retry_count+"\t"+
 									empty_dir+"\t"+
-									exc_hidden_dir+"\t"+
-									exc_hidden_file
+									sync_hidden_dir+"\t"+
+									sync_hidden_file+"\t"+
+									sync_sub_dir
 									;
 						}
 						util.addDebugLogMsg(9,"I","saveProfileToFile=" + pl);
@@ -6713,9 +6777,9 @@ public class ProfileMaintenance {
 			String enc = Base64Compat.encodeToString(
 						out, 
 						Base64Compat.NO_WRAP);
-			pw.println(SMBSYNC_PROF_VER5+enc);
+			pw.println(SMBSYNC_PROF_VER6+enc);
 		} else {
-			pw.println(SMBSYNC_PROF_VER5+k_str);
+			pw.println(SMBSYNC_PROF_VER6+k_str);
 		}
 	};
 	
@@ -6734,9 +6798,9 @@ public class ProfileMaintenance {
 			String enc = Base64Compat.encodeToString(
 						EncryptUtil.encrypt(k_str,cp), 
 						Base64Compat.NO_WRAP);
-			pw.println(SMBSYNC_PROF_VER5+enc);
+			pw.println(SMBSYNC_PROF_VER6+enc);
 		} else {
-			pw.println(SMBSYNC_PROF_VER5+k_str);
+			pw.println(SMBSYNC_PROF_VER6+k_str);
 		}
 	};
 	private void saveSettingsParmsToFileBoolean(String group, PrintWriter pw, boolean dflt,
@@ -6753,9 +6817,9 @@ public class ProfileMaintenance {
 			String enc = Base64Compat.encodeToString(
 						EncryptUtil.encrypt(k_str, cp), 
 						Base64Compat.NO_WRAP);
-			pw.println(SMBSYNC_PROF_VER5+enc);
+			pw.println(SMBSYNC_PROF_VER6+enc);
 		} else {
-			pw.println(SMBSYNC_PROF_VER5+k_str);
+			pw.println(SMBSYNC_PROF_VER6+k_str);
 		}
 	};
 	

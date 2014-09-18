@@ -304,9 +304,10 @@ class ProfileListItem implements Serializable,Comparable<ProfileListItem>{
 	private ArrayList<String> profileDirFilter =new ArrayList<String>();
 	
 	private String profileRetryCount="0";
-	private boolean profileExcludeEmptyDir=false;
-	private boolean profileExcludeHiddenFile=false;
-	private boolean profileExcludeHiddenDir=false;
+	private boolean profileSyncEmptyDir=false;
+	private boolean profileSyncHiddenFile=true;
+	private boolean profileSyncHiddenDir=true;
+	private boolean profileSyncSubDir=true;
 	
 	
 	// constructor for local profile
@@ -344,8 +345,8 @@ class ProfileListItem implements Serializable,Comparable<ProfileListItem>{
 			String pf_synctype,String pf_master_type,String pf_master_name,
 			String pf_target_type,String pf_target_name,
 			ArrayList<String> ff, ArrayList<String> df, boolean pd, boolean cnf, 
-			boolean jlm, boolean nulm_remote, String retry_count, boolean exclude_empty_dir, 
-			boolean exclude_hidden_dir, boolean exclude_hidden_file, boolean ic)
+			boolean jlm, boolean nulm_remote, String retry_count, boolean sync_empty_dir, 
+			boolean sync_hidden_dir, boolean sync_hidden_file, boolean sync_sub_dir, boolean ic)
 	{
 		profileGroup=pfg;
 		profileType = pft;
@@ -364,11 +365,10 @@ class ProfileListItem implements Serializable,Comparable<ProfileListItem>{
 		profileChk = ic;
 		profileNotUsedLastModifiedForRemote=nulm_remote;
 		profileRetryCount=retry_count;
-		profileExcludeEmptyDir=exclude_empty_dir;
-		
-		profileExcludeHiddenFile=exclude_hidden_file;
-		profileExcludeHiddenDir=exclude_hidden_dir;
-
+		profileSyncEmptyDir=sync_empty_dir;
+		profileSyncHiddenFile=sync_hidden_file;
+		profileSyncHiddenDir=sync_hidden_dir;
+		profileSyncSubDir=sync_sub_dir;
 	};
 
 	public String getGroup()	{return profileGroup;}
@@ -424,15 +424,18 @@ class ProfileListItem implements Serializable,Comparable<ProfileListItem>{
 	public String getRetryCount() {return profileRetryCount;}
 	public void setRetryCount(String p) {profileRetryCount=p;}
 
-	public boolean isExcludeEmptyDirectory() {return profileExcludeEmptyDir;}
-	public void setExcludeEmptyDirectory(boolean p) {profileExcludeEmptyDir=p;}
+	public boolean isSyncEmptyDirectory() {return profileSyncEmptyDir;}
+	public void setSyncEmptyDirectory(boolean p) {profileSyncEmptyDir=p;}
 
-	public boolean isExcludeHiddenFile() {return profileExcludeHiddenFile;}
-	public void setExcludeHiddenFile(boolean p) {profileExcludeHiddenFile=p;}
+	public boolean isSyncHiddenFile() {return profileSyncHiddenFile;}
+	public void setSyncHiddenFile(boolean p) {profileSyncHiddenFile=p;}
 
-	public boolean isExcludeHiddenDirectory() {return profileExcludeHiddenDir;}
-	public void setExcludeHiddenDirectory(boolean p) {profileExcludeHiddenDir=p;}
-
+	public boolean isSyncHiddenDirectory() {return profileSyncHiddenDir;}
+	public void setSyncHiddenDirectory(boolean p) {profileSyncHiddenDir=p;}
+	
+	public boolean isSyncSubDirectory() {return profileSyncSubDir;}
+	public void setSyncSubDirectory(boolean p) {profileSyncSubDir=p;}
+	
 	@SuppressLint("DefaultLocale")
 	@Override
 	public int compareTo(ProfileListItem o) {

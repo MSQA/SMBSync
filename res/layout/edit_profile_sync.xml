@@ -3,7 +3,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="fill_parent"
     android:orientation="vertical"
     tools:ignore="SpUsage" >
     <TextView
@@ -240,14 +240,23 @@
             </LinearLayout>
 
             <CheckBox
-                android:id="@+id/sync_profile_master_dir_cb"
+                android:id="@+id/sync_profile_sync_master_root_dir_file"
                 style="@style/check_box_style"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="3dp"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/msgs_sync_profile_master_dir_cb_enable"/>
+                android:text="@string/msgs_sync_profile_sync_master_root_dir_file"/>
 
+            <CheckBox
+                android:id="@+id/sync_profile_sync_sub_dir"
+                style="@style/check_box_style"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="3dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/msgs_sync_profile_sync_sub_dir"/>
+            
             <CheckBox
                 android:id="@+id/sync_profile_confirm"
                 style="@style/check_box_style"
@@ -285,31 +294,32 @@
                 android:text="@string/msgs_sync_profile_retry_if_error_occured"/>
 
             <CheckBox
-                android:id="@+id/sync_profile_exclude_empty_directory"
+                android:id="@+id/sync_profile_sync_empty_directory"
                 style="@style/check_box_style"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="3dp"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/msgs_sync_profile_exclude_empty_directory"/>
+                android:text="@string/msgs_sync_profile_sync_empty_directory"/>
             
             <CheckBox
-                android:id="@+id/sync_profile_exclude_hidden_directory"
+                android:id="@+id/sync_profile_sync_hidden_directory"
                 style="@style/check_box_style"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="3dp"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/msgs_sync_profile_exclude_hidden_directory"/>
+                android:text="@string/msgs_sync_profile_sync_hidden_directory"/>
             
             <CheckBox
-                android:id="@+id/sync_profile_exclude_hidden_file"
+                android:id="@+id/sync_profile_sync_hidden_file"
                 style="@style/check_box_style"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="3dp"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/msgs_sync_profile_exclude_hidden_file"/>
+                android:text="@string/msgs_sync_profile_sync_hidden_file"/>
+
             
         </LinearLayout>
     </ScrollView>

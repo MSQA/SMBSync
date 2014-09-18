@@ -66,9 +66,10 @@ public class ProfileCreationWizard {
 		public boolean use_system_last_mod=false;
 		public boolean not_use_last_mod_remote=false;
 		public boolean sync_retry_effective=false;
-		public boolean sync_exclude_empty_directory=false;
-		public boolean sync_exclude_hidden_directory=false;
-		public boolean sync_exclude_hidden_file=false;
+		public boolean sync_empty_directory=false;
+		public boolean sync_hidden_directory=false;
+		public boolean sync_hidden_file=false;
+		public boolean sync_sub_dir=false;
 	};
 	class WizardProfileData {
 		public String node_type="";
@@ -1335,16 +1336,20 @@ public class ProfileCreationWizard {
 		final TextView tv_file_filter=(TextView) dialog.findViewById(R.id.sync_wizard_dlg_sync_file_filter);
 		final Button btn_dir_filter=(Button) dialog.findViewById(R.id.sync_wizard_dlg_sync_dir_filter_btn);
 		final TextView tv_dir_filter=(TextView) dialog.findViewById(R.id.sync_wizard_dlg_sync_dir_filter);
-		final CheckBox cb_master_dir=(CheckBox) dialog.findViewById(R.id.sync_wizard_dlg_sync_master_dir_cb);
+		final CheckBox cb_master_dir=(CheckBox) dialog.findViewById(R.id.sync_wizard_dlg_sync_master_root_dir_file);
 		final CheckBox cb_confirm=(CheckBox) dialog.findViewById(R.id.sync_wizard_dlg_sync_confirm);
 		final CheckBox cb_last_modified=(CheckBox) dialog.findViewById(R.id.sync_wizard_dlg_sync_last_modified);
 		final CheckBox cb_not_use_last_mod_remote = (CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_not_use_last_modified_remote_file_for_diff);
 		final CheckBox cb_retry = (CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_sync_retry_if_error_occured);
-		final CheckBox cbExcludeEmptyDir = (CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_sync_exclude_empty_directory);
-		final CheckBox cbExcHiddenDir = (CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_sync_exclude_hidden_directory);
-		final CheckBox cbExcHiddenFile = (CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_sync_exclude_hidden_file);
+		final CheckBox cbSyncEmptyDir = (CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_sync_empty_directory);
+		final CheckBox cbSyncHiddenDir = (CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_sync_hidden_directory);
+		final CheckBox cbSyncHiddenFile = (CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_sync_hidden_file);
+		final CheckBox cbSyncSubDir = (CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_sync_sub_dir);
 
-		cbExcludeEmptyDir.setChecked(true);
+		cbSyncEmptyDir.setChecked(false);
+		cbSyncHiddenDir.setChecked(true);
+		cbSyncHiddenFile.setChecked(true);
+		cbSyncSubDir.setChecked(true);
 		
 		cb_retry.setChecked(false);
 		profMaint.setSyncOptionSpinner(spinner_sync, "");
@@ -1522,9 +1527,10 @@ public class ProfileCreationWizard {
 				mWizData.not_use_last_mod_remote=cb_not_use_last_mod_remote.isChecked();
 				mWizData.mirror_type=spinner_sync.getSelectedItemPosition();
 				mWizData.sync_retry_effective=cb_retry.isChecked();
-				mWizData.sync_exclude_empty_directory=cbExcludeEmptyDir.isChecked();
-				mWizData.sync_exclude_hidden_directory=cbExcHiddenDir.isChecked();
-				mWizData.sync_exclude_hidden_file=cbExcHiddenFile.isChecked();
+				mWizData.sync_empty_directory=cbSyncEmptyDir.isChecked();
+				mWizData.sync_hidden_directory=cbSyncHiddenDir.isChecked();
+				mWizData.sync_hidden_file=cbSyncHiddenFile.isChecked();
+				mWizData.sync_sub_dir=cbSyncSubDir.isChecked();
 				NotifyEvent ntfy=new NotifyEvent(mContext);
 				ntfy.setListener(new NotifyEventListener(){
 					@Override
@@ -1563,7 +1569,7 @@ public class ProfileCreationWizard {
 //		final TextView tv_file_filter=(TextView) dialog.findViewById(R.id.sync_wizard_dlg_sync_file_filter);
 		final Button btn_dir_filter=(Button) dialog.findViewById(R.id.sync_wizard_dlg_sync_dir_filter_btn);
 //		final TextView tv_dir_filter=(TextView) dialog.findViewById(R.id.sync_wizard_dlg_sync_dir_filter);
-		final CheckBox cb_master_dir=(CheckBox) dialog.findViewById(R.id.sync_wizard_dlg_sync_master_dir_cb);
+		final CheckBox cb_master_dir=(CheckBox) dialog.findViewById(R.id.sync_wizard_dlg_sync_master_root_dir_file);
 		final CheckBox cb_confirm=(CheckBox) dialog.findViewById(R.id.sync_wizard_dlg_sync_confirm);
 		final CheckBox cb_last_modified=(CheckBox) dialog.findViewById(R.id.sync_wizard_dlg_sync_last_modified);
 		final CheckBox cb_not_use_last_mod_remote = (CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_not_use_last_modified_remote_file_for_diff);
@@ -1619,7 +1625,7 @@ public class ProfileCreationWizard {
 		String sync_dir_filter=mContext.getString(R.string.msgs_sync_wizard_confirm_list_sync_dir_filter)+
 				":\n     "+tv_dir_filter.getText().toString();
 		
-		String sync_mpd=mContext.getString(R.string.msgs_sync_profile_master_dir_cb_enable)+":\n     ";
+		String sync_mpd=mContext.getString(R.string.msgs_sync_profile_sync_master_root_dir_file)+":\n     ";
 		if (mWizData.process_master_file_dir) sync_mpd+="YES";
 		else sync_mpd+="NO";
 
@@ -1639,18 +1645,22 @@ public class ProfileCreationWizard {
 		if (mWizData.sync_retry_effective) sync_retry+="YES";
 		else sync_retry+="NO";
 
-		String sync_exc_empty_dir=mContext.getString(R.string.msgs_sync_profile_exclude_empty_directory)+":\n     ";
-		if (mWizData.sync_exclude_empty_directory) sync_exc_empty_dir+="YES";
-		else sync_exc_empty_dir+="NO";
+		String sync_empty_dir=mContext.getString(R.string.msgs_sync_profile_sync_empty_directory)+":\n     ";
+		if (mWizData.sync_empty_directory) sync_empty_dir+="YES";
+		else sync_empty_dir+="NO";
 
-		String sync_exc_hidden_dir=mContext.getString(R.string.msgs_sync_profile_exclude_hidden_directory)+":\n     ";
-		if (mWizData.sync_exclude_hidden_directory) sync_exc_hidden_dir+="YES";
-		else sync_exc_hidden_dir+="NO";
+		String sync_hidden_dir=mContext.getString(R.string.msgs_sync_profile_sync_hidden_directory)+":\n     ";
+		if (mWizData.sync_hidden_directory) sync_hidden_dir+="YES";
+		else sync_hidden_dir+="NO";
 
-		String sync_exc_hidden_file=mContext.getString(R.string.msgs_sync_profile_exclude_hidden_file)+":\n     ";
-		if (mWizData.sync_exclude_hidden_file) sync_exc_hidden_file+="YES";
-		else sync_exc_hidden_file+="NO";
-		
+		String sync_hidden_file=mContext.getString(R.string.msgs_sync_profile_sync_hidden_file)+":\n     ";
+		if (mWizData.sync_hidden_file) sync_hidden_file+="YES";
+		else sync_hidden_file+="NO";
+
+		String sync_sub_dir=mContext.getString(R.string.msgs_sync_profile_sync_sub_dir)+":\n     ";
+		if (mWizData.sync_hidden_file) sync_sub_dir+="YES";
+		else sync_sub_dir+="NO";
+
 		String msg_text=sync_prof_name+"\n"+sync_direction+
 				"\n"+sync_master+"\n"+sync_target+"\n"+sync_type+
 				"\n"+sync_file_filter+
@@ -1660,9 +1670,10 @@ public class ProfileCreationWizard {
 				"\n"+sync_nulm_remote+
 				"\n"+sync_last_mod
 				+"\n"+sync_retry
-				+"\n"+sync_exc_empty_dir
-				+"\n"+sync_exc_hidden_dir
-				+"\n"+sync_exc_hidden_file
+				+"\n"+sync_empty_dir
+				+"\n"+sync_hidden_dir
+				+"\n"+sync_hidden_file
+				+"\n"+sync_sub_dir
 				+"\n";
 		
 		mCommonDlg.showCommonDialog(true, "I", 
@@ -1755,9 +1766,10 @@ public class ProfileCreationWizard {
 				mWizData.confirm_required,
 				mWizData.use_system_last_mod,
 				mWizData.not_use_last_mod_remote, retry_count,
-				mWizData.sync_exclude_empty_directory,
-				mWizData.sync_exclude_hidden_directory,
-				mWizData.sync_exclude_hidden_file,
+				mWizData.sync_empty_directory,
+				mWizData.sync_hidden_directory,
+				mWizData.sync_hidden_file,
+				mWizData.sync_sub_dir,
 				false);
 		t_prof.add(s_pli);
 	};

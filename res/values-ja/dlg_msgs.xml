@@ -47,16 +47,17 @@
     <string name="msgs_sync_profile_dlg_filter">フィルタ-</string>
     <string name="msgs_sync_profile_dlg_filefltr">ファイル</string>
     <string name="msgs_sync_profile_dlg_dirfltr">ディレクトリ</string>
-    <string name="msgs_sync_profile_master_dir_cb_enable">マスタープロファイルで指定されたディレクトリの直下に存在するファイルを処理する</string>
+    <string name="msgs_sync_profile_sync_master_root_dir_file">マスタープロファイルで指定されたディレクトリの直下に存在するファイルを処理する</string>
     <string name="msgs_sync_profile_confirm_required">上書コピーまたは削除の前に確認する</string>
     <string name="msgs_sync_profile_last_modified_smbsync">強制的にSMBSyncで最終更新日時を取得</string>
     <string name="msgs_sync_profile_not_set_remote_file_last_modified">リモートファイルの最終更新時刻をローカルファイルに合わせない</string>
     
     <string name="msgs_sync_profile_retry_if_error_occured">同期中ネットワークエラーが発生した場合にリトライする</string>
     
-    <string name="msgs_sync_profile_exclude_empty_directory">空のディレクトリを同期しない</string>
-    <string name="msgs_sync_profile_exclude_hidden_directory">隠しディレクトリを同期しない</string>
-    <string name="msgs_sync_profile_exclude_hidden_file">隠しファイルを同期しない</string>
+    <string name="msgs_sync_profile_sync_empty_directory">空のディレクトリを同期する</string>
+    <string name="msgs_sync_profile_sync_hidden_directory">隠しディレクトリを同期する</string>
+    <string name="msgs_sync_profile_sync_hidden_file">隠しファイルを同期する</string>
+    <string name="msgs_sync_profile_sync_sub_dir">サブディレクトリーを同期する</string>
 
     <string name="msgs_filter_list_dlg_add">追加</string>
     <string name="msgs_filter_list_dlg_delete">削除</string>
