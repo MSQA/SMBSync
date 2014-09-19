@@ -6578,9 +6578,13 @@ public class ProfileMaintenance {
 	};
 
 	public static ProfileListItem getProfile(String pfn, AdapterProfileList pa) {
-		for (int i=0;i<pa.getCount();i++)
-			if (pa.getItem(i).getName().equals(pfn)) 
-				return pa.getItem(i); 
+		return getProfile(pfn, pa.getAllItem());
+	};
+
+	public static ProfileListItem getProfile(String pfn, ArrayList<ProfileListItem> pfl) {
+		for (int i=0;i<pfl.size();i++)
+			if (pfl.get(i).getName().equals(pfn)) 
+				return pfl.get(i); 
 		return null;
 	};
 

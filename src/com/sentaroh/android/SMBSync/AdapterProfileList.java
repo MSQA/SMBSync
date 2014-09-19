@@ -202,9 +202,36 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
                  	   holder.iv_row_image_target.setImageResource(R.drawable.ic_16_server);
                     else if (o.getTargetType().equals(SMBSYNC_PROF_TYPE_LOCAL)) 
                  	   holder.iv_row_image_target.setImageResource(R.drawable.ic_16_mobile);
-                    
-                    holder.tv_row_master.setText(o.getMasterName());
-                    holder.tv_row_target.setText(o.getTargetName());
+//                    holder.tv_row_master.setText(o.getMasterName());
+//                    holder.tv_row_target.setText(o.getTargetName());
+                    ProfileListItem pfli_master=ProfileMaintenance.getProfile(o.getMasterName(), items);
+                    ProfileListItem pfli_target=ProfileMaintenance.getProfile(o.getTargetName(), items);
+                    if (pfli_master!=null) {
+                    	if (pfli_master.getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
+                            holder.tv_row_master.setText(pfli_master.getLocalMountPoint()+"/"+pfli_master.getDir());
+                    	} if (pfli_master.getType().equals(SMBSYNC_PROF_TYPE_REMOTE)) {
+                    		if (!pfli_master.getAddr().equals("")) {
+                    			holder.tv_row_master.setText("//"+pfli_master.getAddr()+"/"+
+                    					pfli_master.getShare()+"/"+pfli_master.getDir());
+                    		} else if (!pfli_master.getHostname().equals("")) {
+                    			holder.tv_row_master.setText("//"+pfli_master.getHostname()+"/"+
+                    					pfli_master.getShare()+"/"+pfli_master.getDir());
+                    		}
+                    	}
+                    }
+                    if (pfli_target!=null) {
+                    	if (pfli_target.getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
+                            holder.tv_row_target.setText(pfli_target.getLocalMountPoint()+"/"+pfli_target.getDir());
+                    	} if (pfli_target.getType().equals(SMBSYNC_PROF_TYPE_REMOTE)) {
+                    		if (!pfli_target.getAddr().equals("")) {
+                    			holder.tv_row_target.setText("//"+pfli_target.getAddr()+"/"+
+                    					pfli_target.getShare()+"/"+pfli_target.getDir());
+                    		} else if (!pfli_target.getHostname().equals("")) {
+                    			holder.tv_row_target.setText("//"+pfli_target.getHostname()+"/"+
+                    					pfli_target.getShare()+"/"+pfli_target.getDir());
+                    		}
+                    	}
+                    }
                     holder.tv_row_synctype.setText(synctp);
                     
                     if (!getItem(position).getActive().equals("A")) {
