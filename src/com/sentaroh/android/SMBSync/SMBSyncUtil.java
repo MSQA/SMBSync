@@ -23,7 +23,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_SYNC_WIFI_OPTION_ADAPTER_OFF;
+import static com.sentaroh.android.SMBSync.Constants.*;
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_SYNC_WIFI_OPTION_ADAPTER_ON;
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_SYNC_WIFI_OPTION_CONNECTED_ANY_AP;
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_SYNC_WIFI_OPTION_CONNECTED_SPEC_AP;
@@ -59,8 +59,6 @@ import com.sentaroh.android.Utilities.NetworkUtil;
 
 @SuppressLint("SimpleDateFormat")
 public class SMBSyncUtil {
-	
-	private final static String DEBUG_TAG = "SMBSync";
 	
 	private SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");
 	private SimpleDateFormat sdfTime = new SimpleDateFormat("HH:mm:ss");
@@ -179,7 +177,7 @@ public class SMBSyncUtil {
 	            if (exit) break;
 	        }
 	    } catch (SocketException ex) {
-	        Log.e(DEBUG_TAG, ex.toString());
+	        Log.e(APPLICATION_TAG, ex.toString());
 	        result="192.168.0.1";
 	    }
 //		Log.v("","getLocalIpAddress result="+result);
@@ -209,7 +207,7 @@ public class SMBSyncUtil {
 	            }
 	        }
 	    } catch (SocketException ex) {
-	        Log.e(DEBUG_TAG, ex.toString());
+	        Log.e(APPLICATION_TAG, ex.toString());
 	        result="192.168.0.1";
 	    }
 //		Log.v("","getIfIpAddress result="+result);
@@ -230,7 +228,7 @@ public class SMBSyncUtil {
 			writeLogMsgToFile(log_cat,syncProfName, fp,log_msg);
 		if (mGp.debugLevel>0) { 
 			if (mGp.debugLevel>0 && log) 
-				Log.v(DEBUG_TAG,
+				Log.v(APPLICATION_TAG,
 					buildLogCatString(mSbForaddMsgToProgDlg,
 							log_cat,mLogId,syncProfName,fp,log_msg));
 		}
@@ -280,15 +278,15 @@ public class SMBSyncUtil {
 			@Override
 			public void run() {
 				if (msgflag.equals("0")) {
-					mGp.mainViewProgressProf.setText(sync_prof);
-					mGp.mainViewProgressFilepath.setText(fp);
-					mGp.mainViewProgressMessage.setText(msg_text);
+					mGp.progressSpinSyncprof.setText(sync_prof);
+					mGp.progressSpinFilePath.setText(fp);
+					mGp.progressSpinStatus.setText(msg_text);
 					NotificationUtil.showOngoingMsg(mGp,sync_prof,fp,msg_text);
 				} else { //
 					if (msgflag.equals("1")) {
-						mGp.mainViewProgressProf.setText(sync_prof);
-						mGp.mainViewProgressFilepath.setText(fp);
-						mGp.mainViewProgressMessage.setText(msg_text);
+						mGp.progressSpinSyncprof.setText(sync_prof);
+						mGp.progressSpinFilePath.setText(fp);
+						mGp.progressSpinStatus.setText(msg_text);
 						NotificationUtil.showOngoingMsg(mGp,sync_prof,fp,msg_text);
 					}  
 					if (debug_flag.equals("M") || 
@@ -314,7 +312,7 @@ public class SMBSyncUtil {
 				mLogId,"M",fp,log_msg);
 		String wmsg=writeLogMsgToFile("M "+log_cat, sync_prof, fp, log_msg);
 		if (mGp.debugLevel>0)
-			Log.v(DEBUG_TAG,
+			Log.v(APPLICATION_TAG,
 					buildLogCatString(mSbForAddLogMsg, log_cat,mLogId,sync_prof,fp,log_msg));
 		return wmsg;
 	};
@@ -330,7 +328,7 @@ public class SMBSyncUtil {
 					("MAIN"+"          ").substring(0,13)+logmsg);
 //				glblParms.logWriter.flush();
 		}
-		if (mGp.debugLevel>0) Log.v(DEBUG_TAG,cat+" "+mLogId+logmsg);
+		if (mGp.debugLevel>0) Log.v(APPLICATION_TAG,cat+" "+mLogId+logmsg);
 	};
 	
 	final static public void addMsgToMsglistAdapter(
@@ -382,7 +380,7 @@ public class SMBSyncUtil {
 			for (int i=0;i<log_msg.length;i++) mSbForaddDebugLogMsg1.append(log_msg[i]);
 			if (mGp.logWriter!=null || mGp.settingDebugMsgDisplay) {
 				if (mGp.settingDebugMsgDisplay) {
-//					// flag=1 both, arg2=0 dialog only, arg2=2 msgview only
+//					// flag=1 both, arg2=0 dialog only, arg2=2 msg view only
 					String dt=DateUtil.convDateTimeTo_YearMonthDayHourMinSec(System.currentTimeMillis());
 					sendMsgToActivity(log_cat,"2",syncProfName,dt.substring(0,10),
 							dt.substring(11),mLogId,"D","", 
@@ -392,7 +390,7 @@ public class SMBSyncUtil {
 						mSbForaddDebugLogMsg1.toString());
 			}			
 			
-				Log.v(DEBUG_TAG,
+				Log.v(APPLICATION_TAG,
 					buildLogCatString(mSbForaddDebugLogMsg1,log_cat,mLogId,syncProfName,"",
 							mSbForaddDebugLogMsg1.toString()));
 		}
@@ -402,7 +400,6 @@ public class SMBSyncUtil {
 	final public void addDebugLogMsg(
 			int lvl, String cat, String logmsg) {
 		if (mGp.debugLevel>=lvl ) {
-//		    Calendar cd = Calendar.getInstance();
 			if (mGp.settingDebugMsgDisplay) {
 				addMsgToMsglistAdapter(mGp,
 				    		 new MsgListItem(cat,sdfDate.format(System.currentTimeMillis()),
@@ -422,7 +419,7 @@ public class SMBSyncUtil {
 						.append(logmsg);
 					writeLog(mGp,mSbForaddDebugLogMsg2.toString());
 			}
-			Log.v(DEBUG_TAG,cat+" "+mLogId+logmsg);
+			Log.v(APPLICATION_TAG,cat+" "+mLogId+logmsg);
 		}
 	};
 
@@ -460,7 +457,6 @@ public class SMBSyncUtil {
 		
 		if (!mGp.settingLogOption.equals("0") && mGp.logWriter==null) {
 			SimpleDateFormat df=null;
-//			df = new SimpleDateFormat("yyyy-MM-dd_HHmmss");
 			df = new SimpleDateFormat("yyyy-MM-dd");
 			mGp.settingLogMsgFilename="SMBSync_log_"+df.format(System.currentTimeMillis())+".txt";
 		}
@@ -477,7 +473,6 @@ public class SMBSyncUtil {
 		if (t_fd.lastIndexOf("/")==(t_fd.length()-1)) {//last is "/"
 			fp=t_fd+mGp.settingLogMsgFilename;
 		} else fp=t_fd+"/"+mGp.settingLogMsgFilename;
-//		Log.v("","fd="+t_fd+", fp="+fp);
 		File lf=new File(t_fd);
 		if(!lf.exists()) lf.mkdirs();
 		
@@ -501,7 +496,6 @@ public class SMBSyncUtil {
 
 	private void manageLogFileGeneration() {
 		ArrayList<LogFileManagemntListItem>lfm_list=createLogFileList(mGp);
-//		Log.v("","setting="+glblParms.settiingLogGeneration+", listsize="+lfm_list.size());
 		Collections.sort(lfm_list,new Comparator<LogFileManagemntListItem>(){
 			@Override
 			public int compare(LogFileManagemntListItem arg0,
@@ -547,13 +541,11 @@ public class SMBSyncUtil {
 	
 	public boolean deleteLogFile() {
 		boolean result=false;
-		
-			addDebugLogMsg(2,"I","delete log file entered. esm="+mGp.externalStorageIsMounted);
+		addDebugLogMsg(2,"I","delete log file entered. esm="+mGp.externalStorageIsMounted);
 		if (mGp.logWriter==null && mGp.externalStorageIsMounted) {
 			File lf = new File(mGp.settingLogMsgDir+mGp.settingLogMsgFilename);
 			result=lf.delete();
 		} else result=false;
-//		Log.v("","file="+glblParms.settingLogMsgDir+glblParms.settingLogMsgFilename+", result="+result);
 		return result;
 	};
 

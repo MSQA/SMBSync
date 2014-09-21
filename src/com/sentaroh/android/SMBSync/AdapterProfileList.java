@@ -118,6 +118,8 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
 //			 return getItem(idx).getActive().equals("A");
 //		}
 
+		
+		
 		@Override
 	    final public View getView(int position, View convertView, ViewGroup parent) {
 			ViewHolder holder;
@@ -139,7 +141,7 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
                 holder.tv_row_master= (TextView) v.findViewById(R.id.profile_list_master_name);
                 holder.tv_row_target= (TextView) v.findViewById(R.id.profile_list_target_name);
                 holder.tv_row_synctype= (TextView) v.findViewById(R.id.profile_list_synctype);
-                holder.tv_row_synctype_hdr1= (TextView) v.findViewById(R.id.profile_list_synctype_hdr1);
+                holder.iv_row_sync_dir_image= (ImageView) v.findViewById(R.id.profile_list_sync_direction_image);
                 holder.iv_row_image_master= (ImageView) v.findViewById(R.id.profile_list_image_master);
                 holder.iv_row_image_target= (ImageView) v.findViewById(R.id.profile_list_image_target);
                 holder.tv_mtype_mirror=c.getString(R.string.msgs_sync_list_array_mtype_mirr);
@@ -237,12 +239,12 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
                     if (!getItem(position).getActive().equals("A")) {
                     	holder.tv_row_master.setEnabled(false);
                     	holder.tv_row_target.setEnabled(false);
-                    	holder.tv_row_synctype_hdr1.setEnabled(false); 
+                    	holder.iv_row_sync_dir_image.setImageResource(R.drawable.arrow_right_disabled); 
                     	holder.tv_row_synctype.setEnabled(false);
                     } else {
                     	holder.tv_row_master.setEnabled(true);
                     	holder.tv_row_target.setEnabled(true);
-                    	holder.tv_row_synctype_hdr1.setEnabled(true); 
+                    	holder.iv_row_sync_dir_image.setImageResource(R.drawable.arrow_right_enabled); 
                     	holder.tv_row_synctype.setEnabled(true);
                     }
                 } else if (o.getType().equals("R") || o.getType().equals("L")) {//Remote or Local profile
@@ -254,7 +256,11 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
                     if (o.getType().equals("L")) {
                     	holder.tv_dir_name.setText(o.getLocalMountPoint()+"/"+o.getDir());
                     } else {
-                    	holder.tv_dir_name.setText("/"+o.getShare()+"/"+o.getDir());
+                    	if (!o.getAddr().equals("")) {
+                        	holder.tv_dir_name.setText("//"+o.getAddr()+"/"+o.getShare()+"/"+o.getDir());
+                    	} else {
+                    		holder.tv_dir_name.setText("//"+o.getHostname()+"/"+o.getShare()+"/"+o.getDir());
+                    	}
                     }
                 	
                 	if (!getItem(position).getActive().equals("A")) {
@@ -293,7 +299,7 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
 			String tv_active_active,tv_active_inact;
 			
 			TextView tv_row_synctype, tv_row_master, tv_row_target;
-			TextView tv_row_synctype_hdr1;
+			ImageView iv_row_sync_dir_image;
 			ImageView iv_row_image_master,iv_row_image_target;
 			String tv_mtype_mirror,tv_mtype_move,tv_mtype_copy;
 			
@@ -398,6 +404,8 @@ class ProfileListItem implements Serializable,Comparable<ProfileListItem>{
 		profileSyncSubDir=sync_sub_dir;
 	};
 
+	public ProfileListItem() {}
+	
 	public String getGroup()	{return profileGroup;}
 	public String getName()		{return profileName;}
 	public String getType()		{return profileType;}

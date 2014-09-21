@@ -44,7 +44,7 @@
     <string name="msgs_sync_profile_dlg_mirror">ミラー</string> 
     <string name="msgs_sync_profile_dlg_copy">コピー</string>
     <string name="msgs_sync_profile_dlg_move">移動</string>
-    <string name="msgs_sync_profile_dlg_filter">フィルタ-</string>
+    <string name="msgs_sync_profile_dlg_filter">フィルタ―</string>
     <string name="msgs_sync_profile_dlg_filefltr">ファイル</string>
     <string name="msgs_sync_profile_dlg_dirfltr">ディレクトリ</string>
     <string name="msgs_sync_profile_sync_master_root_dir_file">マスタープロファイルで指定されたディレクトリの直下に存在するファイルを処理する</string>

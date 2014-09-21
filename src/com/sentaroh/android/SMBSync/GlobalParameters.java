@@ -37,7 +37,11 @@ import android.content.Intent;
 import android.os.Handler;
 import android.support.v4.app.NotificationCompat.BigTextStyle;
 import android.support.v4.app.NotificationCompat.Builder;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class GlobalParameters extends Application{
@@ -57,9 +61,6 @@ public class GlobalParameters extends Application{
 	public boolean supressAutoStart=false;
 	
 	public Handler uiHandler=null;
-	public TextView mainViewProgressProf=null;
-	public TextView mainViewProgressFilepath=null;
-	public TextView mainViewProgressMessage=null;
 	
 	public TextView mainViewScheduleInfo=null;
 	
@@ -72,6 +73,9 @@ public class GlobalParameters extends Application{
 	public String SMBSync_External_Root_Dir="/mnt/sdcard";
 	public boolean externalStorageIsMounted=false;
 	public String SMBSync_Internal_Root_Dir="";
+	
+	public String profilePassword="";
+	public final String profilePasswordPrefix="*SMBSync*";
 	
 	public NotificationManager notificationManager;
 	public int notificationIcon=R.drawable.ic_48_smbsync_wait;
@@ -143,4 +147,36 @@ public class GlobalParameters extends Application{
 	public boolean settingRemoteFileCopyByRename=false;
 	public boolean settingLocalFileCopyByRename=true;
 	
+	
+    public LinearLayout confirmView=null;
+    public TextView confirmTitle=null;
+    public TextView confirmMsg=null;
+    public Button confirmCancel=null;
+    public OnClickListener confirmCancelListener=null;
+    public Button confirmYes=null;
+    public OnClickListener confirmYesListener=null;
+    public Button confirmNo=null;
+    public OnClickListener confirmNoListener=null;
+    public Button confirmYesAll=null;
+    public OnClickListener confirmYesAllListener=null;
+    public Button confirmNoAll=null;
+    public OnClickListener confirmNoAllListener=null;
+
+    public LinearLayout progressBarView=null;
+    public TextView progressBarMsg=null;
+    public ProgressBar progressBarPb=null;
+    public Button progressBarCancel=null;
+    public OnClickListener progressBarCancelListener=null;
+    public Button progressBarImmed=null;
+    public OnClickListener progressBarImmedListener=null;
+
+    public LinearLayout progressSpinView=null;
+
+    public TextView progressSpinSyncprof=null;
+    public TextView progressSpinFilePath=null;
+    public TextView progressSpinStatus=null;
+    public Button progressSpinCancel=null;
+    public OnClickListener progressSpinCancelListener=null;
+
+
 }

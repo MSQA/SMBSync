@@ -477,7 +477,7 @@ public class ProfileCreationWizard {
 		ll_remote.setVisibility(LinearLayout.GONE);
 		ll_sync.setVisibility(LinearLayout.GONE);
 
-		profMaint.setLocalMountPointSpinner(spinnerLmp, LocalMountPoint.getExternalStorageDir());
+		ProfileMaintenance.setLocalMountPointSpinner(mContext, spinnerLmp, LocalMountPoint.getExternalStorageDir());
 //		et_local_dir.setText(mWizData.prof_node[node_pos].local_dir_name);
 		if (node_pos==1 &&
 				mWizData.master_type.equals("L") && mWizData.target_type.equals("L") &&

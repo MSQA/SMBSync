@@ -75,6 +75,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.view.View.OnClickListener;
 import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -199,6 +200,18 @@ public class SMBSyncMain extends FragmentActivity {
 
 		if (ccMenu ==null) ccMenu = new CustomContextMenu(getResources(),getSupportFragmentManager());
 		commonDlg=new CommonDialog(mContext, getSupportFragmentManager());
+
+		ArrayList<MsgListItem> tml =new ArrayList<MsgListItem>();
+		mGp.msgListAdapter = new AdapterMessageList(this,R.layout.msg_list_item_view,tml);
+
+		ArrayList<ProfileListItem> tml1 =new ArrayList<ProfileListItem>();
+		mGp.profileAdapter=new AdapterProfileList(this, R.layout.profile_list_item_view, tml1,
+						mGp.SMBSync_External_Root_Dir);
+		currentViewType="P";
+
+		mGp.syncHistoryList=util.loadHistoryList();
+		mGp.syncHistoryAdapter=new AdapterSyncHistory(mContext, R.layout.sync_history_list_item_view, 
+				mGp.syncHistoryList);
 		
 		createTabView() ;
 		loadMsgString();
@@ -220,7 +233,7 @@ public class SMBSyncMain extends FragmentActivity {
 		getApplVersionName();
 
 		if (profMaint==null) 
-			profMaint=new ProfileMaintenance(util,this, commonDlg,ccMenu, mGp);
+			profMaint=new ProfileMaintenance(util,this, commonDlg,ccMenu, mGp,getSupportFragmentManager());
 		
 		SchedulerMain.setTimer(mContext, SCHEDULER_INTENT_SET_TIMER_IF_NOT_SET);
 //		if (Build.VERSION.SDK_INT >= 19) {
@@ -419,6 +432,51 @@ public class SMBSyncMain extends FragmentActivity {
 //		}
 	};
 	
+	class ViewSaveArea {
+		public int current_tab_pos=0;
+		public int prof_list_view_pos_x=0,prof_list_view_pos_y=0; 
+		public int msg_list_view_pos_x=0,msg_list_view_pos_y=0;
+		public int sync_list_view_pos_x=0,sync_list_view_pos_y=0;
+		
+		public boolean prog_bar_showed=false, prog_spin_showed=false, confirm_showed=false;
+		public String prog_prof="", prog_fp="", prog_msg="", prog_sched_info="";
+		
+		
+		public String confirm_title="", confirm_msg="";
+		public String progress_bar_msg="";
+		public int progress_bar_progress=0, progress_bar_max=0;
+		
+		public ButtonViewContent confirm_cancel=new ButtonViewContent();
+		public ButtonViewContent confirm_yes=new ButtonViewContent();
+		public ButtonViewContent confirm_yes_all=new ButtonViewContent();
+		public ButtonViewContent confirm_no=new ButtonViewContent();
+		public ButtonViewContent confirm_no_all=new ButtonViewContent();
+		public ButtonViewContent prog_bar_cancel=new ButtonViewContent();
+		public ButtonViewContent prog_bar_immed=new ButtonViewContent();
+		public ButtonViewContent prog_spin_cancel=new ButtonViewContent();
+	};
+	
+	class ButtonViewContent {
+		public String button_text="";
+		public boolean button_visible=true, button_enabled=true, button_clickable=true;
+	};
+	
+	private void saveButtonStatus(Button btn, ButtonViewContent sv) {
+		sv.button_text=btn.getText().toString();
+		sv.button_clickable=btn.isClickable();
+		sv.button_enabled=btn.isEnabled();
+		sv.button_visible=btn.isShown();
+	};
+
+	private void restoreButtonStatus(Button btn, ButtonViewContent sv, OnClickListener ocl) {
+		btn.setText(sv.button_text);
+		btn.setClickable(sv.button_clickable);
+		btn.setEnabled(sv.button_enabled);
+//		if (sv.button_visible) btn.setVisibility(Button.VISIBLE);
+//		else btn.setVisibility(Button.GONE);
+		btn.setOnClickListener(ocl);
+	};
+
 	@Override
 	public void onConfigurationChanged(final Configuration newConfig) {
 	    super.onConfigurationChanged(newConfig);
@@ -437,15 +495,123 @@ public class SMBSyncMain extends FragmentActivity {
 	    		changeLanguageCode(newConfig);
 	    	}
 	    }
+	    final ViewSaveArea vsa=new ViewSaveArea();
+	    saveViewContent(vsa);
+	    
+	    setContentView(R.layout.main);
+	    
+		createTabView() ;
+		initAdapterAndView();
+		
+		setMsglistViewListener();
+		setProfilelistItemClickListener();
+		setProfilelistLongClickListener();
+		setMsglistLongClickListener();
+		
+		setHistoryViewItemClickListener();
+		setHistoryViewLongClickListener();
+
+		restoreViewContent(vsa);
+		
+		if (isUiEnabled()) setUiEnabled();
+		else setUiDisabled();
+		
+//		refreshOptionMenu();
 	};
 
+	private void saveViewContent(ViewSaveArea vsa) {
+	    vsa.current_tab_pos=tabHost.getCurrentTab();
+	    
+	    vsa.prof_list_view_pos_x=mGp.profileListView.getFirstVisiblePosition();
+	    if (mGp.profileListView.getChildAt(0)!=null) vsa.prof_list_view_pos_y=mGp.profileListView.getChildAt(0).getTop();
+	    vsa.msg_list_view_pos_x=mGp.msgListView.getFirstVisiblePosition();
+	    if (mGp.msgListView.getChildAt(0)!=null) vsa.msg_list_view_pos_y=mGp.msgListView.getChildAt(0).getTop();
+	    vsa.sync_list_view_pos_x=mGp.syncHistoryListView.getFirstVisiblePosition();
+	    if (mGp.syncHistoryListView.getChildAt(0)!=null) vsa.sync_list_view_pos_y=mGp.syncHistoryListView.getChildAt(0).getTop();
+	    
+		vsa.prog_prof=mGp.progressSpinSyncprof.getText().toString();
+		vsa.prog_fp=mGp.progressSpinFilePath.getText().toString();
+		vsa.prog_msg=mGp.progressSpinStatus.getText().toString();
+		vsa.progress_bar_progress=mGp.progressBarPb.getProgress();
+		vsa.progress_bar_max=mGp.progressBarPb.getMax();
+		vsa.prog_sched_info=mGp.mainViewScheduleInfo.getText().toString();
+
+		vsa.prog_bar_showed=mGp.progressBarView.isShown();
+		vsa.confirm_showed=mGp.confirmView.isShown();
+		vsa.prog_spin_showed=mGp.progressSpinView.isShown();
+		
+		saveButtonStatus(mGp.confirmCancel,vsa.confirm_cancel);
+		saveButtonStatus(mGp.confirmYes,vsa.confirm_yes);
+		saveButtonStatus(mGp.confirmYesAll,vsa.confirm_yes_all);
+		saveButtonStatus(mGp.confirmNo,vsa.confirm_no);
+		saveButtonStatus(mGp.confirmNoAll,vsa.confirm_no_all);
+		saveButtonStatus(mGp.progressBarCancel,vsa.prog_bar_cancel);
+		saveButtonStatus(mGp.progressSpinCancel,vsa.prog_spin_cancel);
+		saveButtonStatus(mGp.progressBarImmed,vsa.prog_bar_immed);
+		
+		vsa.confirm_title=mGp.confirmTitle.getText().toString();
+		vsa.confirm_msg=mGp.confirmMsg.getText().toString();
+
+		vsa.progress_bar_msg=mGp.progressBarMsg.getText().toString();
+
+	};
+	
+	private void restoreViewContent(ViewSaveArea vsa) {
+		tabHost.setCurrentTab(vsa.current_tab_pos);
+		mGp.profileListView.setSelectionFromTop(vsa.prof_list_view_pos_x, vsa.prof_list_view_pos_y);
+		mGp.msgListView.setSelectionFromTop(vsa.msg_list_view_pos_x, vsa.msg_list_view_pos_y);
+		mGp.syncHistoryListView.setSelectionFromTop(vsa.sync_list_view_pos_x, vsa.sync_list_view_pos_y);
+
+		mGp.confirmTitle.setText(vsa.confirm_title);
+		mGp.confirmMsg.setText(vsa.confirm_msg);
+
+		restoreButtonStatus(mGp.confirmCancel,vsa.confirm_cancel,mGp.confirmCancelListener);
+		restoreButtonStatus(mGp.confirmYes,vsa.confirm_yes,mGp.confirmYesListener);
+		restoreButtonStatus(mGp.confirmYesAll,vsa.confirm_yes_all,mGp.confirmYesAllListener);
+		restoreButtonStatus(mGp.confirmNo,vsa.confirm_no, mGp.confirmNoListener);
+		restoreButtonStatus(mGp.confirmNoAll,vsa.confirm_no_all, mGp.confirmNoAllListener);
+		restoreButtonStatus(mGp.progressBarCancel,vsa.prog_bar_cancel, mGp.progressBarCancelListener);
+		restoreButtonStatus(mGp.progressSpinCancel,vsa.prog_spin_cancel,mGp.progressSpinCancelListener);
+		restoreButtonStatus(mGp.progressBarImmed,vsa.prog_bar_immed,mGp.progressBarImmedListener);
+
+		mGp.progressBarMsg.setText(vsa.progress_bar_msg);
+		mGp.progressBarPb.setMax(vsa.progress_bar_max);
+		mGp.progressBarPb.setProgress(vsa.progress_bar_progress);
+		
+		mGp.progressSpinSyncprof.setText(vsa.prog_prof);
+		mGp.progressSpinFilePath.setText(vsa.prog_fp);
+		mGp.progressSpinStatus.setText(vsa.prog_msg);
+		mGp.mainViewScheduleInfo.setText(vsa.prog_sched_info);
+
+		if (vsa.prog_bar_showed) {
+			mGp.progressBarView.bringToFront();
+			mGp.progressBarView.setBackgroundColor(Color.BLACK);
+			mGp.progressBarView.setVisibility(LinearLayout.VISIBLE);
+		} else mGp.progressBarView.setVisibility(LinearLayout.GONE);
+
+		if (vsa.prog_spin_showed) {
+			mGp.progressSpinView.bringToFront();
+			mGp.progressSpinView.setBackgroundColor(Color.BLACK);
+			mGp.progressSpinView.setVisibility(LinearLayout.VISIBLE);
+		} else mGp.progressSpinView.setVisibility(LinearLayout.GONE);
+		
+		if (vsa.confirm_showed) {
+			mGp.confirmView.setBackgroundColor(Color.BLACK);
+			mGp.confirmView.setVisibility(LinearLayout.VISIBLE);
+			mGp.confirmView.bringToFront();
+		} else {
+			mGp.confirmView.setVisibility(LinearLayout.GONE);
+		}
+
+	};
+	
 	private void changeLanguageCode(final Configuration newConfig) {
 		util.addLogMsg("I",getString(R.string.msgs_smbsync_main_language_changed));
 	    loadMsgString();
-	    refreshOptionMenu();
-		mTabChildviewProf.setTabTitle(getString(R.string.msgs_tab_name_prof));
-		mTabChildviewMsg.setTabTitle(getString(R.string.msgs_tab_name_msg));
-		mTabChildviewHist.setTabTitle(getString(R.string.msgs_tab_name_history));
+//	    refreshOptionMenu();
+//		mTabChildviewProf.setTabTitle(getString(R.string.msgs_tab_name_prof));
+//		mTabChildviewMsg.setTabTitle(getString(R.string.msgs_tab_name_msg));
+//		mTabChildviewHist.setTabTitle(getString(R.string.msgs_tab_name_history));
 		profMaint.loadMsgString();
 		mCurrentLocal=newConfig.locale;
 		
@@ -524,11 +690,7 @@ public class SMBSyncMain extends FragmentActivity {
 	};
 	
 	private void initAdapterAndView() {
-		mGp.msgListView = (ListView) findViewById(R.id.message_view_list);
 		mGp.msgListView.setFastScrollEnabled(true);
-		mGp.profileListView =(ListView) findViewById(R.id.profile_view_list);
-		ArrayList<MsgListItem> tml =new ArrayList<MsgListItem>();
-		mGp.msgListAdapter = new AdapterMessageList(this,R.layout.msg_list_item_view,tml);
 		
 		mGp.msgListView.setAdapter(mGp.msgListAdapter);
 		mGp.msgListView.setDrawingCacheEnabled(true);
@@ -538,16 +700,8 @@ public class SMBSyncMain extends FragmentActivity {
 		mGp.msgListView.setSelected(true);
 		setFastScrollListener(mGp.msgListView);
 		
-		ArrayList<ProfileListItem> tml1 =new ArrayList<ProfileListItem>();
-		mGp.profileAdapter=new AdapterProfileList(this, R.layout.profile_list_item_view, tml1,
-						mGp.SMBSync_External_Root_Dir);
-		currentViewType="P";
 		mGp.profileListView.setAdapter(mGp.profileAdapter);
 		
-		mGp.syncHistoryList=util.loadHistoryList();
-		mGp.syncHistoryListView=(ListView)findViewById(R.id.history_view_list);
-		mGp.syncHistoryAdapter=new AdapterSyncHistory(mContext, R.layout.sync_history_list_item_view, 
-				mGp.syncHistoryList);
 		mGp.syncHistoryListView.setAdapter(mGp.syncHistoryAdapter);
 		mGp.syncHistoryAdapter.notifyDataSetChanged();
 		mGp.syncHistoryListView.setClickable(true);
@@ -644,11 +798,35 @@ public class SMBSyncMain extends FragmentActivity {
 		if (restartStatus==0) tabHost.setCurrentTab(0);
 		tabHost.setOnTabChangedListener(new OnTabChange());
 		
-		mGp.mainViewProgressProf=(TextView)findViewById(R.id.profile_progress_spin_syncprof);
-		mGp.mainViewProgressFilepath=(TextView)findViewById(R.id.profile_progress_spin_filepath);
-		mGp.mainViewProgressMessage=(TextView)findViewById(R.id.profile_progress_spin_status);
-
+		mGp.msgListView = (ListView) findViewById(R.id.message_view_list);
+		mGp.profileListView =(ListView) findViewById(R.id.profile_view_list);
+		mGp.syncHistoryListView=(ListView)findViewById(R.id.history_view_list);
+		
 		mGp.mainViewScheduleInfo=(TextView)findViewById(R.id.schedule_info);
+		
+		mGp.confirmView=(LinearLayout)findViewById(R.id.profile_confirm);
+		mGp.confirmTitle=(TextView)findViewById(R.id.copy_delete_confirm_title);
+		mGp.confirmMsg=(TextView)findViewById(R.id.copy_delete_confirm_msg);
+		mGp.confirmCancel=(Button)findViewById(R.id.copy_delete_confirm_task_cancel);
+		mGp.confirmYes=(Button)findViewById(R.id.copy_delete_confirm_yes);
+	    mGp.confirmNo=(Button)findViewById(R.id.copy_delete_confirm_no);
+	    mGp.confirmYesAll=(Button)findViewById(R.id.copy_delete_confirm_yesall);
+	    mGp.confirmNoAll=(Button)findViewById(R.id.copy_delete_confirm_noall);
+
+	    mGp.progressBarView=(LinearLayout)findViewById(R.id.profile_progress_bar);
+	    mGp.progressBarMsg=(TextView)findViewById(R.id.profile_progress_bar_msg);
+	    mGp.progressBarPb = (ProgressBar)findViewById(R.id.profile_progress_bar_progress);
+
+	    mGp.progressBarCancel=(Button)findViewById(R.id.profile_progress_bar_btn_cancel);
+	    mGp.progressBarImmed=(Button)findViewById(R.id.profile_progress_bar_btn_immediate);
+
+	    mGp.progressSpinView=(LinearLayout)findViewById(R.id.profile_progress_spin);
+
+	    mGp.progressSpinSyncprof=(TextView)findViewById(R.id.profile_progress_spin_syncprof);
+	    mGp.progressSpinFilePath=(TextView)findViewById(R.id.profile_progress_spin_filepath);
+	    mGp.progressSpinStatus=(TextView)findViewById(R.id.profile_progress_spin_status);
+	    mGp.progressSpinCancel=(Button)findViewById(R.id.profile_progress_spin_btn_cancel);
+
 	};
 	
 	class OnTabChange implements OnTabChangeListener {
@@ -2053,13 +2231,13 @@ public class SMBSyncMain extends FragmentActivity {
 			for (int i=0;i<mGp.profileAdapter.getCount();i++) {
 				item = mGp.profileAdapter.getItem(i);
 				if (idx==i) {
-					profMaint.setProfileToChecked(true, mGp.profileAdapter, item, i);
+					ProfileMaintenance.setProfileToChecked(true, mGp.profileAdapter, item, i);
 					j=i;//set new index no
 					if (mGp.profileAdapter.getItem(i).getType().equals(SMBSYNC_PROF_TYPE_SYNC))
 						sync=true;
 				} else {
 					if (item.isChecked()) {
-						profMaint.setProfileToChecked(false, mGp.profileAdapter, item, i);
+						ProfileMaintenance.setProfileToChecked(false, mGp.profileAdapter, item, i);
 					}
 				}
 			}
@@ -2097,7 +2275,7 @@ public class SMBSyncMain extends FragmentActivity {
 			.setOnClickListener(new CustomContextMenuOnClickListener() {
 				@Override
 				public void onClick(CharSequence menuTitle) {
-					profMaint.setProfileToActive();
+					profMaint.setProfileToActive(mGp);
 					resetAllCheckedItem();
 				}
 		});
@@ -2126,7 +2304,7 @@ public class SMBSyncMain extends FragmentActivity {
 			public void onClick(CharSequence menuTitle) {
 				for (int i=0;i<mGp.profileAdapter.getCount();i++) {
 					ProfileListItem item = mGp.profileAdapter.getItem(i);
-					profMaint.setProfileToChecked(true, mGp.profileAdapter, item, i);
+					ProfileMaintenance.setProfileToChecked(true, mGp.profileAdapter, item, i);
 				}
 			}
 		});
@@ -2178,7 +2356,7 @@ public class SMBSyncMain extends FragmentActivity {
 					.setOnClickListener(new CustomContextMenuOnClickListener() {
 					@Override
 					public void onClick(CharSequence menuTitle) {
-						profMaint.setProfileToActive();
+						profMaint.setProfileToActive(mGp);
 						resetAllCheckedItem();
 					}
 				});
@@ -2219,8 +2397,9 @@ public class SMBSyncMain extends FragmentActivity {
 			.setOnClickListener(new CustomContextMenuOnClickListener() {
 				@Override
 				public void onClick(CharSequence menuTitle) {
-					profMaint.addLocalProfile(true,"",SMBSYNC_PROF_ACTIVE,
-							mGp.SMBSync_External_Root_Dir,"","");
+					ProfileMaintenanceLocalFragment pmsp=ProfileMaintenanceLocalFragment.newInstance();
+					pmsp.showDialog(getSupportFragmentManager(), pmsp, "ADD", new ProfileListItem(), 
+							0, profMaint, util, commonDlg);
 					resetAllCheckedItem();
 				}
 		});
@@ -2230,8 +2409,12 @@ public class SMBSyncMain extends FragmentActivity {
 				@Override
 				public void onClick(CharSequence menuTitle) {
 					String c_ip=SMBSyncUtil.getLocalIpAddress();
-					profMaint.addRemoteProfile(true, "",SMBSYNC_PROF_ACTIVE,
-							c_ip,"","","","","","","");
+					ProfileListItem pfli=new ProfileListItem();
+					pfli.setAddr(c_ip);
+					
+					ProfileMaintenanceRemoteFragment pmsp=ProfileMaintenanceRemoteFragment.newInstance();
+					pmsp.showDialog(getSupportFragmentManager(), pmsp, "ADD", pfli, 
+							0, profMaint, util, commonDlg);
 					resetAllCheckedItem();
 				}
 		});
@@ -2252,9 +2435,9 @@ public class SMBSyncMain extends FragmentActivity {
 		.setOnClickListener(new CustomContextMenuOnClickListener() {
 			@Override
 			public void onClick(CharSequence menuTitle) {
-				profMaint.addSyncProfile(true, "",SMBSYNC_PROF_ACTIVE,"","","",null, null,
-						true, true, false, false, "0", false, true,true,true,
-						"");
+				ProfileMaintenanceSyncFragment pmsp=ProfileMaintenanceSyncFragment.newInstance();
+				pmsp.showDialog(getSupportFragmentManager(), pmsp, "ADD", new ProfileListItem(), 
+						profMaint, util, commonDlg);
 				resetAllCheckedItem();
 			}
 		});
@@ -2286,7 +2469,7 @@ public class SMBSyncMain extends FragmentActivity {
 				public void onClick(CharSequence menuTitle) {
 					for (int i=0;i<mGp.profileAdapter.getCount();i++) {
 						ProfileListItem item = mGp.profileAdapter.getItem(i);
-						profMaint.setProfileToChecked(true, mGp.profileAdapter, item, i);
+						ProfileMaintenance.setProfileToChecked(true, mGp.profileAdapter, item, i);
 					}
 				}
 			});
@@ -2305,7 +2488,7 @@ public class SMBSyncMain extends FragmentActivity {
 	private void resetAllCheckedItem() {
 		for (int i=0;i<mGp.profileAdapter.getCount();i++) {
 			ProfileListItem item = mGp.profileAdapter.getItem(i);
-			profMaint.setProfileToChecked(false, mGp.profileAdapter, item, i);
+			ProfileMaintenance.setProfileToChecked(false, mGp.profileAdapter, item, i);
 		}
 	};
 	
@@ -2344,27 +2527,18 @@ public class SMBSyncMain extends FragmentActivity {
 			String prof_act, int prof_num) {
 		ProfileListItem item = mGp.profileAdapter.getItem(prof_num);
 		if (prof_type.equals(SMBSYNC_PROF_TYPE_REMOTE)) {
-			profMaint.editProfileRemote(prof_name, prof_type, prof_num, prof_act,
-					item.getAddr(),item.getUser(),item.getPass(),item.getShare(),
-					item.getDir(),item.getHostname(),item.getPort(), "");
+			  ProfileMaintenanceRemoteFragment pmp=ProfileMaintenanceRemoteFragment.newInstance();
+			  pmp.showDialog(getSupportFragmentManager(), pmp, "EDIT", item, 
+					  prof_num, profMaint, util, commonDlg);
 		} else if (prof_type.equals(SMBSYNC_PROF_TYPE_LOCAL)) {
-			profMaint.editProfileLocal(prof_name, prof_type, prof_num, prof_act,
-					item.getLocalMountPoint(),item.getDir(),"");
+			  ProfileMaintenanceLocalFragment pmp=ProfileMaintenanceLocalFragment.newInstance();
+			  pmp.showDialog(getSupportFragmentManager(), pmp, "EDIT", item, 
+					  prof_num, profMaint, util, commonDlg);
 		} else if (prof_type.equals(SMBSYNC_PROF_TYPE_SYNC)) {
-			profMaint.editProfileSync(prof_name, prof_type, prof_num, prof_act, 
-					item.getMasterName(),item.getTargetName(),item.getSyncType(),
-					item.getFileFilter(),item.getDirFilter(),
-					item.isMasterDirFileProcess(),item.isConfirmRequired(),
-					item.isForceLastModifiedUseSmbsync(),
-					item.isNotUseLastModifiedForRemote(),
-					item.getRetryCount(), 
-					item.isSyncEmptyDirectory(),
-					item.isSyncHiddenDirectory(),
-					item.isSyncHiddenFile(),
-					item.isSyncSubDirectory(),
-					"");
+			  ProfileMaintenanceSyncFragment pmsp=ProfileMaintenanceSyncFragment.newInstance();
+			  pmsp.showDialog(getSupportFragmentManager(), pmsp, "EDIT", item, 
+						profMaint, util, commonDlg);
 		}
-
 	};
 
 	private void syncSelectedProfile() {
@@ -2473,27 +2647,26 @@ public class SMBSyncMain extends FragmentActivity {
 	};
 
 	private void startMirrorTask(ArrayList<MirrorIoParmList> alp) {
-		final LinearLayout ll_spin=(LinearLayout)findViewById(R.id.profile_progress_spin);
-		final Button btnCancel = (Button)findViewById(R.id.profile_progress_spin_btn_cancel);
-		ll_spin.setVisibility(LinearLayout.VISIBLE);
-		ll_spin.setBackgroundColor(Color.BLACK);
-		ll_spin.bringToFront();
+		mGp.progressSpinView.setVisibility(LinearLayout.VISIBLE);
+		mGp.progressSpinView.setBackgroundColor(Color.BLACK);
+		mGp.progressSpinView.bringToFront();
 
-		btnCancel.setText(getString(R.string.msgs_progress_spin_dlg_sync_cancel));
-		btnCancel.setEnabled(true);
+		mGp.progressSpinCancel.setText(getString(R.string.msgs_progress_spin_dlg_sync_cancel));
+		mGp.progressSpinCancel.setEnabled(true);
 		// CANCELボタンの指定
-		btnCancel.setOnClickListener(new View.OnClickListener() {
+		mGp.progressSpinCancelListener=new View.OnClickListener() {
 			public void onClick(View v) {
 				try {
 					mSvcClient.aidlCancelThread();
 				} catch (RemoteException e) {
 					e.printStackTrace();
 				}
-				btnCancel.setText(getString(R.string.msgs_progress_dlg_canceling));
-				btnCancel.setEnabled(false);
+				mGp.progressSpinCancel.setText(getString(R.string.msgs_progress_dlg_canceling));
+				mGp.progressSpinCancel.setEnabled(false);
 				mGp.settingAutoTerm=false;
 			}
-		});
+		};
+		mGp.progressSpinCancel.setOnClickListener(mGp.progressSpinCancelListener);
 		
 		mGp.msgListView.setFastScrollEnabled(false);
 
@@ -2853,104 +3026,98 @@ public class SMBSyncMain extends FragmentActivity {
 			}
 		});
 		
-		final LinearLayout ll_confirm=(LinearLayout)findViewById(R.id.profile_confirm);
-		ll_confirm.setVisibility(LinearLayout.VISIBLE);
-		ll_confirm.setBackgroundColor(Color.BLACK);
-		ll_confirm.bringToFront();
-		TextView dlg_title=(TextView)findViewById(R.id.copy_delete_confirm_title);
-		TextView dlg_msg=(TextView)findViewById(R.id.copy_delete_confirm_msg);
-		dlg_title.setText(mContext.getString(R.string.msgs_common_dialog_warning));
-		dlg_title.setTextColor(Color.YELLOW);
+		mGp.confirmView.setVisibility(LinearLayout.VISIBLE);
+		mGp.confirmView.setBackgroundColor(Color.BLACK);
+		mGp.confirmView.bringToFront();
+		mGp.confirmTitle.setText(mContext.getString(R.string.msgs_common_dialog_warning));
+		mGp.confirmTitle.setTextColor(Color.YELLOW);
 		String msg_text="";
 		if (method.equals(SMBSYNC_CONFIRM_FOR_COPY)) {
 			msg_text=String.format(getString(R.string.msgs_mirror_confirm_copy_confirm),fp);
 		} else {
 			msg_text=String.format(getString(R.string.msgs_mirror_confirm_delete_confirm),fp);
 		}
-		dlg_msg.setText(msg_text);
+		mGp.confirmMsg.setText(msg_text);
 		
 		showNotificationMsg(msg_text);
 		
-		if (method.equals(SMBSYNC_CONFIRM_FOR_COPY)) dlg_msg.setText(
+		if (method.equals(SMBSYNC_CONFIRM_FOR_COPY)) mGp.confirmMsg.setText(
 				String.format(getString(R.string.msgs_mirror_confirm_copy_confirm),fp));
-		else dlg_msg.setText(String.format(getString(R.string.msgs_mirror_confirm_delete_confirm),fp));
-		
-		Button btnYes = (Button)findViewById(R.id.copy_delete_confirm_yes);
-		Button btnYesAll = (Button)findViewById(R.id.copy_delete_confirm_yesall);
-		final Button btnNo = (Button)findViewById(R.id.copy_delete_confirm_no);
-		Button btnNoAll = (Button)findViewById(R.id.copy_delete_confirm_noall);
-		Button btnTaskCancel = (Button)findViewById(R.id.copy_delete_confirm_task_cancel);
+		else mGp.confirmMsg.setText(String.format(getString(R.string.msgs_mirror_confirm_delete_confirm),fp));
 		
 		// Yesボタンの指定
-		btnYes.setOnClickListener(new View.OnClickListener() {
+		mGp.confirmYesListener=new View.OnClickListener() {
 			public void onClick(View v) {
-				ll_confirm.setVisibility(LinearLayout.GONE);
+				mGp.confirmView.setVisibility(LinearLayout.GONE);
 				ntfy.notifyToListener(true,new Object[]{SMBSYNC_CONFIRM_RESP_YES});
 			}
-		});
+		};
+		mGp.confirmYes.setOnClickListener(mGp.confirmYesListener);
 		// YesAllボタンの指定
-		btnYesAll.setOnClickListener(new View.OnClickListener() {
+		mGp.confirmYesAllListener=new View.OnClickListener() {
 			public void onClick(View v) {
-				ll_confirm.setVisibility(LinearLayout.GONE);
+				mGp.confirmView.setVisibility(LinearLayout.GONE);
 				ntfy.notifyToListener(true,new Object[]{SMBSYNC_CONFIRM_RESP_YESALL});
 			}
-		});
+		};
+		mGp.confirmYesAll.setOnClickListener(mGp.confirmYesAllListener);
 		// Noボタンの指定
-		btnNo.setOnClickListener(new View.OnClickListener() {
+		mGp.confirmNoListener=new View.OnClickListener() {
 			public void onClick(View v) {
-				ll_confirm.setVisibility(LinearLayout.GONE);
+				mGp.confirmView.setVisibility(LinearLayout.GONE);
 				ntfy.notifyToListener(false,new Object[]{SMBSYNC_CONFIRM_RESP_NO});
 			}
-		});
+		};
+		mGp.confirmNo.setOnClickListener(mGp.confirmNoListener);
 		// NoAllボタンの指定
-		btnNoAll.setOnClickListener(new View.OnClickListener() {
+		mGp.confirmNoAllListener=new View.OnClickListener() {
 			public void onClick(View v) {
-				ll_confirm.setVisibility(LinearLayout.GONE);
+				mGp.confirmView.setVisibility(LinearLayout.GONE);
 				ntfy.notifyToListener(false,new Object[]{SMBSYNC_CONFIRM_RESP_NOALL});
 			}
-		});
+		};
+		mGp.confirmNoAll.setOnClickListener(mGp.confirmNoAllListener);
 		// Task cancelボタンの指定
-		btnTaskCancel.setOnClickListener(new View.OnClickListener() {
+		mGp.confirmCancelListener=new View.OnClickListener() {
 			public void onClick(View v) {
-				ll_confirm.setVisibility(LinearLayout.GONE);
-				try {
-					mSvcClient.aidlCancelThread();
-				} catch (RemoteException e) {
-					e.printStackTrace();
-				}
+				mGp.confirmView.setVisibility(LinearLayout.GONE);
+//				try {
+//					mSvcClient.aidlCancelThread();
+//				} catch (RemoteException e) {
+//					e.printStackTrace();
+//				}
 				ntfy.notifyToListener(false,new Object[]{SMBSYNC_CONFIRM_RESP_NOALL});
+				mGp.progressSpinCancel.performClick();
 			}
-		});
+		};
+		mGp.confirmCancel.setOnClickListener(mGp.confirmCancelListener);
 	};
 
 	private void autoStartDlg() {
 		final ThreadCtrl threadCtl=new ThreadCtrl();
 		threadCtl.setEnabled();//enableAsyncTask();
 
-		final LinearLayout ll_bar=(LinearLayout)findViewById(R.id.profile_progress_bar);
-		ll_bar.setVisibility(LinearLayout.VISIBLE);
-		ll_bar.setBackgroundColor(Color.BLACK);
-		ll_bar.bringToFront();
+		mGp.progressBarView.setVisibility(LinearLayout.VISIBLE);
+		mGp.progressBarView.setBackgroundColor(Color.BLACK);
+		mGp.progressBarView.bringToFront();
 
-		final TextView title = (TextView) findViewById(R.id.profile_progress_bar_msg);
-		title.setText(getString(R.string.msgs_progress_bar_dlg_astart_starting));
-		final Button btnCancel = (Button) findViewById(R.id.profile_progress_bar_btn_cancel);
-		btnCancel.setText(getString(R.string.msgs_progress_bar_dlg_astart_cancel));
-		final Button btnImmed = (Button) findViewById(R.id.profile_progress_bar_btn_immediate);
-		btnImmed.setText(getString(R.string.msgs_progress_bar_dlg_astart_immediate));
+		mGp.progressBarMsg.setText(getString(R.string.msgs_progress_bar_dlg_astart_starting));
+		mGp.progressBarCancel.setText(getString(R.string.msgs_progress_bar_dlg_astart_cancel));
+		mGp.progressBarImmed.setText(getString(R.string.msgs_progress_bar_dlg_astart_immediate));
 		
 		// CANCELボタンの指定
-		btnCancel.setEnabled(true);
-		btnCancel.setOnClickListener(new View.OnClickListener() {
+		mGp.progressBarCancel.setEnabled(true);
+		mGp.progressBarCancelListener=new View.OnClickListener() {
 			public void onClick(View v) {
 				mGp.settingAutoTerm=false;
-				btnCancel.setText(getString(R.string.msgs_progress_dlg_canceling));
-				btnCancel.setEnabled(false);
+				mGp.progressBarCancel.setText(getString(R.string.msgs_progress_dlg_canceling));
+				mGp.progressBarCancel.setEnabled(false);
 				threadCtl.setDisabled();//disableAsyncTask();
 				util.addLogMsg("W",getString(R.string.msgs_astart_canceling));
 				showNotificationMsg(getString(R.string.msgs_astart_canceling));
 			}
-		});
+		};
+		mGp.progressBarCancel.setOnClickListener(mGp.progressBarCancelListener);
 		
 		final NotifyEvent at_ne=new NotifyEvent(mContext);
 		at_ne.setListener(new NotifyEventListener() {
@@ -2981,19 +3148,20 @@ public class SMBSyncMain extends FragmentActivity {
 		});
 
 		// Immediateボタンの指定
-		btnImmed.setEnabled(true);
-		btnImmed.setOnClickListener(new View.OnClickListener() {
+		mGp.progressBarImmed.setEnabled(true);
+		mGp.progressBarImmedListener=new View.OnClickListener() {
 			public void onClick(View v) {
 				mRequestAutoTimerExpired=true;
 				threadCtl.setDisabled();//disableAsyncTask();
 			}
-		});
+		};
+		mGp.progressBarImmed.setOnClickListener(mGp.progressBarImmedListener);
 
 		showNotificationMsg(getString(R.string.msgs_astart_started));
 		util.addLogMsg("I",getString(R.string.msgs_astart_started));
 		tabHost.setCurrentTab(1);
 		if (extraValueAutoStart) {
-			ll_bar.setVisibility(LinearLayout.GONE);
+			mGp.progressBarView.setVisibility(LinearLayout.GONE);
 			at_ne.notifyToListener(true, null);
 		} else {
 			mRequestAutoTimerExpired=false;
@@ -3005,30 +3173,27 @@ public class SMBSyncMain extends FragmentActivity {
 		final ThreadCtrl threadCtl=new ThreadCtrl();
 		threadCtl.setEnabled();//enableAsyncTask();
 
-		final LinearLayout ll_bar=(LinearLayout)findViewById(R.id.profile_progress_bar);
-		ll_bar.setVisibility(LinearLayout.VISIBLE);
-		ll_bar.setBackgroundColor(Color.BLACK);
-		ll_bar.bringToFront();
+		mGp.progressBarView.setVisibility(LinearLayout.VISIBLE);
+		mGp.progressBarView.setBackgroundColor(Color.BLACK);
+		mGp.progressBarView.bringToFront();
 
-		final TextView title = (TextView) findViewById(R.id.profile_progress_bar_msg);
-		title.setText("");
-		final Button btnCancel = (Button) findViewById(R.id.profile_progress_bar_btn_cancel);
-		btnCancel.setText(getString(R.string.msgs_progress_bar_dlg_aterm_cancel));
-		final Button btnImmed = (Button) findViewById(R.id.profile_progress_bar_btn_immediate);
-		btnImmed.setText(getString(R.string.msgs_progress_bar_dlg_aterm_immediate));
+		mGp.progressBarMsg.setText("");
+		mGp.progressBarCancel.setText(getString(R.string.msgs_progress_bar_dlg_aterm_cancel));
+		mGp.progressBarImmed.setText(getString(R.string.msgs_progress_bar_dlg_aterm_immediate));
 
 		// CANCELボタンの指定
-		btnCancel.setEnabled(true);
-		btnCancel.setOnClickListener(new View.OnClickListener() {
+		mGp.progressBarCancel.setEnabled(true);
+		mGp.progressBarCancelListener=new View.OnClickListener() {
 			public void onClick(View v) {
 				mGp.settingAutoTerm=false;
-				btnCancel.setText(getString(R.string.msgs_progress_dlg_canceling));
-				btnCancel.setEnabled(false);
+				mGp.progressBarCancel.setText(getString(R.string.msgs_progress_dlg_canceling));
+				mGp.progressBarCancel.setEnabled(false);
 				threadCtl.setDisabled();//disableAsyncTask();
 				util.addLogMsg("W",getString(R.string.msgs_aterm_canceling));
 				showNotificationMsg(getString(R.string.msgs_aterm_canceling));
 			}
-		});
+		};
+		mGp.progressBarCancel.setOnClickListener(mGp.progressBarCancelListener);
 		
 		final NotifyEvent at_ne=new NotifyEvent(mContext);
 		at_ne.setListener(new NotifyEventListener() {
@@ -3074,13 +3239,14 @@ public class SMBSyncMain extends FragmentActivity {
 		});
 		
 		// Immediateボタンの指定
-		btnImmed.setEnabled(true);
-		btnImmed.setOnClickListener(new View.OnClickListener() {
+		mGp.progressBarImmed.setEnabled(true);
+		mGp.progressBarImmedListener=new View.OnClickListener() {
 			public void onClick(View v) {
 				mRequestAutoTimerExpired=true;
 				threadCtl.setDisabled();//disableAsyncTask();
 			}
-		});
+		};
+		mGp.progressBarImmed.setOnClickListener(mGp.progressBarImmedListener);
 
 //		Log.v("","e="+extraDataSpecifiedAutoTerm);
 		util.addLogMsg("I",getString(R.string.msgs_aterm_started));
@@ -3113,11 +3279,7 @@ public class SMBSyncMain extends FragmentActivity {
        	new Thread(new Runnable() {
 			@Override
 			public void run() {//non UI thread
-				ProgressBar pb = (ProgressBar) 
-						findViewById(R.id.profile_progress_bar_progress);
-				pb.setMax(ATERM_WAIT_TIME);
-				final TextView pm =
-						(TextView)findViewById(R.id.profile_progress_bar_msg);
+				mGp.progressBarPb.setMax(ATERM_WAIT_TIME);
 				for (int i=0; i<ATERM_WAIT_TIME;i++) {
 					try {
 						if(threadCtl.isEnabled()) {
@@ -3127,11 +3289,11 @@ public class SMBSyncMain extends FragmentActivity {
 								@Override
 								public void run() {
 									String t_msg=String.format(msg, (ATERM_WAIT_TIME-ix));
-									pm.setText(t_msg);
+									mGp.progressBarMsg.setText(t_msg);
 									showNotificationMsg(t_msg);
 							}});
 							// non UI thread
-							pb.setProgress(i);
+							mGp.progressBarPb.setProgress(i);
 						} else {
 							break;
 						}
