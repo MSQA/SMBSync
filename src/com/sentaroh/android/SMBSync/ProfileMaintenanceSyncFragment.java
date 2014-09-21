@@ -103,7 +103,7 @@ public class ProfileMaintenanceSyncFragment extends DialogFragment{
     	super.onCreate(savedInstanceState);
         setRetainInstance(true);
         if (DEBUG_ENABLE) Log.v(APPLICATION_TAG,SUB_APPLICATION_TAG+"onCreate");
-        mContext=this.getActivity().getApplicationContext();
+        mContext=this.getActivity();
     	mFragment=this;
         if (!mTerminateRequired) {
         	mGp=(GlobalParameters)getActivity().getApplication();

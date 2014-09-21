@@ -229,6 +229,8 @@ public class ProfileMaintenance {
 						if (pl.startsWith(SMBSYNC_PROF_VER4+SMBSYNC_PROF_ENC)) result=true;
 					} else if (pl.startsWith(SMBSYNC_PROF_VER5)) {
 						if (pl.startsWith(SMBSYNC_PROF_VER5+SMBSYNC_PROF_ENC)) result=true;
+					} else if (pl.startsWith(SMBSYNC_PROF_VER6)) {
+						if (pl.startsWith(SMBSYNC_PROF_VER6+SMBSYNC_PROF_ENC)) result=true;
 					}
 				}
 				br.close();
@@ -294,6 +296,8 @@ public class ProfileMaintenance {
 							enc_str=pl.replace(SMBSYNC_PROF_VER4+SMBSYNC_PROF_ENC, "");
 						} else if (pl.startsWith(SMBSYNC_PROF_VER5+SMBSYNC_PROF_ENC)) {
 							enc_str=pl.replace(SMBSYNC_PROF_VER5+SMBSYNC_PROF_ENC, "");
+						} else if (pl.startsWith(SMBSYNC_PROF_VER6+SMBSYNC_PROF_ENC)) {
+							enc_str=pl.replace(SMBSYNC_PROF_VER6+SMBSYNC_PROF_ENC, "");
 						}
 						if (!enc_str.equals("")) {
 							CipherParms cp=EncryptUtil.initDecryptEnv(
