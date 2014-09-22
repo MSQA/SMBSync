@@ -43,7 +43,7 @@ public class ProfileMaintLocalFragment extends DialogFragment{
 	private Context mContext=null;
 	private ProfileMaintLocalFragment mFragment=null;
 	private GlobalParameters mGp=null;
-	private ProfileUtility mProfMaint=null;
+	private ProfileUtility mProfUtil=null;
 	private CommonDialog mCommonDlg=null;
 
 	public static ProfileMaintLocalFragment newInstance() {
@@ -275,7 +275,7 @@ public class ProfileMaintLocalFragment extends DialogFragment{
     	mTerminateRequired=false;
     	mOpType=op_type;
     	mCurrentProfileListItem=pli;
-    	mProfMaint=pm;
+    	mProfUtil=pm;
     	mProfileItemPos=pin;
     	mUtil=ut;
     	mCommonDlg=cd;
@@ -330,7 +330,7 @@ public class ProfileMaintLocalFragment extends DialogFragment{
 					}
 					
 				});
-				mProfMaint.selectLocalDirDlg(url,"",p_dir,ntfy);
+				mProfUtil.selectLocalDirDlg(url,"",p_dir,ntfy);
 			}
 		});
 		// CANCELボタンの指定
@@ -360,9 +360,9 @@ public class ProfileMaintLocalFragment extends DialogFragment{
 			public void onTextChanged(CharSequence s, int start, int before, int count) {}
 			@Override
 			public void afterTextChanged(Editable s) {
-				if (!mProfMaint.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_LOCAL, s.toString())) {
+				if (!mProfUtil.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_LOCAL, s.toString())) {
 					String audit_msg="";
-					if (mProfMaint.hasInvalidChar(s.toString(),new String[]{"\t"})) {
+					if (mProfUtil.hasInvalidChar(s.toString(),new String[]{"\t"})) {
 						audit_msg=String.format(mContext.getString(R.string.msgs_audit_msgs_profilename1),
 								"\t");
 						btn_ok.setEnabled(false);
@@ -388,8 +388,8 @@ public class ProfileMaintLocalFragment extends DialogFragment{
 			@Override
 			public void afterTextChanged(Editable s) {
 				String audit_msg="";
-				if (mProfMaint.hasInvalidChar(s.toString(),new String[]{"\t"})) {
-					audit_msg=String.format(mContext.getString(R.string.msgs_audit_msgs_local_dir),mProfMaint.getInvalidCharMsg());
+				if (mProfUtil.hasInvalidChar(s.toString(),new String[]{"\t"})) {
+					audit_msg=String.format(mContext.getString(R.string.msgs_audit_msgs_local_dir),mProfUtil.getInvalidCharMsg());
 				}
 				dlg_msg.setText(audit_msg);
 			}
@@ -404,19 +404,19 @@ public class ProfileMaintLocalFragment extends DialogFragment{
 				prof_lmp=mGp.SMBSync_External_Root_Dir;
 				prof_dir = editdir.getText().toString();
 				prof_name = editname.getText().toString();
-				if (mProfMaint.hasInvalidChar(prof_dir,new String[]{"\t"})) {
+				if (mProfUtil.hasInvalidChar(prof_dir,new String[]{"\t"})) {
 					audit_error=true;
-					prof_dir=mProfMaint.removeInvalidChar(prof_dir);
+					prof_dir=mProfUtil.removeInvalidChar(prof_dir);
 					audit_msg=String.format(
-							mContext.getString(R.string.msgs_audit_msgs_local_dir),mProfMaint.getInvalidCharMsg());
+							mContext.getString(R.string.msgs_audit_msgs_local_dir),mProfUtil.getInvalidCharMsg());
 					editdir.setText(prof_dir);
 				}
 				if (!audit_error) {
-					if (mProfMaint.hasInvalidChar(prof_name,new String[]{"\t"})) {
+					if (mProfUtil.hasInvalidChar(prof_name,new String[]{"\t"})) {
 						audit_error=true;
-						prof_dir=mProfMaint.removeInvalidChar(prof_name);
+						prof_dir=mProfUtil.removeInvalidChar(prof_name);
 						audit_msg=String.format(
-								mContext.getString(R.string.msgs_audit_msgs_profilename1),mProfMaint.getInvalidCharMsg());
+								mContext.getString(R.string.msgs_audit_msgs_profilename1),mProfUtil.getInvalidCharMsg());
 						editname.setText(prof_name);
 					} else if (prof_name.length()==0) {
 						audit_error=true;
@@ -432,7 +432,7 @@ public class ProfileMaintLocalFragment extends DialogFragment{
 						.setText(audit_msg);
 					return;
 				} else {
-					if (!mProfMaint.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_LOCAL, prof_name)) {
+					if (!mProfUtil.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_LOCAL, prof_name)) {
 						mDialog.dismiss();
 //						int pos=glblParms.profileListView.getFirstVisiblePosition();
 //						int posTop=glblParms.profileListView.getChildAt(0).getTop();
@@ -441,7 +441,7 @@ public class ProfileMaintLocalFragment extends DialogFragment{
 						ProfileUtility.updateLocalProfileAdapter(mGp, true,prof_name,prof_act,
 								prof_lmp, prof_dir,false,0);
 						mGp.profileAdapter.sort();
-						mProfMaint.saveProfileToFile(false,"","",mGp.profileAdapter,false);
+						mProfUtil.saveProfileToFile(false,"","",mGp.profileAdapter,false);
 //						AdapterProfileList tfl= createProfileList(false,"");
 //						replaceglblParms.profileAdapterContent(tfl);
 //						glblParms.profileListView.setSelectionFromTop(pos,posTop);
@@ -503,7 +503,7 @@ public class ProfileMaintLocalFragment extends DialogFragment{
 					}
 					
 				});
-				mProfMaint.selectLocalDirDlg(url,"",p_dir,ntfy);
+				mProfUtil.selectLocalDirDlg(url,"",p_dir,ntfy);
 			}
 		});
 		
@@ -533,18 +533,18 @@ public class ProfileMaintLocalFragment extends DialogFragment{
 				prof_dir = editdir.getText().toString();
 				prof_name = editname.getText().toString();
 
-				if (mProfMaint.hasInvalidChar(prof_dir,new String[]{"\t"})) {
+				if (mProfUtil.hasInvalidChar(prof_dir,new String[]{"\t"})) {
 					audit_error=true;
-					prof_dir=mProfMaint.removeInvalidChar(prof_dir);
-					audit_msg=String.format(mContext.getString(R.string.msgs_audit_msgs_local_dir),mProfMaint.getInvalidCharMsg());
+					prof_dir=mProfUtil.removeInvalidChar(prof_dir);
+					audit_msg=String.format(mContext.getString(R.string.msgs_audit_msgs_local_dir),mProfUtil.getInvalidCharMsg());
 					editdir.setText(prof_dir);
 				}
 				if (!audit_error) {
-					if (mProfMaint.hasInvalidChar(prof_name,new String[]{"\t"})) {
+					if (mProfUtil.hasInvalidChar(prof_name,new String[]{"\t"})) {
 						audit_error=true;
-						prof_name=mProfMaint.removeInvalidChar(prof_name);
+						prof_name=mProfUtil.removeInvalidChar(prof_name);
 						audit_msg=String.format(
-								mContext.getString(R.string.msgs_audit_msgs_profilename1),mProfMaint.getInvalidCharMsg());
+								mContext.getString(R.string.msgs_audit_msgs_profilename1),mProfUtil.getInvalidCharMsg());
 						editname.setText(prof_name);
 					}  else if (prof_name.length()==0) {
 						audit_error=true;
@@ -566,7 +566,7 @@ public class ProfileMaintLocalFragment extends DialogFragment{
 					}
 					if (prof_name.equals(item.getName()) ||
 							(!prof_name.equals(item.getName()) &&
-							 !mProfMaint.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,
+							 !mProfUtil.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,
 									 SMBSYNC_PROF_TYPE_LOCAL,prof_name))) {
 						final String t_prof_name=prof_name;
 						final String t_prof_act=prof_act;
@@ -580,7 +580,7 @@ public class ProfileMaintLocalFragment extends DialogFragment{
 								ProfileUtility.updateLocalProfileAdapter(mGp, false,t_prof_name,t_prof_act,
 										t_prof_lmp, t_prof_dir,false, mProfileItemPos);
 								ProfileUtility.resolveSyncProfileRelation(mGp);
-								mProfMaint.saveProfileToFile(false,"","",mGp.profileAdapter,false);
+								mProfUtil.saveProfileToFile(false,"","",mGp.profileAdapter,false);
 								mGp.profileAdapter.notifyDataSetChanged();
 //								AdapterProfileList tfl= createProfileList(false,"");
 //								replaceglblParms.profileAdapterContent(tfl);

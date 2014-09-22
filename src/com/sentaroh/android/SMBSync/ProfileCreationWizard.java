@@ -90,7 +90,7 @@ public class ProfileCreationWizard {
 	private WizardData mWizData=null;
 	private SMBSyncUtil util=null;
 	private Context mContext=null;
-	private ProfileUtility profMaint=null;
+	private ProfileUtility profUtil=null;
 	private AdapterProfileList profileAdapter=null;
 	private GlobalParameters glblParms=null;
 	private CommonDialog mCommonDlg=null;
@@ -100,7 +100,7 @@ public class ProfileCreationWizard {
 		glblParms=gp;
 		util=su;
 		mContext=c;
-		profMaint=pm;
+		profUtil=pm;
 		mCommonDlg=cd;
 		profileAdapter=pa;
 	};
@@ -340,9 +340,9 @@ public class ProfileCreationWizard {
 					mWizData.target_name="AGT-"+mWizData.target_type+"-"+
 							text.toString();
 					
-					if (!profMaint.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_SYNC, mWizData.sync_name) &&
-							!profMaint.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT, mWizData.master_type, mWizData.master_name) &&
-							!profMaint.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT, mWizData.target_type, mWizData.target_name)) {
+					if (!profUtil.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_SYNC, mWizData.sync_name) &&
+							!profUtil.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT, mWizData.master_type, mWizData.master_name) &&
+							!profUtil.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT, mWizData.target_type, mWizData.target_name)) {
 						cb_all_files.setEnabled(true);
 						setProcessedFileSelectCheckBoxEnabled(dialog,true);
 						setProcessedFileSelectCheckBoxChecked(dialog, false);
@@ -560,7 +560,7 @@ public class ProfileCreationWizard {
 						dlg_msg.setText("");
 					}
 				});
-				profMaint.selectLocalDirDlg(url,"",p_dir,ntfy);
+				profUtil.selectLocalDirDlg(url,"",p_dir,ntfy);
 			}
 		});
 		
@@ -605,9 +605,9 @@ public class ProfileCreationWizard {
 							btn_next.setEnabled(false);
 							setLocalProfileViewDisabled(dialog);
 						} else {
-							if (!profMaint.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_SYNC, text.toString()) &&
-									!profMaint.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_LOCAL, text.toString()) &&
-									!profMaint.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_REMOTE, text.toString()) ) {
+							if (!profUtil.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_SYNC, text.toString()) &&
+									!profUtil.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_LOCAL, text.toString()) &&
+									!profUtil.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_REMOTE, text.toString()) ) {
 								btn_next.setEnabled(true);
 								setLocalProfileViewVisibility(dialog);
 							} else {
@@ -631,9 +631,9 @@ public class ProfileCreationWizard {
 								btn_next.setEnabled(false);
 								setLocalProfileViewDisabled(dialog);
 							} else {
-								if (!profMaint.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_SYNC, text.toString()) &&
-										!profMaint.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_LOCAL, text.toString()) &&
-										!profMaint.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_REMOTE, text.toString()) ) {
+								if (!profUtil.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_SYNC, text.toString()) &&
+										!profUtil.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_LOCAL, text.toString()) &&
+										!profUtil.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_REMOTE, text.toString()) ) {
 									btn_next.setEnabled(true);
 									setLocalProfileViewVisibility(dialog);
 								} else {
@@ -825,9 +825,9 @@ public class ProfileCreationWizard {
 							btn_next.setEnabled(false);
 							setRemoteProfileViewDisabled(dialog);
 						} else {
-							if (!profMaint.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_SYNC, text.toString()) &&
-									!profMaint.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_LOCAL, text.toString()) &&
-									!profMaint.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_REMOTE, text.toString()) ) {
+							if (!profUtil.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_SYNC, text.toString()) &&
+									!profUtil.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_LOCAL, text.toString()) &&
+									!profUtil.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_REMOTE, text.toString()) ) {
 								btn_next.setEnabled(true);
 								setRemoteProfileViewVisibility(dialog);
 							} else {
@@ -851,9 +851,9 @@ public class ProfileCreationWizard {
 								btn_next.setEnabled(false);
 								setRemoteProfileViewDisabled(dialog);
 							} else {
-								if (!profMaint.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_SYNC, text.toString()) &&
-										!profMaint.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_LOCAL, text.toString()) &&
-										!profMaint.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_REMOTE, text.toString()) ) {
+								if (!profUtil.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_SYNC, text.toString()) &&
+										!profUtil.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_LOCAL, text.toString()) &&
+										!profUtil.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_REMOTE, text.toString()) ) {
 									btn_next.setEnabled(true);
 									setRemoteProfileViewVisibility(dialog);
 								} else {
@@ -944,10 +944,10 @@ public class ProfileCreationWizard {
 					}
 				});
 				if (NetworkUtil.isValidIpAddress(et_remote_hostname.getText().toString()))  {
-					profMaint.logonToRemoteDlg("",
+					profUtil.logonToRemoteDlg("",
 							et_remote_hostname.getText().toString(),"",user,pass,ntfy);
 				}  else {
-					profMaint.logonToRemoteDlg(et_remote_hostname.getText().toString(),
+					profUtil.logonToRemoteDlg(et_remote_hostname.getText().toString(),
 							"","",user,pass,ntfy);
 				}
 			}
@@ -972,7 +972,7 @@ public class ProfileCreationWizard {
 						setRemoteProfileViewVisibility(dialog);
 					}
 				});
-				profMaint.scanRemoteNetworkDlg(ntfy,"",true);
+				profUtil.scanRemoteNetworkDlg(ntfy,"",true);
 			}
 		});
 		
@@ -980,7 +980,7 @@ public class ProfileCreationWizard {
 		if (util.isRemoteDisable()) btn_remote_share.setEnabled(false);
 		btn_remote_share.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				profMaint.setSmbUserPass(et_remote_user.getText().toString(),et_remote_pass.getText().toString());
+				profUtil.setSmbUserPass(et_remote_user.getText().toString(),et_remote_pass.getText().toString());
 				String t_url="";
 				t_url=et_remote_hostname.getText().toString();
 				String remurl="smb://"+t_url+"/";
@@ -1003,14 +1003,14 @@ public class ProfileCreationWizard {
 					}
 					
 				});
-				profMaint.selectRemoteShareDlg(remurl,"", ntfy);
+				profUtil.selectRemoteShareDlg(remurl,"", ntfy);
 			}
 		});
 		// RemoteDirectoryボタンの指定
 		if (util.isRemoteDisable()) btn_remote_dir.setEnabled(false);
 		btn_remote_dir.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				profMaint.setSmbUserPass(et_remote_user.getText().toString(),et_remote_pass.getText().toString());
+				profUtil.setSmbUserPass(et_remote_user.getText().toString(),et_remote_pass.getText().toString());
 				String t_url="";
 				t_url=et_remote_hostname.getText().toString();
 				String remurl="smb://"+t_url+"/"+
@@ -1028,7 +1028,7 @@ public class ProfileCreationWizard {
 						else dlg_msg.setText("");
 					}
 				});
-				profMaint.setRemoteDir(remurl, "","", ntfy);
+				profUtil.setRemoteDir(remurl, "","", ntfy);
 			}
 		});
 
@@ -1352,7 +1352,7 @@ public class ProfileCreationWizard {
 		cbSyncSubDir.setChecked(true);
 		
 		cb_retry.setChecked(false);
-		profMaint.setSyncOptionSpinner(spinner_sync, "");
+		profUtil.setSyncOptionSpinner(spinner_sync, "");
 		
 		final EditText et_sync_prof=(EditText) dialog.findViewById(R.id.sync_wizard_dlg_sync_prof_name);
 		et_sync_prof.selectAll();
@@ -1373,9 +1373,9 @@ public class ProfileCreationWizard {
 							dlg_msg.setText(mContext.getString(R.string.msgs_sync_wizard_profname_invalid));
 							setSyncProfileViewDisabled(dialog);
 						} else {
-							if (!profMaint.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_SYNC, text.toString()) &&
-									!profMaint.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_LOCAL, text.toString()) &&
-									!profMaint.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_REMOTE, text.toString()) ) {
+							if (!profUtil.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_SYNC, text.toString()) &&
+									!profUtil.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_LOCAL, text.toString()) &&
+									!profUtil.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_REMOTE, text.toString()) ) {
 								btn_ok.setEnabled(true);
 								spinner_sync.setEnabled(true);
 								btn_file_filter.setEnabled(true);
@@ -1458,7 +1458,7 @@ public class ProfileCreationWizard {
 					public void negativeResponse(Context arg0, Object[] arg1) {}
 					
 				});
-				profMaint.editFileFilterDlg(mWizData.file_filter,ntfy);
+				profUtil.editFileFilterDlg(mWizData.file_filter,ntfy);
 			}
 		});
 		
@@ -1493,7 +1493,7 @@ public class ProfileCreationWizard {
 					@Override
 					public void negativeResponse(Context arg0, Object[] arg1) {}
 				});
-				profMaint.editDirFilterDlg(t_prof,mWizData.master_name,
+				profUtil.editDirFilterDlg(t_prof,mWizData.master_name,
 						mWizData.dir_filter,ntfy);
 			}
 		});
@@ -1545,7 +1545,7 @@ public class ProfileCreationWizard {
 						if (profileAdapter.getItem(0).getType().equals("")) profileAdapter.remove(0);
 						
 						profileAdapter.notifyDataSetChanged();
-						profMaint.saveProfileToFile(false,"","",profileAdapter,false);
+						profUtil.saveProfileToFile(false,"","",profileAdapter,false);
 						
 						mCommonDlg.showCommonDialog(false, "I", 
 								mContext.getString(R.string.msgs_sync_wizard_confirm_profile_created), "", null);

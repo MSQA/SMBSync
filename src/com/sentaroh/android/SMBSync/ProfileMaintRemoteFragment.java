@@ -54,7 +54,7 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 	private Context mContext=null;
 	private ProfileMaintRemoteFragment mFragment=null;
 	private GlobalParameters mGp=null;
-	private ProfileUtility mProfMaint=null;
+	private ProfileUtility mProfUtil=null;
 
 	public static ProfileMaintRemoteFragment newInstance() {
 		if (DEBUG_ENABLE) Log.v(APPLICATION_TAG,SUB_APPLICATION_TAG+"newInstance");
@@ -313,7 +313,7 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
     	mTerminateRequired=false;
     	mOpType=op_type;
     	mCurrentProfileListItem=pli;
-    	mProfMaint=pm;
+    	mProfUtil=pm;
     	mProfileItemPos=pin;
     	mUtil=ut;
     	mCommonDlg=cd;
@@ -381,21 +381,21 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 		if (mUtil.isRemoteDisable()) btnAddr.setEnabled(false);
 		btnAddr.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				mProfMaint.ipAddressScanButtonDlg(mDialog);
+				mProfUtil.ipAddressScanButtonDlg(mDialog);
 			}
 		});
 		
 		if (mUtil.isRemoteDisable()) btnListShare.setEnabled(false);
 		btnListShare.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				mProfMaint.invokeSelectRemoteShareDlg(mDialog);
+				mProfUtil.invokeSelectRemoteShareDlg(mDialog);
 			}
 		});
 		
 		if (mUtil.isRemoteDisable()) btnListDir.setEnabled(false);
 		btnListDir.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				mProfMaint.selectRemoteDirectory(mDialog);
+				mProfUtil.selectRemoteDirectory(mDialog);
 			}
 		});
 		
@@ -450,11 +450,11 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 			public void onTextChanged(CharSequence s, int start, int before, int count) {}
 			@Override
 			public void afterTextChanged(Editable s) {
-				if (!mProfMaint.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_REMOTE, s.toString())) {
+				if (!mProfUtil.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_REMOTE, s.toString())) {
 					String audit_msg="";
-					if (mProfMaint.hasInvalidChar(s.toString(),new String[]{"\t"})) {
+					if (mProfUtil.hasInvalidChar(s.toString(),new String[]{"\t"})) {
 						audit_msg=String.format(
-								mContext.getString(R.string.msgs_audit_msgs_profilename1),mProfMaint.getInvalidCharMsg());
+								mContext.getString(R.string.msgs_audit_msgs_profilename1),mProfUtil.getInvalidCharMsg());
 						btn_ok.setEnabled(false);
 					} else if (s.toString().length()==0) {
 						audit_msg=mContext.getString(R.string.msgs_audit_msgs_profilename2);
@@ -494,7 +494,7 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 				
 				if (tg.isChecked()) prof_act = SMBSYNC_PROF_ACTIVE;
 					else prof_act = SMBSYNC_PROF_INACTIVE;
-				if (!mProfMaint.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_REMOTE, prof_name)) {
+				if (!mProfUtil.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_REMOTE, prof_name)) {
 					mFragment.dismiss();
 					String remote_port="";
 					if (cb_use_port_number.isChecked()) remote_port=editport.getText().toString();
@@ -505,7 +505,7 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 							remote_port, false,0);
 					mGp.profileAdapter.sort();
 					mGp.profileAdapter.notifyDataSetChanged();
-					mProfMaint.saveProfileToFile(false,"","",mGp.profileAdapter,false);
+					mProfUtil.saveProfileToFile(false,"","",mGp.profileAdapter,false);
 				} else {
 					((TextView) mDialog.findViewById(R.id.remote_profile_dlg_msg))
 					.setText(mContext.getString(R.string.msgs_duplicate_profile));
@@ -745,10 +745,10 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 			public void onTextChanged(CharSequence s, int start, int before, int count) {}
 			@Override
 			public void afterTextChanged(Editable s) {
-				if (mProfMaint.hasInvalidChar(s.toString(),new String[]{"\t"})) {
-					String new_val=mProfMaint.removeInvalidChar(s.toString());
+				if (mProfUtil.hasInvalidChar(s.toString(),new String[]{"\t"})) {
+					String new_val=mProfUtil.removeInvalidChar(s.toString());
 					dlg_msg.setText(String.format(
-							mContext.getString(R.string.msgs_audit_msgs_address1),mProfMaint.getInvalidCharMsg()));
+							mContext.getString(R.string.msgs_audit_msgs_address1),mProfUtil.getInvalidCharMsg()));
 					edithost.setText(new_val);
 					edithost.requestFocus();
 				} else if (s.length()==0) {
@@ -765,16 +765,16 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 			public void onTextChanged(CharSequence s, int start, int before, int count) {}
 			@Override
 			public void afterTextChanged(Editable s) {
-				if (mProfMaint.hasInvalidChar(s.toString(),new String[]{"\t"})) {
-					String new_val=mProfMaint.removeInvalidChar(s.toString());
+				if (mProfUtil.hasInvalidChar(s.toString(),new String[]{"\t"})) {
+					String new_val=mProfUtil.removeInvalidChar(s.toString());
 					dlg_msg.setText(String.format(
-							mContext.getString(R.string.msgs_audit_msgs_username1),mProfMaint.getInvalidCharMsg()));
+							mContext.getString(R.string.msgs_audit_msgs_username1),mProfUtil.getInvalidCharMsg()));
 					edituser.setText(new_val);
 					edituser.requestFocus();
 				} else if (s.length()==0) {
 					if (edituser.getText().length()==0 && editpass.getText().length()==0) {
 						dlg_msg.setText(String.format(
-								mContext.getString(R.string.msgs_audit_msgs_user_or_pass_missing),mProfMaint.getInvalidCharMsg()));
+								mContext.getString(R.string.msgs_audit_msgs_user_or_pass_missing),mProfUtil.getInvalidCharMsg()));
 						edituser.requestFocus();
 					}
 				}
@@ -788,16 +788,16 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 			public void onTextChanged(CharSequence s, int start, int before, int count) {}
 			@Override
 			public void afterTextChanged(Editable s) {
-				if (mProfMaint.hasInvalidChar(s.toString(),new String[]{"\t"})) {
-					String new_val=mProfMaint.removeInvalidChar(s.toString());
+				if (mProfUtil.hasInvalidChar(s.toString(),new String[]{"\t"})) {
+					String new_val=mProfUtil.removeInvalidChar(s.toString());
 					dlg_msg.setText(String.format(
-							mContext.getString(R.string.msgs_audit_msgs_password1),mProfMaint.getInvalidCharMsg()));
+							mContext.getString(R.string.msgs_audit_msgs_password1),mProfUtil.getInvalidCharMsg()));
 					editpass.setText(new_val);
 					editpass.requestFocus();
 				} else if (s.length()==0) {
 					if (edituser.getText().length()==0 && editpass.getText().length()==0) {
 						dlg_msg.setText(String.format(
-								mContext.getString(R.string.msgs_audit_msgs_user_or_pass_missing),mProfMaint.getInvalidCharMsg()));
+								mContext.getString(R.string.msgs_audit_msgs_user_or_pass_missing),mProfUtil.getInvalidCharMsg()));
 						edituser.requestFocus();
 					}
 				}
@@ -811,10 +811,10 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 			public void onTextChanged(CharSequence s, int start, int before, int count) {}
 			@Override
 			public void afterTextChanged(Editable s) {
-				if (mProfMaint.hasInvalidChar(s.toString(),new String[]{"\t"})) {
-					String new_val=mProfMaint.removeInvalidChar(s.toString());
+				if (mProfUtil.hasInvalidChar(s.toString(),new String[]{"\t"})) {
+					String new_val=mProfUtil.removeInvalidChar(s.toString());
 					dlg_msg.setText(String.format(
-							mContext.getString(R.string.msgs_audit_msgs_share1),mProfMaint.getInvalidCharMsg()));
+							mContext.getString(R.string.msgs_audit_msgs_share1),mProfUtil.getInvalidCharMsg()));
 					editshare.setText(new_val);
 					editshare.requestFocus();
 				} else if (s.toString().length()==0) {
@@ -831,10 +831,10 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 			public void onTextChanged(CharSequence s, int start, int before, int count) {}
 			@Override
 			public void afterTextChanged(Editable s) {
-				if (mProfMaint.hasInvalidChar(s.toString(),new String[]{"\t"})) {
-					String new_val=mProfMaint.removeInvalidChar(s.toString());
+				if (mProfUtil.hasInvalidChar(s.toString(),new String[]{"\t"})) {
+					String new_val=mProfUtil.removeInvalidChar(s.toString());
 					dlg_msg.setText(String.format(
-							mContext.getString(R.string.msgs_audit_msgs_dir1),mProfMaint.getInvalidCharMsg()));
+							mContext.getString(R.string.msgs_audit_msgs_dir1),mProfUtil.getInvalidCharMsg()));
 					editdir.setText(new_val);
 				}
 			}
@@ -999,7 +999,7 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 		if (mUtil.isRemoteDisable()) btnAddr.setEnabled(false);
 		btnAddr.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				mProfMaint.ipAddressScanButtonDlg(mDialog);
+				mProfUtil.ipAddressScanButtonDlg(mDialog);
 			}
 		});
 		
@@ -1008,7 +1008,7 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 		if (mUtil.isRemoteDisable()) btnGet1.setEnabled(false);
 		btnGet1.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				mProfMaint.invokeSelectRemoteShareDlg(mDialog);
+				mProfUtil.invokeSelectRemoteShareDlg(mDialog);
 			}
 		});
 		// RemoteDirectoryボタンの指定
@@ -1016,7 +1016,7 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 		if (mUtil.isRemoteDisable()) btnGet2.setEnabled(false);
 		btnGet2.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				mProfMaint.selectRemoteDirectory(mDialog);
+				mProfUtil.selectRemoteDirectory(mDialog);
 			}
 		});
 
@@ -1065,7 +1065,7 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 					ProfileListItem item = mGp.profileAdapter.getItem(mProfileItemPos);
 					if (prof_name.equals(item.getName())||
 							(!prof_name.equals(item.getName()) &&
-							 !mProfMaint.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,
+							 !mProfUtil.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,
 									 SMBSYNC_PROF_TYPE_REMOTE, prof_name))) {
 						if (NetworkUtil.isValidIpAddress(edithost.getText().toString())) {
 							remote_addr=edithost.getText().toString();
@@ -1083,7 +1083,7 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 								remote_addr,remote_host,remote_port,
 								false,mProfileItemPos);
 						ProfileUtility.resolveSyncProfileRelation(mGp);
-						mProfMaint.saveProfileToFile(false,"","",mGp.profileAdapter,false);
+						mProfUtil.saveProfileToFile(false,"","",mGp.profileAdapter,false);
 						mGp.profileAdapter.notifyDataSetChanged();
 //						AdapterProfileList tfl= createProfileList(false,"");
 //						replaceglblParms.profileAdapterContent(tfl);

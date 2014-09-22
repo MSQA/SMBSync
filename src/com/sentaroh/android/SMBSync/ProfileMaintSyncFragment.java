@@ -58,7 +58,7 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 	private Context mContext=null;
 	private ProfileMaintSyncFragment mFragment=null;
 	private GlobalParameters mGp=null;
-	private ProfileUtility mProfMaint=null;
+	private ProfileUtility mProfUtil=null;
 
 	public static ProfileMaintSyncFragment newInstance() {
 		if (DEBUG_ENABLE) Log.v(APPLICATION_TAG,SUB_APPLICATION_TAG+"newInstance");
@@ -333,7 +333,7 @@ public class ProfileMaintSyncFragment extends DialogFragment{
     	mFragmentMgr=fm;
     	mOpType=op_type;
     	mCurrentProfileListItem=pli;
-    	mProfMaint=pm;
+    	mProfUtil=pm;
     	mUtil=ut;
     	mCommonDlg=cd;
 	    FragmentTransaction ft = fm.beginTransaction();
@@ -464,11 +464,11 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 					if (m_pli!=null) {
 						if (m_pli.getType().equals(SMBSYNC_PROF_TYPE_REMOTE)) {
 							  ProfileMaintLocalFragment pmlp=ProfileMaintLocalFragment.newInstance();
-							  pmlp.showDialog(mFragmentMgr, pmlp, "EDIT",m_pli, 0, mProfMaint, mUtil, mCommonDlg);
+							  pmlp.showDialog(mFragmentMgr, pmlp, "EDIT",m_pli, 0, mProfUtil, mUtil, mCommonDlg);
 
 						} else if (m_pli.getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
 							  ProfileMaintRemoteFragment pmrp=ProfileMaintRemoteFragment.newInstance();
-							  pmrp.showDialog(mFragmentMgr, pmrp, "EDIT",m_pli, 0, mProfMaint, mUtil, mCommonDlg);
+							  pmrp.showDialog(mFragmentMgr, pmrp, "EDIT",m_pli, 0, mProfUtil, mUtil, mCommonDlg);
 						}
 					}
 				}
@@ -484,10 +484,10 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 					if (m_pli!=null) {
 						if (m_pli.getType().equals(SMBSYNC_PROF_TYPE_REMOTE)) {
 							  ProfileMaintRemoteFragment pmrp=ProfileMaintRemoteFragment.newInstance();
-							  pmrp.showDialog(mFragmentMgr, pmrp, "EDIT",m_pli, 0, mProfMaint, mUtil, mCommonDlg);
+							  pmrp.showDialog(mFragmentMgr, pmrp, "EDIT",m_pli, 0, mProfUtil, mUtil, mCommonDlg);
 						} else if (m_pli.getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
 							  ProfileMaintLocalFragment pmlp=ProfileMaintLocalFragment.newInstance();
-							  pmlp.showDialog(mFragmentMgr, pmlp, "EDIT",m_pli, 0, mProfMaint, mUtil, mCommonDlg);
+							  pmlp.showDialog(mFragmentMgr, pmlp, "EDIT",m_pli, 0, mProfUtil, mUtil, mCommonDlg);
 						}
 					}
 				}
@@ -533,7 +533,7 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 		else dir_filter_btn.setEnabled(false);
 		dir_filter_btn.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				mProfMaint.invokeEditDirFilterDlg(mDialog, pfli.getDirFilter());
+				mProfUtil.invokeEditDirFilterDlg(mDialog, pfli.getDirFilter());
 			}
 		});
 		
@@ -644,7 +644,7 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 					false,prof_pos);
 			mGp.profileAdapter.sort();
 			mGp.profileAdapter.notifyDataSetChanged();
-			mProfMaint.saveProfileToFile(false,"","",mGp.profileAdapter,false);
+			mProfUtil.saveProfileToFile(false,"","",mGp.profileAdapter,false);
 		}
 		return profile_saved;
 	};
@@ -695,7 +695,7 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 			public void negativeResponse(Context arg0, Object[] arg1) {}
 			
 		});
-		mProfMaint.editFileFilterDlg(n_file_filter,ntfy);
+		mProfUtil.editFileFilterDlg(n_file_filter,ntfy);
 
 	};
 	
@@ -764,7 +764,7 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 		final ImageButton ib_edit_target=(ImageButton) mDialog.findViewById(R.id.sync_profile_edit_target);
 	
 		final Spinner spinnerSyncOption=(Spinner)mDialog.findViewById(R.id.sync_profile_sync_option);
-		mProfMaint.setSyncOptionSpinner(spinnerSyncOption, pfli.getSyncType()); 
+		mProfUtil.setSyncOptionSpinner(spinnerSyncOption, pfli.getSyncType()); 
 	
 		CommonDialog.setDlgBoxSizeLimit(mDialog,true);
 	
@@ -834,12 +834,12 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 						  int pos=ProfileUtility.getProfilePos(m_name,mGp.profileAdapter);
 						  ProfileMaintRemoteFragment pmp=ProfileMaintRemoteFragment.newInstance();
 						  pmp.showDialog(mFragmentMgr, pmp, "EDIT", m_pli, 
-								  pos, mProfMaint, mUtil, mCommonDlg);
+								  pos, mProfUtil, mUtil, mCommonDlg);
 					} else if (m_pli.getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
 						  int pos=ProfileUtility.getProfilePos(m_name,mGp.profileAdapter);
 						  ProfileMaintLocalFragment pmp=ProfileMaintLocalFragment.newInstance();
 						  pmp.showDialog(mFragmentMgr, pmp, "EDIT", m_pli, 
-								  pos, mProfMaint, mUtil, mCommonDlg);
+								  pos, mProfUtil, mUtil, mCommonDlg);
 					}
 				}
 			}
@@ -872,12 +872,12 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 						  int pos=ProfileUtility.getProfilePos(t_name,mGp.profileAdapter);
 						  ProfileMaintRemoteFragment pmp=ProfileMaintRemoteFragment.newInstance();
 						  pmp.showDialog(mFragmentMgr, pmp, "EDIT", m_pli, 
-								  pos, mProfMaint, mUtil, mCommonDlg);
+								  pos, mProfUtil, mUtil, mCommonDlg);
 					} else if (m_pli.getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
 						  int pos=ProfileUtility.getProfilePos(t_name,mGp.profileAdapter);
 						  ProfileMaintLocalFragment pmp=ProfileMaintLocalFragment.newInstance();
 						  pmp.showDialog(mFragmentMgr, pmp, "EDIT", m_pli, 
-								  pos, mProfMaint, mUtil, mCommonDlg);
+								  pos, mProfUtil, mUtil, mCommonDlg);
 					}
 				}
 			}
@@ -897,7 +897,7 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 		else dir_filter_btn.setEnabled(false);
 		dir_filter_btn.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				mProfMaint.invokeEditDirFilterDlg(mDialog, n_dir_filter);
+				mProfUtil.invokeEditDirFilterDlg(mDialog, n_dir_filter);
 			}
 		});
 		// Master Dir processボタンの指定
@@ -965,11 +965,11 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 			prof_target = spinner_target.getSelectedItem().toString().substring(2);
 		prof_name = editname.getText().toString();
 
-		if (mProfMaint.hasInvalidChar(prof_name,new String[]{"\t"})) {
+		if (mProfUtil.hasInvalidChar(prof_name,new String[]{"\t"})) {
 			audit_error=true;
-			prof_name=mProfMaint.removeInvalidChar(prof_name);
+			prof_name=mProfUtil.removeInvalidChar(prof_name);
 			audit_msg=String.format(
-					mContext.getString(R.string.msgs_audit_msgs_profilename1),mProfMaint.getInvalidCharMsg());
+					mContext.getString(R.string.msgs_audit_msgs_profilename1),mProfUtil.getInvalidCharMsg());
 			editname.setText(prof_name);
 			editname.requestFocus();
 		}  else if (prof_name.length()==0) {
@@ -979,14 +979,14 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 		}
 
 		if (!audit_error) {
-			if (mProfMaint.hasInvalidChar(prof_master,new String[]{"\t"})) {
+			if (mProfUtil.hasInvalidChar(prof_master,new String[]{"\t"})) {
 				audit_error=true;
-				prof_master=mProfMaint.removeInvalidChar(prof_master);
-				audit_msg=String.format(mContext.getString(R.string.msgs_audit_msgs_master1),mProfMaint.getInvalidCharMsg());
+				prof_master=mProfUtil.removeInvalidChar(prof_master);
+				audit_msg=String.format(mContext.getString(R.string.msgs_audit_msgs_master1),mProfUtil.getInvalidCharMsg());
 			} else if (prof_master.length()==0) {
 				audit_error=true;
 				audit_msg=mContext.getString(R.string.msgs_audit_msgs_master2);
-			} else if (!mProfMaint.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,
+			} else if (!mProfUtil.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,
 					 SMBSYNC_PROF_TYPE_SYNC, prof_master)) {
 				audit_msg= String.format(
 						mContext.getString(R.string.msgs_master_profile_not_found), 
@@ -1001,15 +1001,15 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 		}
 		
 		if (!audit_error) {
-			if (mProfMaint.hasInvalidChar(prof_target,new String[]{"\t"})) {
+			if (mProfUtil.hasInvalidChar(prof_target,new String[]{"\t"})) {
 				audit_error=true;
-				prof_target=mProfMaint.removeInvalidChar(prof_target);
+				prof_target=mProfUtil.removeInvalidChar(prof_target);
 				audit_msg=String.format(
-						mContext.getString(R.string.msgs_audit_msgs_target1),mProfMaint.getInvalidCharMsg());
+						mContext.getString(R.string.msgs_audit_msgs_target1),mProfUtil.getInvalidCharMsg());
 			} else if (prof_target.length()==0) {
 				audit_error=true;
 				audit_msg=mContext.getString(R.string.msgs_audit_msgs_target2);
-			} else if (!mProfMaint.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,
+			} else if (!mProfUtil.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,
 					 SMBSYNC_PROF_TYPE_SYNC, prof_target)) {
 				audit_msg= String.format(
 						mContext.getString(R.string.msgs_target_profile_not_found), 

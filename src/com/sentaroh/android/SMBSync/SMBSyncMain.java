@@ -120,7 +120,7 @@ public class SMBSyncMain extends FragmentActivity {
 	private Context mContext;
 	
 	private static GlobalParameters mGp=null;
-	private ProfileUtility profMaint=null;
+	private ProfileUtility profUtil=null;
 	
 	private static SMBSyncUtil util=null;
 	private CustomContextMenu ccMenu = null;
@@ -232,8 +232,8 @@ public class SMBSyncMain extends FragmentActivity {
 		
 		getApplVersionName();
 
-		if (profMaint==null) 
-			profMaint=new ProfileUtility(util,this, commonDlg,ccMenu, mGp,getSupportFragmentManager());
+		if (profUtil==null) 
+			profUtil=new ProfileUtility(util,this, commonDlg,ccMenu, mGp,getSupportFragmentManager());
 		
 		SchedulerMain.setTimer(mContext, SCHEDULER_INTENT_SET_TIMER_IF_NOT_SET);
 //		if (Build.VERSION.SDK_INT >= 19) {
@@ -354,7 +354,7 @@ public class SMBSyncMain extends FragmentActivity {
 						} else {
 							if (mGp.profileAdapter.getItem(0).getType().equals("")) {
 								ProfileCreationWizard sw=new ProfileCreationWizard(mGp, mContext, 
-											util, profMaint, commonDlg, mGp.profileAdapter);
+											util, profUtil, commonDlg, mGp.profileAdapter);
 								sw.wizardMain();
 							} else {
 								if (LocalFileLastModified.isLastModifiedWasUsed(mGp.profileAdapter))
@@ -612,7 +612,7 @@ public class SMBSyncMain extends FragmentActivity {
 //		mTabChildviewProf.setTabTitle(getString(R.string.msgs_tab_name_prof));
 //		mTabChildviewMsg.setTabTitle(getString(R.string.msgs_tab_name_msg));
 //		mTabChildviewHist.setTabTitle(getString(R.string.msgs_tab_name_history));
-		profMaint.loadMsgString();
+		profUtil.loadMsgString();
 		mCurrentLocal=newConfig.locale;
 		
 		commonDlg.showCommonDialog(false, "W", "", 
@@ -662,7 +662,7 @@ public class SMBSyncMain extends FragmentActivity {
 				}
 			}
 			if (!c_prof.equals("")) {
-				profMaint.saveProfileToFile(false, "", "", mGp.profileAdapter, false);
+				profUtil.saveProfileToFile(false, "", "", mGp.profileAdapter, false);
 				String m_txt=mContext.getString(R.string.msgs_set_profile_confirm_delete);
 				mGp.supressAutoStart=true;
 				NotifyEvent ntfy=new NotifyEvent(mContext);
@@ -907,7 +907,7 @@ public class SMBSyncMain extends FragmentActivity {
 		switch (item.getItemId()) {
 			case R.id.menu_top_sync:
 				if (!util.isRemoteDisable()) {
-					if (profMaint.getActiveSyncProfileCount(mGp.profileAdapter)>0) {
+					if (profUtil.getActiveSyncProfileCount(mGp.profileAdapter)>0) {
 						syncActiveProfile();
 					} else {
 						NotifyEvent ntfy=new NotifyEvent(mContext);
@@ -915,7 +915,7 @@ public class SMBSyncMain extends FragmentActivity {
 							@Override
 							public void positiveResponse(Context c, Object[] o) {
 								ProfileCreationWizard sw=new ProfileCreationWizard(mGp, mContext, 
-										util, profMaint, commonDlg, mGp.profileAdapter);
+										util, profUtil, commonDlg, mGp.profileAdapter);
 								sw.wizardMain();
 							}
 							@Override
@@ -943,7 +943,7 @@ public class SMBSyncMain extends FragmentActivity {
 				lflm.maintLastModListDlg();
 				return true;
 			case R.id.menu_top_export:
-				profMaint.exportProfileDlg(mGp.SMBSync_External_Root_Dir,"/SMBSync","profile.txt");
+				profUtil.exportProfileDlg(mGp.SMBSync_External_Root_Dir,"/SMBSync","profile.txt");
 				return true;
 			case R.id.menu_top_import:
 				importProfileAndParms();
@@ -1126,7 +1126,7 @@ public class SMBSyncMain extends FragmentActivity {
 			public void negativeResponse(Context c, Object[] o) {
 			}
 		});
-		profMaint.importProfileDlg(mGp.SMBSync_External_Root_Dir,"/SMBSync","profile.txt", ntfy);
+		profUtil.importProfileDlg(mGp.SMBSync_External_Root_Dir,"/SMBSync","profile.txt", ntfy);
 	};
 
 	private CallBackListener onKeyCallBackListener=null;
@@ -1492,7 +1492,7 @@ public class SMBSyncMain extends FragmentActivity {
 				setWifiOff();
 			} else {
 				markAutoStartProfileList(extraValueSyncProfList);
-				if (profMaint.getActiveSyncProfileCount(mGp.profileAdapter)>0) {
+				if (profUtil.getActiveSyncProfileCount(mGp.profileAdapter)>0) {
 					setScreenOn();
 					mGp.mirrorThreadActive=true;
 					autoStartDlg();
@@ -2275,7 +2275,7 @@ public class SMBSyncMain extends FragmentActivity {
 			.setOnClickListener(new CustomContextMenuOnClickListener() {
 				@Override
 				public void onClick(CharSequence menuTitle) {
-					profMaint.setProfileToActive(mGp);
+					profUtil.setProfileToActive(mGp);
 					resetAllCheckedItem();
 				}
 		});
@@ -2284,7 +2284,7 @@ public class SMBSyncMain extends FragmentActivity {
 			.setOnClickListener(new CustomContextMenuOnClickListener() {
 				@Override
 				public void onClick(CharSequence menuTitle) {
-					profMaint.setProfileToInactive();
+					profUtil.setProfileToInactive();
 					resetAllCheckedItem();
 				}
 		});
@@ -2293,7 +2293,7 @@ public class SMBSyncMain extends FragmentActivity {
 			.setOnClickListener(new CustomContextMenuOnClickListener() {
 				@Override
 				public void onClick(CharSequence menuTitle) {
-					profMaint.deleteProfile();
+					profUtil.deleteProfile();
 					resetAllCheckedItem();
 				}
 		});
@@ -2346,7 +2346,7 @@ public class SMBSyncMain extends FragmentActivity {
 					.setOnClickListener(new CustomContextMenuOnClickListener() {
 					@Override
 					public void onClick(CharSequence menuTitle) {
-						profMaint.setProfileToInactive();
+						profUtil.setProfileToInactive();
 						resetAllCheckedItem();
 					}
 				});
@@ -2356,7 +2356,7 @@ public class SMBSyncMain extends FragmentActivity {
 					.setOnClickListener(new CustomContextMenuOnClickListener() {
 					@Override
 					public void onClick(CharSequence menuTitle) {
-						profMaint.setProfileToActive(mGp);
+						profUtil.setProfileToActive(mGp);
 						resetAllCheckedItem();
 					}
 				});
@@ -2376,7 +2376,7 @@ public class SMBSyncMain extends FragmentActivity {
 				.setOnClickListener(new CustomContextMenuOnClickListener() {
 					@Override
 					public void onClick(CharSequence menuTitle) {
-						profMaint.deleteProfile();
+						profUtil.deleteProfile();
 						resetAllCheckedItem();
 					}
 			});
@@ -2387,7 +2387,7 @@ public class SMBSyncMain extends FragmentActivity {
 			@Override
 			public void onClick(CharSequence menuTitle) {
 				ProfileCreationWizard sw=new ProfileCreationWizard(mGp, mContext, 
-						util, profMaint, commonDlg, mGp.profileAdapter);
+						util, profUtil, commonDlg, mGp.profileAdapter);
 				sw.wizardMain();
 				resetAllCheckedItem();
 			}
@@ -2399,7 +2399,7 @@ public class SMBSyncMain extends FragmentActivity {
 				public void onClick(CharSequence menuTitle) {
 					ProfileMaintLocalFragment pmsp=ProfileMaintLocalFragment.newInstance();
 					pmsp.showDialog(getSupportFragmentManager(), pmsp, "ADD", new ProfileListItem(), 
-							0, profMaint, util, commonDlg);
+							0, profUtil, util, commonDlg);
 					resetAllCheckedItem();
 				}
 		});
@@ -2414,7 +2414,7 @@ public class SMBSyncMain extends FragmentActivity {
 					
 					ProfileMaintRemoteFragment pmsp=ProfileMaintRemoteFragment.newInstance();
 					pmsp.showDialog(getSupportFragmentManager(), pmsp, "ADD", pfli, 
-							0, profMaint, util, commonDlg);
+							0, profUtil, util, commonDlg);
 					resetAllCheckedItem();
 				}
 		});
@@ -2437,7 +2437,7 @@ public class SMBSyncMain extends FragmentActivity {
 			public void onClick(CharSequence menuTitle) {
 				ProfileMaintSyncFragment pmsp=ProfileMaintSyncFragment.newInstance();
 				pmsp.showDialog(getSupportFragmentManager(), pmsp, "ADD", new ProfileListItem(), 
-						profMaint, util, commonDlg);
+						profUtil, util, commonDlg);
 				resetAllCheckedItem();
 			}
 		});
@@ -2447,7 +2447,7 @@ public class SMBSyncMain extends FragmentActivity {
 			.setOnClickListener(new CustomContextMenuOnClickListener() {
 				@Override
 				public void onClick(CharSequence menuTitle) {
-					profMaint.copyProfile(item);
+					profUtil.copyProfile(item);
 					resetAllCheckedItem();
 				}
 			});
@@ -2456,7 +2456,7 @@ public class SMBSyncMain extends FragmentActivity {
 			.setOnClickListener(new CustomContextMenuOnClickListener() {
 				@Override
 				public void onClick(CharSequence menuTitle) {
-					profMaint.renameProfile(item);
+					profUtil.renameProfile(item);
 					resetAllCheckedItem();
 				}
 			});
@@ -2529,15 +2529,15 @@ public class SMBSyncMain extends FragmentActivity {
 		if (prof_type.equals(SMBSYNC_PROF_TYPE_REMOTE)) {
 			  ProfileMaintRemoteFragment pmp=ProfileMaintRemoteFragment.newInstance();
 			  pmp.showDialog(getSupportFragmentManager(), pmp, "EDIT", item, 
-					  prof_num, profMaint, util, commonDlg);
+					  prof_num, profUtil, util, commonDlg);
 		} else if (prof_type.equals(SMBSYNC_PROF_TYPE_LOCAL)) {
 			  ProfileMaintLocalFragment pmp=ProfileMaintLocalFragment.newInstance();
 			  pmp.showDialog(getSupportFragmentManager(), pmp, "EDIT", item, 
-					  prof_num, profMaint, util, commonDlg);
+					  prof_num, profUtil, util, commonDlg);
 		} else if (prof_type.equals(SMBSYNC_PROF_TYPE_SYNC)) {
 			  ProfileMaintSyncFragment pmsp=ProfileMaintSyncFragment.newInstance();
 			  pmsp.showDialog(getSupportFragmentManager(), pmsp, "EDIT", item, 
-						profMaint, util, commonDlg);
+						profUtil, util, commonDlg);
 		}
 	};
 
