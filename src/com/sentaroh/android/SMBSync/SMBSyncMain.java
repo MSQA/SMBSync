@@ -120,7 +120,7 @@ public class SMBSyncMain extends FragmentActivity {
 	private Context mContext;
 	
 	private static GlobalParameters mGp=null;
-	private ProfileMaintenance profMaint=null;
+	private ProfileUtility profMaint=null;
 	
 	private static SMBSyncUtil util=null;
 	private CustomContextMenu ccMenu = null;
@@ -233,7 +233,7 @@ public class SMBSyncMain extends FragmentActivity {
 		getApplVersionName();
 
 		if (profMaint==null) 
-			profMaint=new ProfileMaintenance(util,this, commonDlg,ccMenu, mGp,getSupportFragmentManager());
+			profMaint=new ProfileUtility(util,this, commonDlg,ccMenu, mGp,getSupportFragmentManager());
 		
 		SchedulerMain.setTimer(mContext, SCHEDULER_INTENT_SET_TIMER_IF_NOT_SET);
 //		if (Build.VERSION.SDK_INT >= 19) {
@@ -2231,13 +2231,13 @@ public class SMBSyncMain extends FragmentActivity {
 			for (int i=0;i<mGp.profileAdapter.getCount();i++) {
 				item = mGp.profileAdapter.getItem(i);
 				if (idx==i) {
-					ProfileMaintenance.setProfileToChecked(true, mGp.profileAdapter, item, i);
+					ProfileUtility.setProfileToChecked(true, mGp.profileAdapter, item, i);
 					j=i;//set new index no
 					if (mGp.profileAdapter.getItem(i).getType().equals(SMBSYNC_PROF_TYPE_SYNC))
 						sync=true;
 				} else {
 					if (item.isChecked()) {
-						ProfileMaintenance.setProfileToChecked(false, mGp.profileAdapter, item, i);
+						ProfileUtility.setProfileToChecked(false, mGp.profileAdapter, item, i);
 					}
 				}
 			}
@@ -2304,7 +2304,7 @@ public class SMBSyncMain extends FragmentActivity {
 			public void onClick(CharSequence menuTitle) {
 				for (int i=0;i<mGp.profileAdapter.getCount();i++) {
 					ProfileListItem item = mGp.profileAdapter.getItem(i);
-					ProfileMaintenance.setProfileToChecked(true, mGp.profileAdapter, item, i);
+					ProfileUtility.setProfileToChecked(true, mGp.profileAdapter, item, i);
 				}
 			}
 		});
@@ -2397,7 +2397,7 @@ public class SMBSyncMain extends FragmentActivity {
 			.setOnClickListener(new CustomContextMenuOnClickListener() {
 				@Override
 				public void onClick(CharSequence menuTitle) {
-					ProfileMaintenanceLocalFragment pmsp=ProfileMaintenanceLocalFragment.newInstance();
+					ProfileMaintLocalFragment pmsp=ProfileMaintLocalFragment.newInstance();
 					pmsp.showDialog(getSupportFragmentManager(), pmsp, "ADD", new ProfileListItem(), 
 							0, profMaint, util, commonDlg);
 					resetAllCheckedItem();
@@ -2412,7 +2412,7 @@ public class SMBSyncMain extends FragmentActivity {
 					ProfileListItem pfli=new ProfileListItem();
 					pfli.setAddr(c_ip);
 					
-					ProfileMaintenanceRemoteFragment pmsp=ProfileMaintenanceRemoteFragment.newInstance();
+					ProfileMaintRemoteFragment pmsp=ProfileMaintRemoteFragment.newInstance();
 					pmsp.showDialog(getSupportFragmentManager(), pmsp, "ADD", pfli, 
 							0, profMaint, util, commonDlg);
 					resetAllCheckedItem();
@@ -2435,7 +2435,7 @@ public class SMBSyncMain extends FragmentActivity {
 		.setOnClickListener(new CustomContextMenuOnClickListener() {
 			@Override
 			public void onClick(CharSequence menuTitle) {
-				ProfileMaintenanceSyncFragment pmsp=ProfileMaintenanceSyncFragment.newInstance();
+				ProfileMaintSyncFragment pmsp=ProfileMaintSyncFragment.newInstance();
 				pmsp.showDialog(getSupportFragmentManager(), pmsp, "ADD", new ProfileListItem(), 
 						profMaint, util, commonDlg);
 				resetAllCheckedItem();
@@ -2469,7 +2469,7 @@ public class SMBSyncMain extends FragmentActivity {
 				public void onClick(CharSequence menuTitle) {
 					for (int i=0;i<mGp.profileAdapter.getCount();i++) {
 						ProfileListItem item = mGp.profileAdapter.getItem(i);
-						ProfileMaintenance.setProfileToChecked(true, mGp.profileAdapter, item, i);
+						ProfileUtility.setProfileToChecked(true, mGp.profileAdapter, item, i);
 					}
 				}
 			});
@@ -2488,7 +2488,7 @@ public class SMBSyncMain extends FragmentActivity {
 	private void resetAllCheckedItem() {
 		for (int i=0;i<mGp.profileAdapter.getCount();i++) {
 			ProfileListItem item = mGp.profileAdapter.getItem(i);
-			ProfileMaintenance.setProfileToChecked(false, mGp.profileAdapter, item, i);
+			ProfileUtility.setProfileToChecked(false, mGp.profileAdapter, item, i);
 		}
 	};
 	
@@ -2527,15 +2527,15 @@ public class SMBSyncMain extends FragmentActivity {
 			String prof_act, int prof_num) {
 		ProfileListItem item = mGp.profileAdapter.getItem(prof_num);
 		if (prof_type.equals(SMBSYNC_PROF_TYPE_REMOTE)) {
-			  ProfileMaintenanceRemoteFragment pmp=ProfileMaintenanceRemoteFragment.newInstance();
+			  ProfileMaintRemoteFragment pmp=ProfileMaintRemoteFragment.newInstance();
 			  pmp.showDialog(getSupportFragmentManager(), pmp, "EDIT", item, 
 					  prof_num, profMaint, util, commonDlg);
 		} else if (prof_type.equals(SMBSYNC_PROF_TYPE_LOCAL)) {
-			  ProfileMaintenanceLocalFragment pmp=ProfileMaintenanceLocalFragment.newInstance();
+			  ProfileMaintLocalFragment pmp=ProfileMaintLocalFragment.newInstance();
 			  pmp.showDialog(getSupportFragmentManager(), pmp, "EDIT", item, 
 					  prof_num, profMaint, util, commonDlg);
 		} else if (prof_type.equals(SMBSYNC_PROF_TYPE_SYNC)) {
-			  ProfileMaintenanceSyncFragment pmsp=ProfileMaintenanceSyncFragment.newInstance();
+			  ProfileMaintSyncFragment pmsp=ProfileMaintSyncFragment.newInstance();
 			  pmsp.showDialog(getSupportFragmentManager(), pmsp, "EDIT", item, 
 						profMaint, util, commonDlg);
 		}

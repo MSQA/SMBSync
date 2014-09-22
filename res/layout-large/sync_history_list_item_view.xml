@@ -8,18 +8,10 @@
     android:orientation="horizontal" 
     xmlns:tools="http://schemas.android.com/tools" tools:ignore="HardcodedText">
 
-    <CheckBox
-        android:id="@+id/sync_history_list_view_cb"
-        style="@style/check_box_style"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-        />
-
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" 
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1" 
         android:orientation="vertical" >
 
 	    <LinearLayout
@@ -146,8 +138,15 @@
 	        android:text="error"
 	        android:textAppearance="?android:attr/textAppearanceMedium"
 	        />
-	    	    
-        
     </LinearLayout>
-
+    
+    <CheckBox
+        android:id="@+id/sync_history_list_view_cb"
+        style="@style/check_box_style"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:focusable="false"
+        android:focusableInTouchMode="false" />
+    
 </LinearLayout>

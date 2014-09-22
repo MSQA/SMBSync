@@ -34,27 +34,27 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-public class ProfileMaintenanceLocalFragment extends DialogFragment{
+public class ProfileMaintLocalFragment extends DialogFragment{
 	private final static boolean DEBUG_ENABLE=false;
 	private final static String SUB_APPLICATION_TAG="LocalProfile ";
 
 	private Dialog mDialog=null;
 	private boolean mTerminateRequired=true;
 	private Context mContext=null;
-	private ProfileMaintenanceLocalFragment mFragment=null;
+	private ProfileMaintLocalFragment mFragment=null;
 	private GlobalParameters mGp=null;
-	private ProfileMaintenance mProfMaint=null;
+	private ProfileUtility mProfMaint=null;
 	private CommonDialog mCommonDlg=null;
 
-	public static ProfileMaintenanceLocalFragment newInstance() {
+	public static ProfileMaintLocalFragment newInstance() {
 		if (DEBUG_ENABLE) Log.v(APPLICATION_TAG,SUB_APPLICATION_TAG+"newInstance");
-		ProfileMaintenanceLocalFragment frag = new ProfileMaintenanceLocalFragment();
+		ProfileMaintLocalFragment frag = new ProfileMaintLocalFragment();
         Bundle bundle = new Bundle();
         frag.setArguments(bundle);
         return frag;
     };
     
-	public ProfileMaintenanceLocalFragment() {
+	public ProfileMaintLocalFragment() {
 		if (DEBUG_ENABLE) Log.v(APPLICATION_TAG,SUB_APPLICATION_TAG+"Constructor(Default)");
 	};
 
@@ -268,7 +268,7 @@ public class ProfileMaintenanceLocalFragment extends DialogFragment{
     		final String op_type,
 			final ProfileListItem pli,
 			int pin,
-			ProfileMaintenance pm,
+			ProfileUtility pm,
 			SMBSyncUtil ut,
 			CommonDialog cd) {
     	if (DEBUG_ENABLE) Log.v(APPLICATION_TAG,SUB_APPLICATION_TAG+"showDialog");
@@ -300,7 +300,7 @@ public class ProfileMaintenanceLocalFragment extends DialogFragment{
 		final Spinner spinner=(Spinner) mDialog.findViewById(R.id.local_profile_lmp_btn);
 		spinner.setVisibility(Spinner.VISIBLE);
 
-		ProfileMaintenance.setLocalMountPointSpinner(mContext, spinner, pfli.getLocalMountPoint());
+		ProfileUtility.setLocalMountPointSpinner(mContext, spinner, pfli.getLocalMountPoint());
 		
 		CommonDialog.setDlgBoxSizeLimit(mDialog,true);
 		
@@ -438,7 +438,7 @@ public class ProfileMaintenanceLocalFragment extends DialogFragment{
 //						int posTop=glblParms.profileListView.getChildAt(0).getTop();
 						if (mGp.profileAdapter.getItem(0).getType().equals(""))
 							mGp.profileAdapter.remove(0);
-						ProfileMaintenance.updateLocalProfileAdapter(mGp, true,prof_name,prof_act,
+						ProfileUtility.updateLocalProfileAdapter(mGp, true,prof_name,prof_act,
 								prof_lmp, prof_dir,false,0);
 						mGp.profileAdapter.sort();
 						mProfMaint.saveProfileToFile(false,"","",mGp.profileAdapter,false);
@@ -477,7 +477,7 @@ public class ProfileMaintenanceLocalFragment extends DialogFragment{
 				(Spinner) mDialog.findViewById(R.id.local_profile_lmp_btn);
 		spinner.setVisibility(Spinner.VISIBLE);
 		
-		ProfileMaintenance.setLocalMountPointSpinner(mContext, spinner, pfli.getLocalMountPoint());
+		ProfileUtility.setLocalMountPointSpinner(mContext, spinner, pfli.getLocalMountPoint());
 		
 		CommonDialog.setDlgBoxSizeLimit(mDialog,true);
 		
@@ -577,9 +577,9 @@ public class ProfileMaintenanceLocalFragment extends DialogFragment{
 							@Override
 							public void positiveResponse(Context c,Object[] o) {
 								mDialog.dismiss();
-								ProfileMaintenance.updateLocalProfileAdapter(mGp, false,t_prof_name,t_prof_act,
+								ProfileUtility.updateLocalProfileAdapter(mGp, false,t_prof_name,t_prof_act,
 										t_prof_lmp, t_prof_dir,false, mProfileItemPos);
-								ProfileMaintenance.resolveSyncProfileRelation(mGp);
+								ProfileUtility.resolveSyncProfileRelation(mGp);
 								mProfMaint.saveProfileToFile(false,"","",mGp.profileAdapter,false);
 								mGp.profileAdapter.notifyDataSetChanged();
 //								AdapterProfileList tfl= createProfileList(false,"");

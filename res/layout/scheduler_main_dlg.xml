@@ -87,7 +87,7 @@
             <CheckBox
                 android:id="@+id/scheduler_main_dlg_autoterm"
                 style="@style/check_box_style"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:text="@string/settings_auto_term_summary_ena"
@@ -96,7 +96,7 @@
             <CheckBox
                 android:id="@+id/scheduler_main_dlg_bgexec"
                 style="@style/check_box_style"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/settings_backgroound_execution_summary_ena"
                 android:textAppearance="?android:attr/textAppearanceMedium" />

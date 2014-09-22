@@ -115,12 +115,13 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp" >
+            android:layout_marginRight="5dp"
+            android:orientation="vertical" >
 
             <CheckBox
                 android:id="@+id/scan_remote_ntwk_use_port"
                 style="@style/check_box_style"
-                android:layout_width="wrap_content"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
                 android:text="@string/msgs_remote_profile_dlg_use_port_number"
@@ -128,10 +129,10 @@
 
             <EditText
                 android:id="@+id/scan_remote_ntwk_port_number"
-                android:layout_width="0dp"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:inputType="number"
+                android:hint="Port number"
                 android:maxLength="5" />
         </LinearLayout>
     </LinearLayout>

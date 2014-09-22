@@ -45,26 +45,26 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
-public class ProfileMaintenanceRemoteFragment extends DialogFragment{
+public class ProfileMaintRemoteFragment extends DialogFragment{
 	private final static boolean DEBUG_ENABLE=false;
 	private final static String SUB_APPLICATION_TAG="RemoteProfile ";
 
 	private Dialog mDialog=null;
 	private boolean mTerminateRequired=true;
 	private Context mContext=null;
-	private ProfileMaintenanceRemoteFragment mFragment=null;
+	private ProfileMaintRemoteFragment mFragment=null;
 	private GlobalParameters mGp=null;
-	private ProfileMaintenance mProfMaint=null;
+	private ProfileUtility mProfMaint=null;
 
-	public static ProfileMaintenanceRemoteFragment newInstance() {
+	public static ProfileMaintRemoteFragment newInstance() {
 		if (DEBUG_ENABLE) Log.v(APPLICATION_TAG,SUB_APPLICATION_TAG+"newInstance");
-		ProfileMaintenanceRemoteFragment frag = new ProfileMaintenanceRemoteFragment();
+		ProfileMaintRemoteFragment frag = new ProfileMaintRemoteFragment();
         Bundle bundle = new Bundle();
         frag.setArguments(bundle);
         return frag;
     };
     
-	public ProfileMaintenanceRemoteFragment() {
+	public ProfileMaintRemoteFragment() {
 		if (DEBUG_ENABLE) Log.v(APPLICATION_TAG,SUB_APPLICATION_TAG+"Constructor(Default)");
 	};
 
@@ -306,7 +306,7 @@ public class ProfileMaintenanceRemoteFragment extends DialogFragment{
     		final String op_type,
 			final ProfileListItem pli,
 			int pin,
-			ProfileMaintenance pm,
+			ProfileUtility pm,
 			SMBSyncUtil ut,
 			CommonDialog cd) {
     	if (DEBUG_ENABLE) Log.v(APPLICATION_TAG,"showDialog");
@@ -500,7 +500,7 @@ public class ProfileMaintenanceRemoteFragment extends DialogFragment{
 					if (cb_use_port_number.isChecked()) remote_port=editport.getText().toString();
 					if (mGp.profileAdapter.getItem(0).getType().equals(""))
 						mGp.profileAdapter.remove(0);
-					ProfileMaintenance.updateRemoteProfileAdapter(mGp, true, prof_name, prof_act,prof_dir,
+					ProfileUtility.updateRemoteProfileAdapter(mGp, true, prof_name, prof_act,prof_dir,
 							prof_user,prof_pass,prof_share,prof_addr,prof_host,
 							remote_port, false,0);
 					mGp.profileAdapter.sort();
@@ -1078,11 +1078,11 @@ public class ProfileMaintenanceRemoteFragment extends DialogFragment{
 							remote_port=editport.getText().toString();
 //						int pos=glblParms.profileListView.getFirstVisiblePosition();
 //						int posTop=glblParms.profileListView.getChildAt(0).getTop();
-						ProfileMaintenance.updateRemoteProfileAdapter(mGp, false,prof_name,prof_act,prof_dir,
+						ProfileUtility.updateRemoteProfileAdapter(mGp, false,prof_name,prof_act,prof_dir,
 								remote_user, remote_pass,remote_share,
 								remote_addr,remote_host,remote_port,
 								false,mProfileItemPos);
-						ProfileMaintenance.resolveSyncProfileRelation(mGp);
+						ProfileUtility.resolveSyncProfileRelation(mGp);
 						mProfMaint.saveProfileToFile(false,"","",mGp.profileAdapter,false);
 						mGp.profileAdapter.notifyDataSetChanged();
 //						AdapterProfileList tfl= createProfileList(false,"");

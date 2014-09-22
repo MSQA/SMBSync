@@ -90,13 +90,13 @@ public class ProfileCreationWizard {
 	private WizardData mWizData=null;
 	private SMBSyncUtil util=null;
 	private Context mContext=null;
-	private ProfileMaintenance profMaint=null;
+	private ProfileUtility profMaint=null;
 	private AdapterProfileList profileAdapter=null;
 	private GlobalParameters glblParms=null;
 	private CommonDialog mCommonDlg=null;
 	
 	public ProfileCreationWizard(GlobalParameters gp, Context c, SMBSyncUtil su, 
-			ProfileMaintenance pm, CommonDialog cd, AdapterProfileList pa) {
+			ProfileUtility pm, CommonDialog cd, AdapterProfileList pa) {
 		glblParms=gp;
 		util=su;
 		mContext=c;
@@ -477,7 +477,7 @@ public class ProfileCreationWizard {
 		ll_remote.setVisibility(LinearLayout.GONE);
 		ll_sync.setVisibility(LinearLayout.GONE);
 
-		ProfileMaintenance.setLocalMountPointSpinner(mContext, spinnerLmp, LocalMountPoint.getExternalStorageDir());
+		ProfileUtility.setLocalMountPointSpinner(mContext, spinnerLmp, LocalMountPoint.getExternalStorageDir());
 //		et_local_dir.setText(mWizData.prof_node[node_pos].local_dir_name);
 		if (node_pos==1 &&
 				mWizData.master_type.equals("L") && mWizData.target_type.equals("L") &&

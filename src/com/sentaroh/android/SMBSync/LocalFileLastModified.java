@@ -302,7 +302,7 @@ public class LocalFileLastModified {
 			if (syncprof_item.getType().equals(SMBSYNC_PROF_TYPE_SYNC) &&
 					syncprof_item.getTargetType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
 				ProfileListItem lclprof_item=
-						ProfileMaintenance.getProfile(syncprof_item.getTargetName(), profile_adapter);
+						ProfileUtility.getProfile(syncprof_item.getTargetName(), profile_adapter);
 				if (lclprof_item!=null) {
 					String lmp=lclprof_item.getLocalMountPoint();
 					if (!lmp.equals("/")&&!lmp.equals("")) {
@@ -393,7 +393,7 @@ public class LocalFileLastModified {
 			if (syncprof_item.getType().equals(SMBSYNC_PROF_TYPE_SYNC) &&
 					syncprof_item.getTargetType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
 				ProfileListItem lclprof_item=
-						ProfileMaintenance.getProfile(syncprof_item.getTargetName(), profile_adapter);
+						ProfileUtility.getProfile(syncprof_item.getTargetName(), profile_adapter);
 				if (lclprof_item!=null) {
 					String lmp=lclprof_item.getLocalMountPoint();
 					if (!lmp.equals("/")&&!lmp.equals("")) {

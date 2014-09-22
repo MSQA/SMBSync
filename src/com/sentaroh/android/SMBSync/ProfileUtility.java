@@ -127,7 +127,7 @@ import com.sentaroh.android.Utilities.TreeFilelist.TreeFilelistAdapter;
 import com.sentaroh.android.Utilities.TreeFilelist.TreeFilelistItem;
 import com.sentaroh.android.Utilities.Widget.CustomSpinnerAdapter;
 
-public class ProfileMaintenance {
+public class ProfileUtility {
 
 	private boolean errorCreateProfileList;
 
@@ -147,7 +147,7 @@ public class ProfileMaintenance {
 	
 	private FragmentManager mFragMgr=null;
 
-	ProfileMaintenance (SMBSyncUtil mu, Context c,  
+	ProfileUtility (SMBSyncUtil mu, Context c,  
 			CommonDialog cd, CustomContextMenu ccm, GlobalParameters gp, FragmentManager fm) {
 		mContext=c;
 		
@@ -1338,14 +1338,14 @@ public class ProfileMaintenance {
 		if (pli.getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
 //			addLocalProfile(false,pli.getName(),pli.getActive(),
 //					pli.getLocalMountPoint(),pli.getDir(),"");
-			  ProfileMaintenanceLocalFragment pmlp=ProfileMaintenanceLocalFragment.newInstance();
+			  ProfileMaintLocalFragment pmlp=ProfileMaintLocalFragment.newInstance();
 			  pmlp.showDialog(mFragMgr, pmlp, "ADD",pli, 0, this, util, commonDlg);
 		} else if (pli.getType().equals(SMBSYNC_PROF_TYPE_REMOTE)) {
 //			addRemoteProfile(false, pli.getName(),pli.getActive(),
 //					pli.getAddr(),pli.getUser(),pli.getPass(),
 //					pli.getShare(),pli.getDir(),pli.getHostname(),
 //					pli.getPort(), "");
-			  ProfileMaintenanceRemoteFragment pmrp=ProfileMaintenanceRemoteFragment.newInstance();
+			  ProfileMaintRemoteFragment pmrp=ProfileMaintRemoteFragment.newInstance();
 			  pmrp.showDialog(mFragMgr, pmrp, "ADD",pli, 0, this, util, commonDlg);
 		} else if (pli.getType().equals(SMBSYNC_PROF_TYPE_SYNC)) {
 //			addSyncProfile(false, pli.getName(),pli.getActive(),
@@ -1361,7 +1361,7 @@ public class ProfileMaintenance {
 //					pli.isSyncHiddenFile(),
 //					pli.isSyncSubDirectory(),					
 //					"");
-			  ProfileMaintenanceSyncFragment pmsp=ProfileMaintenanceSyncFragment.newInstance();
+			  ProfileMaintSyncFragment pmsp=ProfileMaintSyncFragment.newInstance();
 			  pmsp.showDialog(mFragMgr, pmsp, "ADD",pli, this, util, commonDlg);
 		}
 	};
@@ -4051,16 +4051,16 @@ public class ProfileMaintenance {
 
 	private void createSampleProfile(AdapterProfileList pfl) {
 		pfl.add(new ProfileListItem(SMBSYNC_PROF_GROUP_DEFAULT, 
-				SMBSYNC_PROF_TYPE_SYNC,"S-SAMP-DOWNLOAD", SMBSYNC_PROF_ACTIVE,
+				SMBSYNC_PROF_TYPE_SYNC,"S-DOWNLOAD-MY-PICTURE", SMBSYNC_PROF_ACTIVE,
 				SMBSYNC_SYNC_TYPE_MIRROR,"R","R-SAMP-DOWNLOAD",
 				"L","L-SAMP-DOWNLOAD",new ArrayList<String>(), 
 				new ArrayList<String>(), true, true,false,false,"0",false,true,true,true,false));
 		pfl.add(new ProfileListItem(SMBSYNC_PROF_GROUP_DEFAULT, 
 				SMBSYNC_PROF_TYPE_LOCAL,"L-SAMP-DOWNLOAD", SMBSYNC_PROF_ACTIVE, 
-				mGp.SMBSync_External_Root_Dir,"SAMPLEDIR", false));
+				mGp.SMBSync_External_Root_Dir,"Pictures", false));
 		pfl.add(new ProfileListItem(SMBSYNC_PROF_GROUP_DEFAULT, 
 				SMBSYNC_PROF_TYPE_REMOTE,"R-SAMP-DOWNLOAD", SMBSYNC_PROF_ACTIVE, 
-				"TESTUSER","PSWD","192.168.0.2","","","SHARE", "RDIR", 
+				"TESTUSER","PSWD","192.168.0.2","","","SHARE", "Android/Pictures", 
 				false));
 		ArrayList<String> ff1=new ArrayList<String>();
 		ArrayList<String> df1=new ArrayList<String>();
@@ -4069,7 +4069,7 @@ public class ProfileMaintenance {
 		df1.add("E.thumbnails");
 		ff1.add("I*.jpg");
 		pfl.add(new ProfileListItem(SMBSYNC_PROF_GROUP_DEFAULT, 
-				SMBSYNC_PROF_TYPE_SYNC,"S-SAMP-UPLOAD-WITH-FILTER", SMBSYNC_PROF_ACTIVE,
+				SMBSYNC_PROF_TYPE_SYNC,"S-BACKUP-MY-PICTURE", SMBSYNC_PROF_ACTIVE,
 				SMBSYNC_SYNC_TYPE_MIRROR,"L","L-SAMP-UPLOAD",
 				"R","R-SAMP-UPLOAD",ff1,df1, true, true,false,false,"0",false,true,true,true,false));
 		pfl.add(new ProfileListItem(SMBSYNC_PROF_GROUP_DEFAULT, 
@@ -4077,11 +4077,11 @@ public class ProfileMaintenance {
 				mGp.SMBSync_External_Root_Dir,"DCIM", false));
 		pfl.add(new ProfileListItem(SMBSYNC_PROF_GROUP_DEFAULT, 
 				SMBSYNC_PROF_TYPE_REMOTE,"R-SAMP-UPLOAD", SMBSYNC_PROF_ACTIVE, 
-				"TESTUSER","PSWD","192.168.0.2","","","SHARE", "DCIM", 
+				"TESTUSER","PSWD","192.168.0.2","","","SHARE", "Android/DCIM", 
 				false));
 		
 		pfl.add(new ProfileListItem(SMBSYNC_PROF_GROUP_DEFAULT, 
-				SMBSYNC_PROF_TYPE_SYNC,"S-SAMP-LOCAL-LOCAL", SMBSYNC_PROF_ACTIVE,
+				SMBSYNC_PROF_TYPE_SYNC,"S-BACKUP-TO-USB-MEMORY", SMBSYNC_PROF_ACTIVE,
 				SMBSYNC_SYNC_TYPE_MIRROR,"L","L-SAMP-LOCAL",
 				"L","L-SAMP-USBDISK",ff2,df2, true, true,false,false,"0",false,true,true,true,false));
 		pfl.add(new ProfileListItem(SMBSYNC_PROF_GROUP_DEFAULT, 

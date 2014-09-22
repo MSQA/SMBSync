@@ -206,8 +206,8 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
                  	   holder.iv_row_image_target.setImageResource(R.drawable.ic_16_mobile);
 //                    holder.tv_row_master.setText(o.getMasterName());
 //                    holder.tv_row_target.setText(o.getTargetName());
-                    ProfileListItem pfli_master=ProfileMaintenance.getProfile(o.getMasterName(), items);
-                    ProfileListItem pfli_target=ProfileMaintenance.getProfile(o.getTargetName(), items);
+                    ProfileListItem pfli_master=ProfileUtility.getProfile(o.getMasterName(), items);
+                    ProfileListItem pfli_target=ProfileUtility.getProfile(o.getTargetName(), items);
                     if (pfli_master!=null) {
                     	if (pfli_master.getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
                             holder.tv_row_master.setText(pfli_master.getLocalMountPoint()+"/"+pfli_master.getDir());

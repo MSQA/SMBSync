@@ -49,26 +49,26 @@ import android.widget.TextView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
-public class ProfileMaintenanceSyncFragment extends DialogFragment{
+public class ProfileMaintSyncFragment extends DialogFragment{
 	private final static boolean DEBUG_ENABLE=false;
 	private final static String SUB_APPLICATION_TAG="SyncProfile ";
 
 	private Dialog mDialog=null;
 	private boolean mTerminateRequired=true;
 	private Context mContext=null;
-	private ProfileMaintenanceSyncFragment mFragment=null;
+	private ProfileMaintSyncFragment mFragment=null;
 	private GlobalParameters mGp=null;
-	private ProfileMaintenance mProfMaint=null;
+	private ProfileUtility mProfMaint=null;
 
-	public static ProfileMaintenanceSyncFragment newInstance() {
+	public static ProfileMaintSyncFragment newInstance() {
 		if (DEBUG_ENABLE) Log.v(APPLICATION_TAG,SUB_APPLICATION_TAG+"newInstance");
-		ProfileMaintenanceSyncFragment frag = new ProfileMaintenanceSyncFragment();
+		ProfileMaintSyncFragment frag = new ProfileMaintSyncFragment();
         Bundle bundle = new Bundle();
         frag.setArguments(bundle);
         return frag;
     };
     
-	public ProfileMaintenanceSyncFragment() {
+	public ProfileMaintSyncFragment() {
 		if (DEBUG_ENABLE) Log.v(APPLICATION_TAG,SUB_APPLICATION_TAG+"Constructor(Default)");
 	};
 
@@ -325,7 +325,7 @@ public class ProfileMaintenanceSyncFragment extends DialogFragment{
     public void showDialog(FragmentManager fm, Fragment frag,
     		final String op_type,
 			final ProfileListItem pli,
-			ProfileMaintenance pm,
+			ProfileUtility pm,
 			SMBSyncUtil ut,
 			CommonDialog cd) {
     	if (DEBUG_ENABLE) Log.v(APPLICATION_TAG,SUB_APPLICATION_TAG+"showDialog");
@@ -357,7 +357,7 @@ public class ProfileMaintenanceSyncFragment extends DialogFragment{
 		editname.setText(pfli.getName());
 
 		final Spinner spinnerSyncOption=(Spinner)mDialog.findViewById(R.id.sync_profile_sync_option);
-		ProfileMaintenance.setSyncOptionSpinner(mContext, spinnerSyncOption, pfli.getSyncType()); 
+		ProfileUtility.setSyncOptionSpinner(mContext, spinnerSyncOption, pfli.getSyncType()); 
 
 		final CheckBox cbmpd = (CheckBox)mDialog.findViewById(R.id.sync_profile_sync_master_root_dir_file);
 
@@ -401,7 +401,7 @@ public class ProfileMaintenanceSyncFragment extends DialogFragment{
 				}
 			}
 		});
-
+		
 		CommonDialog.setDlgBoxSizeLimit(mDialog,true);
 
 		final CheckBox tg = (CheckBox)mDialog.findViewById(R.id.sync_profile_active);
@@ -411,11 +411,11 @@ public class ProfileMaintenanceSyncFragment extends DialogFragment{
 		
 		final Spinner spinner_master=(Spinner)mDialog.findViewById(R.id.sync_profile_master_spinner);
 		final Spinner spinner_target=(Spinner)mDialog.findViewById(R.id.sync_profile_target_spinner);
-		ProfileMaintenance.setSyncMasterProfileSpinner(mGp, mContext, spinner_master,"");
+		ProfileUtility.setSyncMasterProfileSpinner(mGp, mContext, spinner_master,"");
 		if (spinner_master.getCount()>0) {
-			ProfileMaintenance.setSyncTargetProfileSpinner(mGp, mContext, spinner_target,spinner_master.getSelectedItem().toString().substring(2),"");
+			ProfileUtility.setSyncTargetProfileSpinner(mGp, mContext, spinner_target,spinner_master.getSelectedItem().toString().substring(2),"");
 		} else {
-			ProfileMaintenance.setSyncTargetProfileSpinner(mGp, mContext, spinner_target,"","");
+			ProfileUtility.setSyncTargetProfileSpinner(mGp, mContext, spinner_target,"","");
 		}
 		
 		final Button swap_master_target = (Button)mDialog.findViewById(R.id.sync_profile_edit_change_master_and_target);
@@ -426,8 +426,8 @@ public class ProfileMaintenanceSyncFragment extends DialogFragment{
 			public void onClick(View arg0) {
 				String mst=spinner_target.getSelectedItem().toString().substring(2);
 				String tgt=spinner_master.getSelectedItem().toString().substring(2);;
-				ProfileMaintenance.setSyncMasterProfileSpinner(mGp, mContext, spinner_master,mst);
-				ProfileMaintenance.setSyncTargetProfileSpinner(mGp, mContext, spinner_target,mst,tgt);
+				ProfileUtility.setSyncMasterProfileSpinner(mGp, mContext, spinner_master,mst);
+				ProfileUtility.setSyncTargetProfileSpinner(mGp, mContext, spinner_target,mst,tgt);
 				setMasterProfileEditButtonListener(mDialog, mst);
 				setTargetProfileEditButtonListener(mDialog, tgt);
 			}
@@ -446,7 +446,7 @@ public class ProfileMaintenanceSyncFragment extends DialogFragment{
 					c_tgt=spinner_target.getSelectedItem().toString().substring(2);
 				if (spinner_master.getSelectedItem()!=null) 
 					c_mst=spinner_master.getSelectedItem().toString().substring(2);
-				ProfileMaintenance.setSyncTargetProfileSpinner(mGp, mContext, spinner_target,c_mst,c_tgt);
+				ProfileUtility.setSyncTargetProfileSpinner(mGp, mContext, spinner_target,c_mst,c_tgt);
 //				Log.v("","c_mst="+c_mst+", c_tgt="+c_tgt);
 				setMasterProfileEditButtonListener(mDialog, c_mst);
 				setTargetProfileEditButtonListener(mDialog, c_tgt);
@@ -460,14 +460,14 @@ public class ProfileMaintenanceSyncFragment extends DialogFragment{
 			public void onClick(View arg0) {
 				if (spinner_master.getCount()>0) {
 					String m_name=spinner_master.getSelectedItem().toString().substring(2);
-					ProfileListItem m_pli=ProfileMaintenance.getProfile(mGp, mContext, SMBSYNC_PROF_GROUP_DEFAULT,m_name);
+					ProfileListItem m_pli=ProfileUtility.getProfile(mGp, mContext, SMBSYNC_PROF_GROUP_DEFAULT,m_name);
 					if (m_pli!=null) {
 						if (m_pli.getType().equals(SMBSYNC_PROF_TYPE_REMOTE)) {
-							  ProfileMaintenanceLocalFragment pmlp=ProfileMaintenanceLocalFragment.newInstance();
+							  ProfileMaintLocalFragment pmlp=ProfileMaintLocalFragment.newInstance();
 							  pmlp.showDialog(mFragmentMgr, pmlp, "EDIT",m_pli, 0, mProfMaint, mUtil, mCommonDlg);
 
 						} else if (m_pli.getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
-							  ProfileMaintenanceRemoteFragment pmrp=ProfileMaintenanceRemoteFragment.newInstance();
+							  ProfileMaintRemoteFragment pmrp=ProfileMaintRemoteFragment.newInstance();
 							  pmrp.showDialog(mFragmentMgr, pmrp, "EDIT",m_pli, 0, mProfMaint, mUtil, mCommonDlg);
 						}
 					}
@@ -480,13 +480,13 @@ public class ProfileMaintenanceSyncFragment extends DialogFragment{
 			public void onClick(View arg0) {
 				if (spinner_target.getCount()>0) {
 					String t_name=spinner_target.getSelectedItem().toString().substring(2);;
-					ProfileListItem m_pli=ProfileMaintenance.getProfile(mGp, mContext, SMBSYNC_PROF_GROUP_DEFAULT, t_name);
+					ProfileListItem m_pli=ProfileUtility.getProfile(mGp, mContext, SMBSYNC_PROF_GROUP_DEFAULT, t_name);
 					if (m_pli!=null) {
 						if (m_pli.getType().equals(SMBSYNC_PROF_TYPE_REMOTE)) {
-							  ProfileMaintenanceRemoteFragment pmrp=ProfileMaintenanceRemoteFragment.newInstance();
+							  ProfileMaintRemoteFragment pmrp=ProfileMaintRemoteFragment.newInstance();
 							  pmrp.showDialog(mFragmentMgr, pmrp, "EDIT",m_pli, 0, mProfMaint, mUtil, mCommonDlg);
 						} else if (m_pli.getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
-							  ProfileMaintenanceLocalFragment pmlp=ProfileMaintenanceLocalFragment.newInstance();
+							  ProfileMaintLocalFragment pmlp=ProfileMaintLocalFragment.newInstance();
 							  pmlp.showDialog(mFragmentMgr, pmlp, "EDIT",m_pli, 0, mProfMaint, mUtil, mCommonDlg);
 						}
 					}
@@ -504,7 +504,7 @@ public class ProfileMaintenanceSyncFragment extends DialogFragment{
 			public void onTextChanged(CharSequence s, int start, int before, int count) {}
 			@Override
 			public void afterTextChanged(Editable s) {
-				if (!ProfileMaintenance.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_SYNC, s.toString(), mGp.profileAdapter.getAllItem())) {
+				if (!ProfileUtility.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_SYNC, s.toString(), mGp.profileAdapter.getAllItem())) {
 					String e_msg=auditSyncProfileField(mDialog);
 					if (e_msg.length()!=0) {
 						dlg_msg.setText(e_msg);
@@ -629,12 +629,12 @@ public class ProfileMaintenanceSyncFragment extends DialogFragment{
 		} else {
 			if (mGp.profileAdapter.getItem(0).getType().equals(""))
 				mGp.profileAdapter.remove(0);
-			String m_typ=ProfileMaintenance.getProfileType(prof_master,mGp.profileAdapter);
-			String t_typ=ProfileMaintenance.getProfileType(prof_target,mGp.profileAdapter);
+			String m_typ=ProfileUtility.getProfileType(prof_master,mGp.profileAdapter);
+			String t_typ=ProfileUtility.getProfileType(prof_target,mGp.profileAdapter);
 			String retry_count="0";
 			if (cbRetry.isChecked()) retry_count=SMBSYNC_PROFILE_RETRY_COUNT;
 
-			ProfileMaintenance.updateSyncProfileAdapter(mGp, prof_name, prof_act,
+			ProfileUtility.updateSyncProfileAdapter(mGp, prof_name, prof_act,
 					prof_syncopt, m_typ,prof_master, t_typ,prof_target,
 					prof_file_filter,prof_dir_filter,prof_mpd,
 					cbConf.isChecked(),cbLastMod.isChecked(),
@@ -651,7 +651,7 @@ public class ProfileMaintenanceSyncFragment extends DialogFragment{
 
 	private void setMasterProfileEditButtonListener(Dialog dialog, final String prof_name) {
 		final ImageButton ib_edit_master=(ImageButton) dialog.findViewById(R.id.sync_profile_edit_master);
-		final ProfileListItem pli=ProfileMaintenance.getProfile(mGp, mContext, SMBSYNC_PROF_GROUP_DEFAULT, prof_name);
+		final ProfileListItem pli=ProfileUtility.getProfile(mGp, mContext, SMBSYNC_PROF_GROUP_DEFAULT, prof_name);
 		if (pli==null) ib_edit_master.setEnabled(false);//setVisibility(ImageButton.GONE);
 		else {
 			ib_edit_master.setEnabled(true);//.setVisibility(ImageButton.VISIBLE);
@@ -662,7 +662,7 @@ public class ProfileMaintenanceSyncFragment extends DialogFragment{
 
 	private void setTargetProfileEditButtonListener(Dialog dialog, final String prof_name) {
 		final ImageButton ib_edit_target=(ImageButton) dialog.findViewById(R.id.sync_profile_edit_target);
-		final ProfileListItem pli=ProfileMaintenance.getProfile(mGp, mContext, SMBSYNC_PROF_GROUP_DEFAULT, prof_name);
+		final ProfileListItem pli=ProfileUtility.getProfile(mGp, mContext, SMBSYNC_PROF_GROUP_DEFAULT, prof_name);
 		if (pli==null) ib_edit_target.setEnabled(false);//.setVisibility(ImageButton.GONE);
 		else {
 			ib_edit_target.setEnabled(true);//.setVisibility(ImageButton.VISIBLE);
@@ -791,8 +791,8 @@ public class ProfileMaintenanceSyncFragment extends DialogFragment{
 	
 		final Spinner spinner_master=(Spinner)mDialog.findViewById(R.id.sync_profile_master_spinner);
 		final Spinner spinner_target=(Spinner)mDialog.findViewById(R.id.sync_profile_target_spinner);
-		ProfileMaintenance.setSyncMasterProfileSpinner(mGp, mContext, spinner_master,pfli.getMasterName());
-		ProfileMaintenance.setSyncTargetProfileSpinner(mGp, mContext, spinner_target,pfli.getMasterName(),pfli.getTargetName());
+		ProfileUtility.setSyncMasterProfileSpinner(mGp, mContext, spinner_master,pfli.getMasterName());
+		ProfileUtility.setSyncTargetProfileSpinner(mGp, mContext, spinner_target,pfli.getMasterName(),pfli.getTargetName());
 		
 		spinner_master.setOnItemSelectedListener(new OnItemSelectedListener(){
 			@Override
@@ -802,7 +802,7 @@ public class ProfileMaintenanceSyncFragment extends DialogFragment{
 					c_tgt=spinner_target.getSelectedItem().toString().substring(2);
 				if (spinner_master.getSelectedItem()!=null) 
 					c_mst=spinner_master.getSelectedItem().toString().substring(2);
-				ProfileMaintenance.setSyncTargetProfileSpinner(mGp, mContext, spinner_target,c_mst,c_tgt);
+				ProfileUtility.setSyncTargetProfileSpinner(mGp, mContext, spinner_target,c_mst,c_tgt);
 			}
 			@Override
 			public void onNothingSelected(AdapterView<?> arg0) {}
@@ -828,16 +828,16 @@ public class ProfileMaintenanceSyncFragment extends DialogFragment{
 			@Override
 			public void onClick(View arg0) {
 				String m_name=spinner_master.getSelectedItem().toString().substring(2);
-				ProfileListItem m_pli=ProfileMaintenance.getProfile(mGp, mContext, SMBSYNC_PROF_GROUP_DEFAULT,m_name);
+				ProfileListItem m_pli=ProfileUtility.getProfile(mGp, mContext, SMBSYNC_PROF_GROUP_DEFAULT,m_name);
 				if (m_pli!=null) {
 					if (m_pli.getType().equals(SMBSYNC_PROF_TYPE_REMOTE)) {
-						  int pos=ProfileMaintenance.getProfilePos(m_name,mGp.profileAdapter);
-						  ProfileMaintenanceRemoteFragment pmp=ProfileMaintenanceRemoteFragment.newInstance();
+						  int pos=ProfileUtility.getProfilePos(m_name,mGp.profileAdapter);
+						  ProfileMaintRemoteFragment pmp=ProfileMaintRemoteFragment.newInstance();
 						  pmp.showDialog(mFragmentMgr, pmp, "EDIT", m_pli, 
 								  pos, mProfMaint, mUtil, mCommonDlg);
 					} else if (m_pli.getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
-						  int pos=ProfileMaintenance.getProfilePos(m_name,mGp.profileAdapter);
-						  ProfileMaintenanceLocalFragment pmp=ProfileMaintenanceLocalFragment.newInstance();
+						  int pos=ProfileUtility.getProfilePos(m_name,mGp.profileAdapter);
+						  ProfileMaintLocalFragment pmp=ProfileMaintLocalFragment.newInstance();
 						  pmp.showDialog(mFragmentMgr, pmp, "EDIT", m_pli, 
 								  pos, mProfMaint, mUtil, mCommonDlg);
 					}
@@ -854,8 +854,8 @@ public class ProfileMaintenanceSyncFragment extends DialogFragment{
 			public void onClick(View arg0) {
 				String mst=spinner_target.getSelectedItem().toString().substring(2);
 				String tgt=spinner_master.getSelectedItem().toString().substring(2);;
-				ProfileMaintenance.setSyncMasterProfileSpinner(mGp, mContext, spinner_master,mst);
-				ProfileMaintenance.setSyncTargetProfileSpinner(mGp, mContext, spinner_target,mst,tgt);
+				ProfileUtility.setSyncMasterProfileSpinner(mGp, mContext, spinner_master,mst);
+				ProfileUtility.setSyncTargetProfileSpinner(mGp, mContext, spinner_target,mst,tgt);
 				setMasterProfileEditButtonListener(mDialog, mst);
 				setTargetProfileEditButtonListener(mDialog, tgt);
 			}
@@ -866,16 +866,16 @@ public class ProfileMaintenanceSyncFragment extends DialogFragment{
 			public void onClick(View arg0) {
 				String t_name=spinner_target.getSelectedItem().toString().substring(2);;
 				ProfileListItem m_pli=
-						ProfileMaintenance.getProfile(mGp, mContext, SMBSYNC_PROF_GROUP_DEFAULT, t_name);
+						ProfileUtility.getProfile(mGp, mContext, SMBSYNC_PROF_GROUP_DEFAULT, t_name);
 				if (m_pli!=null) {
 					if (m_pli.getType().equals(SMBSYNC_PROF_TYPE_REMOTE)) {
-						  int pos=ProfileMaintenance.getProfilePos(t_name,mGp.profileAdapter);
-						  ProfileMaintenanceRemoteFragment pmp=ProfileMaintenanceRemoteFragment.newInstance();
+						  int pos=ProfileUtility.getProfilePos(t_name,mGp.profileAdapter);
+						  ProfileMaintRemoteFragment pmp=ProfileMaintRemoteFragment.newInstance();
 						  pmp.showDialog(mFragmentMgr, pmp, "EDIT", m_pli, 
 								  pos, mProfMaint, mUtil, mCommonDlg);
 					} else if (m_pli.getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
-						  int pos=ProfileMaintenance.getProfilePos(t_name,mGp.profileAdapter);
-						  ProfileMaintenanceLocalFragment pmp=ProfileMaintenanceLocalFragment.newInstance();
+						  int pos=ProfileUtility.getProfilePos(t_name,mGp.profileAdapter);
+						  ProfileMaintLocalFragment pmp=ProfileMaintLocalFragment.newInstance();
 						  pmp.showDialog(mFragmentMgr, pmp, "EDIT", m_pli, 
 								  pos, mProfMaint, mUtil, mCommonDlg);
 					}
@@ -943,7 +943,7 @@ public class ProfileMaintenanceSyncFragment extends DialogFragment{
 		Button btn_ok = (Button) mDialog.findViewById(R.id.sync_profile_ok);
 		btn_ok.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				int prof_num=ProfileMaintenance.getProfilePos(pfli.getName(), mGp.profileAdapter);
+				int prof_num=ProfileUtility.getProfilePos(pfli.getName(), mGp.profileAdapter);
 				if (saveSyncProfile(mDialog, n_file_filter, n_dir_filter,prof_num)) 
 					mFragment.dismiss();
 			}
@@ -992,8 +992,8 @@ public class ProfileMaintenanceSyncFragment extends DialogFragment{
 						mContext.getString(R.string.msgs_master_profile_not_found), 
 						prof_master);
 				audit_error=true;
-			} else if (tg.isChecked() && !ProfileMaintenance.isProfileActive(mGp, SMBSYNC_PROF_GROUP_DEFAULT,
-					ProfileMaintenance.getProfileType(prof_master,mGp.profileAdapter), prof_master)) {
+			} else if (tg.isChecked() && !ProfileUtility.isProfileActive(mGp, SMBSYNC_PROF_GROUP_DEFAULT,
+					ProfileUtility.getProfileType(prof_master,mGp.profileAdapter), prof_master)) {
 				audit_msg= 
 						mContext.getString(R.string.msgs_prof_active_not_activated);
 				audit_error=true;
@@ -1015,8 +1015,8 @@ public class ProfileMaintenanceSyncFragment extends DialogFragment{
 						mContext.getString(R.string.msgs_target_profile_not_found), 
 						prof_target);
 				audit_error=true;
-			} else if (tg.isChecked() && !ProfileMaintenance.isProfileActive(mGp, SMBSYNC_PROF_GROUP_DEFAULT,
-					ProfileMaintenance.getProfileType(prof_target,mGp.profileAdapter), prof_target)) {
+			} else if (tg.isChecked() && !ProfileUtility.isProfileActive(mGp, SMBSYNC_PROF_GROUP_DEFAULT,
+					ProfileUtility.getProfileType(prof_target,mGp.profileAdapter), prof_target)) {
 				audit_msg= 
 						mContext.getString(R.string.msgs_prof_active_not_activated);
 				audit_error=true;
@@ -1024,8 +1024,8 @@ public class ProfileMaintenanceSyncFragment extends DialogFragment{
 
 		}
 		if (!audit_error) {
-			String m_typ=ProfileMaintenance.getProfileType(prof_master,mGp.profileAdapter);
-			String t_typ=ProfileMaintenance.getProfileType(prof_target,mGp.profileAdapter);
+			String m_typ=ProfileUtility.getProfileType(prof_master,mGp.profileAdapter);
+			String t_typ=ProfileUtility.getProfileType(prof_target,mGp.profileAdapter);
 			if (m_typ.equals(SMBSYNC_PROF_TYPE_REMOTE)) {
 				if (t_typ.equals(SMBSYNC_PROF_TYPE_REMOTE)) {
 					audit_error=true;

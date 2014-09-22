@@ -55,7 +55,7 @@
     <CheckBox
         android:id="@+id/sync_wizard_dlg_remote_use_user_pass"
         style="@style/check_box_style"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
         android:text="@string/msgs_remote_profile_dlg_use_user_pass" />
