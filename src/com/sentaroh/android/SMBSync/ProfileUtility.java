@@ -73,8 +73,6 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
-
 import jcifs.smb.NtlmPasswordAuthentication;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
@@ -99,9 +97,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.CheckedTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -138,8 +134,8 @@ public class ProfileUtility {
 	
 	private SMBSyncUtil util;
 	
-	private HashMap<Integer, String[]> 
-		importedSettingParmList=new HashMap<Integer, String[]>();
+	private ArrayList<PreferenceParmListIItem> 
+		importedSettingParmList=new ArrayList<PreferenceParmListIItem>();
 	
 	private CommonDialog commonDlg=null;
 	
@@ -252,14 +248,14 @@ public class ProfileUtility {
 		dialog.setCanceledOnTouchOutside(false);
 		dialog.setContentView(R.layout.password_input_dlg);
 		final TextView dlg_msg = (TextView) dialog.findViewById(R.id.password_input_msg);
-		final CheckBox cb_protect = (CheckBox) dialog.findViewById(R.id.password_input_protect);
+		final CheckedTextView ctv_protect = (CheckedTextView) dialog.findViewById(R.id.password_input_ctv_protect);
 		final Button btn_ok = (Button) dialog.findViewById(R.id.password_input_ok_btn);
 		final Button btn_cancel = (Button) dialog.findViewById(R.id.password_input_cancel_btn);
 		final EditText et_password=(EditText) dialog.findViewById(R.id.password_input_password);
 		final EditText et_confirm=(EditText) dialog.findViewById(R.id.password_input_password_confirm);
 		et_confirm.setVisibility(EditText.GONE);
 		btn_ok.setText(mContext.getString(R.string.msgs_export_import_pswd_btn_ok));
-		cb_protect.setVisibility(CheckBox.GONE);
+		ctv_protect.setVisibility(CheckedTextView.GONE);
 		
 		dlg_msg.setText(mContext.getString(R.string.msgs_export_import_pswd_password_required));
 		
@@ -350,7 +346,7 @@ public class ProfileUtility {
 		dialog.setCanceledOnTouchOutside(false);
 		dialog.setContentView(R.layout.password_input_dlg);
 		final TextView dlg_msg = (TextView) dialog.findViewById(R.id.password_input_msg);
-		final CheckBox cb_protect = (CheckBox) dialog.findViewById(R.id.password_input_protect);
+		final CheckedTextView ctv_protect = (CheckedTextView) dialog.findViewById(R.id.password_input_ctv_protect);
 		final Button btn_ok = (Button) dialog.findViewById(R.id.password_input_ok_btn);
 		final Button btn_cancel = (Button) dialog.findViewById(R.id.password_input_cancel_btn);
 		final EditText et_password=(EditText) dialog.findViewById(R.id.password_input_password);
@@ -360,14 +356,17 @@ public class ProfileUtility {
 		
 		CommonDialog.setDlgBoxSizeCompact(dialog);
 
-		cb_protect.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+		ctv_protect.setOnClickListener(new OnClickListener(){
 			@Override
-			public void onCheckedChanged(CompoundButton arg0, boolean isChecked) {
+			public void onClick(View v) {
+				ctv_protect.toggle();
+				boolean isChecked=ctv_protect.isChecked();
 				setPasswordFieldVisibility(isChecked, et_password,
 						et_confirm, btn_ok, dlg_msg);
 			}
 		});
-		cb_protect.setChecked(mGp.settingExportedProfileEncryptRequired);
+
+		ctv_protect.setChecked(mGp.settingExportedProfileEncryptRequired);
 		setPasswordFieldVisibility(mGp.settingExportedProfileEncryptRequired,
 				et_password, et_confirm, btn_ok, dlg_msg);
 
@@ -403,14 +402,14 @@ public class ProfileUtility {
 		btn_ok.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				String passwd=et_password.getText().toString();
-				if ((cb_protect.isChecked() && !mGp.settingExportedProfileEncryptRequired) ||
-						(!cb_protect.isChecked() && mGp.settingExportedProfileEncryptRequired)) {
-					mGp.settingExportedProfileEncryptRequired=cb_protect.isChecked();
+				if ((ctv_protect.isChecked() && !mGp.settingExportedProfileEncryptRequired) ||
+						(!ctv_protect.isChecked() && mGp.settingExportedProfileEncryptRequired)) {
+					mGp.settingExportedProfileEncryptRequired=ctv_protect.isChecked();
 					SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
 					prefs.edit().putBoolean(mContext.getString(R.string.settings_exported_profile_encryption), 
-							cb_protect.isChecked()).commit();
+							ctv_protect.isChecked()).commit();
 				}
-				if (!cb_protect.isChecked()) {
+				if (!ctv_protect.isChecked()) {
 					dialog.dismiss();
 					ntfy_pswd.notifyToListener(true, new Object[] {""});
 				} else {
@@ -475,7 +474,7 @@ public class ProfileUtility {
 				dlg_msg.setText("");
 			}
 		} else if (password.length()==0 && confirm.length()==0) {
-			btn_ok.setEnabled(true);
+			btn_ok.setEnabled(false);
 			dlg_msg.setText(mContext.getString(R.string.msgs_export_import_pswd_specify_password));
 			et_passwd.setEnabled(true);
 			et_confirm.setEnabled(false);
@@ -486,6 +485,11 @@ public class ProfileUtility {
 	};
 	
 	private void selectImportProfileItem(final AdapterProfileList tfl, final NotifyEvent p_ntfy) {
+		final Dialog dialog=new Dialog(mContext);
+		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		dialog.setContentView(R.layout.export_import_profile_dlg);
+		dialog.setCanceledOnTouchOutside(false);
+
 		ArrayList<ExportImportProfileListItem> eipl=new ArrayList<ExportImportProfileListItem>();
 
 		for (int i=0;i<tfl.getCount();i++) {
@@ -509,11 +513,11 @@ public class ProfileUtility {
 //		eipli.item_type="*";
 //		eipli.item_name=mContext.getString(R.string.msgs_export_import_profile_setting_parms);
 //		eipl.add(eipli);
+		final AdapterExportImportProfileList imp_list_adapt=
+				new AdapterExportImportProfileList(mContext, R.layout.export_import_profile_list_item, eipl);
 		
-		final Dialog dialog=new Dialog(mContext);
-		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-		dialog.setContentView(R.layout.export_import_profile_dlg);
-		dialog.setCanceledOnTouchOutside(false);
+		ListView lv=(ListView)dialog.findViewById(R.id.export_import_profile_listview);
+		lv.setAdapter(imp_list_adapt);
 		
 		CommonDialog.setDlgBoxSizeLimit(dialog,true);
 		
@@ -529,62 +533,83 @@ public class ProfileUtility {
 		final RadioGroup rg_select=(RadioGroup)dialog.findViewById(R.id.export_import_profile_list_rg_item_select);
 		final RadioButton rb_select_all=(RadioButton)dialog.findViewById(R.id.export_import_profile_list_rb_select_all);
 		final RadioButton rb_unselect_all=(RadioButton)dialog.findViewById(R.id.export_import_profile_list_rb_unselect_all);
-		final CheckBox cb_reset_profile=(CheckBox)dialog.findViewById(R.id.export_import_profile_list_cb_reset_profile);
-		final CheckBox cb_import_settings=(CheckBox)dialog.findViewById(R.id.export_import_profile_list_cb_import_settings);
-		final CheckBox cb_import_schedule=(CheckBox)dialog.findViewById(R.id.export_import_profile_list_cb_import_schedule);
-		cb_import_settings.setChecked(true);
-		cb_import_schedule.setChecked(true);
+		final CheckedTextView ctv_reset_profile=(CheckedTextView)dialog.findViewById(R.id.export_import_profile_list_ctv_reset_profile);
+		final CheckedTextView ctv_import_settings=(CheckedTextView)dialog.findViewById(R.id.export_import_profile_list_ctv_import_settings);
+		final CheckedTextView ctv_import_schedule=(CheckedTextView)dialog.findViewById(R.id.export_import_profile_list_ctv_import_schedule);
 		
-		final AdapterExportImportProfileList imp_list_adapt=
-				new AdapterExportImportProfileList(mContext, R.layout.export_import_profile_list_item, eipl);
+		ctv_reset_profile.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				((CheckedTextView)v).toggle();
+				setImportOkBtnEnabled(ctv_reset_profile,ctv_import_settings,ctv_import_schedule,imp_list_adapt,ok_btn);
+			}
+		});
 		
-		ListView lv=(ListView)dialog.findViewById(R.id.export_import_profile_listview);
-		lv.setAdapter(imp_list_adapt);
+		ctv_import_settings.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				((CheckedTextView)v).toggle();
+				setImportOkBtnEnabled(ctv_reset_profile,ctv_import_settings,ctv_import_schedule,imp_list_adapt,ok_btn);
+			}
+		});
+
+		ctv_import_schedule.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				((CheckedTextView)v).toggle();
+				setImportOkBtnEnabled(ctv_reset_profile,ctv_import_settings,ctv_import_schedule,imp_list_adapt,ok_btn);
+			}
+		});
+
+		ctv_import_settings.setChecked(true);
+		ctv_import_schedule.setChecked(true);
+		
 		
 		lv.setOnItemClickListener(new OnItemClickListener(){
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int pos,
 					long arg3) {
-				  imp_list_adapt.getItem(pos).isChecked=!imp_list_adapt.getItem(pos).isChecked;
-				  imp_list_adapt.notifyDataSetChanged();
-				  if (imp_list_adapt.isItemSelected()) {
-					  ok_btn.setEnabled(true);
-				  } else {
-					  ok_btn.setEnabled(false);
-				  }
+//				  imp_list_adapt.getItem(pos).isChecked=!imp_list_adapt.getItem(pos).isChecked;
+//				  imp_list_adapt.notifyDataSetChanged();
+//				  if (imp_list_adapt.isItemSelected()) {
+//					  ok_btn.setEnabled(true);
+//				  } else {
+//					  ok_btn.setEnabled(false);
+//				  }
+				  setImportOkBtnEnabled(ctv_reset_profile,ctv_import_settings,ctv_import_schedule,imp_list_adapt,ok_btn);
 			}
 		});
 		
-		lv.setOnItemLongClickListener(new OnItemLongClickListener(){
-			@Override
-			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
-					int pos, long arg3) {
-				ccMenu.addMenuItem(
-						mContext.getString(R.string.msgs_export_import_profile_select_all),R.drawable.blank)
-			  	.setOnClickListener(new CustomContextMenuOnClickListener() {
-				  @Override
-				  final public void onClick(CharSequence menuTitle) {
-					  for (int i=0;i<imp_list_adapt.getCount();i++)
-						  imp_list_adapt.getItem(i).isChecked=true;
-					  imp_list_adapt.notifyDataSetChanged();
-					  ok_btn.setEnabled(true);
-				  	}
-			  	});
-				ccMenu.addMenuItem(
-						mContext.getString(R.string.msgs_export_import_profile_unselect_all),R.drawable.blank)
-			  	.setOnClickListener(new CustomContextMenuOnClickListener() {
-				  @Override
-				  final public void onClick(CharSequence menuTitle) {
-					  for (int i=0;i<imp_list_adapt.getCount();i++)
-						  imp_list_adapt.getItem(i).isChecked=false;
-					  imp_list_adapt.notifyDataSetChanged();
-					  ok_btn.setEnabled(false);
-				  	}
-			  	});
-				ccMenu.createMenu();
-				return false;
-			}
-		});
+//		lv.setOnItemLongClickListener(new OnItemLongClickListener(){
+//			@Override
+//			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+//					int pos, long arg3) {
+//				ccMenu.addMenuItem(
+//						mContext.getString(R.string.msgs_export_import_profile_select_all),R.drawable.blank)
+//			  	.setOnClickListener(new CustomContextMenuOnClickListener() {
+//				  @Override
+//				  final public void onClick(CharSequence menuTitle) {
+//					  for (int i=0;i<imp_list_adapt.getCount();i++)
+//						  imp_list_adapt.getItem(i).isChecked=true;
+//					  imp_list_adapt.notifyDataSetChanged();
+//					  ok_btn.setEnabled(true);
+//				  	}
+//			  	});
+//				ccMenu.addMenuItem(
+//						mContext.getString(R.string.msgs_export_import_profile_unselect_all),R.drawable.blank)
+//			  	.setOnClickListener(new CustomContextMenuOnClickListener() {
+//				  @Override
+//				  final public void onClick(CharSequence menuTitle) {
+//					  for (int i=0;i<imp_list_adapt.getCount();i++)
+//						  imp_list_adapt.getItem(i).isChecked=false;
+//					  imp_list_adapt.notifyDataSetChanged();
+//					  ok_btn.setEnabled(false);
+//				  	}
+//			  	});
+//				ccMenu.createMenu();
+//				return false;
+//			}
+//		});
 		
 		rg_select.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener(){
 			@Override
@@ -602,31 +627,32 @@ public class ProfileUtility {
 			}
 		});
 		
-		NotifyEvent ntfy_cb_listener=new NotifyEvent(mContext);
-		ntfy_cb_listener.setListener(new NotifyEventListener(){
+		NotifyEvent ntfy_ctv_listener=new NotifyEvent(mContext);
+		ntfy_ctv_listener.setListener(new NotifyEventListener(){
 			@Override
 			public void positiveResponse(Context c, Object[] o) {
-				  if (imp_list_adapt.isItemSelected()) {
-					  ok_btn.setEnabled(true);
-				  } else {
-					  if (cb_import_settings.isChecked()) ok_btn.setEnabled(true);
-					  else ok_btn.setEnabled(false);
-				  }
+//				  if (imp_list_adapt.isItemSelected()) {
+//					  ok_btn.setEnabled(true);
+//				  } else {
+//					  if (ctv_import_settings.isChecked()) ok_btn.setEnabled(true);
+//					  else ok_btn.setEnabled(false);
+//				  }
+				setImportOkBtnEnabled(ctv_reset_profile,ctv_import_settings,ctv_import_schedule,imp_list_adapt,ok_btn);
 			}
 			@Override
 			public void negativeResponse(Context c, Object[] o) {
 			}
 		});
-		imp_list_adapt.setCheckButtonListener(ntfy_cb_listener);
+		imp_list_adapt.setCheckButtonListener(ntfy_ctv_listener);
 		
 		
 		ok_btn.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View arg0) {
-				if (cb_reset_profile.isChecked()) mGp.profileAdapter.clear();
+				if (ctv_reset_profile.isChecked()) mGp.profileAdapter.clear();
 				importSelectedProfileItem(imp_list_adapt,tfl,
-						cb_import_settings.isChecked(),
-						cb_import_schedule.isChecked(),
+						ctv_import_settings.isChecked(),
+						ctv_import_schedule.isChecked(),
 						p_ntfy);
 				dialog.dismiss();
 			}
@@ -640,6 +666,16 @@ public class ProfileUtility {
 		
 		dialog.show();
 		
+	};
+	
+	private void setImportOkBtnEnabled(
+			final CheckedTextView ctv_reset_profile,
+			final CheckedTextView ctv_import_settings,
+			final CheckedTextView ctv_import_schedule,
+			final AdapterExportImportProfileList imp_list_adapt,
+			final Button ok_btn) {
+		if (ctv_import_settings.isChecked() || ctv_import_schedule.isChecked() || imp_list_adapt.isItemSelected()) ok_btn.setEnabled(true);
+		else ok_btn.setEnabled(false);
 	};
 	
 	private void importSelectedProfileItem(
@@ -678,6 +714,7 @@ public class ProfileUtility {
 						}
 					}
 				}
+				resolveSyncProfileRelation(mGp);
 //				ExportImportProfileListItem eipli=imp_list_adapt.getItem(imp_list_adapt.getCount()-1);
 				restoreImportedSystemOption();
 				if (import_settings) {
@@ -713,7 +750,7 @@ public class ProfileUtility {
 	};
 
 	private void restoreImportedSystemOption() {
-		final HashMap<Integer, String[]> spl=importedSettingParmList;
+		final ArrayList<PreferenceParmListIItem> spl=importedSettingParmList;
 		
 		if (spl.size()==0) {
 			util.addDebugLogMsg(2,"I","Import setting parms can not be not found.");
@@ -724,7 +761,7 @@ public class ProfileUtility {
 		
 		if (spl.size()>=0) {
 			for (int i=0;i<spl.size();i++) {
-				if (spl.get(i)[0].startsWith("system_rest")) {
+				if (spl.get(i).parms_key.startsWith("system_rest")) {
 					restorePreferenceParms(pe,spl.get(i));
 				}
 			}
@@ -733,26 +770,26 @@ public class ProfileUtility {
 		}
 	};
 
-	private void restorePreferenceParms(Editor pe, String[] pa) {
-		if (pa[1].equals(SMBSYNC_SETTINGS_TYPE_STRING)) {
-			pe.putString(pa[0],pa[2]);
-			util.addDebugLogMsg(2,"I","Restored parms="+pa[0]+"="+pa[2]);
-		} else if (pa[1].equals(SMBSYNC_SETTINGS_TYPE_BOOLEAN)) {
+	private void restorePreferenceParms(Editor pe, PreferenceParmListIItem pa) {
+		if (pa.parms_type.equals(SMBSYNC_SETTINGS_TYPE_STRING)) {
+			pe.putString(pa.parms_key,pa.parms_value);
+			util.addDebugLogMsg(2,"I","Restored parms="+pa.parms_key+"="+pa.parms_value);
+		} else if (pa.parms_type.equals(SMBSYNC_SETTINGS_TYPE_BOOLEAN)) {
 			boolean b_val = false;
-			if (pa[2].equals("false")) b_val = false;
+			if (pa.parms_value.equals("false")) b_val = false;
 			else b_val = true;
-			pe.putBoolean(pa[0],b_val);
-			util.addDebugLogMsg(2,"I","Restored parms="+pa[0]+"="+pa[2]);
-		} else if (pa[1].equals(SMBSYNC_SETTINGS_TYPE_INT)) {
+			pe.putBoolean(pa.parms_key,b_val);
+			util.addDebugLogMsg(2,"I","Restored parms="+pa.parms_key+"="+pa.parms_value);
+		} else if (pa.parms_type.equals(SMBSYNC_SETTINGS_TYPE_INT)) {
 			int i_val = 0;
-			i_val = Integer.parseInt(pa[2]);;
-			pe.putInt(pa[0],i_val);
-			util.addDebugLogMsg(2,"I","Restored parms="+pa[0]+"="+pa[2]);
+			i_val = Integer.parseInt(pa.parms_value);;
+			pe.putInt(pa.parms_key,i_val);
+			util.addDebugLogMsg(2,"I","Restored parms="+pa.parms_key+"="+pa.parms_value);
 		}
 	};
 	
 	private void restoreImportedScheduleParms() {
-		final HashMap<Integer, String[]> spl=importedSettingParmList;
+		final ArrayList<PreferenceParmListIItem> spl=importedSettingParmList;
 		
 		if (spl.size()==0) {
 			util.addDebugLogMsg(2,"I","Import setting parms can not be not found.");
@@ -763,7 +800,7 @@ public class ProfileUtility {
 		
 		if (spl.size()>=0) {
 			for (int i=0;i<spl.size();i++) {
-				if (spl.get(i)[0].startsWith("schedule")) {
+				if (spl.get(i).parms_key.startsWith("schedule")) {
 					restorePreferenceParms(pe,spl.get(i));
 				}
 			}
@@ -773,7 +810,7 @@ public class ProfileUtility {
 	};
 
 	private void restoreImportedSettingParms() {
-		final HashMap<Integer, String[]> spl=importedSettingParmList;
+		final ArrayList<PreferenceParmListIItem> spl=importedSettingParmList;
 		
 		if (spl.size()==0) {
 			util.addDebugLogMsg(2,"I","Import setting parms can not be not found.");
@@ -784,7 +821,7 @@ public class ProfileUtility {
 		
 		if (spl.size()>=0) {
 			for (int i=0;i<spl.size();i++) {
-				if (spl.get(i)[0].startsWith("settings")) {
+				if (spl.get(i).parms_key.startsWith("settings")) {
 					restorePreferenceParms(pe,spl.get(i));
 				}
 			}
@@ -1336,33 +1373,14 @@ public class ProfileUtility {
 
 	public void copyProfile(ProfileListItem pli) {
 		if (pli.getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
-//			addLocalProfile(false,pli.getName(),pli.getActive(),
-//					pli.getLocalMountPoint(),pli.getDir(),"");
 			  ProfileMaintLocalFragment pmlp=ProfileMaintLocalFragment.newInstance();
-			  pmlp.showDialog(mFragMgr, pmlp, "ADD",pli, 0, this, util, commonDlg);
+			  pmlp.showDialog(mFragMgr, pmlp, "COPY",pli, 0, this, util, commonDlg);
 		} else if (pli.getType().equals(SMBSYNC_PROF_TYPE_REMOTE)) {
-//			addRemoteProfile(false, pli.getName(),pli.getActive(),
-//					pli.getAddr(),pli.getUser(),pli.getPass(),
-//					pli.getShare(),pli.getDir(),pli.getHostname(),
-//					pli.getPort(), "");
 			  ProfileMaintRemoteFragment pmrp=ProfileMaintRemoteFragment.newInstance();
-			  pmrp.showDialog(mFragMgr, pmrp, "ADD",pli, 0, this, util, commonDlg);
+			  pmrp.showDialog(mFragMgr, pmrp, "COPY",pli, 0, this, util, commonDlg);
 		} else if (pli.getType().equals(SMBSYNC_PROF_TYPE_SYNC)) {
-//			addSyncProfile(false, pli.getName(),pli.getActive(),
-//					pli.getMasterName(),pli.getTargetName(),
-//					pli.getSyncType(),pli.getFileFilter(),pli.getDirFilter(),
-//					pli.isMasterDirFileProcess(),
-//					pli.isConfirmRequired(),
-//					pli.isForceLastModifiedUseSmbsync(),
-//					pli.isNotUseLastModifiedForRemote(),
-//					pli.getRetryCount(),
-//					pli.isSyncEmptyDirectory(),
-//					pli.isSyncHiddenDirectory(),
-//					pli.isSyncHiddenFile(),
-//					pli.isSyncSubDirectory(),					
-//					"");
 			  ProfileMaintSyncFragment pmsp=ProfileMaintSyncFragment.newInstance();
-			  pmsp.showDialog(mFragMgr, pmsp, "ADD",pli, this, util, commonDlg);
+			  pmsp.showDialog(mFragMgr, pmsp, "COPY",pli, this, util, commonDlg);
 		}
 	};
 
@@ -1459,7 +1477,7 @@ public class ProfileUtility {
 	public void ipAddressScanButtonDlg(Dialog dialog) {
 		final TextView dlg_msg=(TextView) dialog.findViewById(R.id.remote_profile_dlg_msg);
 		final EditText edithost = (EditText) dialog.findViewById(R.id.remote_profile_remote_server);
-		final CheckBox cb_use_port_number = (CheckBox) dialog.findViewById(R.id.remote_profile_use_port_number);
+		final CheckedTextView ctv_use_port_number = (CheckedTextView) dialog.findViewById(R.id.remote_profile_ctv_use_port_number);
 		final EditText editport = (EditText) dialog.findViewById(R.id.remote_profile_port);
 		NotifyEvent ntfy=new NotifyEvent(mContext);
 		//Listen setRemoteShare response 
@@ -1476,7 +1494,7 @@ public class ProfileUtility {
 			
 		});
 		String port_num="";
-		if (cb_use_port_number.isChecked()) port_num=editport.getText().toString();
+		if (ctv_use_port_number.isChecked()) port_num=editport.getText().toString();
 		scanRemoteNetworkDlg(ntfy,port_num,false);
 	};
 
@@ -1487,12 +1505,12 @@ public class ProfileUtility {
 		final EditText editpass = (EditText) dialog.findViewById(R.id.remote_profile_pass);
 		final EditText editshare = (EditText) dialog.findViewById(R.id.remote_profile_share);
 		final EditText edithost = (EditText) dialog.findViewById(R.id.remote_profile_remote_server);
-		final CheckBox cb_use_userpass = (CheckBox) dialog.findViewById(R.id.remote_profile_use_user_pass);
+		final CheckedTextView ctv_use_userpass = (CheckedTextView) dialog.findViewById(R.id.remote_profile_ctv_use_user_pass);
 		final EditText editport = (EditText) dialog.findViewById(R.id.remote_profile_port);
-		final CheckBox cb_use_port_number = (CheckBox) dialog.findViewById(R.id.remote_profile_use_port_number);
+		final CheckedTextView ctv_use_port_number = (CheckedTextView) dialog.findViewById(R.id.remote_profile_ctv_use_port_number);
 		String remote_addr, remote_user="", remote_pass="",remote_host;
 		
-		if (cb_use_userpass.isChecked()) {
+		if (ctv_use_userpass.isChecked()) {
 			remote_user = edituser.getText().toString();
 			remote_pass = editpass.getText().toString();
 		}
@@ -1526,7 +1544,7 @@ public class ProfileUtility {
 			t_url=remote_host;
 		}
 		String h_port="";
-		if (cb_use_port_number.isChecked()) {
+		if (ctv_use_port_number.isChecked()) {
 			if (editport.getText().length()>0) h_port=":"+editport.getText().toString();
 			else {
 				dlg_msg.setText(mContext.getString(R.string.msgs_audit_hostport_not_spec));
@@ -1565,11 +1583,11 @@ public class ProfileUtility {
 		final EditText editpass = (EditText) dialog.findViewById(R.id.remote_profile_pass);
 		final EditText editshare = (EditText) dialog.findViewById(R.id.remote_profile_share);
 		final EditText editdir = (EditText) dialog.findViewById(R.id.remote_profile_dir);
-		final CheckBox cb_use_userpass = (CheckBox) dialog.findViewById(R.id.remote_profile_use_user_pass);
+		final CheckedTextView ctv_use_userpass = (CheckedTextView) dialog.findViewById(R.id.remote_profile_ctv_use_user_pass);
 		final EditText editport = (EditText) dialog.findViewById(R.id.remote_profile_port);
-		final CheckBox cb_use_port_number = (CheckBox) dialog.findViewById(R.id.remote_profile_use_port_number);
+		final CheckedTextView ctv_use_port_number = (CheckedTextView) dialog.findViewById(R.id.remote_profile_ctv_use_port_number);
 		String remote_addr, remote_user="", remote_pass="",remote_share,remote_host;
-		if (cb_use_userpass.isChecked()) {
+		if (ctv_use_userpass.isChecked()) {
 			remote_user = edituser.getText().toString();
 			remote_pass = editpass.getText().toString();
 		}
@@ -1610,7 +1628,7 @@ public class ProfileUtility {
 			t_url=remote_host;
 		}
 		String h_port="";
-		if (cb_use_port_number.isChecked()) {
+		if (ctv_use_port_number.isChecked()) {
 			if (editport.getText().length()>0) h_port=":"+editport.getText().toString();
 			else {
 				dlg_msg.setText(mContext.getString(R.string.msgs_audit_hostport_not_spec));
@@ -1672,7 +1690,7 @@ public class ProfileUtility {
 	public int getActiveSyncProfileCount(AdapterProfileList pa) {
 		int result=0;
 		for (int i=0;i<pa.getCount();i++) {
-			if (pa.getItem(i).getActive().equals(SMBSYNC_PROF_ACTIVE) && 
+			if (pa.getItem(i).isActive() && 
 					pa.getItem(i).getType().equals(SMBSYNC_PROF_TYPE_SYNC)) {
 				result++;
 			}
@@ -1711,7 +1729,7 @@ public class ProfileUtility {
 	
 	public void invokeEditDirFilterDlg(Dialog dialog,
 			final ArrayList<String> n_dir_filter) {
-//		final CheckBox cbmpd = (CheckBox)dialog.findViewById(R.id.sync_profile_master_dir_cb);
+//		final CheckedTextView cbmpd = (CheckedTextView)dialog.findViewById(R.id.sync_profile_master_dir_cb);
 		final TextView dlg_dir_filter=(TextView) dialog.findViewById(R.id.sync_profile_dir_filter);
 		final TextView dlg_msg=(TextView) dialog.findViewById(R.id.sync_profile_dlg_msg);
 
@@ -1730,8 +1748,8 @@ public class ProfileUtility {
 				}
 				if (d_fl.length()==0)  d_fl=mContext.getString(R.string.msgs_filter_list_dlg_not_specified);
 				dlg_dir_filter.setText(d_fl);
-//				if (n_dir_filter.size()!=0) cbmpd.setVisibility(CheckBox.VISIBLE);//.setEnabled(true);
-//				else cbmpd.setVisibility(CheckBox.GONE);//.setEnabled(false);
+//				if (n_dir_filter.size()!=0) cbmpd.setVisibility(CheckedTextView.VISIBLE);//.setEnabled(true);
+//				else cbmpd.setVisibility(CheckedTextView.GONE);//.setEnabled(false);
 			}
 			@Override
 			public void negativeResponse(Context arg0, Object[] arg1) {}
@@ -2572,8 +2590,8 @@ public class ProfileUtility {
 //		final EditText editdir = (EditText) dialog.findViewById(R.id.remote_profile_dir);
 //		final EditText editname = (EditText) dialog.findViewById(R.id.remote_profile_name);
 //		final EditText edithost = (EditText) dialog.findViewById(R.id.remote_profile_hostname);
-//		final CheckBox cb_use_hostname = (CheckBox) dialog.findViewById(R.id.remote_profile_use_computer_name);
-//		final CheckBox cb_use_user_pass = (CheckBox) dialog.findViewById(R.id.remote_profile_use_user_pass);
+//		final CheckedTextView cb_use_hostname = (CheckedTextView) dialog.findViewById(R.id.remote_profile_use_computer_name);
+//		final CheckedTextView cb_use_user_pass = (CheckedTextView) dialog.findViewById(R.id.remote_profile_use_user_pass);
 //		
 //		prof_addr = editaddr.getText().toString();
 //		prof_host = edithost.getText().toString();
@@ -2742,10 +2760,7 @@ public class ProfileUtility {
 					gp.profileAdapter.getItem(i).getType()+
 					gp.profileAdapter.getItem(i).getName();
 			if (item_key.equals(prof_grp+prof_type+prof_name)) {
-				if (gp.profileAdapter.getItem(i).getActive()
-						.equals(SMBSYNC_PROF_INACTIVE))
-					active=false;
-				else active=true;
+				active=gp.profileAdapter.getItem(i).isActive();
 			}
 		}
 		return active;
@@ -2784,7 +2799,7 @@ public class ProfileUtility {
 		eaEt4.setText("254");
 		baEt4.requestFocus();
 		
-		final CheckBox cb_use_port_number = (CheckBox) dialog.findViewById(R.id.scan_remote_ntwk_use_port);
+		final CheckedTextView ctv_use_port_number = (CheckedTextView) dialog.findViewById(R.id.scan_remote_ntwk_ctv_use_port);
 		final EditText et_port_number = (EditText) dialog.findViewById(R.id.scan_remote_ntwk_port_number);
 
 		final LinearLayout ll_port=(LinearLayout) dialog.findViewById(R.id.scan_remote_ntwk_port_option);
@@ -2799,19 +2814,20 @@ public class ProfileUtility {
 	    
 	    if (port_number.equals("")) {
 		    et_port_number.setEnabled(false);
-		    cb_use_port_number.setChecked(false);
+		    ctv_use_port_number.setChecked(false);
 	    } else {
 		    et_port_number.setEnabled(true);
 		    et_port_number.setText(port_number);
-		    cb_use_port_number.setChecked(true);
+		    ctv_use_port_number.setChecked(true);
 	    }
-	    cb_use_port_number.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+	    ctv_use_port_number.setOnClickListener(new OnClickListener(){
 			@Override
-			public void onCheckedChanged(CompoundButton buttonView,
-					boolean isChecked) {
+			public void onClick(View v) {
+				ctv_use_port_number.toggle();
+				boolean isChecked=ctv_use_port_number.isChecked();
 				et_port_number.setEnabled(isChecked);
 			}
-	    });
+		});
 	    
 	    final NotifyEvent ntfy_lv_click=new NotifyEvent(mContext);
 	    ntfy_lv_click.setListener(new NotifyEventListener(){
@@ -2913,7 +2929,7 @@ public class ProfileUtility {
 		final Button btn_cancel = (Button) dialog.findViewById(R.id.scan_remote_ntwk_btn_cancel);
 		final Button scan_cancel = (Button) dialog.findViewById(R.id.scan_remote_ntwk_progress_cancel);
 		
-		final CheckBox cb_use_port_number = (CheckBox) dialog.findViewById(R.id.scan_remote_ntwk_use_port);
+		final CheckedTextView ctv_use_port_number = (CheckedTextView) dialog.findViewById(R.id.scan_remote_ntwk_ctv_use_port);
 		final EditText et_port_number = (EditText) dialog.findViewById(R.id.scan_remote_ntwk_port_number);
 
 		tvmsg.setText("");
@@ -2950,7 +2966,7 @@ public class ProfileUtility {
 				mScanAddrCount=end_addr-begin_addr+1;
 				int scan_thread=60;
 				String scan_port="";
-				if (cb_use_port_number.isChecked()) scan_port=et_port_number.getText().toString();
+				if (ctv_use_port_number.isChecked()) scan_port=et_port_number.getText().toString();
 				for (int i=begin_addr; i<=end_addr;i+=scan_thread) {
 					if (!tc.isEnabled()) break;
 					boolean scan_end=false;
@@ -3401,8 +3417,8 @@ public class ProfileUtility {
 				return false;
 			}
 		});
-		NotifyEvent cb_ntfy=new NotifyEvent(mContext);
-		cb_ntfy.setListener(new NotifyEventListener() {
+		NotifyEvent ctv_ntfy=new NotifyEvent(mContext);
+		ctv_ntfy.setListener(new NotifyEventListener() {
 			@Override
 			public void positiveResponse(Context c,Object[] o) {
 				if (o!=null) {
@@ -3421,7 +3437,7 @@ public class ProfileUtility {
 				}
 			}
 		});
-		tfa.setCbCheckListener(cb_ntfy);
+		tfa.setCbCheckListener(ctv_ntfy);
 
 	    //OKボタンの指定
 		btn_ok.setEnabled(false);
@@ -3775,9 +3791,9 @@ public class ProfileUtility {
 						return false;
 					}
 				});
-				NotifyEvent cb_ntfy=new NotifyEvent(mContext);
+				NotifyEvent ctv_ntfy=new NotifyEvent(mContext);
 				// set file list thread response listener 
-				cb_ntfy.setListener(new NotifyEventListener() {
+				ctv_ntfy.setListener(new NotifyEventListener() {
 					@Override
 					public void positiveResponse(Context c,Object[] o) {
 						if (o!=null) {
@@ -3796,7 +3812,7 @@ public class ProfileUtility {
 						}
 					}
 				});
-				tfa.setCbCheckListener(cb_ntfy);
+				tfa.setCbCheckListener(ctv_ntfy);
 
 			    //OKボタンの指定
 				btn_ok.setEnabled(false);
@@ -4095,7 +4111,7 @@ public class ProfileUtility {
 	
 	private void addProfileList(String pl, ArrayList<ProfileListItem> sync,
 			ArrayList<ProfileListItem> rem, ArrayList<ProfileListItem> lcl,
-			HashMap<Integer, String[]> ispl) {
+			ArrayList<PreferenceParmListIItem> ispl) {
 		String profVer="";
 		if (pl.length()>7) profVer=pl.substring(0, 6);
 		if (profVer.equals(SMBSYNC_PROF_VER1)) {
@@ -5125,7 +5141,7 @@ public class ProfileUtility {
 		return result;
 	};
 	
-	static private void addImportSettingsParm(String pl, HashMap<Integer, String[]>ispl) {
+	static private void addImportSettingsParm(String pl, ArrayList<PreferenceParmListIItem>ispl) {
 		String tmp_ps=pl.substring(7,pl.length());
 		String[] tmp_pl=tmp_ps.split("\t");// {"type","name","active",options...};
 		String[] parm= new String[90];
@@ -5138,9 +5154,13 @@ public class ProfileUtility {
 			}
 		}
 		if (parm[1].equals(SMBSYNC_PROF_TYPE_SETTINGS)) {
-			int newkey=ispl.size();
-			String[] val = new String[]{parm[2],parm[3],parm[4]};
-			ispl.put(newkey, val);
+//			String[] val = new String[]{parm[2],parm[3],parm[4]};
+			PreferenceParmListIItem ppli=new PreferenceParmListIItem();
+			ppli.parms_key=parm[2];
+			ppli.parms_type=parm[3];
+			ppli.parms_value=parm[4];
+//			Log.v("","key="+parm[2]+", value="+parm[4]+", type="+parm[3]);
+			ispl.add(ppli);
 		}
 	};
 
@@ -5345,4 +5365,10 @@ public class ProfileUtility {
         }
     }
 
+}
+
+class PreferenceParmListIItem {
+	public String parms_key="";
+	public String parms_type="";
+	public String parms_value="";
 }

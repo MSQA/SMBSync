@@ -37,24 +37,17 @@
 	            tools:ignore="HardcodedText" />
 
 	        <TextView
-	            android:id="@+id/sync_history_list_view_status"
-	            android:layout_width="match_parent"
+	            android:id="@+id/sync_history_list_view_prof"
+	            android:layout_width="0dp"
 	            android:layout_height="wrap_content"
 	            android:layout_marginLeft="5dp"
-	            android:text="Success"
+	            android:layout_weight="1"
+	            android:ellipsize="end"
+	            android:maxLines="1"
+	            android:text="SyncProfile00000000"
 	            tools:ignore="HardcodedText" />
 	        
 	    </LinearLayout>
-
-	    <TextView
-	        android:id="@+id/sync_history_list_view_prof"
-	        android:layout_width="fill_parent"
-	        android:layout_height="wrap_content"
-	        android:layout_marginLeft="20dp"
-	        android:ellipsize="end"
-	        android:maxLines="1"
-	        android:text="SyncProfile00000000"
-	        tools:ignore="HardcodedText" />
 	    
 	    <LinearLayout
 	        android:id="@+id/sync_history_list_view_count"
@@ -132,6 +125,16 @@
 	        tools:ignore="HardcodedText" />
         
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/sync_history_list_view_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="10dp"
+        android:text="Success"
+        tools:ignore="HardcodedText" />
 
     <CheckBox
         android:id="@+id/sync_history_list_view_cb"

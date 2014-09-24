@@ -59,13 +59,16 @@
 
     </LinearLayout>
 
-    <CheckBox
-        android:id="@+id/sync_wizard_dlg_cb_all_files"
-        style="@style/check_box_style"
-        android:layout_width="match_parent"
+    <CheckedTextView
+        android:id="@+id/sync_wizard_dlg_ctv_all_files"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/msgs_sync_wizard_sync_all_files" />
-
+        android:layout_marginLeft="5dp"
+        android:checkMark="?android:attr/textCheckMark"
+        android:gravity="center_vertical"
+        android:text="@string/msgs_sync_wizard_sync_all_files" 
+        />
+    
     <LinearLayout
         android:id="@+id/sync_wizard_dlg_process_files_list"
         android:layout_width="match_parent"
@@ -74,13 +77,17 @@
         
         <include layout="@layout/divider_line1" />
         
-	    <CheckBox
-	        android:id="@+id/sync_wizard_dlg_overall_cb_audio"
-	        style="@style/check_box_style"
-	        android:layout_width="match_parent"
+	    <CheckedTextView
+	        android:id="@+id/sync_wizard_dlg_overall_ctv_audio"
+	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content"
+	        android:layout_marginLeft="5dp"
+	        android:checkMark="?android:attr/textCheckMark"
+	        android:gravity="center_vertical"
 	        android:text="@string/msgs_sync_wizard_sync_audio"
-	        android:typeface="monospace" />
+	        android:typeface="monospace"  
+	        />
+	    	    
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -100,14 +107,17 @@
 
         <include layout="@layout/divider_line1" />
         	    	    
-	    <CheckBox
-	        android:id="@+id/sync_wizard_dlg_overall_cb_image"
-	        style="@style/check_box_style"
-	        android:layout_width="match_parent"
+	    <CheckedTextView
+	        android:id="@+id/sync_wizard_dlg_overall_ctv_image"
+	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content"
-	        android:layout_marginTop="10dp"
+	        android:layout_marginLeft="5dp"
+	        android:checkMark="?android:attr/textCheckMark"
+	        android:gravity="center_vertical"
 	        android:text="@string/msgs_sync_wizard_sync_image"
-	        android:typeface="monospace" />
+	        android:typeface="monospace"  
+	        />
+	    	    
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -126,15 +136,18 @@
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <include layout="@layout/divider_line1" />
-        
-	    <CheckBox
-	        android:id="@+id/sync_wizard_dlg_overall_cb_video"
-	        style="@style/check_box_style"
-	        android:layout_width="match_parent"
+
+	    <CheckedTextView
+	        android:id="@+id/sync_wizard_dlg_overall_ctv_video"
+	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content"
-	        android:layout_marginTop="10dp"
+	        android:layout_marginLeft="5dp"
+	        android:checkMark="?android:attr/textCheckMark"
+	        android:gravity="center_vertical"
 	        android:text="@string/msgs_sync_wizard_sync_video"
-	        android:typeface="monospace" />
+	        android:typeface="monospace"  
+	        />
+        
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

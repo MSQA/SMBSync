@@ -7,13 +7,24 @@
     android:orientation="vertical"
     tools:ignore="SpUsage,InefficientWeight" >
 
-    <TextView
-        android:id="@+id/remote_profile_dlg_title"
-        android:layout_width="fill_parent"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text=""
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:layout_gravity="center"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/remote_profile_dlg_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <TextView
+            android:id="@+id/remote_profile_dlg_title_sub"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+    </LinearLayout>
 
     <include layout="@layout/divider_line1_turquoise" />
 
@@ -26,9 +37,7 @@
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="clip_horizontal|fill_horizontal"
             android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
             android:orientation="vertical" >
 
             <TextView
@@ -39,34 +48,28 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="#ffff0000" />
 
-            <LinearLayout
+		    <CheckedTextView
+		        android:id="@+id/remote_profile_ctv_active"
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginLeft="5dp"
+		        android:checkMark="?android:attr/textCheckMark"
+		        android:gravity="center_vertical"
+		        android:text="@string/msgs_remote_profile_dlg_active"
+		        android:textAppearance="?android:attr/textAppearanceSmall"
+		        />
+            
+            <EditText
+                android:id="@+id/remote_profile_name"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal" >
+                android:hint="@string/msgs_remote_profile_dlg_profile"
+                android:inputType="text"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:scrollHorizontally="true">
 
-                <CheckBox
-                    android:id="@+id/remote_profile_active"
-                    style="@style/check_box_style"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="5dp"
-                    android:text="@string/msgs_remote_profile_dlg_active"
-                    android:textAppearance="?android:attr/textAppearanceSmall" />
-
-                <EditText
-                    android:id="@+id/remote_profile_name"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1.0"
-                    android:hint="@string/msgs_remote_profile_dlg_profile"
-                    android:inputType="text"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:scrollHorizontally="true">
-
-                    <requestFocus />
-                </EditText>
-            </LinearLayout>
-
+                <requestFocus />
+            </EditText>
             
             <LinearLayout
                 android:layout_width="fill_parent"
@@ -98,20 +101,25 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="visible"
-                android:orientation="vertical" >
+                android:orientation="horizontal" >
 
-                <CheckBox
-                    android:id="@+id/remote_profile_use_port_number"
-                    style="@style/check_box_style"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/msgs_remote_profile_dlg_use_port_number"
-                    android:textAppearance="?android:attr/textAppearanceSmall" />
+			    <CheckedTextView
+			        android:id="@+id/remote_profile_ctv_use_port_number"
+			        android:layout_width="fill_parent"
+			        android:layout_height="wrap_content"
+		        	android:layout_marginLeft="5dp"
+			        android:checkMark="?android:attr/textCheckMark"
+			        android:gravity="center_vertical"
+			        android:text="@string/msgs_remote_profile_dlg_use_port_number"
+			        android:textAppearance="?android:attr/textAppearanceSmall"
+			        />
+                
 
                 <EditText
                     android:id="@+id/remote_profile_port"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:ems="10"
                     android:hint="@string/msgs_remote_profile_dlg_port"
                     android:inputType="number" 
@@ -119,14 +127,16 @@
 
             </LinearLayout>
 
-            <CheckBox
-                android:id="@+id/remote_profile_use_user_pass"
-                style="@style/check_box_style"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="@string/msgs_remote_profile_dlg_use_user_pass" />
+		    <CheckedTextView
+		        android:id="@+id/remote_profile_ctv_use_user_pass"
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginLeft="5dp"
+		        android:checkMark="?android:attr/textCheckMark"
+		        android:gravity="center_vertical"
+		        android:text="@string/msgs_remote_profile_dlg_use_user_pass"
+		        android:textAppearance="?android:attr/textAppearanceSmall"
+		        />
             
             <LinearLayout
                 android:layout_width="fill_parent"
@@ -149,14 +159,16 @@
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:hint="@string/msgs_remote_profile_dlg_password"
                     android:inputType="textPassword"/>
+                
+	            <Button
+	                android:id="@+id/remote_profile_logon"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_weight="1"
+	                android:textAppearance="?android:attr/textAppearanceSmall"
+	                android:text="@string/msgs_remote_profile_dlg_logon" />
+                
             </LinearLayout>
-
-            <Button
-                android:id="@+id/remote_profile_logon"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="@string/msgs_remote_profile_dlg_logon" />
             
             <LinearLayout
                 android:layout_width="fill_parent"

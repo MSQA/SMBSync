@@ -52,6 +52,9 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.wifi.WifiManager;
 import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.CheckedTextView;
 
 import com.sentaroh.android.Utilities.DateUtil;
 import com.sentaroh.android.Utilities.MiscUtil;
@@ -547,6 +550,15 @@ public class SMBSyncUtil {
 			result=lf.delete();
 		} else result=false;
 		return result;
+	};
+	
+	static public void setCheckedTextView(final CheckedTextView ctv) {
+		ctv.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				ctv.toggle();
+			}
+		});
 	};
 
     static public ArrayList<LogFileManagemntListItem> createLogFileList(GlobalParameters glblParms) {

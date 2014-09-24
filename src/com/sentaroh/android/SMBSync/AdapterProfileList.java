@@ -23,7 +23,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROF_TYPE_LOCAL;
+import static com.sentaroh.android.SMBSync.Constants.*;
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROF_TYPE_REMOTE;
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROF_TYPE_SYNC;
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_SYNC_TYPE_COPY;
@@ -167,7 +167,7 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
             		holder.iv_row_icon.setImageResource(R.drawable.ic_32_mobile);
             		
             	String act="";
-            	if (o.getActive().equals("A")) act=holder.tv_active_active;
+            	if (o.isActive()) act=holder.tv_active_active;
             	else act=holder.tv_active_inact;
             	holder.tv_row_active.setText(act);
             	holder.tv_row_name.setText(o.getName());
@@ -236,7 +236,7 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
                     }
                     holder.tv_row_synctype.setText(synctp);
                     
-                    if (!getItem(position).getActive().equals("A")) {
+                    if (!getItem(position).isActive()) {
                     	holder.tv_row_master.setEnabled(false);
                     	holder.tv_row_target.setEnabled(false);
                     	holder.iv_row_sync_dir_image.setImageResource(R.drawable.arrow_right_disabled); 
@@ -263,7 +263,7 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
                     	}
                     }
                 	
-                	if (!getItem(position).getActive().equals("A")) {
+                	if (!getItem(position).isActive()) {
                     	holder.tv_dir_name.setEnabled(false);
                     } else {
                     	holder.tv_dir_name.setEnabled(true);
@@ -410,6 +410,7 @@ class ProfileListItem implements Serializable,Comparable<ProfileListItem>{
 	public String getName()		{return profileName;}
 	public String getType()		{return profileType;}
 	public String getActive()	{return profileActive;}
+	public boolean isActive()   {return profileActive.equals(SMBSYNC_PROF_ACTIVE) ? true:false;}
 	public String getUser()		{return profileUser;}
 	public String getPass()		{return profilePass;}
 	public String getShare()	{return profileShare;}

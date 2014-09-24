@@ -28,13 +28,10 @@ import java.util.ArrayList;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.TextView;
-
+import android.widget.CheckedTextView;
 import com.sentaroh.android.Utilities.NotifyEvent;
 
 class ExportImportProfileListItem {
@@ -81,40 +78,37 @@ public class AdapterExportImportProfileList extends ArrayAdapter<ExportImportPro
 	
 	@Override
 	final public View getView(int position, View convertView, ViewGroup parent) {
-		ViewHolder holder;
+		final ViewHolder holder;
 		
         View v = convertView;
         if (v == null) {
             LayoutInflater vi = (LayoutInflater)c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             v = vi.inflate(id, null);
             holder=new ViewHolder();
-            holder.cb_item= (CheckBox) v.findViewById(R.id.export_import_profile_list_item_cb1);
-            holder.tv_itemtype= (TextView) v.findViewById(R.id.export_import_profile_list_item_itemtype);
-            holder.tv_itemname= (TextView) v.findViewById(R.id.export_import_profile_list_item_itemname);
+            holder.ctv_item= (CheckedTextView) v.findViewById(R.id.export_import_profile_list_item_item);
             v.setTag(holder);
         } else {
         	holder= (ViewHolder)v.getTag();
         }
         final ExportImportProfileListItem o = items.get(position);
         if (o != null) {
-        	holder.tv_itemname.setText(o.item_name);
-        	holder.tv_itemtype.setText(o.item_type);
+        	holder.ctv_item.setText(o.item_type+" "+o.item_name);
     		// 必ずsetChecked前にリスナを登録
-            holder.cb_item.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-    			@Override
-    			public void onCheckedChanged(CompoundButton buttonView,
-    				boolean isChecked) {
+        	holder.ctv_item.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					holder.ctv_item.toggle();
+					boolean isChecked=holder.ctv_item.isChecked();
     				o.isChecked=isChecked;
     				if (cb_ntfy!=null) cb_ntfy.notifyToListener(true, null);
-    			}
+				}
     		});
-        	holder.cb_item.setChecked(o.isChecked);
+        	holder.ctv_item.setChecked(o.isChecked);
        	}
         return v;
 	};
 
 	class ViewHolder {
-		TextView tv_itemname, tv_itemtype;
-		CheckBox cb_item;
+		CheckedTextView ctv_item;
 	}
 }

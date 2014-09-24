@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
     android:orientation="vertical"
     tools:ignore="HardcodedText,InefficientWeight" >
 
@@ -10,7 +12,6 @@
         android:id="@+id/scan_remote_ntwk_title"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
         android:gravity="center"
         android:text="@string/msgs_scan_ip_address_select_title"
         android:textAppearance="?android:attr/textAppearanceLarge" />
@@ -27,16 +28,13 @@
 	        android:id="@+id/scan_remote_ntwk_msg"
 	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content"
-	        android:layout_marginLeft="5dp"
 	        android:text=""
 	        android:textAppearance="?android:attr/textAppearanceMedium"
 	        android:textColor="#ff0000" />
         
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp" >
+            android:layout_height="wrap_content">
 
             <EditText
                 android:id="@+id/scan_remote_ntwk_begin_address_o1"
@@ -110,18 +108,18 @@
             android:id="@+id/scan_remote_ntwk_port_option"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp" 
             android:orientation="vertical">
         
-                <CheckBox
-                    android:id="@+id/scan_remote_ntwk_use_port"
-                    style="@style/check_box_style"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="5dp"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="@string/msgs_remote_profile_dlg_use_port_number" />
+			    <CheckedTextView
+			        android:id="@+id/scan_remote_ntwk_ctv_use_port"
+			        android:layout_width="fill_parent"
+			        android:layout_height="wrap_content"
+			        android:layout_marginLeft="5dp"
+			        android:checkMark="?android:attr/textCheckMark"
+			        android:gravity="center_vertical"
+			        android:text="@string/msgs_remote_profile_dlg_use_port_number" 
+			        android:textAppearance="?android:attr/textAppearanceMedium"/>
+                
 	            <EditText
 	                android:id="@+id/scan_remote_ntwk_port_number"
 	                android:layout_width="fill_parent"
@@ -172,8 +170,6 @@
         android:id="@+id/scan_remote_ntwk_scan_result_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
         android:layout_marginTop="10dp"
         android:text="@string/msgs_scan_ip_address_scan_result_title"
         android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -182,8 +178,6 @@
         android:id="@+id/scan_remote_ntwk_scan_result_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
         android:layout_marginTop="10dp"
         android:layout_weight="1" >
     </ListView>

@@ -30,8 +30,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.CheckedTextView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -129,19 +128,21 @@ public class ProfileCreationWizard {
 		final Button btn_next=(Button)dialog.findViewById(R.id.sync_wizard_dlg_next);
 		final TextView dlg_msg=(TextView) dialog.findViewById(R.id.sync_wizard_dlg_msg);
 
-		final CheckBox cb_all_files=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_cb_all_files);
-		final CheckBox cb_audio=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_cb_audio);
-		final CheckBox cb_image=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_cb_image);
-		final CheckBox cb_video=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_cb_video);
+		final CheckedTextView ctv_all_files=(CheckedTextView)dialog.findViewById(R.id.sync_wizard_dlg_ctv_all_files);
+		final CheckedTextView ctv_audio=(CheckedTextView)dialog.findViewById(R.id.sync_wizard_dlg_overall_ctv_audio);
+		final CheckedTextView ctv_image=(CheckedTextView)dialog.findViewById(R.id.sync_wizard_dlg_overall_ctv_image);
+		final CheckedTextView ctv_video=(CheckedTextView)dialog.findViewById(R.id.sync_wizard_dlg_overall_ctv_video);
 		final LinearLayout ll_sel_files=(LinearLayout)dialog.findViewById(R.id.sync_wizard_dlg_process_files_list);
-		cb_all_files.setChecked(true);
+		ctv_all_files.setChecked(true);
 		ll_sel_files.setVisibility(LinearLayout.GONE);
-		cb_all_files.setEnabled(false);
+		ctv_all_files.setEnabled(false);
 		setProcessedFileSelectCheckBoxEnabled(dialog,false);
 		setProcessedFileSelectCheckBoxChecked(dialog, false);
-		cb_all_files.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+		ctv_all_files.setOnClickListener(new OnClickListener(){
 			@Override
-			public void onCheckedChanged(CompoundButton arg0, boolean isChecked) {
+			public void onClick(View v) {
+				ctv_all_files.toggle();
+				boolean isChecked=ctv_all_files.isChecked();
 				if (isChecked) {
 					dlg_msg.setText(mContext.getString(R.string.msgs_sync_wizard_press_next));
 					btn_next.setEnabled(true);
@@ -163,21 +164,29 @@ public class ProfileCreationWizard {
 			}
 		});
 		
-		cb_audio.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+		ctv_audio.setOnClickListener(new OnClickListener(){
 			@Override
-			public void onCheckedChanged(CompoundButton arg0, boolean isChecked) {
+			public void onClick(View v) {
+				ctv_audio.toggle();
+				boolean isChecked=ctv_audio.isChecked();
 				checkFileTypeCB(dialog, isChecked, btn_next, dlg_msg);
 			}
 		});
-		cb_image.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+
+		ctv_image.setOnClickListener(new OnClickListener(){
 			@Override
-			public void onCheckedChanged(CompoundButton arg0, boolean isChecked) {
+			public void onClick(View v) {
+				ctv_image.toggle();
+				boolean isChecked=ctv_image.isChecked();
 				checkFileTypeCB(dialog, isChecked, btn_next, dlg_msg);
 			}
 		});
-		cb_video.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+
+		ctv_video.setOnClickListener(new OnClickListener(){
 			@Override
-			public void onCheckedChanged(CompoundButton arg0, boolean isChecked) {
+			public void onClick(View v) {
+				ctv_video.toggle();
+				boolean isChecked=ctv_video.isChecked();
 				checkFileTypeCB(dialog, isChecked, btn_next, dlg_msg);
 			}
 		});
@@ -261,8 +270,8 @@ public class ProfileCreationWizard {
 			public void onClick(View arg0) {
 //				mWizData.prof_name=et_prof_name.getText().toString();
 				mWizData.file_filter.clear();
-				if (!cb_all_files.isChecked()) {
-					if (cb_audio.isChecked()) {
+				if (!ctv_all_files.isChecked()) {
+					if (ctv_audio.isChecked()) {
 						mWizData.file_filter.add("I*.aac");
 						mWizData.file_filter.add("I*.aif");
 						mWizData.file_filter.add("I*.aifc");
@@ -280,7 +289,7 @@ public class ProfileCreationWizard {
 						mWizData.file_filter.add("I*.wav");
 						mWizData.file_filter.add("I*.wma");
 					}
-					if (cb_image.isChecked()) {
+					if (ctv_image.isChecked()) {
 						mWizData.file_filter.add("I*.bmp");
 						mWizData.file_filter.add("I*.cgm");
 						mWizData.file_filter.add("I*.djv");
@@ -306,7 +315,7 @@ public class ProfileCreationWizard {
 						mWizData.file_filter.add("I*.xpm");
 						mWizData.file_filter.add("I*.xwd");
 					}
-					if (cb_video.isChecked()) {
+					if (ctv_video.isChecked()) {
 						mWizData.file_filter.add("I*.avi");
 						mWizData.file_filter.add("I*.m4u");
 						mWizData.file_filter.add("I*.mov");
@@ -343,7 +352,7 @@ public class ProfileCreationWizard {
 					if (!profUtil.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_SYNC, mWizData.sync_name) &&
 							!profUtil.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT, mWizData.master_type, mWizData.master_name) &&
 							!profUtil.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT, mWizData.target_type, mWizData.target_name)) {
-						cb_all_files.setEnabled(true);
+						ctv_all_files.setEnabled(true);
 						setProcessedFileSelectCheckBoxEnabled(dialog,true);
 						setProcessedFileSelectCheckBoxChecked(dialog, false);
 						if (isProcessedFileSelected(dialog)) {
@@ -354,7 +363,7 @@ public class ProfileCreationWizard {
 							dlg_msg.setText(mContext.getString(R.string.msgs_sync_wizard_sync_select_processed_file));
 						}
  					} else {
- 						cb_all_files.setEnabled(false);
+ 						ctv_all_files.setEnabled(false);
  						setProcessedFileSelectCheckBoxEnabled(dialog,false);
  						setProcessedFileSelectCheckBoxChecked(dialog, false);
 						dlg_msg.setText(mContext.getString(R.string.msgs_sync_wizard_profname_invalid));
@@ -363,7 +372,7 @@ public class ProfileCreationWizard {
 				} else {
 					dlg_msg.setText(mContext.getString(R.string.msgs_sync_wizard_specify_profname));
 					btn_next.setEnabled(false);
-					cb_all_files.setEnabled(false);
+					ctv_all_files.setEnabled(false);
 					setProcessedFileSelectCheckBoxEnabled(dialog,false);
 					setProcessedFileSelectCheckBoxChecked(dialog, false);
 				}
@@ -396,33 +405,33 @@ public class ProfileCreationWizard {
 	};
 	
 	private void setProcessedFileSelectCheckBoxEnabled(Dialog dialog, boolean enabled) {
-		final CheckBox cb_audio=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_cb_audio);
-		final CheckBox cb_image=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_cb_image);
-		final CheckBox cb_video=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_cb_video);
-		cb_audio.setEnabled(enabled);
-		cb_image.setEnabled(enabled);
-		cb_video.setEnabled(enabled);
+		final CheckedTextView ctv_audio=(CheckedTextView)dialog.findViewById(R.id.sync_wizard_dlg_overall_ctv_audio);
+		final CheckedTextView ctv_image=(CheckedTextView)dialog.findViewById(R.id.sync_wizard_dlg_overall_ctv_image);
+		final CheckedTextView ctv_video=(CheckedTextView)dialog.findViewById(R.id.sync_wizard_dlg_overall_ctv_video);
+		ctv_audio.setEnabled(enabled);
+		ctv_image.setEnabled(enabled);
+		ctv_video.setEnabled(enabled);
 	};
 	
 	private void setProcessedFileSelectCheckBoxChecked(Dialog dialog, boolean checked) {
-		final CheckBox cb_audio=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_cb_audio);
-		final CheckBox cb_image=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_cb_image);
-		final CheckBox cb_video=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_cb_video);
-		cb_audio.setChecked(checked);
-		cb_image.setChecked(checked);
-		cb_video.setChecked(checked);
+		final CheckedTextView ctv_audio=(CheckedTextView)dialog.findViewById(R.id.sync_wizard_dlg_overall_ctv_audio);
+		final CheckedTextView ctv_image=(CheckedTextView)dialog.findViewById(R.id.sync_wizard_dlg_overall_ctv_image);
+		final CheckedTextView ctv_video=(CheckedTextView)dialog.findViewById(R.id.sync_wizard_dlg_overall_ctv_video);
+		ctv_audio.setChecked(checked);
+		ctv_image.setChecked(checked);
+		ctv_video.setChecked(checked);
 	};
 	
 	private boolean isProcessedFileSelected(Dialog dialog) {
-		final CheckBox cb_audio=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_cb_audio);
-		final CheckBox cb_image=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_cb_image);
-		final CheckBox cb_video=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_overall_cb_video);
-		final CheckBox cb_all_files=(CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_cb_all_files);
+		final CheckedTextView ctv_audio=(CheckedTextView)dialog.findViewById(R.id.sync_wizard_dlg_overall_ctv_audio);
+		final CheckedTextView ctv_image=(CheckedTextView)dialog.findViewById(R.id.sync_wizard_dlg_overall_ctv_image);
+		final CheckedTextView ctv_video=(CheckedTextView)dialog.findViewById(R.id.sync_wizard_dlg_overall_ctv_video);
+		final CheckedTextView ctv_all_files=(CheckedTextView)dialog.findViewById(R.id.sync_wizard_dlg_ctv_all_files);
 		boolean result=false;
-		if (cb_all_files.isChecked()) {
+		if (ctv_all_files.isChecked()) {
 			result=true;
 		} else {
-			if (cb_audio.isChecked() || cb_image.isChecked() || cb_video.isChecked()) {
+			if (ctv_audio.isChecked() || ctv_image.isChecked() || ctv_video.isChecked()) {
 				result=true;
 			}
 		}
@@ -770,7 +779,7 @@ public class ProfileCreationWizard {
 		
 		final Button btn_scan_network=(Button)dialog.findViewById((R.id.sync_wizard_dlg_remote_get_addr_btn));
 		final EditText et_remote_hostname=(EditText)dialog.findViewById((R.id.sync_wizard_dlg_remote_server));
-		final CheckBox cb_use_user_pass=(CheckBox)dialog.findViewById((R.id.sync_wizard_dlg_remote_use_user_pass));
+		final CheckedTextView ctv_use_user_pass=(CheckedTextView)dialog.findViewById((R.id.sync_wizard_dlg_ctv_remote_use_user_pass));
 		final EditText et_remote_user=(EditText)dialog.findViewById((R.id.sync_wizard_dlg_remote_user));
 		final EditText et_remote_pass=(EditText)dialog.findViewById((R.id.sync_wizard_dlg_remote_password));
 		final Button btn_remote_share=(Button)dialog.findViewById((R.id.sync_wizard_dlg_remote_share_btn));
@@ -793,7 +802,7 @@ public class ProfileCreationWizard {
 		et_remote_share.setText(mWizData.prof_node[node_pos].remote_share_name);
 		et_remote_dir.setText(mWizData.prof_node[node_pos].remote_dir_name);
 
-		cb_use_user_pass.setEnabled(false);
+		ctv_use_user_pass.setEnabled(false);
 		et_remote_user.setEnabled(false);
 		et_remote_pass.setEnabled(false);
 		btn_remote_share.setEnabled(false);
@@ -876,12 +885,14 @@ public class ProfileCreationWizard {
 			public void onTextChanged(CharSequence arg0, int arg1, int arg2,int arg3) {}
 		});
 
-		cb_use_user_pass.setChecked(mWizData.prof_node[node_pos].remote_use_user_pass);
+		ctv_use_user_pass.setChecked(mWizData.prof_node[node_pos].remote_use_user_pass);
 		et_remote_user.setEnabled(true);
 		et_remote_pass.setEnabled(true);
-		cb_use_user_pass.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+		ctv_use_user_pass.setOnClickListener(new OnClickListener(){
 			@Override
-			public void onCheckedChanged(CompoundButton arg0, boolean isChecked) {
+			public void onClick(View v) {
+				ctv_use_user_pass.toggle();
+//				boolean isChecked=ctv_use_user_pass.isChecked();
 				setRemoteProfileViewVisibility(dialog);
 			}
 		});
@@ -916,7 +927,7 @@ public class ProfileCreationWizard {
 		btnLogon.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				String user=null, pass=null;
-				if (cb_use_user_pass.isChecked()) {
+				if (ctv_use_user_pass.isChecked()) {
 					if (et_remote_user.getText().length()>0) user=et_remote_user.getText().toString();
 					if (et_remote_pass.getText().length()>0) pass=et_remote_pass.getText().toString();
 				}
@@ -1091,7 +1102,7 @@ public class ProfileCreationWizard {
 					mWizData.prof_node[node_pos].remote_host_name=et_remote_hostname.getText().toString();
 				}
 				mWizData.prof_node[node_pos].remote_share_name=et_remote_share.getText().toString();
-				mWizData.prof_node[node_pos].remote_use_user_pass=cb_use_user_pass.isChecked();
+				mWizData.prof_node[node_pos].remote_use_user_pass=ctv_use_user_pass.isChecked();
 				mWizData.prof_node[node_pos].remote_user_name=et_remote_user.getText().toString();
 				mWizData.prof_node[node_pos].remote_user_pass=et_remote_pass.getText().toString();
 				if (node_pos==1) buildSyncProfile();
@@ -1110,7 +1121,7 @@ public class ProfileCreationWizard {
 //		final TextView dlg_msg=(TextView) dialog.findViewById(R.id.sync_wizard_dlg_msg);
 //		final Button btn_scan_network=(Button)dialog.findViewById((R.id.sync_wizard_dlg_remote_get_addr_btn));
 		final EditText et_remote_hostname=(EditText)dialog.findViewById((R.id.sync_wizard_dlg_remote_server));
-		final CheckBox cb_use_user_pass=(CheckBox)dialog.findViewById((R.id.sync_wizard_dlg_remote_use_user_pass));
+		final CheckedTextView ctv_use_user_pass=(CheckedTextView)dialog.findViewById((R.id.sync_wizard_dlg_ctv_remote_use_user_pass));
 		final EditText et_remote_user=(EditText)dialog.findViewById((R.id.sync_wizard_dlg_remote_user));
 		final EditText et_remote_pass=(EditText)dialog.findViewById((R.id.sync_wizard_dlg_remote_password));
 		final Button btn_remote_share=(Button)dialog.findViewById((R.id.sync_wizard_dlg_remote_share_btn));
@@ -1122,7 +1133,7 @@ public class ProfileCreationWizard {
 		final Button btn_scan_network=(Button)dialog.findViewById((R.id.sync_wizard_dlg_remote_get_addr_btn));
 		
 		et_remote_hostname.setEnabled(false);
-		cb_use_user_pass.setEnabled(false);
+		ctv_use_user_pass.setEnabled(false);
 		et_remote_user.setEnabled(false);
 		et_remote_pass.setEnabled(false);
 		btn_remote_share.setEnabled(false);
@@ -1138,7 +1149,7 @@ public class ProfileCreationWizard {
 		final TextView dlg_msg=(TextView) dialog.findViewById(R.id.sync_wizard_dlg_msg);
 //		final Button btn_scan_network=(Button)dialog.findViewById((R.id.sync_wizard_dlg_remote_get_addr_btn));
 		final EditText et_remote_hostname=(EditText)dialog.findViewById((R.id.sync_wizard_dlg_remote_server));
-		final CheckBox cb_use_user_pass=(CheckBox)dialog.findViewById((R.id.sync_wizard_dlg_remote_use_user_pass));
+		final CheckedTextView ctv_use_user_pass=(CheckedTextView)dialog.findViewById((R.id.sync_wizard_dlg_ctv_remote_use_user_pass));
 		final EditText et_remote_user=(EditText)dialog.findViewById((R.id.sync_wizard_dlg_remote_user));
 		final EditText et_remote_pass=(EditText)dialog.findViewById((R.id.sync_wizard_dlg_remote_password));
 		final Button btn_remote_share=(Button)dialog.findViewById((R.id.sync_wizard_dlg_remote_share_btn));
@@ -1150,7 +1161,7 @@ public class ProfileCreationWizard {
 		final Button btn_scan_network=(Button)dialog.findViewById((R.id.sync_wizard_dlg_remote_get_addr_btn));
 		
 		et_remote_hostname.setEnabled(true);
-		cb_use_user_pass.setEnabled(true);
+		ctv_use_user_pass.setEnabled(true);
 		et_remote_user.setEnabled(true);
 		et_remote_pass.setEnabled(true);
 		btn_remote_share.setEnabled(true);
@@ -1163,7 +1174,7 @@ public class ProfileCreationWizard {
 		et_remote_share.setEnabled(false);
 		
 //		boolean nw=false;
-//		if (cb_use_hostname.isChecked()) {
+//		if (ctv_use_hostname.isChecked()) {
 //			if (et_remote_hostname.getText().length()>0) nw=true;
 //		} else {
 //			if (et_remote_addr.getText().length()>0) {
@@ -1186,7 +1197,7 @@ public class ProfileCreationWizard {
 //				}
 //			}
 //		}
-//		cb_use_user_pass.setEnabled(false);
+//		ctv_use_user_pass.setEnabled(false);
 //		et_remote_user.setEnabled(false);
 //		et_remote_pass.setEnabled(false);
 //		btn_remote_share.setEnabled(false);
@@ -1196,8 +1207,8 @@ public class ProfileCreationWizard {
 //		btn_next.setEnabled(false);
 		
 		if (et_remote_hostname.getText().length()>0) {
-			cb_use_user_pass.setEnabled(true);
-			if (cb_use_user_pass.isChecked()) {
+			ctv_use_user_pass.setEnabled(true);
+			if (ctv_use_user_pass.isChecked()) {
 				et_remote_user.setVisibility(CheckBox.VISIBLE);
 				et_remote_pass.setVisibility(CheckBox.VISIBLE);
 				btnLogon.setVisibility(Button.VISIBLE);
@@ -1234,7 +1245,7 @@ public class ProfileCreationWizard {
 				}
 			}
 			//set Next button
-			if (cb_use_user_pass.isChecked()) {
+			if (ctv_use_user_pass.isChecked()) {
 				if (et_remote_user.getText().length()>0 && et_remote_pass.getText().length()>0) {
 					if (remote_user_pass_verified) {
 						if (et_remote_share.getText().length()>0) {
@@ -1250,7 +1261,7 @@ public class ProfileCreationWizard {
 				} else btn_next.setEnabled(false);
 			}
 			//set Navigate message
-			if (cb_use_user_pass.isChecked()) {
+			if (ctv_use_user_pass.isChecked()) {
 				if (et_remote_user.getText().length()==0 || et_remote_pass.getText().length()==0) {
 					dlg_msg.setText(mContext.getString(R.string.msgs_sync_wizard_specify_user_pass));
 				} else {
@@ -1289,7 +1300,7 @@ public class ProfileCreationWizard {
 			}
 
 		} else {
-			cb_use_user_pass.setEnabled(false);
+			ctv_use_user_pass.setEnabled(false);
 			dlg_msg.setText(mContext.getString(R.string.msgs_sync_wizard_specify_server));
 			btn_next.setEnabled(false);
 			et_remote_user.setEnabled(false);
@@ -1336,22 +1347,31 @@ public class ProfileCreationWizard {
 		final TextView tv_file_filter=(TextView) dialog.findViewById(R.id.sync_wizard_dlg_sync_file_filter);
 		final Button btn_dir_filter=(Button) dialog.findViewById(R.id.sync_wizard_dlg_sync_dir_filter_btn);
 		final TextView tv_dir_filter=(TextView) dialog.findViewById(R.id.sync_wizard_dlg_sync_dir_filter);
-		final CheckBox cb_master_dir=(CheckBox) dialog.findViewById(R.id.sync_wizard_dlg_sync_master_root_dir_file);
-		final CheckBox cb_confirm=(CheckBox) dialog.findViewById(R.id.sync_wizard_dlg_sync_confirm);
-		final CheckBox cb_last_modified=(CheckBox) dialog.findViewById(R.id.sync_wizard_dlg_sync_last_modified);
-		final CheckBox cb_not_use_last_mod_remote = (CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_not_use_last_modified_remote_file_for_diff);
-		final CheckBox cb_retry = (CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_sync_retry_if_error_occured);
-		final CheckBox cbSyncEmptyDir = (CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_sync_empty_directory);
-		final CheckBox cbSyncHiddenDir = (CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_sync_hidden_directory);
-		final CheckBox cbSyncHiddenFile = (CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_sync_hidden_file);
-		final CheckBox cbSyncSubDir = (CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_sync_sub_dir);
+		final CheckedTextView ctv_master_dir=(CheckedTextView) dialog.findViewById(R.id.sync_wizard_dlg_ctv_sync_master_root_dir_file);
+		SMBSyncUtil.setCheckedTextView(ctv_master_dir);
+		final CheckedTextView ctv_confirm=(CheckedTextView) dialog.findViewById(R.id.sync_wizard_dlg_ctv_sync_confirm);
+		SMBSyncUtil.setCheckedTextView(ctv_confirm);
+		final CheckedTextView ctv_last_modified=(CheckedTextView) dialog.findViewById(R.id.sync_wizard_dlg_ctv_sync_last_modified);
+		SMBSyncUtil.setCheckedTextView(ctv_last_modified);
+		final CheckedTextView ctv_not_use_last_mod_remote = (CheckedTextView)dialog.findViewById(R.id.sync_wizard_dlg_ctv_not_use_last_modified_remote_file_for_diff);
+		SMBSyncUtil.setCheckedTextView(ctv_not_use_last_mod_remote);
+		final CheckedTextView ctv_retry = (CheckedTextView)dialog.findViewById(R.id.sync_wizard_dlg_ctv_sync_retry_if_error_occured);
+		SMBSyncUtil.setCheckedTextView(ctv_retry);
+		final CheckedTextView ctv_SyncEmptyDir = (CheckedTextView)dialog.findViewById(R.id.sync_wizard_dlg_ctv_sync_empty_directory);
+		SMBSyncUtil.setCheckedTextView(ctv_SyncEmptyDir);
+		final CheckedTextView ctv_SyncHiddenDir = (CheckedTextView)dialog.findViewById(R.id.sync_wizard_dlg_ctv_sync_hidden_directory);
+		SMBSyncUtil.setCheckedTextView(ctv_SyncHiddenDir);
+		final CheckedTextView ctv_SyncHiddenFile = (CheckedTextView)dialog.findViewById(R.id.sync_wizard_dlg_ctv_sync_hidden_file);
+		SMBSyncUtil.setCheckedTextView(ctv_SyncHiddenFile);
+		final CheckedTextView ctv_SyncSubDir = (CheckedTextView)dialog.findViewById(R.id.sync_wizard_dlg_ctv_sync_sub_dir);
+		SMBSyncUtil.setCheckedTextView(ctv_SyncSubDir);
 
-		cbSyncEmptyDir.setChecked(false);
-		cbSyncHiddenDir.setChecked(true);
-		cbSyncHiddenFile.setChecked(true);
-		cbSyncSubDir.setChecked(true);
+		ctv_SyncEmptyDir.setChecked(false);
+		ctv_SyncHiddenDir.setChecked(true);
+		ctv_SyncHiddenFile.setChecked(true);
+		ctv_SyncSubDir.setChecked(true);
 		
-		cb_retry.setChecked(false);
+		ctv_retry.setChecked(false);
 		profUtil.setSyncOptionSpinner(spinner_sync, "");
 		
 		final EditText et_sync_prof=(EditText) dialog.findViewById(R.id.sync_wizard_dlg_sync_prof_name);
@@ -1380,10 +1400,10 @@ public class ProfileCreationWizard {
 								spinner_sync.setEnabled(true);
 								btn_file_filter.setEnabled(true);
 								btn_dir_filter.setEnabled(true);
-								cb_master_dir.setEnabled(true);
-								cb_confirm.setEnabled(true);
-								cb_last_modified.setEnabled(true);
-								cb_not_use_last_mod_remote.setEnabled(true);
+								ctv_master_dir.setEnabled(true);
+								ctv_confirm.setEnabled(true);
+								ctv_last_modified.setEnabled(true);
+								ctv_not_use_last_mod_remote.setEnabled(true);
 								et_sync_prof.setEnabled(true);
 
 							} else {
@@ -1405,20 +1425,20 @@ public class ProfileCreationWizard {
 			public void onTextChanged(CharSequence arg0, int arg1, int arg2,int arg3) {}
 		});
 
-		cb_master_dir.setChecked(true);
-//		cb_master_dir.setText(mContext.getString(R.string.msgs_sync_profile_master_dir_cb_enable));
-//		cb_master_dir.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+		ctv_master_dir.setChecked(true);
+//		ctv_master_dir.setText(mContext.getString(R.string.msgs_sync_profile_master_dir_ctv_enable));
+//		ctv_master_dir.setOnCheckedChangeListener(new OnCheckedChangeListener(){
 //			@Override
 //			public void onCheckedChanged(CompoundButton buttonView,
 //					boolean isChecked) {
-//				if (isChecked) cb_master_dir.setText(mContext.getString(R.string.msgs_sync_profile_master_dir_cb_enable));
-//				else cb_master_dir.setText(mContext.getString(R.string.msgs_sync_profile_master_dir_cb_disable));
+//				if (isChecked) ctv_master_dir.setText(mContext.getString(R.string.msgs_sync_profile_master_dir_ctv_enable));
+//				else ctv_master_dir.setText(mContext.getString(R.string.msgs_sync_profile_master_dir_ctv_disable));
 //			}
 //		});
 		
-		cb_confirm.setChecked(true);
-		cb_last_modified.setChecked(false);
-		cb_not_use_last_mod_remote.setChecked(false);
+		ctv_confirm.setChecked(true);
+		ctv_last_modified.setChecked(false);
+		ctv_not_use_last_mod_remote.setChecked(false);
 
 		if (mWizData.file_filter.size()==0) tv_file_filter.setText(mContext.getString(R.string.msgs_filter_list_dlg_not_specified));
 		else {
@@ -1487,8 +1507,8 @@ public class ProfileCreationWizard {
 							d_fl=mContext.getString(R.string.msgs_filter_list_dlg_not_specified);
 						}
 						tv_dir_filter.setText(d_fl);
-						if (mWizData.dir_filter.size()!=0) cb_master_dir.setEnabled(true);
-						else cb_master_dir.setEnabled(false);
+						if (mWizData.dir_filter.size()!=0) ctv_master_dir.setEnabled(true);
+						else ctv_master_dir.setEnabled(false);
 					}
 					@Override
 					public void negativeResponse(Context arg0, Object[] arg1) {}
@@ -1521,16 +1541,16 @@ public class ProfileCreationWizard {
 		btn_ok.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View arg0) {
-				mWizData.confirm_required=cb_confirm.isChecked();
-				mWizData.process_master_file_dir=cb_master_dir.isChecked();
-				mWizData.use_system_last_mod=cb_last_modified.isChecked();	
-				mWizData.not_use_last_mod_remote=cb_not_use_last_mod_remote.isChecked();
+				mWizData.confirm_required=ctv_confirm.isChecked();
+				mWizData.process_master_file_dir=ctv_master_dir.isChecked();
+				mWizData.use_system_last_mod=ctv_last_modified.isChecked();	
+				mWizData.not_use_last_mod_remote=ctv_not_use_last_mod_remote.isChecked();
 				mWizData.mirror_type=spinner_sync.getSelectedItemPosition();
-				mWizData.sync_retry_effective=cb_retry.isChecked();
-				mWizData.sync_empty_directory=cbSyncEmptyDir.isChecked();
-				mWizData.sync_hidden_directory=cbSyncHiddenDir.isChecked();
-				mWizData.sync_hidden_file=cbSyncHiddenFile.isChecked();
-				mWizData.sync_sub_dir=cbSyncSubDir.isChecked();
+				mWizData.sync_retry_effective=ctv_retry.isChecked();
+				mWizData.sync_empty_directory=ctv_SyncEmptyDir.isChecked();
+				mWizData.sync_hidden_directory=ctv_SyncHiddenDir.isChecked();
+				mWizData.sync_hidden_file=ctv_SyncHiddenFile.isChecked();
+				mWizData.sync_sub_dir=ctv_SyncSubDir.isChecked();
 				NotifyEvent ntfy=new NotifyEvent(mContext);
 				ntfy.setListener(new NotifyEventListener(){
 					@Override
@@ -1569,19 +1589,19 @@ public class ProfileCreationWizard {
 //		final TextView tv_file_filter=(TextView) dialog.findViewById(R.id.sync_wizard_dlg_sync_file_filter);
 		final Button btn_dir_filter=(Button) dialog.findViewById(R.id.sync_wizard_dlg_sync_dir_filter_btn);
 //		final TextView tv_dir_filter=(TextView) dialog.findViewById(R.id.sync_wizard_dlg_sync_dir_filter);
-		final CheckBox cb_master_dir=(CheckBox) dialog.findViewById(R.id.sync_wizard_dlg_sync_master_root_dir_file);
-		final CheckBox cb_confirm=(CheckBox) dialog.findViewById(R.id.sync_wizard_dlg_sync_confirm);
-		final CheckBox cb_last_modified=(CheckBox) dialog.findViewById(R.id.sync_wizard_dlg_sync_last_modified);
-		final CheckBox cb_not_use_last_mod_remote = (CheckBox)dialog.findViewById(R.id.sync_wizard_dlg_not_use_last_modified_remote_file_for_diff);
+		final CheckedTextView ctv_master_dir=(CheckedTextView) dialog.findViewById(R.id.sync_wizard_dlg_ctv_sync_master_root_dir_file);
+		final CheckedTextView ctv_confirm=(CheckedTextView) dialog.findViewById(R.id.sync_wizard_dlg_ctv_sync_confirm);
+		final CheckedTextView ctv_last_modified=(CheckedTextView) dialog.findViewById(R.id.sync_wizard_dlg_ctv_sync_last_modified);
+		final CheckedTextView ctv_not_use_last_mod_remote = (CheckedTextView)dialog.findViewById(R.id.sync_wizard_dlg_ctv_not_use_last_modified_remote_file_for_diff);
 //		final EditText et_sync_prof=(EditText) dialog.findViewById(R.id.sync_wizard_dlg_sync_prof_name);
 		
 		spinner_sync.setEnabled(false);
 		btn_file_filter.setEnabled(false);
 		btn_dir_filter.setEnabled(false);
-		cb_master_dir.setEnabled(false);
-		cb_confirm.setEnabled(false);
-		cb_last_modified.setEnabled(false);
-		cb_not_use_last_mod_remote.setEnabled(false);
+		ctv_master_dir.setEnabled(false);
+		ctv_confirm.setEnabled(false);
+		ctv_last_modified.setEnabled(false);
+		ctv_not_use_last_mod_remote.setEnabled(false);
 
 	};
 	

@@ -25,11 +25,12 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.CheckBox;
+import android.widget.CheckedTextView;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -183,7 +184,7 @@ public class ProfileMaintLocalFragment extends DialogFragment{
     	SavedViewContents sv=new SavedViewContents();
 		
 		final EditText editname = (EditText)mDialog.findViewById(R.id.local_profile_name);
-		final CheckBox cb_active = (CheckBox) mDialog.findViewById(R.id.local_profile_active);
+		final CheckedTextView ctv_active = (CheckedTextView) mDialog.findViewById(R.id.local_profile_ctv_active);
 
 		final EditText editdir = (EditText) mDialog.findViewById(R.id.local_profile_dir);
 		final Spinner spinner=(Spinner) mDialog.findViewById(R.id.local_profile_lmp_btn);
@@ -191,7 +192,7 @@ public class ProfileMaintLocalFragment extends DialogFragment{
         sv.prof_name_et=editname.getText();
         sv.prof_name_et_spos=editname.getSelectionStart();
         sv.prof_name_et_epos=editname.getSelectionEnd();
-        sv.cb_active=cb_active.isChecked();
+        sv.cb_active=ctv_active.isChecked();
 
         sv.lmp_pos=spinner.getSelectedItemPosition();
         sv.lcl_dir=editdir.getText().toString();
@@ -204,7 +205,7 @@ public class ProfileMaintLocalFragment extends DialogFragment{
 
     private void restoreViewContents(final SavedViewContents sv) {
 		final EditText editname = (EditText)mDialog.findViewById(R.id.local_profile_name);
-		final CheckBox cb_active = (CheckBox) mDialog.findViewById(R.id.local_profile_active);
+		final CheckedTextView ctv_active = (CheckedTextView) mDialog.findViewById(R.id.local_profile_ctv_active);
 
 		final EditText editdir = (EditText) mDialog.findViewById(R.id.local_profile_dir);
 		final Spinner spinner=(Spinner) mDialog.findViewById(R.id.local_profile_lmp_btn);
@@ -218,7 +219,7 @@ public class ProfileMaintLocalFragment extends DialogFragment{
 		        editname.setText(sv.prof_name_et);
 //		        editname.setSelection(sv.prof_name_et_spos);
 //		        editname.getSelectionEnd();
-		        cb_active.setChecked(sv.cb_active);
+		        ctv_active.setChecked(sv.cb_active);
 
 		        sv.lmp_pos=spinner.getSelectedItemPosition();
 		        sv.lcl_dir=editdir.getText().toString();
@@ -255,7 +256,8 @@ public class ProfileMaintLocalFragment extends DialogFragment{
     	if (DEBUG_ENABLE) Log.v(APPLICATION_TAG,SUB_APPLICATION_TAG+"initViewWidget");
 		
 		if (mOpType.equals("EDIT")) editProfile(mCurrentProfileListItem);
-		else if (mOpType.equals("ADD")) addProfile(mCurrentProfileListItem);
+		else if (mOpType.equals("ADD")) addProfile(false, mCurrentProfileListItem);
+		else if (mOpType.equals("COPY")) addProfile(true, mCurrentProfileListItem);
 		
     };
 
@@ -285,13 +287,15 @@ public class ProfileMaintLocalFragment extends DialogFragment{
 //	    show(fm,APPLICATION_TAG);
     };
 
-    final private void addProfile(final ProfileListItem pfli) {
+    final private void addProfile(boolean copy, final ProfileListItem pfli) {
 		mDialog.setContentView(R.layout.edit_profile_local);
 
 		final TextView dlg_title=(TextView) mDialog.findViewById(R.id.local_profile_dlg_title);
-		dlg_title.setText(mContext.getString(R.string.msgs_add_local_profile));
+		if (!copy) dlg_title.setText(mContext.getString(R.string.msgs_add_local_profile));
+		else dlg_title.setText(mContext.getString(R.string.msgs_copy_local_profile));
+		
 		final TextView dlg_msg=(TextView) mDialog.findViewById(R.id.local_profile_dlg_msg);
-		final CheckBox tg = (CheckBox) mDialog.findViewById(R.id.local_profile_active);
+		final CheckedTextView ctv_active = (CheckedTextView) mDialog.findViewById(R.id.local_profile_ctv_active);
 		final EditText editdir = (EditText) mDialog.findViewById(R.id.local_profile_dir);
 		editdir.setText(pfli.getDir());
 		final EditText editname = (EditText) mDialog.findViewById(R.id.local_profile_name);
@@ -304,8 +308,16 @@ public class ProfileMaintLocalFragment extends DialogFragment{
 		
 		CommonDialog.setDlgBoxSizeLimit(mDialog,true);
 		
-		if (pfli.getActive().equals("A")) tg.setChecked(true);
-		else tg.setChecked(false);
+		ctv_active.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				ctv_active.toggle();
+			}
+		});
+
+//		if (pfli.getActive().equals("A")) ctv_active.setChecked(true);
+//		else ctv_active.setChecked(false);
+		ctv_active.setChecked(true);
 		
 		// GET_btn1ボタンの指定
 		Button btnGet1 = (Button) mDialog.findViewById(R.id.local_profile_get_btn1);
@@ -424,7 +436,7 @@ public class ProfileMaintLocalFragment extends DialogFragment{
 						editname.requestFocus();
 					}
 				}
-				if (tg.isChecked()) prof_act = SMBSYNC_PROF_ACTIVE;
+				if (ctv_active.isChecked()) prof_act = SMBSYNC_PROF_ACTIVE;
 					else prof_act = SMBSYNC_PROF_INACTIVE;
 				
 				if (audit_error) {
@@ -462,6 +474,8 @@ public class ProfileMaintLocalFragment extends DialogFragment{
 		
 		final TextView dlg_title=(TextView) mDialog.findViewById(R.id.local_profile_dlg_title);
 		dlg_title.setText(mContext.getString(R.string.msgs_edit_local_profile));
+		final TextView dlg_title_sub=(TextView) mDialog.findViewById(R.id.local_profile_dlg_title_sub);
+		dlg_title_sub.setText(" ("+pfli.getName()+")");
 		final TextView dlg_msg=(TextView) mDialog.findViewById(R.id.local_profile_dlg_msg);
 		final EditText editdir = (EditText) mDialog.findViewById(R.id.local_profile_dir);
 		editdir.setText(pfli.getDir());
@@ -469,12 +483,17 @@ public class ProfileMaintLocalFragment extends DialogFragment{
 		editname.setText(pfli.getName());
 		editname.setTextColor(Color.LTGRAY);
 		editname.setEnabled(false);
-		final CheckBox tg = (CheckBox) mDialog.findViewById(R.id.local_profile_active);
-		if (pfli.getActive().equals(SMBSYNC_PROF_ACTIVE)) tg.setChecked(true);
-			else tg.setChecked(false);
+		editname.setVisibility(EditText.GONE);
+		final CheckedTextView ctv_active = (CheckedTextView) mDialog.findViewById(R.id.local_profile_ctv_active);
+		ctv_active.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				ctv_active.toggle();
+			}
+		});
+		ctv_active.setChecked(pfli.isActive());
 		
-		final Spinner spinner=
-				(Spinner) mDialog.findViewById(R.id.local_profile_lmp_btn);
+		final Spinner spinner=(Spinner) mDialog.findViewById(R.id.local_profile_lmp_btn);
 		spinner.setVisibility(Spinner.VISIBLE);
 		
 		ProfileUtility.setLocalMountPointSpinner(mContext, spinner, pfli.getLocalMountPoint());
@@ -551,7 +570,7 @@ public class ProfileMaintLocalFragment extends DialogFragment{
 						audit_msg=mContext.getString(R.string.msgs_audit_msgs_sync1);
 					}
 				}
-				if (tg.isChecked()) prof_act = SMBSYNC_PROF_ACTIVE;
+				if (ctv_active.isChecked()) prof_act = SMBSYNC_PROF_ACTIVE;
 					else prof_act = SMBSYNC_PROF_INACTIVE;
 
 				if (audit_error) {

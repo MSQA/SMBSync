@@ -37,13 +37,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
+import android.widget.CheckedTextView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 
 public class ProfileMaintRemoteFragment extends DialogFragment{
 	private final static boolean DEBUG_ENABLE=false;
@@ -194,7 +193,7 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
     	SavedViewContents sv=new SavedViewContents();
 		
 		final EditText editname = (EditText)mDialog.findViewById(R.id.remote_profile_name);
-		final CheckBox cb_active = (CheckBox) mDialog.findViewById(R.id.remote_profile_active);
+		final CheckedTextView cb_active = (CheckedTextView) mDialog.findViewById(R.id.remote_profile_ctv_active);
 		
 		final EditText edituser = (EditText) mDialog.findViewById(R.id.remote_profile_user);
 		final EditText editpass = (EditText) mDialog.findViewById(R.id.remote_profile_pass);
@@ -202,9 +201,9 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 		final EditText editdir = (EditText) mDialog.findViewById(R.id.remote_profile_dir);
 
 		final EditText edithost = (EditText) mDialog.findViewById(R.id.remote_profile_remote_server);
-		final CheckBox cb_use_user_pass = (CheckBox) mDialog.findViewById(R.id.remote_profile_use_user_pass);
+		final CheckedTextView cb_use_user_pass = (CheckedTextView) mDialog.findViewById(R.id.remote_profile_ctv_use_user_pass);
 		
-		final CheckBox cb_use_port_number = (CheckBox) mDialog.findViewById(R.id.remote_profile_use_port_number);
+		final CheckedTextView cb_use_port_number = (CheckedTextView) mDialog.findViewById(R.id.remote_profile_ctv_use_port_number);
 		final EditText editport = (EditText) mDialog.findViewById(R.id.remote_profile_port);
 
 
@@ -231,7 +230,7 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 
     private void restoreViewContents(final SavedViewContents sv) {
 		final EditText editname = (EditText)mDialog.findViewById(R.id.remote_profile_name);
-		final CheckBox cb_active = (CheckBox) mDialog.findViewById(R.id.remote_profile_active);
+		final CheckedTextView cb_active = (CheckedTextView) mDialog.findViewById(R.id.remote_profile_ctv_active);
 
 		final EditText edituser = (EditText) mDialog.findViewById(R.id.remote_profile_user);
 		final EditText editpass = (EditText) mDialog.findViewById(R.id.remote_profile_pass);
@@ -239,9 +238,9 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 		final EditText editdir = (EditText) mDialog.findViewById(R.id.remote_profile_dir);
 
 		final EditText edithost = (EditText) mDialog.findViewById(R.id.remote_profile_remote_server);
-		final CheckBox cb_use_user_pass = (CheckBox) mDialog.findViewById(R.id.remote_profile_use_user_pass);
+		final CheckedTextView cb_use_user_pass = (CheckedTextView) mDialog.findViewById(R.id.remote_profile_ctv_use_user_pass);
 		
-		final CheckBox cb_use_port_number = (CheckBox) mDialog.findViewById(R.id.remote_profile_use_port_number);
+		final CheckedTextView cb_use_port_number = (CheckedTextView) mDialog.findViewById(R.id.remote_profile_ctv_use_port_number);
 		final EditText editport = (EditText) mDialog.findViewById(R.id.remote_profile_port);
 
     	Handler hndl1=new Handler();
@@ -293,7 +292,8 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
     	if (DEBUG_ENABLE) Log.v(APPLICATION_TAG,SUB_APPLICATION_TAG+"initViewWidget");
 		
 		if (mOpType.equals("EDIT")) editProfile(mCurrentProfileListItem);
-		else if (mOpType.equals("ADD")) addProfile(mCurrentProfileListItem);
+		else if (mOpType.equals("ADD")) addProfile(false, mCurrentProfileListItem);
+		else if (mOpType.equals("COPY")) addProfile(true, mCurrentProfileListItem);
 		
     };
 
@@ -323,14 +323,17 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 //	    show(fm,APPLICATION_TAG);
     };
 
-    final private void addProfile(final ProfileListItem pfli) {
+    final private void addProfile(boolean copy, final ProfileListItem pfli) {
 		mDialog.setContentView(R.layout.edit_profile_remote);
 
 		final TextView dlg_title=(TextView) mDialog.findViewById(R.id.remote_profile_dlg_title);
-		dlg_title.setText(mContext.getString(R.string.msgs_add_remote_profile));
+		if (!copy) dlg_title.setText(mContext.getString(R.string.msgs_add_remote_profile));
+		else dlg_title.setText(mContext.getString(R.string.msgs_copy_remote_profile));
+		
 		final TextView dlg_msg=(TextView) mDialog.findViewById(R.id.remote_profile_dlg_msg);
 
-		final CheckBox tg = (CheckBox) mDialog.findViewById(R.id.remote_profile_active);
+		final CheckedTextView ctv_active = (CheckedTextView) mDialog.findViewById(R.id.remote_profile_ctv_active);
+		SMBSyncUtil.setCheckedTextView(ctv_active);
 		final EditText edituser = (EditText) mDialog.findViewById(R.id.remote_profile_user);
 		final EditText editpass = (EditText) mDialog.findViewById(R.id.remote_profile_pass);
 		final EditText editshare = (EditText) mDialog.findViewById(R.id.remote_profile_share);
@@ -338,27 +341,31 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 		final EditText editname = (EditText) mDialog.findViewById(R.id.remote_profile_name);
 
 		final EditText edithost = (EditText) mDialog.findViewById(R.id.remote_profile_remote_server);
-		final CheckBox cb_use_user_pass = (CheckBox) mDialog.findViewById(R.id.remote_profile_use_user_pass);
+		final CheckedTextView ctv_use_user_pass = (CheckedTextView) mDialog.findViewById(R.id.remote_profile_ctv_use_user_pass);
 		
 		final Button btnAddr = (Button) mDialog.findViewById(R.id.remote_profile_search_remote_host);
 		final Button btnListShare = (Button) mDialog.findViewById(R.id.remote_profile_list_share);
 		final Button btnListDir = (Button) mDialog.findViewById(R.id.remote_profile_list_directory);
 
+		final CheckedTextView ctv_use_port_number = (CheckedTextView) mDialog.findViewById(R.id.remote_profile_ctv_use_port_number);
+
+		ctv_active.setChecked(true);
+		
 		edithost.setVisibility(EditText.VISIBLE);
 		if (pfli.getUser().equals("") && pfli.getPass().equals("")) {
-			cb_use_user_pass.setChecked(false);
+			ctv_use_user_pass.setChecked(false);
 			edituser.setEnabled(false);
 			editpass.setEnabled(false);
 		} else {
-			cb_use_user_pass.setChecked(true);
+			ctv_use_user_pass.setChecked(true);
 			edituser.setEnabled(true);
 			editpass.setEnabled(true);
 		}
 
-		final CheckBox cb_use_port_number = (CheckBox) mDialog.findViewById(R.id.remote_profile_use_port_number);
+		
 		final EditText editport = (EditText) mDialog.findViewById(R.id.remote_profile_port);
 		if (!pfli.getPort().equals("")) {
-			cb_use_port_number.setChecked(true);
+			ctv_use_port_number.setChecked(true);
 			editport.setText(pfli.getPort());
 		} else {
 			editport.setText("");
@@ -374,8 +381,6 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 		editpass.setText(pfli.getPass());
 		editshare.setText(pfli.getShare());
 		editdir.setText(pfli.getDir());
-		if (pfli.getActive().equals("A")) tg.setChecked(true);
-		else tg.setChecked(false);
 		
 		// IpAddressScanボタンの指定
 		if (mUtil.isRemoteDisable()) btnAddr.setEnabled(false);
@@ -404,12 +409,12 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 		btnLogon.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				String user=null, pass=null;
-				if (cb_use_user_pass.isChecked()) {
+				if (ctv_use_user_pass.isChecked()) {
 					if (edituser.getText().length()>0) user=edituser.getText().toString();
 					if (editpass.getText().length()>0) pass=editpass.getText().toString();
 				}
 				String port="";
-				if (cb_use_port_number.isChecked()) port=editport.getText().toString();
+				if (ctv_use_port_number.isChecked()) port=editport.getText().toString();
 				if (NetworkUtil.isValidIpAddress(edithost.getText().toString())) {
 					String t_addr=edithost.getText().toString();
 					String s_addr=t_addr;
@@ -487,17 +492,17 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 				prof_dir = editdir.getText().toString();
 				prof_name = editname.getText().toString();
 
-				if (!cb_use_user_pass.isChecked()) {
+				if (!ctv_use_user_pass.isChecked()) {
 					prof_user="";
 					prof_pass="";
 				}
 				
-				if (tg.isChecked()) prof_act = SMBSYNC_PROF_ACTIVE;
+				if (ctv_active.isChecked()) prof_act = SMBSYNC_PROF_ACTIVE;
 					else prof_act = SMBSYNC_PROF_INACTIVE;
 				if (!mProfUtil.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_REMOTE, prof_name)) {
 					mFragment.dismiss();
 					String remote_port="";
-					if (cb_use_port_number.isChecked()) remote_port=editport.getText().toString();
+					if (ctv_use_port_number.isChecked()) remote_port=editport.getText().toString();
 					if (mGp.profileAdapter.getItem(0).getType().equals(""))
 						mGp.profileAdapter.remove(0);
 					ProfileUtility.updateRemoteProfileAdapter(mGp, true, prof_name, prof_act,prof_dir,
@@ -710,9 +715,9 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 		final EditText editshare = (EditText) dialog.findViewById(R.id.remote_profile_share);
 		final EditText editdir = (EditText) dialog.findViewById(R.id.remote_profile_dir);
 
-		final CheckBox cb_use_user_pass = (CheckBox) dialog.findViewById(R.id.remote_profile_use_user_pass);
+		final CheckedTextView ctv_use_user_pass = (CheckedTextView) dialog.findViewById(R.id.remote_profile_ctv_use_user_pass);
 
-		final CheckBox cb_use_port_number = (CheckBox) dialog.findViewById(R.id.remote_profile_use_port_number);
+		final CheckedTextView ctv_use_port_number = (CheckedTextView) dialog.findViewById(R.id.remote_profile_ctv_use_port_number);
 		final EditText editport = (EditText) dialog.findViewById(R.id.remote_profile_port);
 
 		
@@ -724,10 +729,11 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 		} else {
 			ll_port.setVisibility(LinearLayout.GONE);
 		}
-		
-		cb_use_user_pass.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+		ctv_use_user_pass.setOnClickListener(new OnClickListener(){
 			@Override
-			public void onCheckedChanged(CompoundButton arg0, boolean isChecked) {
+			public void onClick(View v) {
+				ctv_use_user_pass.toggle();
+				boolean isChecked=ctv_use_user_pass.isChecked();
 				if (isChecked) {
 					edituser.setEnabled(true);
 					editpass.setEnabled(true);
@@ -738,6 +744,7 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 				setRemoteProfileOkBtnEnabled(dialog);
 			}
 		});
+
 		edithost.addTextChangedListener(new TextWatcher(){
 			@Override
 			public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -840,16 +847,17 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 			}
 		});
 		
-		cb_use_port_number.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+		ctv_use_port_number.setOnClickListener(new OnClickListener(){
 			@Override
-			public void onCheckedChanged(CompoundButton buttonView,
-					boolean isChecked) {
+			public void onClick(View v) {
+				ctv_use_port_number.toggle();
+				boolean isChecked=ctv_use_port_number.isChecked();
 				if (isChecked) editport.setEnabled(true);
 				else editport.setEnabled(false);
 				setRemoteProfileOkBtnEnabled(dialog);
 			}
-			
 		});
+
 		editport.addTextChangedListener(new TextWatcher(){
 			@Override
 			public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -871,9 +879,9 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 		final EditText editpass = (EditText) dialog.findViewById(R.id.remote_profile_pass);
 		final EditText editshare = (EditText) dialog.findViewById(R.id.remote_profile_share);
 
-		final CheckBox cb_use_user_pass = (CheckBox) dialog.findViewById(R.id.remote_profile_use_user_pass);
+		final CheckedTextView ctv_use_user_pass = (CheckedTextView) dialog.findViewById(R.id.remote_profile_ctv_use_user_pass);
 
-		final CheckBox cb_use_port_number = (CheckBox) dialog.findViewById(R.id.remote_profile_use_port_number);
+		final CheckedTextView ctv_use_port_number = (CheckedTextView) dialog.findViewById(R.id.remote_profile_ctv_use_port_number);
 		final EditText editport = (EditText) dialog.findViewById(R.id.remote_profile_port);
 		
 		final Button btn_logon = (Button) dialog.findViewById(R.id.remote_profile_logon);
@@ -887,7 +895,7 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 			return;
 		}
 
-		if (cb_use_user_pass.isChecked()) {
+		if (ctv_use_user_pass.isChecked()) {
 			if (edituser.getText().length()>0 || editpass.getText().length()>0) {
 				dlg_msg.setText("");
 			} else {
@@ -896,7 +904,7 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 			}
 		}
 		
-		if (cb_use_port_number.isChecked()) {
+		if (ctv_use_port_number.isChecked()) {
 			if (editport.getText().length()>0) {
 				dlg_msg.setText("");
 			} else {
@@ -905,7 +913,7 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 				return;
 			}
 		}
-		if (cb_use_user_pass.isChecked() && !mUtil.isRemoteDisable()) btn_logon.setEnabled(true);
+		if (ctv_use_user_pass.isChecked() && !mUtil.isRemoteDisable()) btn_logon.setEnabled(true);
 		else btn_logon.setEnabled(false);
 
 		if (editshare.getText().length()==0) {
@@ -917,9 +925,15 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 
 	public void editProfile(final ProfileListItem pfli) {
 		mDialog.setContentView(R.layout.edit_profile_remote);
-		
+
+		final CheckedTextView ctv_active = (CheckedTextView) mDialog.findViewById(R.id.remote_profile_ctv_active);
+		SMBSyncUtil.setCheckedTextView(ctv_active);
+		ctv_active.setChecked(pfli.isActive());
 		final TextView dlg_title=(TextView) mDialog.findViewById(R.id.remote_profile_dlg_title);
 		dlg_title.setText(mContext.getString(R.string.msgs_edit_remote_profile));
+		final TextView dlg_title_sub=(TextView) mDialog.findViewById(R.id.remote_profile_dlg_title_sub);
+		dlg_title_sub.setText(" ("+pfli.getName()+")");
+
 		
 //		final TextView dlg_msg=(TextView) mDialog.findViewById(R.id.remote_profile_dlg_msg);
 
@@ -937,26 +951,27 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 		editname.setText(pfli.getName());
 		editname.setTextColor(Color.LTGRAY);
 		editname.setEnabled(false);
-		
-		final CheckBox cb_use_user_pass = (CheckBox) mDialog.findViewById(R.id.remote_profile_use_user_pass);
+		editname.setVisibility(EditText.GONE);
+
+		final CheckedTextView ctv_use_user_pass = (CheckedTextView) mDialog.findViewById(R.id.remote_profile_ctv_use_user_pass);
 		
 		if (pfli.getAddr().length()!=0) edithost.setText(pfli.getAddr());
 		else edithost.setText(pfli.getHostname());
 		
 		if (pfli.getUser().equals("") && pfli.getPass().equals("")) {
-			cb_use_user_pass.setChecked(false);
+			ctv_use_user_pass.setChecked(false);
 			edituser.setEnabled(false);
 			editpass.setEnabled(false);
 		} else {
-			cb_use_user_pass.setChecked(true);
+			ctv_use_user_pass.setChecked(true);
 			edituser.setEnabled(true);
 			editpass.setEnabled(true);
 		}
 		
-		final CheckBox cb_use_port_number = (CheckBox) mDialog.findViewById(R.id.remote_profile_use_port_number);
+		final CheckedTextView ctv_use_port_number = (CheckedTextView) mDialog.findViewById(R.id.remote_profile_ctv_use_port_number);
 		final EditText editport = (EditText) mDialog.findViewById(R.id.remote_profile_port);
 		if (!pfli.getPort().equals("")) {
-			cb_use_port_number.setChecked(true);
+			ctv_use_port_number.setChecked(true);
 			editport.setText(pfli.getPort());
 		} else {
 			editport.setText("");
@@ -964,16 +979,16 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 		}
 		
 		final Button btnLogon = (Button) mDialog.findViewById(R.id.remote_profile_logon);
-		btnLogon.setEnabled(cb_use_user_pass.isChecked());
+		btnLogon.setEnabled(ctv_use_user_pass.isChecked());
 		btnLogon.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				String user=null, pass=null;
-				if (cb_use_user_pass.isChecked()) {
+				if (ctv_use_user_pass.isChecked()) {
 					if (edituser.getText().length()>0) user=edituser.getText().toString();
 					if (editpass.getText().length()>0) pass=editpass.getText().toString();
 				}
 				String port="";
-				if (cb_use_port_number.isChecked()) port=editport.getText().toString();
+				if (ctv_use_port_number.isChecked()) port=editport.getText().toString();
 				if (NetworkUtil.isValidIpAddress(edithost.getText().toString())) {
 					String t_addr=edithost.getText().toString();
 					String s_addr=t_addr;
@@ -989,10 +1004,6 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 
 		final Button btn_ok = (Button) mDialog.findViewById(R.id.remote_profile_ok);
 		setRemoteProfileCommonListener(mDialog);
-		
-		final CheckBox tg = (CheckBox) mDialog.findViewById(R.id.remote_profile_active);
-		if (pfli.getActive().equals(SMBSYNC_PROF_ACTIVE)) tg.setChecked(true);
-			else tg.setChecked(false);
 		
 		// addressボタンの指定
 		Button btnAddr = (Button) mDialog.findViewById(R.id.remote_profile_search_remote_host);
@@ -1048,12 +1059,12 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 				prof_dir = editdir.getText().toString();
 				prof_name = editname.getText().toString();
 				
-				if (!cb_use_user_pass.isChecked()) {
+				if (!ctv_use_user_pass.isChecked()) {
 					remote_user="";
 					remote_pass="";
 				}
 				
-				if (tg.isChecked()) prof_act = SMBSYNC_PROF_ACTIVE;
+				if (ctv_active.isChecked()) prof_act = SMBSYNC_PROF_ACTIVE;
 					else prof_act = SMBSYNC_PROF_INACTIVE;
 //				String e_msg=auditRemoteProfileField(dialog);
 //				if (e_msg.length()!=0) {
@@ -1074,7 +1085,7 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 						}
 
 						String remote_port="";
-						if (cb_use_port_number.isChecked()) 
+						if (ctv_use_port_number.isChecked()) 
 							remote_port=editport.getText().toString();
 //						int pos=glblParms.profileListView.getFirstVisiblePosition();
 //						int posTop=glblParms.profileListView.getChildAt(0).getTop();

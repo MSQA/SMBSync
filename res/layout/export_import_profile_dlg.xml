@@ -24,21 +24,23 @@
         android:layout_marginLeft="5dp"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="#ff0000" />
-
-    <CheckBox
-        android:id="@+id/export_import_profile_list_cb_import_settings"
-        style="@style/check_box_style"
-        android:layout_width="match_parent"
+        
+    <CheckedTextView
+        android:id="@+id/export_import_profile_list_ctv_import_settings"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
+        android:checkMark="?android:attr/textCheckMark"
+        android:gravity="center_vertical"
         android:text="@string/msgs_export_import_profile_import_settings" />
-
-    <CheckBox
-        android:id="@+id/export_import_profile_list_cb_import_schedule"
-        style="@style/check_box_style"
-        android:layout_width="match_parent"
+    <include layout="@layout/divider_line1" />
+    <CheckedTextView
+        android:id="@+id/export_import_profile_list_ctv_import_schedule"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
+        android:checkMark="?android:attr/textCheckMark"
+        android:gravity="center_vertical"
         android:text="@string/msgs_export_import_profile_import_schedule" />
     
 	<include layout="@layout/divider_line3" />
@@ -68,15 +70,16 @@
     </RadioGroup>
 
     <include layout="@layout/divider_line3" />
-			    
-    <CheckBox
-        android:id="@+id/export_import_profile_list_cb_reset_profile"
-        style="@style/check_box_style"
-        android:layout_width="match_parent"
+
+    <CheckedTextView
+        android:id="@+id/export_import_profile_list_ctv_reset_profile"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
+        android:checkMark="?android:attr/textCheckMark"
+        android:gravity="center_vertical"
         android:text="@string/msgs_export_import_profile_reset_current_profile" />
-
+    			    
 	<include layout="@layout/divider_line3" />
 	    
     <ListView

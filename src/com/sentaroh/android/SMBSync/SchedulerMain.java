@@ -25,11 +25,13 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CheckedTextView;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -73,7 +75,8 @@ public class SchedulerMain {
 		final Button btn_edit = (Button) dialog.findViewById(R.id.scheduler_main_dlg_edit_sync_prof);
 		final TextView tv_msg=(TextView)dialog.findViewById(R.id.scheduler_main_dlg_msg);
 		
-		final CheckBox cb_sched_enabled=(CheckBox)dialog.findViewById(R.id.scheduler_main_dlg_enabled);
+		final CheckedTextView ctv_sched_enabled=(CheckedTextView)dialog.findViewById(R.id.scheduler_main_dlg_ctv_enabled);
+		SMBSyncUtil.setCheckedTextView(ctv_sched_enabled);
 		final Spinner sp_sched_type=(Spinner)dialog.findViewById(R.id.scheduler_main_dlg_date_time_type);
 		final Spinner sp_sched_hours=(Spinner)dialog.findViewById(R.id.scheduler_main_dlg_exec_hours);
 		final Spinner sp_sched_minutes=(Spinner)dialog.findViewById(R.id.scheduler_main_dlg_exec_minutes);
@@ -84,18 +87,28 @@ public class SchedulerMain {
 //		final CheckBox cb_sched_thu=(CheckBox)dialog.findViewById(R.id.scheduler_main_dlg_day_of_the_week_thursday);
 //		final CheckBox cb_sched_fri=(CheckBox)dialog.findViewById(R.id.scheduler_main_dlg_day_of_the_week_friday);
 //		final CheckBox cb_sched_sat=(CheckBox)dialog.findViewById(R.id.scheduler_main_dlg_day_of_the_week_satday);
-		final CheckBox cb_auto_term=(CheckBox)dialog.findViewById(R.id.scheduler_main_dlg_autoterm);
-		final CheckBox cb_bg_exec=(CheckBox)dialog.findViewById(R.id.scheduler_main_dlg_bgexec);
+		final CheckedTextView ctv_auto_term=(CheckedTextView)dialog.findViewById(R.id.scheduler_main_dlg_ctv_autoterm);
+		SMBSyncUtil.setCheckedTextView(ctv_auto_term);
+		final CheckedTextView ctv_bg_exec=(CheckedTextView)dialog.findViewById(R.id.scheduler_main_dlg_ctv_bgexec);
+		SMBSyncUtil.setCheckedTextView(ctv_bg_exec);
 		final TextView tv_sync_prof=(TextView)dialog.findViewById(R.id.scheduler_main_dlg_sync_prof_list);
 //		final LinearLayout ll_sched_dw=(LinearLayout)dialog.findViewById(R.id.scheduler_main_dlg_day_of_the_week);
 //		final LinearLayout ll_sched_hm=(LinearLayout)dialog.findViewById(R.id.scheduler_main_dlg_ll_exec_hm);
 //		final LinearLayout ll_sched_hours=(LinearLayout)dialog.findViewById(R.id.scheduler_main_dlg_ll_exec_hour);
 //		final LinearLayout ll_sched_minutes=(LinearLayout)dialog.findViewById(R.id.scheduler_main_dlg_ll_exec_minute);
-		final CheckBox cb_sync_all_prof=(CheckBox)dialog.findViewById(R.id.scheduler_main_dlg_sync_all_sync_profile);
+		final CheckedTextView ctv_sync_all_prof=(CheckedTextView)dialog.findViewById(R.id.scheduler_main_dlg_ctv_sync_all_sync_profile);
+		SMBSyncUtil.setCheckedTextView(ctv_sync_all_prof);
 		
-		final CheckBox cb_wifi_on=(CheckBox)dialog.findViewById(R.id.scheduler_main_dlg_wifi_on);
-		final RadioGroup rg_wifi_on=(RadioGroup)dialog.findViewById(R.id.scheduler_main_dlg_wifi_on_rg);
-		final CheckBox cb_wifi_off=(CheckBox)dialog.findViewById(R.id.scheduler_main_dlg_wifi_off);
+		final CheckedTextView ctv_wifi_on=(CheckedTextView)dialog.findViewById(R.id.scheduler_main_dlg_ctv_wifi_on);
+		SMBSyncUtil.setCheckedTextView(ctv_wifi_on);
+//		final LinearLayout ll_wifi_on_delay_time_viewx=(LinearLayout)dialog.findViewById(R.id.scheduler_main_dlg_wifi_on_delay_time_view);
+		final TextView tv_wifi_on_delay_time=(TextView)dialog.findViewById(R.id.scheduler_main_dlg_wifi_on_delay_time_text);
+		final RadioGroup rg_wifi_on_delay_time=(RadioGroup)dialog.findViewById(R.id.scheduler_main_dlg_wifi_on_delay_time_rg);
+		final RadioButton rb_wifi_on_delay_1=(RadioButton)dialog.findViewById(R.id.scheduler_main_dlg_wifi_on_delay_time_rg_1);
+		final RadioButton rb_wifi_on_delay_2=(RadioButton)dialog.findViewById(R.id.scheduler_main_dlg_wifi_on_delay_time_rg_2);
+		final RadioButton rb_wifi_on_delay_3=(RadioButton)dialog.findViewById(R.id.scheduler_main_dlg_wifi_on_delay_time_rg_3);
+		final CheckedTextView ctv_wifi_off=(CheckedTextView)dialog.findViewById(R.id.scheduler_main_dlg_ctv_wifi_off);
+		SMBSyncUtil.setCheckedTextView(ctv_wifi_off);
 		
 		loadScheduleData();
 		
@@ -108,16 +121,16 @@ public class SchedulerMain {
 		
 		setViewVisibility(dialog);
 		
-		cb_sched_enabled.setChecked(mSched.scheduleEnabled);
-		cb_auto_term.setChecked(mSched.syncOptionAutoterm);
-		cb_bg_exec.setChecked(mSched.syncOptionBgExec);
+		ctv_sched_enabled.setChecked(mSched.scheduleEnabled);
+		ctv_auto_term.setChecked(mSched.syncOptionAutoterm);
+		ctv_bg_exec.setChecked(mSched.syncOptionBgExec);
 
 		if (mSched.syncProfile.equals("")) {
-			cb_sync_all_prof.setChecked(true);
+			ctv_sync_all_prof.setChecked(true);
 			btn_edit.setVisibility(Button.GONE);//.setEnabled(false);
 			tv_sync_prof.setVisibility(TextView.GONE);//.setEnabled(false);
 		} else {
-			cb_sync_all_prof.setChecked(false);
+			ctv_sync_all_prof.setChecked(false);
 			btn_edit.setVisibility(Button.VISIBLE);//.setEnabled(true);
 			tv_sync_prof.setVisibility(TextView.VISIBLE);//.setEnabled(true);
 		}
@@ -133,40 +146,58 @@ public class SchedulerMain {
 			public void onNothingSelected(AdapterView<?> parent) {}
 		});
 
-		cb_wifi_on.setChecked(mSched.syncWifiOnBeforeSyncStart);
+		ctv_wifi_on.setChecked(mSched.syncWifiOnBeforeSyncStart);
 		
 		if (mSched.syncWifiOnBeforeSyncStart) {
-			rg_wifi_on.setVisibility(RadioGroup.VISIBLE);
-			cb_wifi_off.setVisibility(CheckBox.VISIBLE);
+			tv_wifi_on_delay_time.setEnabled(true);//.setVisibility(RadioGroup.VISIBLE);
+			rb_wifi_on_delay_1.setEnabled(true);
+			rb_wifi_on_delay_2.setEnabled(true);
+			rb_wifi_on_delay_3.setEnabled(true);
+			rg_wifi_on_delay_time.setEnabled(true);//.setVisibility(RadioGroup.VISIBLE);
+			ctv_wifi_off.setEnabled(true);//setVisibility(CheckBox.VISIBLE);
 		} else {
-			rg_wifi_on.setVisibility(RadioGroup.GONE);
-			cb_wifi_off.setVisibility(CheckBox.GONE);
+			tv_wifi_on_delay_time.setEnabled(false);//setVisibility(RadioGroup.GONE);
+			rb_wifi_on_delay_1.setEnabled(false);
+			rb_wifi_on_delay_2.setEnabled(false);
+			rb_wifi_on_delay_3.setEnabled(false);
+			rg_wifi_on_delay_time.setEnabled(false);//.setVisibility(RadioGroup.VISIBLE);
+			ctv_wifi_off.setEnabled(false);//setVisibility(CheckBox.GONE);
 		}
 		
 		if (mSched.syncDelayedSecondForWifiOn==5) {
-			rg_wifi_on.check(R.id.scheduler_main_dlg_wifi_on_rg_1);
+			rg_wifi_on_delay_time.check(R.id.scheduler_main_dlg_wifi_on_delay_time_rg_1);
 		} else if (mSched.syncDelayedSecondForWifiOn==10) {
-			rg_wifi_on.check(R.id.scheduler_main_dlg_wifi_on_rg_2);
+			rg_wifi_on_delay_time.check(R.id.scheduler_main_dlg_wifi_on_delay_time_rg_2);
 		} else if (mSched.syncDelayedSecondForWifiOn==30) {
-			rg_wifi_on.check(R.id.scheduler_main_dlg_wifi_on_rg_3);
+			rg_wifi_on_delay_time.check(R.id.scheduler_main_dlg_wifi_on_delay_time_rg_3);
 		}
 		
-		cb_wifi_off.setChecked(mSched.syncWifiOffAfterSyncEnd);
+		ctv_wifi_off.setChecked(mSched.syncWifiOffAfterSyncEnd);
 		
-		cb_wifi_on.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+		ctv_wifi_on.setOnClickListener(new OnClickListener(){
 			@Override
-			public void onCheckedChanged(CompoundButton buttonView,
-					boolean isChecked) {
+			public void onClick(View v) {
+				ctv_wifi_on.toggle();
+				boolean isChecked=ctv_wifi_on.isChecked();
 				if (isChecked) {
-					rg_wifi_on.setVisibility(RadioGroup.VISIBLE);
-					cb_wifi_off.setVisibility(CheckBox.VISIBLE);
+					tv_wifi_on_delay_time.setEnabled(true);//setVisibility(RadioGroup.VISIBLE);
+					rb_wifi_on_delay_1.setEnabled(true);
+					rb_wifi_on_delay_2.setEnabled(true);
+					rb_wifi_on_delay_3.setEnabled(true);
+					rg_wifi_on_delay_time.setEnabled(true);//.setVisibility(RadioGroup.VISIBLE);
+					ctv_wifi_off.setEnabled(true);//setVisibility(CheckBox.VISIBLE);
 				} else {
-					rg_wifi_on.setVisibility(RadioGroup.GONE);
-					cb_wifi_off.setVisibility(CheckBox.GONE);
+					tv_wifi_on_delay_time.setEnabled(false);//setVisibility(RadioGroup.GONE);
+					rb_wifi_on_delay_1.setEnabled(false);
+					rb_wifi_on_delay_2.setEnabled(false);
+					rb_wifi_on_delay_3.setEnabled(false);
+					rg_wifi_on_delay_time.setEnabled(false);//.setVisibility(RadioGroup.VISIBLE);
+					ctv_wifi_off.setEnabled(false);//setVisibility(CheckBox.GONE);
+					ctv_wifi_off.setChecked(false);
 				}
 			}
 		});
-		
+
 		btn_ok.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
@@ -178,7 +209,7 @@ public class SchedulerMain {
 				
 				dialog.dismiss();
 		    	mSched.scheduleDayOfTheWeek=buildDayOfWeekString(dialog);
-				mSched.scheduleEnabled=cb_sched_enabled.isChecked();
+				mSched.scheduleEnabled=ctv_sched_enabled.isChecked();
 		    	
 		    	if (sp_sched_type.getSelectedItemPosition()==0) mSched.scheduleType=SCHEDULER_SCHEDULE_TYPE_EVERY_HOURS;
 		    	else if (sp_sched_type.getSelectedItemPosition()==1) mSched.scheduleType=SCHEDULER_SCHEDULE_TYPE_EVERY_DAY;
@@ -188,26 +219,26 @@ public class SchedulerMain {
 		    	
 		    	mSched.scheduleMinutes=sp_sched_minutes.getSelectedItem().toString();
 
-		    	if (cb_sync_all_prof.isChecked()) mSched.syncProfile="";
+		    	if (ctv_sync_all_prof.isChecked()) mSched.syncProfile="";
 		    	else mSched.syncProfile=tv_sync_prof.getText().toString();
 		    	
-		    	mSched.syncOptionAutoterm=cb_auto_term.isChecked();
+		    	mSched.syncOptionAutoterm=ctv_auto_term.isChecked();
 		    	
-		    	mSched.syncOptionBgExec=cb_bg_exec.isChecked();
+		    	mSched.syncOptionBgExec=ctv_bg_exec.isChecked();
 		    	
-		    	mSched.syncWifiOnBeforeSyncStart=cb_wifi_on.isChecked();
+		    	mSched.syncWifiOnBeforeSyncStart=ctv_wifi_on.isChecked();
 		    	
-		    	if (rg_wifi_on.getCheckedRadioButtonId()==R.id.scheduler_main_dlg_wifi_on_rg_1) {
+		    	if (rg_wifi_on_delay_time.getCheckedRadioButtonId()==R.id.scheduler_main_dlg_wifi_on_delay_time_rg_1) {
 		    		mSched.syncDelayedSecondForWifiOn=5;
-		    	} else if (rg_wifi_on.getCheckedRadioButtonId()==R.id.scheduler_main_dlg_wifi_on_rg_2) {
+		    	} else if (rg_wifi_on_delay_time.getCheckedRadioButtonId()==R.id.scheduler_main_dlg_wifi_on_delay_time_rg_2) {
 		    		mSched.syncDelayedSecondForWifiOn=10;
-		    	} else if (rg_wifi_on.getCheckedRadioButtonId()==R.id.scheduler_main_dlg_wifi_on_rg_3) {
+		    	} else if (rg_wifi_on_delay_time.getCheckedRadioButtonId()==R.id.scheduler_main_dlg_wifi_on_delay_time_rg_3) {
 		    		mSched.syncDelayedSecondForWifiOn=30;
 		    	} else {
 		    		mSched.syncDelayedSecondForWifiOn=5;
 		    	}
 		
-		    	if (cb_wifi_on.isChecked()) mSched.syncWifiOffAfterSyncEnd=cb_wifi_off.isChecked();
+		    	if (ctv_wifi_on.isChecked()) mSched.syncWifiOffAfterSyncEnd=ctv_wifi_off.isChecked();
 		    	else mSched.syncWifiOffAfterSyncEnd=false;
 
 		    	SchedulerUtil.saveScheduleData(mSched, mContext);
@@ -218,10 +249,11 @@ public class SchedulerMain {
 			}
 		});
 
-		cb_sync_all_prof.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+		ctv_sync_all_prof.setOnClickListener(new OnClickListener(){
 			@Override
-			public void onCheckedChanged(CompoundButton buttonView,
-					boolean isChecked) {
+			public void onClick(View v) {
+				ctv_sync_all_prof.toggle();
+				boolean isChecked=ctv_sync_all_prof.isChecked();
 				if (isChecked) {
 					btn_edit.setVisibility(Button.GONE);//.setEnabled(false);
 					tv_sync_prof.setVisibility(TextView.GONE);//.setEnabled(false);
@@ -240,6 +272,7 @@ public class SchedulerMain {
 				}
 			}
 		});
+
 
 		btn_edit.setOnClickListener(new OnClickListener(){
 			@Override
@@ -298,7 +331,7 @@ public class SchedulerMain {
 		
 		for (int i=0;i<mGp.profileAdapter.getCount();i++) {
 			ProfileListItem pfli=mGp.profileAdapter.getItem(i);
-			if (pfli.getActive().equals(SMBSYNC_PROF_ACTIVE) && pfli.getType().equals(SMBSYNC_PROF_TYPE_SYNC)) {
+			if (pfli.isActive() && pfli.getType().equals(SMBSYNC_PROF_TYPE_SYNC)) {
 //				Log.v("","name="+pfli.getName()+", type="+pfli.getType());
 				boolean found=false;
 				if (pfa!=null) {

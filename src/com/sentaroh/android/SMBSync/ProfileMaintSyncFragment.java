@@ -40,14 +40,12 @@ import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
+import android.widget.CheckedTextView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 
 public class ProfileMaintSyncFragment extends DialogFragment{
 	private final static boolean DEBUG_ENABLE=false;
@@ -199,36 +197,38 @@ public class ProfileMaintSyncFragment extends DialogFragment{
     	SavedViewContents sv=new SavedViewContents();
 		
 		final EditText editname = (EditText)mDialog.findViewById(R.id.sync_profile_name);
-		final CheckBox cb_active = (CheckBox) mDialog.findViewById(R.id.sync_profile_active);
+		final CheckedTextView ctv_active = (CheckedTextView) mDialog.findViewById(R.id.sync_profile_ctv_active);
 		final Spinner spinnerSyncOption=(Spinner)mDialog.findViewById(R.id.sync_profile_sync_option);
-		final CheckBox cbmpd = (CheckBox)mDialog.findViewById(R.id.sync_profile_sync_master_root_dir_file);
-		final CheckBox cbConf = (CheckBox)mDialog.findViewById(R.id.sync_profile_confirm);
-		final CheckBox cbLastMod = (CheckBox)mDialog.findViewById(R.id.sync_profile_last_modified);
-		final CheckBox cbNotUseLastModRem = (CheckBox)mDialog.findViewById(R.id.sync_profile_not_use_last_modified_remote_file_for_diff);
-		final CheckBox cbRetry = (CheckBox)mDialog.findViewById(R.id.sync_profile_retry_if_error_occured);
-		final CheckBox cbSyncEmptyDir = (CheckBox)mDialog.findViewById(R.id.sync_profile_sync_empty_directory);
-		final CheckBox cbSyncHiddenDir = (CheckBox)mDialog.findViewById(R.id.sync_profile_sync_hidden_directory);
-		final CheckBox cbSyncHiddenFile = (CheckBox)mDialog.findViewById(R.id.sync_profile_sync_hidden_file);
-		final CheckBox cbSyncSubDir = (CheckBox)mDialog.findViewById(R.id.sync_profile_sync_sub_dir);
+		final CheckedTextView ctvmpd = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_sync_master_root_dir_file);
+		final CheckedTextView ctvConf = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_confirm);
+		final CheckedTextView ctvLastMod = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_last_modified);
+		final CheckedTextView ctvNotUseLastModRem = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_not_use_last_modified_remote_file_for_diff);
+		final CheckedTextView ctvRetry = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_retry_if_error_occured);
+		final CheckedTextView ctvSyncEmptyDir = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_sync_empty_directory);
+		final CheckedTextView ctvSyncHiddenDir = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_sync_hidden_directory);
+		final CheckedTextView ctvSyncHiddenFile = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_sync_hidden_file);
+		final CheckedTextView ctvSyncSubDir = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_sync_sub_dir);
 		final Spinner spinner_master=(Spinner)mDialog.findViewById(R.id.sync_profile_master_spinner);
 		final Spinner spinner_target=(Spinner)mDialog.findViewById(R.id.sync_profile_target_spinner);
 
-
+//		final ScrollView svx=(ScrollView)mDialog.findViewById(R.id.sync_profile_dlg_scroll_view);
+//		Log.v("","x="+svx.getScrollX()+", y="+svx.getScrollY());
+		
         sv.prof_name_et=editname.getText();
         sv.prof_name_et_spos=editname.getSelectionStart();
         sv.prof_name_et_epos=editname.getSelectionEnd();
-        sv.cb_active=cb_active.isChecked();
+        sv.cb_active=ctv_active.isChecked();
         
         sv.sync_opt=spinnerSyncOption.getSelectedItemPosition();
-        sv.sync_mpd=cbmpd.isChecked();
-        sv.sync_conf=cbConf.isChecked();
-        sv.sync_last_mod_java=cbLastMod.isChecked();
-        sv.sync_last_mod_remote=cbNotUseLastModRem.isChecked();
-        sv.sync_retry=cbRetry.isChecked();
-        sv.sync_empty_dir=cbSyncEmptyDir.isChecked();
-        sv.sync_hidden_dir=cbSyncHiddenDir.isChecked();
-        sv.sync_hidden_file=cbSyncHiddenFile.isChecked();
-        sv.sync_sub_dir=cbSyncSubDir.isChecked();
+        sv.sync_mpd=ctvmpd.isChecked();
+        sv.sync_conf=ctvConf.isChecked();
+        sv.sync_last_mod_java=ctvLastMod.isChecked();
+        sv.sync_last_mod_remote=ctvNotUseLastModRem.isChecked();
+        sv.sync_retry=ctvRetry.isChecked();
+        sv.sync_empty_dir=ctvSyncEmptyDir.isChecked();
+        sv.sync_hidden_dir=ctvSyncHiddenDir.isChecked();
+        sv.sync_hidden_file=ctvSyncHiddenFile.isChecked();
+        sv.sync_sub_dir=ctvSyncSubDir.isChecked();
         sv.sync_master_pos=spinner_master.getSelectedItemPosition();
         sv.sync_target_pos=spinner_target.getSelectedItemPosition();
 
@@ -240,17 +240,17 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 
     private void restoreViewContents(final SavedViewContents sv) {
 		final EditText editname = (EditText)mDialog.findViewById(R.id.sync_profile_name);
-		final CheckBox cb_active = (CheckBox) mDialog.findViewById(R.id.sync_profile_active);
+		final CheckedTextView ctv_active = (CheckedTextView) mDialog.findViewById(R.id.sync_profile_ctv_active);
 		final Spinner spinnerSyncOption=(Spinner)mDialog.findViewById(R.id.sync_profile_sync_option);
-		final CheckBox cbmpd = (CheckBox)mDialog.findViewById(R.id.sync_profile_sync_master_root_dir_file);
-		final CheckBox cbConf = (CheckBox)mDialog.findViewById(R.id.sync_profile_confirm);
-		final CheckBox cbLastMod = (CheckBox)mDialog.findViewById(R.id.sync_profile_last_modified);
-		final CheckBox cbNotUseLastModRem = (CheckBox)mDialog.findViewById(R.id.sync_profile_not_use_last_modified_remote_file_for_diff);
-		final CheckBox cbRetry = (CheckBox)mDialog.findViewById(R.id.sync_profile_retry_if_error_occured);
-		final CheckBox cbSyncEmptyDir = (CheckBox)mDialog.findViewById(R.id.sync_profile_sync_empty_directory);
-		final CheckBox cbSyncHiddenDir = (CheckBox)mDialog.findViewById(R.id.sync_profile_sync_hidden_directory);
-		final CheckBox cbSyncHiddenFile = (CheckBox)mDialog.findViewById(R.id.sync_profile_sync_hidden_file);
-		final CheckBox cbSyncSubDir = (CheckBox)mDialog.findViewById(R.id.sync_profile_sync_sub_dir);
+		final CheckedTextView ctvmpd = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_sync_master_root_dir_file);
+		final CheckedTextView ctvConf = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_confirm);
+		final CheckedTextView ctvLastMod = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_last_modified);
+		final CheckedTextView ctvNotUseLastModRem = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_not_use_last_modified_remote_file_for_diff);
+		final CheckedTextView ctvRetry = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_retry_if_error_occured);
+		final CheckedTextView ctvSyncEmptyDir = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_sync_empty_directory);
+		final CheckedTextView ctvSyncHiddenDir = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_sync_hidden_directory);
+		final CheckedTextView ctvSyncHiddenFile = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_sync_hidden_file);
+		final CheckedTextView ctvSyncSubDir = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_sync_sub_dir);
 		final Spinner spinner_master=(Spinner)mDialog.findViewById(R.id.sync_profile_master_spinner);
 		final Spinner spinner_target=(Spinner)mDialog.findViewById(R.id.sync_profile_target_spinner);
 
@@ -261,19 +261,19 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 		        editname.setText(sv.prof_name_et);
 //		        editname.setSelection(sv.prof_name_et_spos);
 //		        editname.getSelectionEnd();
-		        cb_active.setChecked(sv.cb_active);
+		        ctv_active.setChecked(sv.cb_active);
 		        
 		        spinnerSyncOption.setEnabled(false);
 		        spinnerSyncOption.setSelection(sv.sync_opt);
-		        cbmpd.setChecked(sv.sync_mpd);
-		        cbConf.setChecked(sv.sync_conf);
-		        cbLastMod.setChecked(sv.sync_last_mod_java);
-		        cbNotUseLastModRem.setChecked(sv.sync_last_mod_remote);
-		        cbRetry.setChecked(sv.sync_retry);
-		        cbSyncEmptyDir.setChecked(sv.sync_empty_dir);
-		        cbSyncHiddenDir.setChecked(sv.sync_hidden_dir);
-		        cbSyncHiddenFile.setChecked(sv.sync_hidden_file);
-		        cbSyncSubDir.setChecked(sv.sync_sub_dir);
+		        ctvmpd.setChecked(sv.sync_mpd);
+		        ctvConf.setChecked(sv.sync_conf);
+		        ctvLastMod.setChecked(sv.sync_last_mod_java);
+		        ctvNotUseLastModRem.setChecked(sv.sync_last_mod_remote);
+		        ctvRetry.setChecked(sv.sync_retry);
+		        ctvSyncEmptyDir.setChecked(sv.sync_empty_dir);
+		        ctvSyncHiddenDir.setChecked(sv.sync_hidden_dir);
+		        ctvSyncHiddenFile.setChecked(sv.sync_hidden_file);
+		        ctvSyncSubDir.setChecked(sv.sync_sub_dir);
 		        spinner_master.setEnabled(false);
 		        spinner_master.setSelection(sv.sync_master_pos);
 		        spinner_target.setEnabled(false);
@@ -313,7 +313,8 @@ public class ProfileMaintSyncFragment extends DialogFragment{
     	if (DEBUG_ENABLE) Log.v(APPLICATION_TAG,SUB_APPLICATION_TAG+"initViewWidget");
 		
 		if (mOpType.equals("EDIT")) editProfile(mCurrentProfileListItem);
-		else if (mOpType.equals("ADD")) addProfile(mCurrentProfileListItem);
+		else if (mOpType.equals("ADD")) addProfile(false, mCurrentProfileListItem);
+		else if (mOpType.equals("COPY")) addProfile(true, mCurrentProfileListItem);
 		
     };
 
@@ -342,11 +343,12 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 //	    show(fm,APPLICATION_TAG);
     };
 
-    final private void addProfile(final ProfileListItem pfli) {
+    final private void addProfile(boolean copy, final ProfileListItem pfli) {
 		mDialog.setContentView(R.layout.edit_profile_sync);
 
 		final TextView dlg_title=(TextView) mDialog.findViewById(R.id.sync_profile_dlg_title);
-		dlg_title.setText(mContext.getString(R.string.msgs_add_sync_profile));
+		if (!copy) dlg_title.setText(mContext.getString(R.string.msgs_add_sync_profile));
+		else dlg_title.setText(mContext.getString(R.string.msgs_copy_sync_profile));
 //		dlg_title.setText(mContext.getString(R.string.msgs_copy_sync_profile));
 		final TextView dlg_msg=(TextView) mDialog.findViewById(R.id.sync_profile_dlg_msg);
 		final TextView dlg_file_filter=(TextView) mDialog.findViewById(R.id.sync_profile_file_filter);
@@ -359,54 +361,63 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 		final Spinner spinnerSyncOption=(Spinner)mDialog.findViewById(R.id.sync_profile_sync_option);
 		ProfileUtility.setSyncOptionSpinner(mContext, spinnerSyncOption, pfli.getSyncType()); 
 
-		final CheckBox cbmpd = (CheckBox)mDialog.findViewById(R.id.sync_profile_sync_master_root_dir_file);
-
-		final CheckBox cbConf = (CheckBox)mDialog.findViewById(R.id.sync_profile_confirm);
-		cbConf.setChecked(pfli.isConfirmRequired());
-		final CheckBox cbLastMod = (CheckBox)mDialog.findViewById(R.id.sync_profile_last_modified);
-		cbLastMod.setChecked(pfli.isForceLastModifiedUseSmbsync());
-		final CheckBox cbNotUseLastModRem = (CheckBox)mDialog.findViewById(R.id.sync_profile_not_use_last_modified_remote_file_for_diff);
-		cbNotUseLastModRem.setChecked(pfli.isNotUseLastModifiedForRemote());
+		final CheckedTextView ctvmpd = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_sync_master_root_dir_file);
+		final CheckedTextView ctvConf = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_confirm);
+		SMBSyncUtil.setCheckedTextView(ctvConf);
+		ctvConf.setChecked(pfli.isConfirmRequired());
+		final CheckedTextView ctvLastMod = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_last_modified);
+		SMBSyncUtil.setCheckedTextView(ctvLastMod);
+		ctvLastMod.setChecked(pfli.isForceLastModifiedUseSmbsync());
+		final CheckedTextView ctvNotUseLastModRem = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_not_use_last_modified_remote_file_for_diff);
+		SMBSyncUtil.setCheckedTextView(ctvNotUseLastModRem);
+		ctvNotUseLastModRem.setChecked(pfli.isNotUseLastModifiedForRemote());
 		
-		final CheckBox cbRetry = (CheckBox)mDialog.findViewById(R.id.sync_profile_retry_if_error_occured);
-		final CheckBox cbSyncEmptyDir = (CheckBox)mDialog.findViewById(R.id.sync_profile_sync_empty_directory);
-		final CheckBox cbSyncHiddenDir = (CheckBox)mDialog.findViewById(R.id.sync_profile_sync_hidden_directory);
-		final CheckBox cbSyncHiddenFile = (CheckBox)mDialog.findViewById(R.id.sync_profile_sync_hidden_file);
-		final CheckBox cbSyncSubDir = (CheckBox)mDialog.findViewById(R.id.sync_profile_sync_sub_dir);
+		final CheckedTextView ctvRetry = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_retry_if_error_occured);
+		SMBSyncUtil.setCheckedTextView(ctvRetry);
+		final CheckedTextView ctvSyncEmptyDir = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_sync_empty_directory);
+		SMBSyncUtil.setCheckedTextView(ctvSyncEmptyDir);
+		final CheckedTextView ctvSyncHiddenDir = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_sync_hidden_directory);
+		SMBSyncUtil.setCheckedTextView(ctvSyncHiddenDir);
+		final CheckedTextView ctvSyncHiddenFile = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_sync_hidden_file);
+		SMBSyncUtil.setCheckedTextView(ctvSyncHiddenFile);
+		final CheckedTextView ctvSyncSubDir = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_sync_sub_dir);
+		SMBSyncUtil.setCheckedTextView(ctvSyncSubDir);
 
-		if (pfli.getRetryCount()==null || pfli.getRetryCount().equals("0")) cbRetry.setChecked(false);
-		else cbRetry.setChecked(true);
+		if (pfli.getRetryCount()==null || pfli.getRetryCount().equals("0")) ctvRetry.setChecked(false);
+		else ctvRetry.setChecked(true);
 		
-		cbSyncEmptyDir.setChecked(pfli.isSyncEmptyDirectory());
-		cbSyncHiddenDir.setChecked(pfli.isSyncHiddenDirectory());
-		cbSyncHiddenFile.setChecked(pfli.isSyncHiddenDirectory());
+		ctvSyncEmptyDir.setChecked(pfli.isSyncEmptyDirectory());
+		ctvSyncHiddenDir.setChecked(pfli.isSyncHiddenDirectory());
+		ctvSyncHiddenFile.setChecked(pfli.isSyncHiddenDirectory());
 
 		if (pfli.isMasterDirFileProcess()) {
-			cbmpd.setChecked(true);
-			cbSyncSubDir.setChecked(pfli.isSyncSubDirectory());
+			ctvmpd.setChecked(true);
+			ctvSyncSubDir.setChecked(pfli.isSyncSubDirectory());
 		} else {
-			cbmpd.setChecked(false);
-			cbSyncSubDir.setChecked(true);
+			ctvmpd.setChecked(false);
+			ctvSyncSubDir.setChecked(true);
 		}
 
-		cbmpd.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+		ctvmpd.setOnClickListener(new OnClickListener(){
 			@Override
-			public void onCheckedChanged(CompoundButton buttonView,
-					boolean isChecked) {
+			public void onClick(View v) {
+				ctvmpd.toggle();
+				boolean isChecked=ctvmpd.isChecked();
 				if (!isChecked) {
-					cbSyncSubDir.setEnabled(false);
-					cbSyncSubDir.setChecked(true);
+					ctvSyncSubDir.setEnabled(false);
+					ctvSyncSubDir.setChecked(true);
 				} else {
-					cbSyncSubDir.setEnabled(true);
+					ctvSyncSubDir.setEnabled(true);
 				}
 			}
 		});
 		
 		CommonDialog.setDlgBoxSizeLimit(mDialog,true);
 
-		final CheckBox tg = (CheckBox)mDialog.findViewById(R.id.sync_profile_active);
-		if (pfli.getActive().equals(SMBSYNC_PROF_ACTIVE)) tg.setChecked(true);
-			else tg.setChecked(false);
+		final CheckedTextView ctv_active = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_active);
+		SMBSyncUtil.setCheckedTextView(ctv_active);
+		if (pfli.isActive()) ctv_active.setChecked(true);
+			else ctv_active.setChecked(false);
 
 		
 		final Spinner spinner_master=(Spinner)mDialog.findViewById(R.id.sync_profile_master_spinner);
@@ -574,16 +585,16 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 //		final TextView dlg_dir_filter=(TextView) dialog.findViewById(R.id.sync_profile_dir_filter);
 		final EditText editname = (EditText)dialog.findViewById(R.id.sync_profile_name);
 		final Spinner spinnerSyncOption=(Spinner)dialog.findViewById(R.id.sync_profile_sync_option);
-		final CheckBox cbmpd = (CheckBox)dialog.findViewById(R.id.sync_profile_sync_master_root_dir_file);
-		final CheckBox cbConf = (CheckBox)dialog.findViewById(R.id.sync_profile_confirm);
-		final CheckBox cbLastMod = (CheckBox)dialog.findViewById(R.id.sync_profile_last_modified);
-		final CheckBox cbNotUseLastModRem = (CheckBox)dialog.findViewById(R.id.sync_profile_not_use_last_modified_remote_file_for_diff);
-		final CheckBox cbRetry = (CheckBox)dialog.findViewById(R.id.sync_profile_retry_if_error_occured);
-		final CheckBox cbSyncEmptyDir = (CheckBox)dialog.findViewById(R.id.sync_profile_sync_empty_directory);
-		final CheckBox cbSyncHiddenDir = (CheckBox)dialog.findViewById(R.id.sync_profile_sync_hidden_directory);
-		final CheckBox cbSyncHiddenFile = (CheckBox)dialog.findViewById(R.id.sync_profile_sync_hidden_file);
-		final CheckBox cbSyncSubDir = (CheckBox)dialog.findViewById(R.id.sync_profile_sync_sub_dir);
-		final CheckBox tg = (CheckBox)dialog.findViewById(R.id.sync_profile_active);
+		final CheckedTextView ctvmpd = (CheckedTextView)dialog.findViewById(R.id.sync_profile_ctv_sync_master_root_dir_file);
+		final CheckedTextView ctvConf = (CheckedTextView)dialog.findViewById(R.id.sync_profile_ctv_confirm);
+		final CheckedTextView ctvLastMod = (CheckedTextView)dialog.findViewById(R.id.sync_profile_ctv_last_modified);
+		final CheckedTextView ctvNotUseLastModRem = (CheckedTextView)dialog.findViewById(R.id.sync_profile_ctv_not_use_last_modified_remote_file_for_diff);
+		final CheckedTextView ctvRetry = (CheckedTextView)dialog.findViewById(R.id.sync_profile_ctv_retry_if_error_occured);
+		final CheckedTextView ctvSyncEmptyDir = (CheckedTextView)dialog.findViewById(R.id.sync_profile_ctv_sync_empty_directory);
+		final CheckedTextView ctvSyncHiddenDir = (CheckedTextView)dialog.findViewById(R.id.sync_profile_ctv_sync_hidden_directory);
+		final CheckedTextView ctvSyncHiddenFile = (CheckedTextView)dialog.findViewById(R.id.sync_profile_ctv_sync_hidden_file);
+		final CheckedTextView ctvSyncSubDir = (CheckedTextView)dialog.findViewById(R.id.sync_profile_ctv_sync_sub_dir);
+		final CheckedTextView ctv_active = (CheckedTextView)dialog.findViewById(R.id.sync_profile_ctv_active);
 		final Spinner spinner_master=(Spinner)dialog.findViewById(R.id.sync_profile_master_spinner);
 		final Spinner spinner_target=(Spinner)dialog.findViewById(R.id.sync_profile_target_spinner);
 //		final Button swap_master_target = (Button)dialog.findViewById(R.id.sync_profile_edit_change_master_and_target);
@@ -611,7 +622,7 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 				audit_msg=mContext.getString(R.string.msgs_audit_msgs_master_target);
 		} 
 
-		if (tg.isChecked()) prof_act = SMBSYNC_PROF_ACTIVE;
+		if (ctv_active.isChecked()) prof_act = SMBSYNC_PROF_ACTIVE;
 			else prof_act = SMBSYNC_PROF_INACTIVE;
 
 		int syncopt=spinnerSyncOption.getSelectedItemPosition();
@@ -622,7 +633,7 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 
 		Boolean prof_mpd=true;
 //		if (prof_dir_filter.size()>0) prof_mpd=cbmpd.isChecked();
-		prof_mpd=cbmpd.isChecked();
+		prof_mpd=ctvmpd.isChecked();
 
 		if (!profile_saved) {
 			dlg_msg.setText(audit_msg);
@@ -632,15 +643,15 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 			String m_typ=ProfileUtility.getProfileType(prof_master,mGp.profileAdapter);
 			String t_typ=ProfileUtility.getProfileType(prof_target,mGp.profileAdapter);
 			String retry_count="0";
-			if (cbRetry.isChecked()) retry_count=SMBSYNC_PROFILE_RETRY_COUNT;
+			if (ctvRetry.isChecked()) retry_count=SMBSYNC_PROFILE_RETRY_COUNT;
 
 			ProfileUtility.updateSyncProfileAdapter(mGp, prof_name, prof_act,
 					prof_syncopt, m_typ,prof_master, t_typ,prof_target,
 					prof_file_filter,prof_dir_filter,prof_mpd,
-					cbConf.isChecked(),cbLastMod.isChecked(),
-					cbNotUseLastModRem.isChecked(),retry_count,
-					cbSyncEmptyDir.isChecked(),
-					cbSyncHiddenDir.isChecked(),cbSyncHiddenFile.isChecked(),cbSyncSubDir.isChecked(),
+					ctvConf.isChecked(),ctvLastMod.isChecked(),
+					ctvNotUseLastModRem.isChecked(),retry_count,
+					ctvSyncEmptyDir.isChecked(),
+					ctvSyncHiddenDir.isChecked(),ctvSyncHiddenFile.isChecked(),ctvSyncSubDir.isChecked(),
 					false,prof_pos);
 			mGp.profileAdapter.sort();
 			mGp.profileAdapter.notifyDataSetChanged();
@@ -728,6 +739,9 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 		mDialog.setContentView(R.layout.edit_profile_sync);
 		final TextView dlg_title=(TextView) mDialog.findViewById(R.id.sync_profile_dlg_title);
 		dlg_title.setText(mContext.getString(R.string.msgs_edit_sync_profile));
+		final TextView dlg_title_sub=(TextView) mDialog.findViewById(R.id.sync_profile_dlg_title_sub);
+		dlg_title_sub.setText(" ("+pfli.getName()+")");
+
 		
 //		final TextView dlg_msg=(TextView) mDialog.findViewById(R.id.sync_profile_dlg_msg);
 //		dlg_msg.setText(dialog_msg);
@@ -740,25 +754,36 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 		editname.setText(pfli.getName());
 		editname.setTextColor(Color.LTGRAY);
 		editname.setEnabled(false);
-		final CheckBox cbmpd = (CheckBox)mDialog.findViewById(R.id.sync_profile_sync_master_root_dir_file);
-		final CheckBox tg = (CheckBox)mDialog.findViewById(R.id.sync_profile_active);
-		final CheckBox cbConf = (CheckBox)mDialog.findViewById(R.id.sync_profile_confirm);
-		final CheckBox cbLastMod = (CheckBox)mDialog.findViewById(R.id.sync_profile_last_modified);
-		final CheckBox cbRetry = (CheckBox)mDialog.findViewById(R.id.sync_profile_retry_if_error_occured);
-		final CheckBox cbSyncEmptyDir = (CheckBox)mDialog.findViewById(R.id.sync_profile_sync_empty_directory);
-		final CheckBox cbSyncHiddenDir = (CheckBox)mDialog.findViewById(R.id.sync_profile_sync_hidden_directory);
-		final CheckBox cbSyncHiddenFile = (CheckBox)mDialog.findViewById(R.id.sync_profile_sync_hidden_file);
-		final CheckBox cbSyncSubDir = (CheckBox)mDialog.findViewById(R.id.sync_profile_sync_sub_dir);
+		editname.setVisibility(EditText.GONE);
 		
-		if (pfli.getRetryCount().equals("0")) cbRetry.setChecked(false);
-		else cbRetry.setChecked(true);
+		final CheckedTextView ctvmpd = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_sync_master_root_dir_file);
+		final CheckedTextView ctv_active = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_active);
+		SMBSyncUtil.setCheckedTextView(ctv_active);
+		ctv_active.setChecked(pfli.isActive());
+		final CheckedTextView ctvConf = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_confirm);
+		SMBSyncUtil.setCheckedTextView(ctvConf);
+		final CheckedTextView ctvLastMod = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_last_modified);
+		SMBSyncUtil.setCheckedTextView(ctvLastMod);
+		final CheckedTextView ctvRetry = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_retry_if_error_occured);
+		SMBSyncUtil.setCheckedTextView(ctvRetry);
+		final CheckedTextView ctvSyncEmptyDir = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_sync_empty_directory);
+		SMBSyncUtil.setCheckedTextView(ctvSyncEmptyDir);
+		final CheckedTextView ctvSyncHiddenDir = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_sync_hidden_directory);
+		SMBSyncUtil.setCheckedTextView(ctvSyncHiddenDir);
+		final CheckedTextView ctvSyncHiddenFile = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_sync_hidden_file);
+		SMBSyncUtil.setCheckedTextView(ctvSyncHiddenFile);
+		final CheckedTextView ctvSyncSubDir = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_sync_sub_dir);
+		SMBSyncUtil.setCheckedTextView(ctvSyncSubDir);
 		
-		cbSyncEmptyDir.setChecked(pfli.isSyncEmptyDirectory());
-		cbSyncHiddenDir.setChecked(pfli.isSyncHiddenDirectory());
-		cbSyncHiddenFile.setChecked(pfli.isSyncHiddenFile());
+		if (pfli.getRetryCount().equals("0")) ctvRetry.setChecked(false);
+		else ctvRetry.setChecked(true);
 		
-		cbConf.setChecked(pfli.isConfirmRequired());
-		cbLastMod.setChecked(pfli.isForceLastModifiedUseSmbsync());
+		ctvSyncEmptyDir.setChecked(pfli.isSyncEmptyDirectory());
+		ctvSyncHiddenDir.setChecked(pfli.isSyncHiddenDirectory());
+		ctvSyncHiddenFile.setChecked(pfli.isSyncHiddenFile());
+		
+		ctvConf.setChecked(pfli.isConfirmRequired());
+		ctvLastMod.setChecked(pfli.isForceLastModifiedUseSmbsync());
 		
 		final ImageButton ib_edit_master=(ImageButton) mDialog.findViewById(R.id.sync_profile_edit_master);
 		final ImageButton ib_edit_target=(ImageButton) mDialog.findViewById(R.id.sync_profile_edit_target);
@@ -768,15 +793,14 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 	
 		CommonDialog.setDlgBoxSizeLimit(mDialog,true);
 	
-		if (pfli.getActive().equals(SMBSYNC_PROF_ACTIVE)) tg.setChecked(true);
-			else tg.setChecked(false);
 	//	if (prof_dir_filter.size()!=0) {
 	//		cbmpd.setVisibility(CheckBox.VISIBLE);//.setEnabled(true);
 	//		cbmpd.setChecked(true);
 	//	} else cbmpd.setVisibility(CheckBox.GONE);//.setEnabled(false);
 	
-		final CheckBox cbNotUseLastModRem = (CheckBox)mDialog.findViewById(R.id.sync_profile_not_use_last_modified_remote_file_for_diff);
-		cbNotUseLastModRem.setChecked(pfli.isNotUseLastModifiedForRemote());
+		final CheckedTextView ctvNotUseLastModRem = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_not_use_last_modified_remote_file_for_diff);
+		SMBSyncUtil.setCheckedTextView(ctvNotUseLastModRem);
+		ctvNotUseLastModRem.setChecked(pfli.isNotUseLastModifiedForRemote());
 	
 	//	if (cbmpd.isChecked()) cbmpd.setText(mContext.getString(R.string.msgs_sync_profile_master_dir_cb_enable));
 	//	else cbmpd.setText(mContext.getString(R.string.msgs_sync_profile_master_dir_cb_disable));
@@ -901,29 +925,31 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 			}
 		});
 		// Master Dir processボタンの指定
-	//	if (prof_dir_filter.size()!=0) cbmpd.setVisibility(CheckBox.VISIBLE);//.setEnabled(true);
+	//	if (prof_dir_filter.size()!=0) cbmpd.setVisibility(CheckBoCheckedTextViewE);//.setEnabled(true);
 	//		else cbmpd.setVisibility(CheckBox.GONE);//.setEnabled(false);
 		if (pfli.isMasterDirFileProcess()) {
-			cbmpd.setChecked(true);
-			cbSyncSubDir.setChecked(pfli.isSyncSubDirectory());
+			ctvmpd.setChecked(true);
+			ctvSyncSubDir.setChecked(pfli.isSyncSubDirectory());
 		} else {
-			cbmpd.setChecked(false);
-			cbSyncSubDir.setChecked(true);
+			ctvmpd.setChecked(false);
+			ctvSyncSubDir.setChecked(true);
+			ctvSyncSubDir.setEnabled(false);
 		}
 	
-		cbmpd.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+		ctvmpd.setOnClickListener(new OnClickListener(){
 			@Override
-			public void onCheckedChanged(CompoundButton buttonView,
-					boolean isChecked) {
+			public void onClick(View v) {
+				ctvmpd.toggle();
+				boolean isChecked=ctvmpd.isChecked();
 				if (!isChecked) {
-					cbSyncSubDir.setEnabled(false);
-					cbSyncSubDir.setChecked(true);
+					ctvSyncSubDir.setEnabled(false);
+					ctvSyncSubDir.setChecked(true);
 				} else {
-					cbSyncSubDir.setEnabled(true);
+					ctvSyncSubDir.setEnabled(true);
 				}
 			}
 		});
-		
+
 		// CANCELボタンの指定
 		final Button btn_cancel = (Button) mDialog.findViewById(R.id.sync_profile_cancel);
 		btn_cancel.setOnClickListener(new View.OnClickListener() {
@@ -957,7 +983,7 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 		Spinner spinner_master=(Spinner)dialog.findViewById(R.id.sync_profile_master_spinner);
 		Spinner spinner_target=(Spinner)dialog.findViewById(R.id.sync_profile_target_spinner);
 		EditText editname = (EditText) dialog.findViewById(R.id.sync_profile_name);
-		CheckBox tg = (CheckBox)dialog.findViewById(R.id.sync_profile_active);
+		CheckedTextView ctv_active = (CheckedTextView)dialog.findViewById(R.id.sync_profile_ctv_active);
 		
 		if (spinner_master.getCount()>0) 
 			prof_master = spinner_master.getSelectedItem().toString().substring(2);
@@ -992,7 +1018,7 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 						mContext.getString(R.string.msgs_master_profile_not_found), 
 						prof_master);
 				audit_error=true;
-			} else if (tg.isChecked() && !ProfileUtility.isProfileActive(mGp, SMBSYNC_PROF_GROUP_DEFAULT,
+			} else if (ctv_active.isChecked() && !ProfileUtility.isProfileActive(mGp, SMBSYNC_PROF_GROUP_DEFAULT,
 					ProfileUtility.getProfileType(prof_master,mGp.profileAdapter), prof_master)) {
 				audit_msg= 
 						mContext.getString(R.string.msgs_prof_active_not_activated);
@@ -1015,7 +1041,7 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 						mContext.getString(R.string.msgs_target_profile_not_found), 
 						prof_target);
 				audit_error=true;
-			} else if (tg.isChecked() && !ProfileUtility.isProfileActive(mGp, SMBSYNC_PROF_GROUP_DEFAULT,
+			} else if (ctv_active.isChecked() && !ProfileUtility.isProfileActive(mGp, SMBSYNC_PROF_GROUP_DEFAULT,
 					ProfileUtility.getProfileType(prof_target,mGp.profileAdapter), prof_target)) {
 				audit_msg= 
 						mContext.getString(R.string.msgs_prof_active_not_activated);

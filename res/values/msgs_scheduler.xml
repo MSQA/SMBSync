@@ -2,7 +2,7 @@
 <resources>
     <string name="msgs_menu_scheduler">Schedule</string>
     <string name="msgs_scheduler_main_dlg_hdr_title">Schedule</string>
-    <string name="msgs_scheduler_main_dlg_hdr_enable">Enable schedule</string>
+    <string name="msgs_scheduler_main_dlg_hdr_enable">To enable schedule</string>
     <string name="msgs_scheduler_main_dlg_hdr_edit_prof">Edit sync list</string>
 	<string name="msgs_scheduler_main_dlg_hdr_sun">Sun</string>
 	<string name="msgs_scheduler_main_dlg_hdr_mon">Mon</string>
@@ -19,7 +19,7 @@
 	<string name="msgs_scheduler_main_dlg_hdr_schedule_type">Schedule Type</string>
 	
 	<string name="msgs_scheduler_main_dlg_hdr_wifi_on">To turn on the Wi-Fi when sync started</string>
-	<string name="msgs_scheduler_main_dlg_hdr_wifi_on_delayed_t">Delay time</string>
+	<string name="msgs_scheduler_main_dlg_hdr_wifi_on_delayed_time">Wait time to perform sync after Wi-Fi turn on</string>
 	<string name="msgs_scheduler_main_dlg_hdr_wifi_on_delayed_1">5 Sec</string>
 	<string name="msgs_scheduler_main_dlg_hdr_wifi_on_delayed_2">10 Sec</string>
 	<string name="msgs_scheduler_main_dlg_hdr_wifi_on_delayed_3">30 Sec</string>

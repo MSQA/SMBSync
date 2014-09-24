@@ -11,7 +11,8 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1" 
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"
         android:orientation="vertical" >
 
 	    <LinearLayout
@@ -47,15 +48,6 @@
 	            android:text="SyncProfile00000000"
 	            android:textAppearance="?android:attr/textAppearanceMedium"
 	            />
-	        	        	
-	        <TextView
-	            android:id="@+id/sync_history_list_view_status"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:layout_marginLeft="5dp"
-	            android:layout_marginRight="10dp"
-	            android:textAppearance="?android:attr/textAppearanceMedium"
-	            android:text="Success" />
 	        
 	    </LinearLayout>
 	    
@@ -139,6 +131,16 @@
 	        android:textAppearance="?android:attr/textAppearanceMedium"
 	        />
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/sync_history_list_view_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="10dp"
+        android:text="Success"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
     
     <CheckBox
         android:id="@+id/sync_history_list_view_cb"

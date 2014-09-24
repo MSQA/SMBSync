@@ -52,14 +52,16 @@
         android:imeOptions="actionNone"
         android:inputType="text" />
 
-    <CheckBox
-        android:id="@+id/sync_wizard_dlg_remote_use_user_pass"
-        style="@style/check_box_style"
-        android:layout_width="match_parent"
+    <CheckedTextView
+        android:id="@+id/sync_wizard_dlg_ctv_remote_use_user_pass"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
-        android:text="@string/msgs_remote_profile_dlg_use_user_pass" />
-
+        android:checkMark="?android:attr/textCheckMark"
+        android:gravity="center_vertical"
+        android:text="@string/msgs_remote_profile_dlg_use_user_pass"
+        />
+    
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"

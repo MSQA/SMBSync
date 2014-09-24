@@ -146,27 +146,44 @@ public class AdapterProfileSelectionSpinner extends ArrayAdapter<String> {
         text.setText(name);
         if (Build.VERSION.SDK_INT>=11) {
             if (type.equals(SMBSYNC_PROF_TYPE_REMOTE)) {
-            	text.setCompoundDrawablesWithIntrinsicBounds(mContext.getResources().getDrawable(android.R.drawable.btn_radio),
+            	text.setCompoundDrawablePadding(10);
+//            	text.setCompoundDrawablesWithIntrinsicBounds(mContext.getResources().getDrawable(android.R.drawable.btn_radio),
+//                		null,
+//                		mContext.getResources().getDrawable(R.drawable.ic_32_server), 
+//                		null);
+            	text.setCompoundDrawablesWithIntrinsicBounds(
+            			mContext.getResources().getDrawable(R.drawable.ic_32_server),
                 		null,
-                		mContext.getResources().getDrawable(R.drawable.ic_32_server), 
+                		mContext.getResources().getDrawable(android.R.drawable.btn_radio),
                 		null);
             } else {
-            	text.setCompoundDrawablesWithIntrinsicBounds(mContext.getResources().getDrawable(android.R.drawable.btn_radio),
+            	text.setCompoundDrawablePadding(10);
+//            	text.setCompoundDrawablesWithIntrinsicBounds(
+//            			mContext.getResources().getDrawable(android.R.drawable.btn_radio),
+//                		null,
+//                		mContext.getResources().getDrawable(R.drawable.ic_32_mobile), 
+//                		null);
+            	text.setCompoundDrawablesWithIntrinsicBounds(
+            			mContext.getResources().getDrawable(R.drawable.ic_32_mobile),
                 		null,
-                		mContext.getResources().getDrawable(R.drawable.ic_32_mobile), 
+                		mContext.getResources().getDrawable(android.R.drawable.btn_radio),
                 		null);
             }
         } else {
             if (type.equals(SMBSYNC_PROF_TYPE_REMOTE)) {
-            	text.setCompoundDrawablesWithIntrinsicBounds(mContext.getResources().getDrawable(R.drawable.ic_32_server),
+            	text.setCompoundDrawablePadding(10);
+            	text.setCompoundDrawablesWithIntrinsicBounds(
+            			mContext.getResources().getDrawable(R.drawable.ic_32_server),
             			null,
                 		null,
-                		 
                 		null);
             } else {
-            	text.setCompoundDrawablesWithIntrinsicBounds(mContext.getResources().getDrawable(R.drawable.ic_32_mobile),
+            	text.setCompoundDrawablePadding(10);
+            	text.setCompoundDrawablesWithIntrinsicBounds(
+            			mContext.getResources().getDrawable(R.drawable.ic_32_mobile),
             			null,
-                		null,null);
+                		null,
+                		null);
             }
         }
 
