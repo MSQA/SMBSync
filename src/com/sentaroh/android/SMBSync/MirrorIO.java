@@ -1680,6 +1680,7 @@ public class MirrorIO implements Runnable {
 									tf.setLastModified(mf.lastModified());
 									updateLocalFileLastModifiedList(currentFileLastModifiedList,newFileLastModifiedList,
 											targetUrl,mf.lastModified());
+									scanMediaStoreLibrary(targetUrl);
 									copyCount++;
 //									mHistoryCopiedList.add(targetUrl);
 								} else {
@@ -2586,6 +2587,7 @@ public class MirrorIO implements Runnable {
 									tf.setLastModified(mf.lastModified());
 									updateLocalFileLastModifiedList(currentFileLastModifiedList,newFileLastModifiedList,
 											targetUrl,mf.lastModified());
+									scanMediaStoreLibrary(targetUrl);
 									copyCount++;
 									
 									if (confirmDelete(masterUrl)) {
