@@ -239,10 +239,10 @@ public class LogFileManagementFragment extends DialogFragment{
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int pos, long arg3) {
 				if (lfm_adapter.getItem(0).log_file_name==null) return;
-				if (mGlblParms.settingAltUiEnabled) {
-					if (!isLogFileItemSelected(lfm_adapter)) processSelectedLogFile(lfm_adapter,pos);
-					else lfm_adapter.getItem(pos).isChecked=!lfm_adapter.getItem(pos).isChecked;
-				} else lfm_adapter.getItem(pos).isChecked=!lfm_adapter.getItem(pos).isChecked;
+//				if (mGlblParms.settingAltUiEnabled) {
+//				} else lfm_adapter.getItem(pos).isChecked=!lfm_adapter.getItem(pos).isChecked;
+				if (!isLogFileItemSelected(lfm_adapter)) processSelectedLogFile(lfm_adapter,pos);
+				else lfm_adapter.getItem(pos).isChecked=!lfm_adapter.getItem(pos).isChecked;
 				lfm_adapter.notifyDataSetChanged();
 			}
     	});

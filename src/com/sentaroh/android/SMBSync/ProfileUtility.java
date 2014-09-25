@@ -904,15 +904,9 @@ public class ProfileUtility {
 	};
 	
 	static public void setProfileToChecked(boolean chk, AdapterProfileList pa, 
-			ProfileListItem item, int no) {
-		
-		if (chk) {
-			item.setChecked(true);
-			pa.replace(item,no);
-		} else {
-			item.setChecked(false);
-			pa.replace(item,no);
-		}
+			 int no) {
+		ProfileListItem item=pa.getItem(no);
+		item.setChecked(chk);
 	};
 	
 	public void setProfileToActive(GlobalParameters gp) {
@@ -926,7 +920,6 @@ public class ProfileUtility {
 				if (!item.getType().equals(SMBSYNC_PROF_TYPE_SYNC)) {
 					item.setActive(SMBSYNC_PROF_ACTIVE);
 					item.setChecked(false);
-					gp.profileAdapter.replace(item,i); 
 				} else {
 					if (isSyncProfileDisabled(gp, item)) {
 						//Not activated
@@ -935,7 +928,6 @@ public class ProfileUtility {
 					} else {
 						item.setActive(SMBSYNC_PROF_ACTIVE);
 						item.setChecked(false);
-						gp.profileAdapter.replace(item,i); 
 					}
 				}
 			} 
@@ -944,6 +936,7 @@ public class ProfileUtility {
 //		resolveSyncProfileRelation();
 
 		saveProfileToFile(false,"","",gp.profileAdapter,false);
+		mGp.profileAdapter.notifyDataSetChanged();
 		gp.profileAdapter.setNotifyOnChange(true);
 		gp.profileListView.setSelectionFromTop(pos,posTop);			
 	};
@@ -958,13 +951,13 @@ public class ProfileUtility {
 			if (item.isChecked()) {
 				item.setActive(SMBSYNC_PROF_INACTIVE);
 				item.setChecked(false);
-				mGp.profileAdapter.replace(item,i);
 			}		
 		}
 		
 		resolveSyncProfileRelation(mGp);
 		
 		saveProfileToFile(false,"","",mGp.profileAdapter,false);
+		mGp.profileAdapter.notifyDataSetChanged();
 		mGp.profileAdapter.setNotifyOnChange(true);
 		mGp.profileListView.setSelectionFromTop(pos,posTop);
 	};
@@ -1019,11 +1012,12 @@ public class ProfileUtility {
 			if (item.getType().equals(SMBSYNC_PROF_TYPE_SYNC)) {
 				if (isSyncProfileDisabled(gp, item)) {
 //					glblParms.profileAdapter.remove(glblParms.profileAdapter.getItem(i));
-					gp.profileAdapter.replace(item,i);
+//					gp.profileAdapter.replace(item,i);
 				}
 
 			}
 		}
+		gp.profileAdapter.notifyDataSetChanged();
 	};
 
 	static private boolean isSyncProfileDisabled(GlobalParameters gp, ProfileListItem item) {
@@ -2764,6 +2758,18 @@ public class ProfileUtility {
 			}
 		}
 		return active;
+	};
+
+	static public boolean isAnyProfileSelected(AdapterProfileList pa, String prof_grp) {
+		boolean result = false;
+
+		for (int i = 0; i<pa.getCount(); i++) {
+			if (pa.getItem(i).getGroup().equals(prof_grp) && pa.getItem(i).isChecked()) {
+				result=true;
+				break;
+			}
+		}
+		return result;
 	};
 
 	public void scanRemoteNetworkDlg(final NotifyEvent p_ntfy, 

@@ -99,6 +99,7 @@ import com.sentaroh.android.Utilities.NotifyEvent;
 import com.sentaroh.android.Utilities.NotifyEvent.NotifyEventListener;
 import com.sentaroh.android.Utilities.ThreadCtrl;
 import com.sentaroh.android.Utilities.ContextMenu.CustomContextMenu;
+import com.sentaroh.android.Utilities.ContextMenu.CustomContextMenuItem.CustomContextMenuOnCleanupListener;
 import com.sentaroh.android.Utilities.ContextMenu.CustomContextMenuItem.CustomContextMenuOnClickListener;
 import com.sentaroh.android.Utilities.Dialog.CommonDialog;
 
@@ -1274,12 +1275,20 @@ public class SMBSyncMain extends FragmentActivity {
 	};
 
 	private void terminateApplication() {
-//		stopMirrorService();
+		if (tabHost.getCurrentTab()==0) {//
+			if (ProfileUtility.isAnyProfileSelected(mGp.profileAdapter,SMBSYNC_PROF_GROUP_DEFAULT)) {
+				resetAllCheckedItem();
+				return;
+			}
+		} else if (tabHost.getCurrentTab()==1) {
+		} else if (tabHost.getCurrentTab()==2) {
+			if (isHistoryItemSelected()) {
+				setHistoryItemUnselectAll();
+				return;
+			}
+		}
 		util.addLogMsg("I",msgs_smbsync_main_end);
-//		saveLogMsgToFile();
-//		closeLogFile();
 		isTaskTermination = true; // exit cleanly
-//		moveTaskToBack(true);
 		finish();
 	};
 	
@@ -1446,8 +1455,8 @@ public class SMBSyncMain extends FragmentActivity {
 		mGp.settingLocalFileCopyByRename=
 				prefs.getBoolean(getString(R.string.settings_local_file_copy_by_rename), false);
 		
-		mGp.settingAltUiEnabled=
-				prefs.getBoolean(getString(R.string.settings_ui_alternate_ui), false);
+//		mGp.settingAltUiEnabled=
+//				prefs.getBoolean(getString(R.string.settings_ui_alternate_ui), false);
 
 		mGp.settingMediaFiles=
 				prefs.getBoolean(getString(R.string.settings_media_scanner_non_media_files_scan), true);
@@ -1743,7 +1752,7 @@ public class SMBSyncMain extends FragmentActivity {
 				", settingWifiLockRequired="+mGp.settingWifiLockRequired+
 				", settingWifiOption="+mGp.settingWifiOption+
 
-				", settingAltUiEnabled="+mGp.settingAltUiEnabled+
+//				", settingAltUiEnabled="+mGp.settingAltUiEnabled+
 				", settingDebugMsgDisplay="+mGp.settingDebugMsgDisplay+
 				", settingMediaFiles="+mGp.settingMediaFiles+
 				", settingScanExternalStorage="+mGp.settingScanExternalStorage+
@@ -1834,38 +1843,29 @@ public class SMBSyncMain extends FragmentActivity {
 					int position, long id) {
 				mGp.syncHistoryListView.setEnabled(false);
 				SyncHistoryListItem item = mGp.syncHistoryList.get(position);
-//				Log.v("","fp="+item.sync_result_file_path);
-				if (mGp.settingAltUiEnabled) {
-					if (isHistoryItemSelected()) {
-						item.isChecked=!item.isChecked;
-						mGp.syncHistoryListView.setEnabled(true);
-					} else {
-//						if (item.isLogFileAvailable) {
-//							Intent intent = 
-//									new Intent(android.content.Intent.ACTION_VIEW);
-//							intent.setDataAndType(
-//									Uri.parse("file://"+item.sync_log_file_path),
-//									"text/plain");
-//							startActivityForResult(intent,1);
-//						}
-						if (!item.sync_result_file_path.equals("")) {
-							Intent intent = 
-									new Intent(android.content.Intent.ACTION_VIEW);
-							intent.setDataAndType(
-									Uri.parse("file://"+item.sync_result_file_path),
-									"text/plain");
-							startActivityForResult(intent,1);
-						}
-						mUiHandler.postDelayed(new Runnable(){
-							@Override
-							public void run() {
-								mGp.syncHistoryListView.setEnabled(true);
-							}
-						},1000);
-					}
-				} else {
+//				if (mGp.settingAltUiEnabled) {
+//				} else {
+//					item.isChecked=!item.isChecked;
+//					mGp.syncHistoryListView.setEnabled(true);
+//				}
+				if (isHistoryItemSelected()) {
 					item.isChecked=!item.isChecked;
 					mGp.syncHistoryListView.setEnabled(true);
+				} else {
+					if (!item.sync_result_file_path.equals("")) {
+						Intent intent = 
+								new Intent(android.content.Intent.ACTION_VIEW);
+						intent.setDataAndType(
+								Uri.parse("file://"+item.sync_result_file_path),
+								"text/plain");
+						startActivityForResult(intent,1);
+					}
+					mUiHandler.postDelayed(new Runnable(){
+						@Override
+						public void run() {
+							mGp.syncHistoryListView.setEnabled(true);
+						}
+					},1000);
 				}
 				mGp.syncHistoryAdapter.notifyDataSetChanged();
 			}
@@ -1895,28 +1895,45 @@ public class SMBSyncMain extends FragmentActivity {
 	};
 
 	private void createHistoryContextMenu(View view, int idx) {
-		SyncHistoryListItem item;
-		int j=0;
+		int prev_selected_cnt=0;
 		for (int i=0;i<mGp.syncHistoryAdapter.getCount();i++) {
-			if (mGp.syncHistoryAdapter.getItem(i).isChecked) j++;
+			if (mGp.syncHistoryAdapter.getItem(i).isChecked) {
+				prev_selected_cnt++;
+			}
 		}
-		if (j<=1) {
+		if (prev_selected_cnt==0) {//Not selected
+			setHistoryItemChecked(idx,true);
+			mGp.syncHistoryAdapter.notifyDataSetChanged();
+			createHistoryContextMenu_Single(idx);
+		} else if (prev_selected_cnt==1) {//Previous selected was single
 			for (int i=0;i<mGp.syncHistoryAdapter.getCount();i++) {
-				item = mGp.syncHistoryAdapter.getItem(i);
-				if (idx==i) {
-					mGp.syncHistoryAdapter.getItem(i).isChecked=true;
-					j=i;//set new index no
-				} else {
-					if (item.isChecked) {
-						mGp.syncHistoryAdapter.getItem(i).isChecked=false;
+				if (mGp.syncHistoryAdapter.getItem(i).isChecked) {
+					if (i!=idx) {
+						setHistoryItemChecked(i,false);
+						setHistoryItemChecked(idx,true);
+						mGp.syncHistoryAdapter.notifyDataSetChanged();
 					}
 				}
 			}
-			mGp.syncHistoryAdapter.notifyDataSetChanged();
-			createHistoryContextMenu_Single(j);
+			createHistoryContextMenu_Single(idx);
 		} else {
-			mGp.syncHistoryAdapter.notifyDataSetChanged();
-			createHistoryContextMenu_Multiple(idx);
+			boolean already_selected=false;
+			for (int i=0;i<mGp.syncHistoryAdapter.getCount();i++) {
+				if (mGp.syncHistoryAdapter.getItem(i).isChecked) {
+					if (i==idx) {
+						already_selected=true;
+						break;
+					}
+				}
+			}
+			if (already_selected) {
+				createHistoryContextMenu_Multiple(idx);
+			} else {
+				setHistoryItemUnselectAll();
+				setHistoryItemChecked(idx,true);
+				mGp.syncHistoryAdapter.notifyDataSetChanged();
+				createHistoryContextMenu_Single(idx);
+			}
 		}
 	};
 	
@@ -1949,16 +1966,14 @@ public class SMBSyncMain extends FragmentActivity {
 		.setOnClickListener(new CustomContextMenuOnClickListener() {
 			@Override
 			public void onClick(CharSequence menuTitle) {
-				for (int i=0;i<mGp.syncHistoryAdapter.getCount();i++) mGp.syncHistoryAdapter.getItem(i).isChecked=false;
-				mGp.syncHistoryAdapter.notifyDataSetChanged();
+				setHistoryItemUnselectAll();
 			}
 		});
 		ccMenu.addMenuItem(msgs_sync_history_ccmeu_selectall)
 		.setOnClickListener(new CustomContextMenuOnClickListener() {
 			@Override
 			public void onClick(CharSequence menuTitle) {
-				for (int i=0;i<mGp.syncHistoryAdapter.getCount();i++) mGp.syncHistoryAdapter.getItem(i).isChecked=true;
-				mGp.syncHistoryAdapter.notifyDataSetChanged();
+				setHistoryItemSelectAll();
 			}
 		});
 
@@ -1996,6 +2011,21 @@ public class SMBSyncMain extends FragmentActivity {
 		});
 		ccMenu.createMenu();
 	};
+
+	private void setHistoryItemUnselectAll() {
+		for (int i=0;i<mGp.syncHistoryAdapter.getCount();i++) mGp.syncHistoryAdapter.getItem(i).isChecked=false;
+		mGp.syncHistoryAdapter.notifyDataSetChanged();
+	}
+
+	private void setHistoryItemSelectAll() {
+		for (int i=0;i<mGp.syncHistoryAdapter.getCount();i++) mGp.syncHistoryAdapter.getItem(i).isChecked=true;
+		mGp.syncHistoryAdapter.notifyDataSetChanged();
+	}
+
+	private void setHistoryItemChecked(int pos, boolean p) {
+		mGp.syncHistoryAdapter.getItem(pos).isChecked=p;
+	};
+
 
 	private void confirmDeleteHistory() {
 		String conf_list="";
@@ -2091,16 +2121,14 @@ public class SMBSyncMain extends FragmentActivity {
 		.setOnClickListener(new CustomContextMenuOnClickListener() {
 			@Override
 			public void onClick(CharSequence menuTitle) {
-				for (int i=0;i<mGp.syncHistoryAdapter.getCount();i++) mGp.syncHistoryAdapter.getItem(i).isChecked=false;
-				mGp.syncHistoryAdapter.notifyDataSetChanged();
+				setHistoryItemUnselectAll();
 			}
 		});
 		ccMenu.addMenuItem(msgs_sync_history_ccmeu_selectall)
 		.setOnClickListener(new CustomContextMenuOnClickListener() {
 			@Override
 			public void onClick(CharSequence menuTitle) {
-				for (int i=0;i<mGp.syncHistoryAdapter.getCount();i++) mGp.syncHistoryAdapter.getItem(i).isChecked=true;
-				mGp.syncHistoryAdapter.notifyDataSetChanged();
+				setHistoryItemSelectAll();
 			}
 		});
 		ccMenu.addMenuItem(msgs_sync_history_ccmeu_copy_clipboard)
@@ -2146,46 +2174,28 @@ public class SMBSyncMain extends FragmentActivity {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				mGp.profileListView.setEnabled(false);
-//				if (!mProfileListItemClickEnabled) return;
-//				mProfileListItemClickEnabled=false;
 				ProfileListItem item = mGp.profileAdapter.getItem(position);
-//				util.sendDebugLogMsg(1,"I","Clicked :" + item.getName());
-//				editProfile(item.getName(),item.getType(),item.getActive(),position);
-				if (mGp.settingAltUiEnabled) {
-					if (!isProfileItemSelected()) {
-						editProfile(item.getName(),item.getType(),item.getActive(),position);
-						mUiHandler.postDelayed(new Runnable(){
-							@Override
-							public void run() {
-								mGp.profileListView.setEnabled(true);
-							}
-						},1000);
-					} else {
-						item.setChecked(!item.isChecked());
-//						mProfileListItemClickEnabled=true;
-						mGp.profileListView.setEnabled(true);
-					}
+//				if (mGp.settingAltUiEnabled) {
+//				} else {
+//					item.setChecked(!item.isChecked());
+//					mGp.profileListView.setEnabled(true);
+//				}
+				if (!ProfileUtility.isAnyProfileSelected(mGp.profileAdapter,SMBSYNC_PROF_GROUP_DEFAULT)) {
+					editProfile(item.getName(),item.getType(),item.getActive(),position);
+					mUiHandler.postDelayed(new Runnable(){
+						@Override
+						public void run() {
+							mGp.profileListView.setEnabled(true);
+						}
+					},1000);
 				} else {
 					item.setChecked(!item.isChecked());
-//					mProfileListItemClickEnabled=true;
 					mGp.profileListView.setEnabled(true);
 				}
 				mGp.profileAdapter.notifyDataSetChanged();
 			}
 		});
 	};
-	
-	private boolean isProfileItemSelected() {
-		boolean result=false;
-		
-		for (int i=0;i<mGp.profileAdapter.getCount();i++) 
-			if (mGp.profileAdapter.getItem(i).isChecked()) {
-				result=true;
-				break;
-			}
-		
-		return result;
-	}
 	
 	private void setProfilelistLongClickListener() {
 		mGp.profileListView
@@ -2222,41 +2232,56 @@ public class SMBSyncMain extends FragmentActivity {
 	};
 	
 	private void createProfileContextMenu(View view, int idx) {
-		ProfileListItem item;
-//		int pos=glblParms.profileListView.getFirstVisiblePosition();		
-		int j=0;
+		int prev_selected_cnt=0;
 		boolean sync=false;
 		for (int i=0;i<mGp.profileAdapter.getCount();i++) {
-			if (mGp.profileAdapter.getItem(i).isChecked()) j++;
+			if (mGp.profileAdapter.getItem(i).isChecked()) {
+				prev_selected_cnt++;
+			}
 		}
-		if (j<=1) {
+		if (prev_selected_cnt==0) {//Not selected
+			ProfileUtility.setProfileToChecked(true, mGp.profileAdapter, idx);
+			mGp.profileAdapter.notifyDataSetChanged();
+			if (mGp.profileAdapter.getItem(idx).getType().equals(SMBSYNC_PROF_TYPE_SYNC)) sync=true;
+			createProfileContextMenu_Single(idx, sync);
+		} else if (prev_selected_cnt==1) {//Previous selected was single
 			for (int i=0;i<mGp.profileAdapter.getCount();i++) {
-				item = mGp.profileAdapter.getItem(i);
-				if (idx==i) {
-					ProfileUtility.setProfileToChecked(true, mGp.profileAdapter, item, i);
-					j=i;//set new index no
-					if (mGp.profileAdapter.getItem(i).getType().equals(SMBSYNC_PROF_TYPE_SYNC))
-						sync=true;
-				} else {
-					if (item.isChecked()) {
-						ProfileUtility.setProfileToChecked(false, mGp.profileAdapter, item, i);
+				if (mGp.profileAdapter.getItem(i).isChecked()) {
+					if (i!=idx) {
+						ProfileUtility.setProfileToChecked(false, mGp.profileAdapter, i);
+						ProfileUtility.setProfileToChecked(true, mGp.profileAdapter, idx);
+						mGp.profileAdapter.notifyDataSetChanged();
 					}
 				}
 			}
-			mGp.profileAdapter.notifyDataSetChanged();
-//			glblParms.profileListView.setAdapter(glblParms.profileAdapter);
-//			glblParms.profileListView.setSelection(pos);
-			
-			createProfileContextMenu_Single(j, sync);
-		}
-		else {
-			sync=false;
+			if (mGp.profileAdapter.getItem(idx).getType().equals(SMBSYNC_PROF_TYPE_SYNC)) sync=true;
+			createProfileContextMenu_Single(idx, sync);
+		} else {
+			boolean already_selected=false;
 			for (int i=0;i<mGp.profileAdapter.getCount();i++) {
-				if (mGp.profileAdapter.getItem(i).isChecked()) 
-					if (mGp.profileAdapter.getItem(i).getType().equals(SMBSYNC_PROF_TYPE_SYNC))
-						sync=true;
+				if (mGp.profileAdapter.getItem(i).isChecked()) {
+					if (i==idx) {
+						already_selected=true;
+						break;
+					}
+				}
 			}
-			createProfileContextMenu_Multiple(idx,sync);
+			if (already_selected) {
+				for (int i=0;i<mGp.profileAdapter.getCount();i++) {
+					if (mGp.profileAdapter.getItem(i).isChecked()) 
+						if (mGp.profileAdapter.getItem(i).getType().equals(SMBSYNC_PROF_TYPE_SYNC)) {
+							sync=true;
+							break;
+						}
+				}
+				createProfileContextMenu_Multiple(idx,sync);
+			} else {
+				resetAllCheckedItem();
+				ProfileUtility.setProfileToChecked(true, mGp.profileAdapter, idx);
+				mGp.profileAdapter.notifyDataSetChanged();
+				if (mGp.profileAdapter.getItem(idx).getType().equals(SMBSYNC_PROF_TYPE_SYNC)) sync=true;
+				createProfileContextMenu_Single(idx, sync);
+			}
 		}
 	};
 	
@@ -2269,7 +2294,7 @@ public class SMBSyncMain extends FragmentActivity {
 			@Override
 			public void onClick(CharSequence menuTitle) {
 				syncSelectedProfile();
-				resetAllCheckedItem();
+//				resetAllCheckedItem();
 			}
 		});
 
@@ -2278,7 +2303,7 @@ public class SMBSyncMain extends FragmentActivity {
 				@Override
 				public void onClick(CharSequence menuTitle) {
 					profUtil.setProfileToActive(mGp);
-					resetAllCheckedItem();
+//					resetAllCheckedItem();
 				}
 		});
 
@@ -2287,7 +2312,7 @@ public class SMBSyncMain extends FragmentActivity {
 				@Override
 				public void onClick(CharSequence menuTitle) {
 					profUtil.setProfileToInactive();
-					resetAllCheckedItem();
+//					resetAllCheckedItem();
 				}
 		});
 
@@ -2296,7 +2321,7 @@ public class SMBSyncMain extends FragmentActivity {
 				@Override
 				public void onClick(CharSequence menuTitle) {
 					profUtil.deleteProfile();
-					resetAllCheckedItem();
+//					resetAllCheckedItem();
 				}
 		});
 
@@ -2305,9 +2330,9 @@ public class SMBSyncMain extends FragmentActivity {
 			@Override
 			public void onClick(CharSequence menuTitle) {
 				for (int i=0;i<mGp.profileAdapter.getCount();i++) {
-					ProfileListItem item = mGp.profileAdapter.getItem(i);
-					ProfileUtility.setProfileToChecked(true, mGp.profileAdapter, item, i);
+					ProfileUtility.setProfileToChecked(true, mGp.profileAdapter, i);
 				}
+				mGp.profileAdapter.notifyDataSetChanged();
 			}
 		});
 		ccMenu.addMenuItem(msgs_prof_cont_unselect_all)
@@ -2348,7 +2373,7 @@ public class SMBSyncMain extends FragmentActivity {
 						@Override
 						public void onClick(CharSequence menuTitle) {
 							syncSelectedProfile();
-							resetAllCheckedItem();
+//							resetAllCheckedItem();
 						}
 			});
 			if (inact_enabled) {
@@ -2358,7 +2383,7 @@ public class SMBSyncMain extends FragmentActivity {
 					@Override
 					public void onClick(CharSequence menuTitle) {
 						profUtil.setProfileToInactive();
-						resetAllCheckedItem();
+//						resetAllCheckedItem();
 					}
 				});
 			}
@@ -2369,7 +2394,7 @@ public class SMBSyncMain extends FragmentActivity {
 					@Override
 					public void onClick(CharSequence menuTitle) {
 						profUtil.setProfileToActive(mGp);
-						resetAllCheckedItem();
+//						resetAllCheckedItem();
 					}
 				});
 			}
@@ -2379,7 +2404,7 @@ public class SMBSyncMain extends FragmentActivity {
 				  @Override
 				  public void onClick(CharSequence menuTitle) {
 					  editProfile(i_name, i_type,i_act, cin);
-					  resetAllCheckedItem();
+//					  resetAllCheckedItem();
 				  }
 			});
 				
@@ -2388,7 +2413,7 @@ public class SMBSyncMain extends FragmentActivity {
 					@Override
 					public void onClick(CharSequence menuTitle) {
 						profUtil.deleteProfile();
-						resetAllCheckedItem();
+//						resetAllCheckedItem();
 					}
 			});
 		};
@@ -2400,7 +2425,7 @@ public class SMBSyncMain extends FragmentActivity {
 				ProfileCreationWizard sw=new ProfileCreationWizard(mGp, mContext, 
 						util, profUtil, commonDlg, mGp.profileAdapter);
 				sw.wizardMain();
-				resetAllCheckedItem();
+//				resetAllCheckedItem();
 			}
 	  	});
 
@@ -2411,7 +2436,7 @@ public class SMBSyncMain extends FragmentActivity {
 					ProfileMaintLocalFragment pmsp=ProfileMaintLocalFragment.newInstance();
 					pmsp.showDialog(getSupportFragmentManager(), pmsp, "ADD", new ProfileListItem(), 
 							0, profUtil, util, commonDlg);
-					resetAllCheckedItem();
+//					resetAllCheckedItem();
 				}
 		});
 
@@ -2426,7 +2451,7 @@ public class SMBSyncMain extends FragmentActivity {
 					ProfileMaintRemoteFragment pmsp=ProfileMaintRemoteFragment.newInstance();
 					pmsp.showDialog(getSupportFragmentManager(), pmsp, "ADD", pfli, 
 							0, profUtil, util, commonDlg);
-					resetAllCheckedItem();
+//					resetAllCheckedItem();
 				}
 		});
 
@@ -2449,7 +2474,7 @@ public class SMBSyncMain extends FragmentActivity {
 				ProfileMaintSyncFragment pmsp=ProfileMaintSyncFragment.newInstance();
 				pmsp.showDialog(getSupportFragmentManager(), pmsp, "ADD", new ProfileListItem(), 
 						profUtil, util, commonDlg);
-				resetAllCheckedItem();
+//				resetAllCheckedItem();
 			}
 		});
 
@@ -2459,7 +2484,7 @@ public class SMBSyncMain extends FragmentActivity {
 				@Override
 				public void onClick(CharSequence menuTitle) {
 					profUtil.copyProfile(item);
-					resetAllCheckedItem();
+//					resetAllCheckedItem();
 				}
 			});
 
@@ -2468,7 +2493,7 @@ public class SMBSyncMain extends FragmentActivity {
 				@Override
 				public void onClick(CharSequence menuTitle) {
 					profUtil.renameProfile(item);
-					resetAllCheckedItem();
+//					resetAllCheckedItem();
 				}
 			});
 			ccMenu.addMenuItem(msgs_prof_cont_select_all)
@@ -2476,9 +2501,9 @@ public class SMBSyncMain extends FragmentActivity {
 				@Override
 				public void onClick(CharSequence menuTitle) {
 					for (int i=0;i<mGp.profileAdapter.getCount();i++) {
-						ProfileListItem item = mGp.profileAdapter.getItem(i);
-						ProfileUtility.setProfileToChecked(true, mGp.profileAdapter, item, i);
+						ProfileUtility.setProfileToChecked(true, mGp.profileAdapter, i);
 					}
+					mGp.profileAdapter.notifyDataSetChanged();
 				}
 			});
 			ccMenu.addMenuItem(msgs_prof_cont_unselect_all)
@@ -2490,14 +2515,20 @@ public class SMBSyncMain extends FragmentActivity {
 			});
 		}
 		// set onClick listener for mContext menu
-		ccMenu.createMenu();
+		ccMenu.createMenu(new CustomContextMenuOnCleanupListener(){
+			@Override
+			public void onCleanup() {
+//				Log.v("","onCleanup entered");
+//				resetAllCheckedItem();
+			}
+		});
 	};
 	
 	private void resetAllCheckedItem() {
 		for (int i=0;i<mGp.profileAdapter.getCount();i++) {
-			ProfileListItem item = mGp.profileAdapter.getItem(i);
-			ProfileUtility.setProfileToChecked(false, mGp.profileAdapter, item, i);
+			ProfileUtility.setProfileToChecked(false, mGp.profileAdapter, i);
 		}
+		mGp.profileAdapter.notifyDataSetChanged();
 	};
 	
 	private void createMsglistContextMenu(View view, int idx) {
