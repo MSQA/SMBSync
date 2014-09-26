@@ -68,10 +68,6 @@
     <string name="settings_local_file_copy_by_rename_summary_ena">Contents of the file will not be changed if the copy is aborted</string>
 	<string name="settings_local_file_copy_by_rename">settings_local_file_copy_by_rename</string>	
 		
-	<string name="settings_ui_alternate_ui_title">Alternate UI for tab</string>
-    <string name="settings_ui_alternate_ui_summary_ena">To edit the item if you click when the other items is not selected</string>
-	<string name="settings_ui_alternate_ui">settings_ui_alternate_ui</string>	
-				
     <string name="settings_debug_msg_diplay_title">Show/hide debug message</string>
 	<string name="settings_debug_msg_diplay_summary_ena">Show debug message to message tab</string>
 	<string name="settings_debug_msg_diplay">settings_debug_msg_diplay</string>

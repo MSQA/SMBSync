@@ -243,7 +243,7 @@ public class SchedulerMain {
 
 		    	SchedulerUtil.saveScheduleData(mSched, mContext);
 		    	
-		    	setTimer(mContext, SCHEDULER_INTENT_SET_TIMER);
+		    	sendTimerRequest(mContext, SCHEDULER_INTENT_SET_TIMER);
 		    	
 		    	setSchedulerInfo(mGp, mContext, mSched);
 			}
@@ -315,58 +315,16 @@ public class SchedulerMain {
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		dialog.setCanceledOnTouchOutside(false);
 		dialog.setContentView(R.layout.scheduler_edit_synclist_dlg);
+		final CheckedTextView ctv_show_all_prof = (CheckedTextView) dialog.findViewById(R.id.scheduler_edit_synclist_dlg_show_active_prof);
 		final Button btn_ok = (Button) dialog.findViewById(R.id.scheduler_edit_synclist_dlg_ok);
 		final Button btn_cancel = (Button) dialog.findViewById(R.id.scheduler_edit_synclist_dlg_cancel);
+		
 		final ListView lv_sync_list=(ListView)dialog.findViewById(R.id.scheduler_edit_synclist_dlg_sync_prof_list);
 	
-		final ArrayList<String>sync_list=new ArrayList<String>();
-		final ArrayAdapter<String> adapter=new ArrayAdapter<String>(mContext,android.R.layout.simple_list_item_checked);
-		String[] pfa=null;
-		pfa=prof_list.split(",");
-		if (!prof_list.equals("")) {
-			for (int i=0;i<pfa.length;i++) {
-				sync_list.add(pfa[i]);
-			}
-		};
+		final AdapterScheduleSyncList adapter=
+				new AdapterScheduleSyncList(mContext,android.R.layout.simple_list_item_checked);
 		
-		for (int i=0;i<mGp.profileAdapter.getCount();i++) {
-			ProfileListItem pfli=mGp.profileAdapter.getItem(i);
-			if (pfli.isActive() && pfli.getType().equals(SMBSYNC_PROF_TYPE_SYNC)) {
-//				Log.v("","name="+pfli.getName()+", type="+pfli.getType());
-				boolean found=false;
-				if (pfa!=null) {
-					for(int j=0;j<pfa.length;j++) {
-						if (pfli.getName().equals(pfa[j])) {
-							found=true;
-							break;
-						}
-					}
-				}
-				if (!found) {
-//					Log.v("","added prof="+pfli.getName());
-					sync_list.add(pfli.getName());
-				}
-			}
-		};
-		Collections.sort(sync_list,String.CASE_INSENSITIVE_ORDER);
-		for (int i=0;i<sync_list.size();i++) adapter.add(sync_list.get(i));
-		lv_sync_list.setAdapter(adapter);
-		lv_sync_list.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-		lv_sync_list.setSelected(true);
-
-		boolean selected=false;
-		for (int i=0;i<adapter.getCount();i++) {
-			String a_name=adapter.getItem(i).toString();
-			for (int j=0;j<pfa.length;j++) {
-				if (a_name.equals(pfa[j])) {
-					lv_sync_list.setItemChecked(i, true);
-					selected=true;
-					break;
-				}
-			}
-		};
-		
-		btn_ok.setEnabled(selected);
+		btn_ok.setEnabled(setSyncProfListView(true, prof_list, lv_sync_list, adapter));
 		
 		lv_sync_list.setOnItemClickListener(new OnItemClickListener(){
 			@Override
@@ -384,6 +342,23 @@ public class SchedulerMain {
 			}
 		});
 		
+		ctv_show_all_prof.setChecked(true);
+		ctv_show_all_prof.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				((CheckedTextView)v).toggle();
+				String n_prof_list="", sep="";
+				for (int i=0;i<lv_sync_list.getCount();i++) {
+					if (lv_sync_list.isItemChecked(i)) {
+						n_prof_list=n_prof_list+sep+adapter.getItem(i).substring(1);
+						sep=",";
+					}
+				}
+				btn_ok.setEnabled(setSyncProfListView(((CheckedTextView)v).isChecked(),
+						n_prof_list, lv_sync_list, adapter));
+			}
+		});
+		
 		btn_ok.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
@@ -392,7 +367,7 @@ public class SchedulerMain {
 				String n_prof_list="", sep="";
 				for (int i=0;i<lv_sync_list.getCount();i++) {
 					if (lv_sync_list.isItemChecked(i)) {
-						n_prof_list=n_prof_list+sep+adapter.getItem(i);
+						n_prof_list=n_prof_list+sep+adapter.getItem(i).substring(1);
 						sep=",";
 					}
 				}
@@ -410,8 +385,82 @@ public class SchedulerMain {
 
 		dialog.show();
 	};
+
+	private boolean setSyncProfListView(boolean active,
+			String prof_list, ListView lv, AdapterScheduleSyncList adapter) {
+		adapter.clear();
+
+		for (int i=0;i<mGp.profileAdapter.getCount();i++) {
+			ProfileListItem pfli=mGp.profileAdapter.getItem(i);
+			if (pfli.isActive() || !active) {
+				if (pfli.getType().equals(SMBSYNC_PROF_TYPE_SYNC)) {
+					String act=pfli.getActive();
+					adapter.add(act+pfli.getName());
+				}
+			}
+		};
+
+		String[] pfa=null;
+		pfa=prof_list.split(",");
+		if (!prof_list.equals("")) {
+			for (int i=0;i<pfa.length;i++) {
+				setSelectedSyncList(pfa[i],lv,adapter);
+			}
+		};
+
+		lv.setAdapter(adapter);
+		lv.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+		lv.setSelected(true);
+
+		if (!prof_list.equals("")) {
+			for (int k=0;k<pfa.length;k++) {
+				for(int i=0;i<adapter.getCount();i++) {
+					String prof_name=adapter.getItem(i).substring(1);
+					if (prof_name.equals(pfa[k])) {
+						lv.setItemChecked(i, true);
+						break;
+					}
+				}
+			}
+		};
+		
+		boolean selected=false;
+		for (int i=0;i<adapter.getCount();i++) {
+			if (lv.isItemChecked(i)) {
+				selected=true;
+				break;
+			}
+		};
+		adapter.notifyDataSetChanged();
+		return selected;
+	};
 	
-	public static void setTimer(Context c, String act) {
+	private void setSelectedSyncList(String sel, ListView lv, AdapterScheduleSyncList adapter) {
+		boolean found=false;
+		for(int i=0;i<adapter.getCount();i++) {
+			String prof_name=adapter.getItem(i).substring(1);
+			if (prof_name.equals(sel)) {
+				found=true;
+//				lv.setItemChecked(i, true);
+				break;
+			}
+		}
+		if (!found && ProfileUtility.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT, 
+						SMBSYNC_PROF_TYPE_SYNC, sel, mGp.profileAdapter.getAllItem())) {
+			for(int i=0;i<adapter.getCount();i++) {
+				String prof_name=adapter.getItem(i).substring(1);
+				if (prof_name.compareToIgnoreCase(sel)>0) {
+					adapter.insert(SMBSYNC_PROF_INACTIVE+sel,i+1);
+					adapter.notifyDataSetChanged();
+//					lv.setItemChecked(i+1, true);
+					break;
+				}
+			}
+		}
+	};
+	
+	
+	public static void sendTimerRequest(Context c, String act) {
 		Intent intent = new Intent(act);
 		c.sendBroadcast(intent);
 	};
@@ -438,7 +487,7 @@ public class SchedulerMain {
     		}
     		gp.mainViewScheduleInfo.setText(sched_time+", "+sync_prof);
     	} else {
-    		gp.mainViewScheduleInfo.setVisibility(TextView.GONE);
+    		gp.mainViewScheduleInfo.setText(c.getString(R.string.msgs_scheduler_info_schedule_disabled));
     	}
 	};
 

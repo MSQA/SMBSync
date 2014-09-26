@@ -114,7 +114,6 @@ public class SMBSyncSettings extends PreferenceActivity{
 		initSettingValueBeforeHc(shared_pref,getString(R.string.settings_log_dir));
 		initSettingValueBeforeHc(shared_pref,getString(R.string.settings_log_level));
 
-		initSettingValueBeforeHc(shared_pref,getString(R.string.settings_ui_alternate_ui));
 		initSettingValueBeforeHc(shared_pref,getString(R.string.settings_suppress_warning_mixed_mp));
 		initSettingValueBeforeHc(shared_pref,getString(R.string.settings_background_termination_notification));
 
@@ -316,9 +315,7 @@ public class SMBSyncSettings extends PreferenceActivity{
 			SharedPreferences shared_pref, String key_string, Context c) {
 		boolean isChecked = false;
 		
-		if (key_string.equals(c.getString(R.string.settings_ui_alternate_ui))) {
-				isChecked=true;
-		} else if (key_string.equals(c.getString(R.string.settings_suppress_warning_mixed_mp))) {
+		if (key_string.equals(c.getString(R.string.settings_suppress_warning_mixed_mp))) {
 			isChecked=true;
 		} else if (key_string.equals(c.getString(R.string.settings_background_termination_notification))) {
 			isChecked=true;
@@ -801,7 +798,6 @@ public class SMBSyncSettings extends PreferenceActivity{
     		SharedPreferences shared_pref = PreferenceManager.getDefaultSharedPreferences(mContext);
     		
     		initSettingValueAfterHc(shared_pref,getString(R.string.settings_debug_msg_diplay));
-    		initSettingValueAfterHc(shared_pref,getString(R.string.settings_ui_alternate_ui));
     		initSettingValueAfterHc(shared_pref,getString(R.string.settings_suppress_warning_mixed_mp));
     		initSettingValueAfterHc(shared_pref,getString(R.string.settings_background_termination_notification));
     		

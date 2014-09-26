@@ -14,14 +14,30 @@
 
     <include layout="@layout/divider_line1_turquoise" />
 
+    <CheckedTextView
+        android:id="@+id/scheduler_edit_synclist_dlg_show_active_prof"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:checkMark="?android:attr/listChoiceIndicatorMultiple"
+        android:gravity="center_vertical"
+        android:text="@string/msgs_scheduler_edit_synclist_dlg_hdr_show_active_profile" 
+        android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+	<include layout="@layout/divider_line3" />
+    
     <ListView
         android:id="@+id/scheduler_edit_synclist_dlg_sync_prof_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" >
+        android:layout_weight="1"
+        android:fadeScrollbars="false" >
+
     </ListView>
 
-    <include
-        layout="@layout/scheduler_edit_synclist_dlg_ok_cancel" />
+    <include layout="@layout/scheduler_edit_synclist_dlg_ok_cancel" />
     
 </LinearLayout>

@@ -732,7 +732,10 @@ public class ProfileUtility {
 				commonDlg.showCommonDialog(false,"I",
 						mContext.getString(R.string.msgs_export_import_profile_import_success),
 						imp_list,null); 
-				if (import_settings) p_ntfy.notifyToListener(true, null);
+				if (import_settings || import_schedule) {
+					boolean[] parm=new boolean[] {import_settings, import_schedule};
+					p_ntfy.notifyToListener(true, new Object[] {parm});
+				}
 			}
 			@Override
 			public void negativeResponse(Context c, Object[] o) {
@@ -5246,7 +5249,6 @@ public class ProfileUtility {
 		saveSettingsParmsToFileBoolean(c, group, pw, false, encrypt_required,cp,c.getString(R.string.settings_remote_file_copy_by_rename));
 		saveSettingsParmsToFileBoolean(c, group, pw, false, encrypt_required,cp,c.getString(R.string.settings_local_file_copy_by_rename));
 
-		saveSettingsParmsToFileBoolean(c, group, pw, false, encrypt_required,cp,c.getString(R.string.settings_ui_alternate_ui));
 		saveSettingsParmsToFileBoolean(c, group, pw, false, encrypt_required,cp,c.getString(R.string.settings_debug_msg_diplay));
 		saveSettingsParmsToFileString(c, group, pw, "0",    encrypt_required,cp,c.getString(R.string.settings_log_option));
 		saveSettingsParmsToFileString(c, group, pw, "0",    encrypt_required,cp,c.getString(R.string.settings_log_level));

@@ -34,10 +34,12 @@
 	
 	<string name="msgs_scheduler_edit_synclist_dlg_hdr_title">Sync profile list</string>
     <string name="msgs_scheduler_edit_synclist_dlg_hdr_sync_all_sync_profile">Sync all active sync profile</string>
+    <string name="msgs_scheduler_edit_synclist_dlg_hdr_show_active_profile">Show active profile only</string>
     
     <string name="msgs_scheduler_edit_sync_prof_list_not_specified">Please specify the profile to be sync by pressing the &#8216;Edit sync list&#8217; button in the .</string>
     
     <string name="msgs_scheduler_info_next_schedule_time">Scheduled sync is %s</string>
+    <string name="msgs_scheduler_info_schedule_disabled">Schedule sync is disabled</string>
     <string name="msgs_scheduler_info_sync_all_active_profile">Sync all active profiles</string>
     <string name="msgs_scheduler_info_sync_selected_profile">Sync profile(s) %s</string>
     

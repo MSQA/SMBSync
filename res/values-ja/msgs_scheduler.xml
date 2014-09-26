@@ -33,11 +33,13 @@
 	
 	<string name="msgs_scheduler_edit_synclist_dlg_hdr_title">同期プロファイルリスト</string>
     <string name="msgs_scheduler_edit_synclist_dlg_hdr_sync_all_sync_profile">全ての有効なプロファイルを同期する</string>
+    <string name="msgs_scheduler_edit_synclist_dlg_hdr_show_active_profile">有効なプロファイルだけ表示する</string>
     
 	<string name="msgs_scheduler_edit_sync_prof_list_not_specified">同期リストの編集ボタンを押して、同期するプロファイルを指定してください。</string>
 	    
     <string name="msgs_scheduler_info_next_schedule_time">スケジュール同期　%s</string>
-    <string name="msgs_scheduler_info_sync_all_active_profile">アクティブなプロファイル全て</string>
+    <string name="msgs_scheduler_info_schedule_disabled">スケジュール同期は無効</string>
+    <string name="msgs_scheduler_info_sync_all_active_profile">有効なプロファイル全て</string>
     <string name="msgs_scheduler_info_sync_selected_profile">プロファイル %s を同期</string>
     
     <string name="msgs_scheduler_main_dw_not_selected">少なくても一つの曜日を選択してください</string>

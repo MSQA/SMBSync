@@ -2,10 +2,6 @@
 <PreferenceScreen
 	xmlns:android="http://schemas.android.com/apk/res/android">
         <CheckBoxPreference
-			android:key="@string/settings_ui_alternate_ui"
-			android:title="@string/settings_ui_alternate_ui_title"
-			android:summary="@string/settings_ui_alternate_ui_summary_ena" />
-        <CheckBoxPreference
 			android:key="@string/settings_debug_msg_diplay"
 			android:title="@string/settings_debug_msg_diplay_title"
 			android:summary="@string/settings_debug_msg_diplay_summary_ena" />

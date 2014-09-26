@@ -48,9 +48,6 @@
     <string name="settings_local_file_copy_by_rename_title">ローカルへのファイルコピー</string>
     <string name="settings_local_file_copy_by_rename_summary_ena">コピーが正常終了するまでコピー先ファイルの内容を変えない</string>
 		
-	<string name="settings_ui_alternate_ui_title">代替UI</string>
-    <string name="settings_ui_alternate_ui_summary_ena">他の項目が選択されていないときにクリックしたら編集、他の項目が選択されているときはクリックした項目を選択。</string>
-			
     <string name="settings_debug_msg_diplay_title">デバッグメッセージの表示</string>
 	<string name="settings_debug_msg_diplay_summary_ena">メッセージタブに表示する</string>
 

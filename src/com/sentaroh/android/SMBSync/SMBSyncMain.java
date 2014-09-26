@@ -237,7 +237,7 @@ public class SMBSyncMain extends FragmentActivity {
 		if (profUtil==null) 
 			profUtil=new ProfileUtility(util,this, commonDlg,ccMenu, mGp,getSupportFragmentManager());
 		
-		SchedulerMain.setTimer(mContext, SCHEDULER_INTENT_SET_TIMER_IF_NOT_SET);
+		SchedulerMain.sendTimerRequest(mContext, SCHEDULER_INTENT_SET_TIMER_IF_NOT_SET);
 //		if (Build.VERSION.SDK_INT >= 19) {
 //		    File[] extDirs = getExternalFilesDirs(Environment.DIRECTORY_DOWNLOADS);
 //		    for (int i=0;i<extDirs.length;i++)
@@ -1120,9 +1120,15 @@ public class SMBSyncMain extends FragmentActivity {
 		ntfy.setListener(new NotifyEventListener(){
 			@Override
 			public void positiveResponse(Context c, Object[] o) {
-				applySettingParms();
-				checkJcifsOptionChanged();
-				SchedulerMain.setTimer(mContext, SCHEDULER_INTENT_SET_TIMER);
+				boolean[] parm=(boolean[]) o[0];
+				if (parm[0]) {
+					applySettingParms();
+					checkJcifsOptionChanged();
+					SchedulerMain.sendTimerRequest(mContext, SCHEDULER_INTENT_SET_TIMER);
+				}
+				if (parm[1]) {
+					SchedulerMain.setSchedulerInfo(mGp, mContext, null);
+				}
 			}
 
 			@Override
@@ -1524,7 +1530,7 @@ public class SMBSyncMain extends FragmentActivity {
 			SchedulerParms sp=new SchedulerParms();
 			SchedulerUtil.loadScheduleData(sp, mContext);
 			if (sp.syncWifiOnBeforeSyncStart && sp.syncWifiOffAfterSyncEnd) {
-				SchedulerMain.setTimer(mContext, SCHEDULER_INTENT_WIFI_OFF);
+				SchedulerMain.sendTimerRequest(mContext, SCHEDULER_INTENT_WIFI_OFF);
 			}
 		}
 		isCheckWifiOffRequired=false;
