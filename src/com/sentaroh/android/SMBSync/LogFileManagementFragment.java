@@ -281,33 +281,56 @@ public class LogFileManagementFragment extends DialogFragment{
     	return result;
     };
     
-    private void createContextMenu(AdapterLogFileManagementList lfm_adapter, int pos) {
+    private void createContextMenu(AdapterLogFileManagementList lfm_adapter, int idx) {
     	if (lfm_adapter.getItem(0).log_file_name==null) return;
-    	LogFileManagemntListItem item;
-		int scn=0;
-//		int cp=mGlblParms.profileListView.getFirstVisiblePosition();
+		int prev_selected_cnt=0;
 		for (int i=0;i<lfm_adapter.getCount();i++) {
 			if (lfm_adapter.getItem(i).isChecked) {
-				scn++; 
+				prev_selected_cnt++;
 			}
 		}
-		if (scn<=1) {//single selection 
+		if (prev_selected_cnt==0) {//Not selected
+			lfm_adapter.getItem(idx).isChecked=true;
+			lfm_adapter.notifyDataSetChanged();
+			createContextMenuSingle(lfm_adapter,idx);
+		} else if (prev_selected_cnt==1) {//Previous selected was single
 			for (int i=0;i<lfm_adapter.getCount();i++) {
-				item = lfm_adapter.getItem(i);
-				if (pos==i) {// set checked
-					item.isChecked=true;
-					scn=i;//set new index no 
-				} else {
-					if (item.isChecked) {//reset unchecked
-						item.isChecked=false;
+				if (lfm_adapter.getItem(i).isChecked) {
+					if (i!=idx) {
+						setLogFileItemChecked(lfm_adapter,i,false);
+						setLogFileItemChecked(lfm_adapter,idx,true);
+						lfm_adapter.notifyDataSetChanged();
 					}
 				}
 			}
-			lfm_adapter.notifyDataSetChanged();
-			createContextMenuSingle(lfm_adapter,pos);
+			createContextMenuSingle(lfm_adapter,idx);
 		} else {
-			createContextMenuMultiple(lfm_adapter);
+			boolean already_selected=false;
+			for (int i=0;i<lfm_adapter.getCount();i++) {
+				if (lfm_adapter.getItem(i).isChecked) {
+					if (i==idx) {
+						already_selected=true;
+						break;
+					}
+				}
+			}
+			if (already_selected) {
+				createContextMenuMultiple(lfm_adapter);
+			} else {
+				setAllLogFileItemChecked(lfm_adapter,false);
+				setLogFileItemChecked(lfm_adapter,idx,true);
+				lfm_adapter.notifyDataSetChanged();
+				createContextMenuSingle(lfm_adapter,idx);
+			}
 		}
+    };
+    
+    private void setLogFileItemChecked(AdapterLogFileManagementList lfm_adapter, int pos, boolean checked) {
+    	lfm_adapter.getItem(pos).isChecked=checked;
+    };
+
+    private void setAllLogFileItemChecked(AdapterLogFileManagementList lfm_adapter, boolean checked) {
+    	for(int i=0;i<lfm_adapter.getCount();i++) lfm_adapter.getItem(i).isChecked=checked;
     };
     
     private void createContextMenuSingle(final AdapterLogFileManagementList lfm_adapter, final int pos) {
