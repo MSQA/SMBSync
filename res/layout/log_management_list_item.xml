@@ -49,13 +49,13 @@
     </LinearLayout>
 
     <CheckBox
-        style="@style/check_box_style"
         android:id="@+id/log_management_list_item_checkbox"
-        android:layout_width="40dp"
-        android:layout_height="wrap_content"
+        style="@style/check_box_style"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center_vertical"
         android:focusable="false"
         android:focusableInTouchMode="false"
         android:text="" />
-    
     
 </LinearLayout>

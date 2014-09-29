@@ -31,6 +31,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.DialogInterface.OnKeyListener;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
@@ -39,6 +40,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -74,6 +76,7 @@ public class LogFileManagementFragment extends DialogFragment{
 	private Context mContext=null;
 
 	private ArrayList<LogFileManagemntListItem> mLogFileList=null;
+	private AdapterLogFileManagementList mLogFileManagementAdapter=null;
 	
 	public static LogFileManagementFragment newInstance(String title) {
 		if (DEBUG_ENABLE) Log.v(APPLICATION_TAG,"newInstance");
@@ -161,6 +164,34 @@ public class LogFileManagementFragment extends DialogFragment{
 	    super.onStart();
 	    if (DEBUG_ENABLE) Log.v(APPLICATION_TAG,"onStart");
 	    if (terminateRequired) mDialog.cancel();
+	    else {
+	    	mDialog.setOnKeyListener(new OnKeyListener(){
+    	        @Override
+	    	    public boolean onKey ( DialogInterface dialog , int keyCode , KeyEvent event ){
+	    	        // disable search button action
+	    	        if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction()==KeyEvent.ACTION_DOWN){
+	    	        	boolean selected=false;
+	    	        	for(int i=0;i<mLogFileManagementAdapter.getCount();i++) {
+	    	        		if (mLogFileManagementAdapter.getItem(i).isChecked) {
+	    	        			selected=true;
+	    	        			break;
+	    	        		}
+	    	        	}
+	    	        	if (selected) {
+		    	        	for(int i=0;i<mLogFileManagementAdapter.getCount();i++) {
+		    	        		mLogFileManagementAdapter.getItem(i).isChecked=false;
+		    	        	}
+		    	        	mLogFileManagementAdapter.notifyDataSetChanged();
+		    	        	return true;
+	    	        	} else {
+		    	            return false;
+	    	        	}
+	    	        }
+	    	        return false;
+	    	    }
+	    	});
+	    }
+
 	};
 	
 	@Override
@@ -226,9 +257,9 @@ public class LogFileManagementFragment extends DialogFragment{
     	final ListView lv_log_file=(ListView)mDialog.findViewById(R.id.log_management_dlg_log_listview);
     	final Button btn_close=(Button)mDialog.findViewById(R.id.log_management_dlg_log_close);
     	
-    	final AdapterLogFileManagementList lfm_adapter=
+    	mLogFileManagementAdapter=
     				new AdapterLogFileManagementList(mContext, R.layout.log_management_list_item,mLogFileList);
-    	lv_log_file.setAdapter(lfm_adapter);
+    	lv_log_file.setAdapter(mLogFileManagementAdapter);
     	lv_log_file.setClickable(true);
     	lv_log_file.setFocusable(true);
     	lv_log_file.setFastScrollEnabled(true);
@@ -238,19 +269,19 @@ public class LogFileManagementFragment extends DialogFragment{
     	lv_log_file.setOnItemClickListener(new OnItemClickListener(){
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int pos, long arg3) {
-				if (lfm_adapter.getItem(0).log_file_name==null) return;
+				if (mLogFileManagementAdapter.getItem(0).log_file_name==null) return;
 //				if (mGlblParms.settingAltUiEnabled) {
-//				} else lfm_adapter.getItem(pos).isChecked=!lfm_adapter.getItem(pos).isChecked;
-				if (!isLogFileItemSelected(lfm_adapter)) processSelectedLogFile(lfm_adapter,pos);
-				else lfm_adapter.getItem(pos).isChecked=!lfm_adapter.getItem(pos).isChecked;
-				lfm_adapter.notifyDataSetChanged();
+//				} else mLogFileManagementAdapter.getItem(pos).isChecked=!mLogFileManagementAdapter.getItem(pos).isChecked;
+				if (!isLogFileItemSelected(mLogFileManagementAdapter)) processSelectedLogFile(mLogFileManagementAdapter,pos);
+				else mLogFileManagementAdapter.getItem(pos).isChecked=!mLogFileManagementAdapter.getItem(pos).isChecked;
+				mLogFileManagementAdapter.notifyDataSetChanged();
 			}
     	});
     	
     	lv_log_file.setOnItemLongClickListener(new OnItemLongClickListener(){
 			@Override
 			public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int pos, long arg3) {
-				createContextMenu(lfm_adapter,pos);
+				createContextMenu(mLogFileManagementAdapter,pos);
 				return true;
 			}
     	});
