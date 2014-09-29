@@ -37,6 +37,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Locale;
 
+import com.sentaroh.android.Utilities.NotifyEvent;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -78,6 +80,12 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
 			notifyDataSetChanged();
 		}
 		
+		private NotifyEvent mNotifyCheckBoxEvent=null;
+		public void setNotifyCheckBoxEventHandler(NotifyEvent ntfy) {mNotifyCheckBoxEvent=ntfy;}
+
+		private boolean isShowCheckBox=true;
+//		public void setShowCheckBox(boolean p) {isShowCheckBox=p;}
+
 		public ArrayList<ProfileListItem> getAllItem() {return items;}
 		
 		public void setAllItem(ArrayList<ProfileListItem> p) {
@@ -276,7 +284,8 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
                     holder.cbv_row_cb1.setVisibility(LinearLayout.GONE);
                 }
                 
-                
+                if (isShowCheckBox) holder.cbv_row_cb1.setVisibility(CheckBox.VISIBLE);
+                else  holder.cbv_row_cb1.setVisibility(CheckBox.INVISIBLE);
                 final int p = position;
              // 必ずsetChecked前にリスナを登録(convertView != null の場合は既に別行用のリスナが登録されている！)
              	holder.cbv_row_cb1.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -285,6 +294,7 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
  						boolean isChecked) {
      					o.setChecked(isChecked);
      					items.set(p, o);
+     					if (mNotifyCheckBoxEvent!=null) mNotifyCheckBoxEvent.notifyToListener(true, null);
      					}
      				});
              	holder.cbv_row_cb1.setChecked(items.get(position).isChecked());

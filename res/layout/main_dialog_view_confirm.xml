@@ -33,7 +33,7 @@
 
     <include layout="@layout/divider_line1" />
 
-    <include layout="@layout/main_msgview_confirm_ok_cancel" />
+    <include layout="@layout/main_dialog_view_confirm_ok_cancel" />
     
     <Button
         android:id="@+id/copy_delete_confirm_task_cancel"

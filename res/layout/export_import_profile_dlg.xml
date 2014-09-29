@@ -17,19 +17,12 @@
 
     <include layout="@layout/divider_line1_turquoise" />
 
-    <TextView
-        android:id="@+id/export_import_profile_msg"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="#ff0000" />
-        
     <CheckedTextView
         android:id="@+id/export_import_profile_list_ctv_import_settings"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="5dp"
         android:checkMark="?android:attr/textCheckMark"
         android:gravity="center_vertical"
         android:text="@string/msgs_export_import_profile_import_settings" />
@@ -38,50 +31,15 @@
         android:id="@+id/export_import_profile_list_ctv_import_schedule"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="5dp"
         android:checkMark="?android:attr/textCheckMark"
         android:gravity="center_vertical"
         android:text="@string/msgs_export_import_profile_import_schedule" />
     
 	<include layout="@layout/divider_line3" />
 
-    <RadioGroup
-        android:id="@+id/export_import_profile_list_rg_item_select"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal" >
-
-        <RadioButton
-            android:id="@+id/export_import_profile_list_rb_select_all"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="10dp"
-            android:layout_weight="1"
-            android:text="@string/msgs_export_import_profile_select_all" />
-
-        <RadioButton
-            android:id="@+id/export_import_profile_list_rb_unselect_all"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/msgs_export_import_profile_unselect_all" />
-
-    </RadioGroup>
-
-    <include layout="@layout/divider_line3" />
-
-    <CheckedTextView
-        android:id="@+id/export_import_profile_list_ctv_reset_profile"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
-        android:checkMark="?android:attr/textCheckMark"
-        android:gravity="center_vertical"
-        android:text="@string/msgs_export_import_profile_reset_current_profile" />
     			    
-	<include layout="@layout/divider_line3" />
-	    
     <ListView
         android:id="@+id/export_import_profile_listview"
         android:layout_width="fill_parent"
@@ -90,6 +48,43 @@
         android:layout_marginRight="5dp"
         android:layout_weight="1" >
     </ListView>
+	
+    <include layout="@layout/divider_line3" />
+	    
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/export_import_profile_list_select_all"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:text="@string/msgs_export_import_profile_select_all" />
+
+        <Button
+            android:id="@+id/export_import_profile_list_unselect_all"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/msgs_export_import_profile_unselect_all" />
+
+    </LinearLayout>
+
+    <include layout="@layout/divider_line3" />
+    
+    <CheckedTextView
+        android:id="@+id/export_import_profile_list_ctv_reset_profile"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:checkMark="?android:attr/textCheckMark"
+        android:gravity="center_vertical"
+        android:text="@string/msgs_export_import_profile_reset_current_profile" />
 
     <LinearLayout
         android:id="@+id/export_import_profile_file_list"

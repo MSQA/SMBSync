@@ -336,6 +336,7 @@ public class SMBSyncMain extends FragmentActivity {
 					deleteTaskData();
 					
 					setMsglistViewListener();
+					
 					setProfilelistItemClickListener();
 					setProfilelistLongClickListener();
 					setMsglistLongClickListener();
@@ -506,6 +507,7 @@ public class SMBSyncMain extends FragmentActivity {
 		initAdapterAndView();
 		
 		setMsglistViewListener();
+		
 		setProfilelistItemClickListener();
 		setProfilelistLongClickListener();
 		setMsglistLongClickListener();
@@ -1849,13 +1851,11 @@ public class SMBSyncMain extends FragmentActivity {
 					int position, long id) {
 				mGp.syncHistoryListView.setEnabled(false);
 				SyncHistoryListItem item = mGp.syncHistoryList.get(position);
-//				if (mGp.settingAltUiEnabled) {
-//				} else {
-//					item.isChecked=!item.isChecked;
-//					mGp.syncHistoryListView.setEnabled(true);
-//				}
 				if (isHistoryItemSelected()) {
 					item.isChecked=!item.isChecked;
+//					if (!isHistoryItemSelected()) {
+//						mGp.syncHistoryAdapter.setShowCheckBox(false);
+//					}
 					mGp.syncHistoryListView.setEnabled(true);
 				} else {
 					if (!item.sync_result_file_path.equals("")) {
@@ -1876,6 +1876,21 @@ public class SMBSyncMain extends FragmentActivity {
 				mGp.syncHistoryAdapter.notifyDataSetChanged();
 			}
 		});
+		
+//		NotifyEvent ntfy=new NotifyEvent(mContext);
+//		ntfy.setListener(new NotifyEventListener(){
+//			@Override
+//			public void positiveResponse(Context c, Object[] o) {
+//				if (!isHistoryItemSelected()) {
+//					mGp.syncHistoryAdapter.setShowCheckBox(false);
+//					mGp.syncHistoryAdapter.notifyDataSetChanged();
+//				}
+//			}
+//
+//			@Override
+//			public void negativeResponse(Context c, Object[] o) {}
+//		});
+//		mGp.syncHistoryAdapter.setNotifyCheckBoxEventHandler(ntfy);
 	};
 
 	private boolean isHistoryItemSelected() {
@@ -1894,6 +1909,13 @@ public class SMBSyncMain extends FragmentActivity {
 			@Override
 			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
+//				if (isHistoryItemSelected()) {
+//					createHistoryContextMenu(arg1, arg2);
+//				} else {
+//					mGp.syncHistoryAdapter.setShowCheckBox(true);
+//					mGp.syncHistoryAdapter.getItem(arg2).isChecked=true;
+//					mGp.syncHistoryAdapter.notifyDataSetChanged();
+//				}
 				createHistoryContextMenu(arg1, arg2);
 				return true;
 			}
@@ -1909,6 +1931,7 @@ public class SMBSyncMain extends FragmentActivity {
 		}
 		if (prev_selected_cnt==0) {//Not selected
 			setHistoryItemChecked(idx,true);
+//			mGp.syncHistoryAdapter.setShowCheckBox(true);
 			mGp.syncHistoryAdapter.notifyDataSetChanged();
 			createHistoryContextMenu_Single(idx);
 		} else if (prev_selected_cnt==1) {//Previous selected was single
@@ -1917,6 +1940,7 @@ public class SMBSyncMain extends FragmentActivity {
 					if (i!=idx) {
 						setHistoryItemChecked(i,false);
 						setHistoryItemChecked(idx,true);
+//						mGp.syncHistoryAdapter.setShowCheckBox(true);
 						mGp.syncHistoryAdapter.notifyDataSetChanged();
 					}
 				}
@@ -1937,6 +1961,7 @@ public class SMBSyncMain extends FragmentActivity {
 			} else {
 				setHistoryItemUnselectAll();
 				setHistoryItemChecked(idx,true);
+//				mGp.syncHistoryAdapter.setShowCheckBox(true);
 				mGp.syncHistoryAdapter.notifyDataSetChanged();
 				createHistoryContextMenu_Single(idx);
 			}
@@ -2020,11 +2045,13 @@ public class SMBSyncMain extends FragmentActivity {
 
 	private void setHistoryItemUnselectAll() {
 		for (int i=0;i<mGp.syncHistoryAdapter.getCount();i++) mGp.syncHistoryAdapter.getItem(i).isChecked=false;
+//		mGp.syncHistoryAdapter.setShowCheckBox(false);
 		mGp.syncHistoryAdapter.notifyDataSetChanged();
 	}
 
 	private void setHistoryItemSelectAll() {
 		for (int i=0;i<mGp.syncHistoryAdapter.getCount();i++) mGp.syncHistoryAdapter.getItem(i).isChecked=true;
+//		mGp.syncHistoryAdapter.setShowCheckBox(true);
 		mGp.syncHistoryAdapter.notifyDataSetChanged();
 	}
 
@@ -2170,51 +2197,6 @@ public class SMBSyncMain extends FragmentActivity {
 		ccMenu.createMenu();
 	};
 
-//	private boolean mProfileListItemClickEnabled=true;
-	private void setProfilelistItemClickListener() {
-//		mProfileListItemClickEnabled=true;
-		mGp.profileListView.setEnabled(true);
-		mGp.profileListView
-			.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
-				mGp.profileListView.setEnabled(false);
-				ProfileListItem item = mGp.profileAdapter.getItem(position);
-//				if (mGp.settingAltUiEnabled) {
-//				} else {
-//					item.setChecked(!item.isChecked());
-//					mGp.profileListView.setEnabled(true);
-//				}
-				if (!ProfileUtility.isAnyProfileSelected(mGp.profileAdapter,SMBSYNC_PROF_GROUP_DEFAULT)) {
-					editProfile(item.getName(),item.getType(),item.getActive(),position);
-					mUiHandler.postDelayed(new Runnable(){
-						@Override
-						public void run() {
-							mGp.profileListView.setEnabled(true);
-						}
-					},1000);
-				} else {
-					item.setChecked(!item.isChecked());
-					mGp.profileListView.setEnabled(true);
-				}
-				mGp.profileAdapter.notifyDataSetChanged();
-			}
-		});
-	};
-	
-	private void setProfilelistLongClickListener() {
-		mGp.profileListView
-			.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-			@Override
-			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
-					int arg2, long arg3) {
-				createProfileContextMenu(arg1, arg2);
-				return true;
-			}
-		});
-	};
-	
 	private void setMsglistViewListener() {
 		CheckBox cb_freeze_scroll=(CheckBox)findViewById(R.id.message_view_scroll_freeze);
 		cb_freeze_scroll.setOnCheckedChangeListener(new OnCheckedChangeListener(){
@@ -2237,6 +2219,70 @@ public class SMBSyncMain extends FragmentActivity {
 		});
 	};
 	
+
+	private void setProfilelistItemClickListener() {
+		mGp.profileListView.setEnabled(true);
+		mGp.profileListView
+			.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				mGp.profileListView.setEnabled(false);
+				ProfileListItem item = mGp.profileAdapter.getItem(position);
+				if (!ProfileUtility.isAnyProfileSelected(mGp.profileAdapter,SMBSYNC_PROF_GROUP_DEFAULT)) {
+					editProfile(item.getName(),item.getType(),item.getActive(),position);
+					mUiHandler.postDelayed(new Runnable(){
+						@Override
+						public void run() {
+							mGp.profileListView.setEnabled(true);
+						}
+					},1000);
+				} else {
+					item.setChecked(!item.isChecked());
+//					if (!ProfileUtility.isAnyProfileSelected(mGp.profileAdapter,SMBSYNC_PROF_GROUP_DEFAULT)) {
+//						mGp.profileAdapter.setShowCheckBox(false);
+//					}
+					mGp.profileListView.setEnabled(true);
+				}
+				mGp.profileAdapter.notifyDataSetChanged();
+			}
+		});
+		
+//		NotifyEvent ntfy=new NotifyEvent(mContext);
+//		ntfy.setListener(new NotifyEventListener(){
+//			@Override
+//			public void positiveResponse(Context c, Object[] o) {
+//				if (!ProfileUtility.isAnyProfileSelected(mGp.profileAdapter,SMBSYNC_PROF_GROUP_DEFAULT)) {
+//					mGp.profileAdapter.setShowCheckBox(false);
+//					mGp.profileAdapter.notifyDataSetChanged();
+//				}
+//			}
+//
+//			@Override
+//			public void negativeResponse(Context c, Object[] o) {}
+//		});
+//		mGp.profileAdapter.setNotifyCheckBoxEventHandler(ntfy);
+	};
+
+	private void setProfilelistLongClickListener() {
+		mGp.profileListView
+			.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+			@Override
+			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+					int arg2, long arg3) {
+//				if (ProfileUtility.isAnyProfileSelected(mGp.profileAdapter,SMBSYNC_PROF_GROUP_DEFAULT)) {
+//					createProfileContextMenu(arg1, arg2);
+//				} else {
+//					mGp.profileAdapter.setShowCheckBox(true);
+//					mGp.profileAdapter.getItem(arg2).setChecked(true);
+//					mGp.profileAdapter.notifyDataSetChanged();
+//				}
+				createProfileContextMenu(arg1, arg2);
+				return true;
+			}
+		});
+	};
+	
 	private void createProfileContextMenu(View view, int idx) {
 		int prev_selected_cnt=0;
 		boolean sync=false;
@@ -2247,6 +2293,7 @@ public class SMBSyncMain extends FragmentActivity {
 		}
 		if (prev_selected_cnt==0) {//Not selected
 			ProfileUtility.setProfileToChecked(true, mGp.profileAdapter, idx);
+//			mGp.profileAdapter.setShowCheckBox(true);
 			mGp.profileAdapter.notifyDataSetChanged();
 			if (mGp.profileAdapter.getItem(idx).getType().equals(SMBSYNC_PROF_TYPE_SYNC)) sync=true;
 			createProfileContextMenu_Single(idx, sync);
@@ -2256,6 +2303,7 @@ public class SMBSyncMain extends FragmentActivity {
 					if (i!=idx) {
 						ProfileUtility.setProfileToChecked(false, mGp.profileAdapter, i);
 						ProfileUtility.setProfileToChecked(true, mGp.profileAdapter, idx);
+//						mGp.profileAdapter.setShowCheckBox(true);
 						mGp.profileAdapter.notifyDataSetChanged();
 					}
 				}
@@ -2284,6 +2332,7 @@ public class SMBSyncMain extends FragmentActivity {
 			} else {
 				resetAllCheckedItem();
 				ProfileUtility.setProfileToChecked(true, mGp.profileAdapter, idx);
+//				mGp.profileAdapter.setShowCheckBox(true);
 				mGp.profileAdapter.notifyDataSetChanged();
 				if (mGp.profileAdapter.getItem(idx).getType().equals(SMBSYNC_PROF_TYPE_SYNC)) sync=true;
 				createProfileContextMenu_Single(idx, sync);
@@ -2534,6 +2583,7 @@ public class SMBSyncMain extends FragmentActivity {
 		for (int i=0;i<mGp.profileAdapter.getCount();i++) {
 			ProfileUtility.setProfileToChecked(false, mGp.profileAdapter, i);
 		}
+//		mGp.profileAdapter.setShowCheckBox(false);
 		mGp.profileAdapter.notifyDataSetChanged();
 	};
 	

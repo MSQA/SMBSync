@@ -102,8 +102,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -454,6 +452,7 @@ public class ProfileUtility {
 			dlg_msg.setText("");
 			et_password.setVisibility(EditText.GONE);
 			et_confirm.setVisibility(EditText.GONE);
+			btn_ok.setEnabled(true);
 		}
 	};
 	
@@ -523,16 +522,15 @@ public class ProfileUtility {
 		
 		TextView tv_title=(TextView)dialog.findViewById(R.id.export_import_profile_title);
 		tv_title.setText(mContext.getString(R.string.msgs_export_import_profile_title));
-		TextView tv_msg=(TextView)dialog.findViewById(R.id.export_import_profile_msg);
-		tv_msg.setVisibility(LinearLayout.GONE);
+//		TextView tv_msgx=(TextView)dialog.findViewById(R.id.export_import_profile_msg);
+//		tv_msgx.setVisibility(LinearLayout.GONE);
 		LinearLayout ll_filelist=(LinearLayout)dialog.findViewById(R.id.export_import_profile_file_list);
 		ll_filelist.setVisibility(LinearLayout.GONE);
 		final Button ok_btn=(Button)dialog.findViewById(R.id.export_import_profile_ok_btn);
 		Button cancel_btn=(Button)dialog.findViewById(R.id.export_import_profile_cancel_btn);
 		
-		final RadioGroup rg_select=(RadioGroup)dialog.findViewById(R.id.export_import_profile_list_rg_item_select);
-		final RadioButton rb_select_all=(RadioButton)dialog.findViewById(R.id.export_import_profile_list_rb_select_all);
-		final RadioButton rb_unselect_all=(RadioButton)dialog.findViewById(R.id.export_import_profile_list_rb_unselect_all);
+		final Button rb_select_all=(Button)dialog.findViewById(R.id.export_import_profile_list_select_all);
+		final Button rb_unselect_all=(Button)dialog.findViewById(R.id.export_import_profile_list_unselect_all);
 		final CheckedTextView ctv_reset_profile=(CheckedTextView)dialog.findViewById(R.id.export_import_profile_list_ctv_reset_profile);
 		final CheckedTextView ctv_import_settings=(CheckedTextView)dialog.findViewById(R.id.export_import_profile_list_ctv_import_settings);
 		final CheckedTextView ctv_import_schedule=(CheckedTextView)dialog.findViewById(R.id.export_import_profile_list_ctv_import_schedule);
@@ -563,7 +561,6 @@ public class ProfileUtility {
 
 		ctv_import_settings.setChecked(true);
 		ctv_import_schedule.setChecked(true);
-		
 		
 		lv.setOnItemClickListener(new OnItemClickListener(){
 			@Override
@@ -611,19 +608,26 @@ public class ProfileUtility {
 //			}
 //		});
 		
-		rg_select.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener(){
+		rb_select_all.setOnClickListener(new OnClickListener(){
 			@Override
-			public void onCheckedChanged(RadioGroup arg0, int arg1) {
-				if (arg1==R.id.export_import_profile_list_rb_select_all) {
-					for (int i=0;i<imp_list_adapt.getCount();i++)
-						  imp_list_adapt.getItem(i).isChecked=true;
-					rb_select_all.setChecked(false);
-				} else if (arg1==R.id.export_import_profile_list_rb_unselect_all) {
-					for (int i=0;i<imp_list_adapt.getCount();i++)
-						  imp_list_adapt.getItem(i).isChecked=false;
-					rb_unselect_all.setChecked(false);
-				}
+			public void onClick(View v) {
+				for (int i=0;i<imp_list_adapt.getCount();i++)
+					  imp_list_adapt.getItem(i).isChecked=true;
+				ctv_import_settings.setChecked(true);
+				ctv_import_schedule.setChecked(true);
 				imp_list_adapt.notifyDataSetChanged();
+				ok_btn.setEnabled(true);
+			}
+		});
+		rb_unselect_all.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				for (int i=0;i<imp_list_adapt.getCount();i++)
+					  imp_list_adapt.getItem(i).isChecked=false;
+				ctv_import_settings.setChecked(false);
+				ctv_import_schedule.setChecked(false);
+				imp_list_adapt.notifyDataSetChanged();
+				ok_btn.setEnabled(false);
 			}
 		});
 		

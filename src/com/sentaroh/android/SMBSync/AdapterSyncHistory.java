@@ -25,6 +25,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 import java.util.ArrayList;
 
+import com.sentaroh.android.Utilities.NotifyEvent;
+
 import android.content.Context;
 import android.graphics.Color;
 import android.view.LayoutInflater;
@@ -63,6 +65,12 @@ public class AdapterSyncHistory extends ArrayAdapter<SyncHistoryListItem> {
 	
 	public void setSyncHistoryList(ArrayList<SyncHistoryListItem> p) {items=p;}
 	
+	private NotifyEvent mNotifyCheckBoxEvent=null;
+	public void setNotifyCheckBoxEventHandler(NotifyEvent ntfy) {mNotifyCheckBoxEvent=ntfy;}
+	
+	private boolean isShowCheckBox=true;
+//	public void setShowCheckBox(boolean p) {isShowCheckBox=p;}
+	
 	@Override
     public View getView(final int position, View convertView, ViewGroup parent) {
 		final ViewHolder holder;
@@ -96,7 +104,8 @@ public class AdapterSyncHistory extends ArrayAdapter<SyncHistoryListItem> {
             	holder.tv_time.setVisibility(TextView.VISIBLE);
             	holder.tv_status.setVisibility(TextView.VISIBLE);
             	holder.ll_count.setVisibility(TextView.VISIBLE);
-             	holder.cb_sel.setVisibility(TextView.VISIBLE);
+            	if (isShowCheckBox) holder.cb_sel.setVisibility(TextView.VISIBLE);
+            	else holder.cb_sel.setVisibility(TextView.INVISIBLE);
 
              	holder.tv_date.setText(o.sync_date);
             	holder.tv_time.setText(o.sync_time);
@@ -130,6 +139,7 @@ public class AdapterSyncHistory extends ArrayAdapter<SyncHistoryListItem> {
     						boolean isChecked) {
 //     					o.isChecked=isChecked;
      					items.get(position).isChecked=isChecked;
+     					if (mNotifyCheckBoxEvent!=null) mNotifyCheckBoxEvent.notifyToListener(true, null);
      				}}
              	);
              	holder.cb_sel.setChecked(items.get(position).isChecked);
