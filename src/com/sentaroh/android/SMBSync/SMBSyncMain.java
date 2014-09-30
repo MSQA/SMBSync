@@ -2008,14 +2008,14 @@ public class SMBSyncMain extends FragmentActivity {
 				confirmDeleteHistory();
 			}
 		});
-		ccMenu.addMenuItem(msgs_sync_history_ccmeu_selectall)
+		ccMenu.addMenuItem(msgs_sync_history_ccmeu_selectall, R.drawable.select_all)
 		.setOnClickListener(new CustomContextMenuOnClickListener() {
 			@Override
 			public void onClick(CharSequence menuTitle) {
 				setHistoryItemSelectAll();
 			}
 		});
-		ccMenu.addMenuItem(msgs_sync_history_ccmeu_unselectall)
+		ccMenu.addMenuItem(msgs_sync_history_ccmeu_unselectall, R.drawable.unselect_all)
 		.setOnClickListener(new CustomContextMenuOnClickListener() {
 			@Override
 			public void onClick(CharSequence menuTitle) {
@@ -2167,14 +2167,14 @@ public class SMBSyncMain extends FragmentActivity {
 					confirmDeleteHistory();
 				}
 		});
-		ccMenu.addMenuItem(msgs_sync_history_ccmeu_selectall)
+		ccMenu.addMenuItem(msgs_sync_history_ccmeu_selectall, R.drawable.select_all)
 		.setOnClickListener(new CustomContextMenuOnClickListener() {
 			@Override
 			public void onClick(CharSequence menuTitle) {
 				setHistoryItemSelectAll();
 			}
 		});
-		ccMenu.addMenuItem(msgs_sync_history_ccmeu_unselectall)
+		ccMenu.addMenuItem(msgs_sync_history_ccmeu_unselectall, R.drawable.unselect_all)
 		.setOnClickListener(new CustomContextMenuOnClickListener() {
 			@Override
 			public void onClick(CharSequence menuTitle) {
@@ -2428,7 +2428,7 @@ public class SMBSyncMain extends FragmentActivity {
 				}
 		});
 
-		ccMenu.addMenuItem(msgs_prof_cont_select_all)
+		ccMenu.addMenuItem(msgs_prof_cont_select_all, R.drawable.select_all)
 		.setOnClickListener(new CustomContextMenuOnClickListener() {
 			@Override
 			public void onClick(CharSequence menuTitle) {
@@ -2438,7 +2438,7 @@ public class SMBSyncMain extends FragmentActivity {
 				mGp.profileAdapter.notifyDataSetChanged();
 			}
 		});
-		ccMenu.addMenuItem(msgs_prof_cont_unselect_all)
+		ccMenu.addMenuItem(msgs_prof_cont_unselect_all, R.drawable.unselect_all)
 		.setOnClickListener(new CustomContextMenuOnClickListener() {
 			@Override
 			public void onClick(CharSequence menuTitle) {
@@ -2600,7 +2600,7 @@ public class SMBSyncMain extends FragmentActivity {
 //					resetAllCheckedItem();
 				}
 			});
-			ccMenu.addMenuItem(msgs_prof_cont_select_all)
+			ccMenu.addMenuItem(msgs_prof_cont_select_all, R.drawable.select_all)
 			.setOnClickListener(new CustomContextMenuOnClickListener() {
 				@Override
 				public void onClick(CharSequence menuTitle) {
@@ -2610,7 +2610,7 @@ public class SMBSyncMain extends FragmentActivity {
 					mGp.profileAdapter.notifyDataSetChanged();
 				}
 			});
-			ccMenu.addMenuItem(msgs_prof_cont_unselect_all)
+			ccMenu.addMenuItem(msgs_prof_cont_unselect_all, R.drawable.unselect_all)
 			.setOnClickListener(new CustomContextMenuOnClickListener() {
 				@Override
 				public void onClick(CharSequence menuTitle) {
