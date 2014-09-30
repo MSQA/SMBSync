@@ -147,7 +147,6 @@ public class GlobalParameters extends Application{
 	public boolean settingRemoteFileCopyByRename=false;
 	public boolean settingLocalFileCopyByRename=true;
 	
-	
     public LinearLayout confirmView=null;
     public TextView confirmTitle=null;
     public TextView confirmMsg=null;
@@ -171,7 +170,6 @@ public class GlobalParameters extends Application{
     public OnClickListener progressBarImmedListener=null;
 
     public LinearLayout progressSpinView=null;
-
     public TextView progressSpinSyncprof=null;
     public TextView progressSpinFilePath=null;
     public TextView progressSpinStatus=null;

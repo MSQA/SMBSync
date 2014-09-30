@@ -441,7 +441,9 @@ public class SMBSyncMain extends FragmentActivity {
 		public int msg_list_view_pos_x=0,msg_list_view_pos_y=0;
 		public int sync_list_view_pos_x=0,sync_list_view_pos_y=0;
 		
-		public boolean prog_bar_showed=false, prog_spin_showed=false, confirm_showed=false;
+		public int prog_bar_view_visibility=ProgressBar.GONE, 
+				prog_spin_view_visibility=ProgressBar.GONE, confirm_view_visibility=ProgressBar.GONE;
+		
 		public String prog_prof="", prog_fp="", prog_msg="", prog_sched_info="";
 		
 		
@@ -540,9 +542,12 @@ public class SMBSyncMain extends FragmentActivity {
 		vsa.progress_bar_max=mGp.progressBarPb.getMax();
 		vsa.prog_sched_info=mGp.mainViewScheduleInfo.getText().toString();
 
-		vsa.prog_bar_showed=mGp.progressBarView.isShown();
-		vsa.confirm_showed=mGp.confirmView.isShown();
-		vsa.prog_spin_showed=mGp.progressSpinView.isShown();
+		vsa.prog_bar_view_visibility=mGp.progressBarView.getVisibility();
+		vsa.confirm_view_visibility=mGp.confirmView.getVisibility();
+		vsa.prog_spin_view_visibility=mGp.progressSpinView.getVisibility();
+		
+//		Log.v("","prog_bar="+vsa.prog_bar_view_visibility+
+//				", prog_spin="+vsa.prog_spin_view_visibility+", confirm="+vsa.confirm_view_visibility);
 		
 		saveButtonStatus(mGp.confirmCancel,vsa.confirm_cancel);
 		saveButtonStatus(mGp.confirmYes,vsa.confirm_yes);
@@ -587,19 +592,19 @@ public class SMBSyncMain extends FragmentActivity {
 		mGp.progressSpinStatus.setText(vsa.prog_msg);
 		mGp.mainViewScheduleInfo.setText(vsa.prog_sched_info);
 
-		if (vsa.prog_bar_showed) {
+		if (vsa.prog_bar_view_visibility!=LinearLayout.GONE) {
 			mGp.progressBarView.bringToFront();
 			mGp.progressBarView.setBackgroundColor(Color.BLACK);
 			mGp.progressBarView.setVisibility(LinearLayout.VISIBLE);
 		} else mGp.progressBarView.setVisibility(LinearLayout.GONE);
 
-		if (vsa.prog_spin_showed) {
+		if (vsa.prog_spin_view_visibility!=LinearLayout.GONE) {
 			mGp.progressSpinView.bringToFront();
 			mGp.progressSpinView.setBackgroundColor(Color.BLACK);
 			mGp.progressSpinView.setVisibility(LinearLayout.VISIBLE);
 		} else mGp.progressSpinView.setVisibility(LinearLayout.GONE);
 		
-		if (vsa.confirm_showed) {
+		if (vsa.confirm_view_visibility!=LinearLayout.GONE) {
 			mGp.confirmView.setBackgroundColor(Color.BLACK);
 			mGp.confirmView.setVisibility(LinearLayout.VISIBLE);
 			mGp.confirmView.bringToFront();
@@ -3052,6 +3057,7 @@ public class SMBSyncMain extends FragmentActivity {
 					mirrorTaskEnded(result_code, result_msg);
 					clearScreenOn();
 					relWifiLock();
+					
 //					setScreenOn(500);
 				}
 			});
