@@ -34,11 +34,11 @@
     <string name="msgs_sync_history_count_copied">Copied:</string>
     <string name="msgs_sync_history_count_deleted">Deleted:</string>
     <string name="msgs_sync_history_count_ignored">Ignored:</string>
-    <string name="msgs_sync_history_ccmeu_show_log">Show log</string>
-    <string name="msgs_sync_history_ccmeu_delete">Delete history</string>
+    <string name="msgs_sync_history_ccmeu_show_log">Show log (%s)</string>
+    <string name="msgs_sync_history_ccmeu_delete">Delete history (%s)</string>
     <string name="msgs_sync_history_ccmeu_selectall">Select all histories</string>
     <string name="msgs_sync_history_ccmeu_unselectall">Unselect all histories</string>
-    <string name="msgs_sync_history_ccmeu_copy_clipboard">Copy clipboard</string>
+    <string name="msgs_sync_history_ccmeu_copy_clipboard">Copy clipboard (%s)</string>
     
     <string name="msgs_sync_history_del_conf_all_history">Do you want to delete all history?</string>
     <string name="msgs_sync_history_del_conf_selected_history">Do you want to delete following history?</string>
@@ -73,20 +73,22 @@
 	<string name="msgs_prof_cont_mult"		>Multiple selection</string>
     <string name="msgs_prof_cont_sngl_act"	>Active (%s)</string>
     <string name="msgs_prof_cont_sngl_wizard">Start a Sync creation wizard</string>
-	<string name="msgs_prof_cont_mult_act"	>Activate selected profiles</string>
-	<string name="msgs_prof_cont_mult_inact">Inactive selected profiles</string>
-	<string name="msgs_prof_cont_mult_sync" >Sync selected profiles</string>
+	<string name="msgs_prof_cont_mult_act"	>Activate profiles(%s)</string>
+	<string name="msgs_prof_cont_mult_inact">Inactive profiles(%s)</string>
+	<string name="msgs_prof_cont_mult_sync" >Sync profiles(%s)</string>
+	<string name="msgs_prof_cont_sync_not_available" >Sync not available</string>
+	
 	<string name="msgs_prof_cont_sngl_inact">Inactive (%s)</string>
 	<string name="msgs_prof_cont_sngl_delete">Delete profile (%s)</string>
-	<string name="msgs_prof_cont_mult_delete">Delete Selected profiles</string>
+	<string name="msgs_prof_cont_mult_delete">Delete profiles(%s)</string>
 	<string name="msgs_prof_cont_sngl_edit"	>Edit profile (%s)</string>
 	<string name="msgs_prof_cont_add_local"	>Add local profile</string>
 	<string name="msgs_prof_cont_add_remote">Add remote profile</string>
 	<string name="msgs_prof_cont_add_sync"	>Add Sync profile</string>
 	<string name="msgs_prof_cont_select_all">Select all profiles</string>
 	<string name="msgs_prof_cont_unselect_all">Unselect all profiles</string>
-	<string name="msgs_prof_cont_copy">Copy profile</string>
-	<string name="msgs_prof_cont_rename">Rename profile</string>
+	<string name="msgs_prof_cont_copy">Copy profile(%s)</string>
+	<string name="msgs_prof_cont_rename">Rename profile(%s)</string>
 	
 	<string name="msgs_add_local_profile"	>Add local profile</string>
 	<string name="msgs_add_remote_profile"	>Add remote profile</string>

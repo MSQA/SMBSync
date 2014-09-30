@@ -35,11 +35,11 @@
     <string name="msgs_sync_history_count_copied">コピー:</string>
     <string name="msgs_sync_history_count_deleted">削除:</string>
     <string name="msgs_sync_history_count_ignored">無視:</string>
-    <string name="msgs_sync_history_ccmeu_show_log">ログ表示</string>
-    <string name="msgs_sync_history_ccmeu_delete">履歴の削除</string>
+    <string name="msgs_sync_history_ccmeu_show_log">ログ表示 (%s)</string>
+    <string name="msgs_sync_history_ccmeu_delete">履歴の削除 (%s)</string>
     <string name="msgs_sync_history_ccmeu_selectall">全て選択</string>
     <string name="msgs_sync_history_ccmeu_unselectall">全て選択解除</string>
-	<string name="msgs_sync_history_ccmeu_copy_clipboard">クリップボードにコピー</string>    
+	<string name="msgs_sync_history_ccmeu_copy_clipboard">クリップボードにコピー (%s)</string>    
 	
     <string name="msgs_sync_history_del_conf_all_history">全ての履歴を削除しますか?</string>
     <string name="msgs_sync_history_del_conf_selected_history">下記の履歴を削除しますか?</string>
@@ -75,20 +75,21 @@
 	<string name="msgs_prof_cont_mult"		>複数選択</string>
     <string name="msgs_prof_cont_sngl_act"	>有効 (%s)</string>
 	<string name="msgs_prof_cont_sngl_wizard">同期作成ウィザードの起動</string>    
-	<string name="msgs_prof_cont_mult_act"	>プロファイルを有効にする</string>
-	<string name="msgs_prof_cont_mult_inact">プロファイルを無効にする</string>
-	<string name="msgs_prof_cont_mult_sync" >同期する</string>
+	<string name="msgs_prof_cont_mult_act"	>プロファイルを有効にする(%s)</string>
+	<string name="msgs_prof_cont_mult_inact">プロファイルを無効にする(%s)</string>
+	<string name="msgs_prof_cont_mult_sync" >同期する(%s)</string>
+	<string name="msgs_prof_cont_sync_not_available" >同期不可</string>
 	<string name="msgs_prof_cont_sngl_inact">無効 (%s)</string>
 	<string name="msgs_prof_cont_sngl_delete">削除 (%s)</string>
-	<string name="msgs_prof_cont_mult_delete">プロファイルを削除する</string>
+	<string name="msgs_prof_cont_mult_delete">削除する(%s)</string>
 	<string name="msgs_prof_cont_sngl_edit">編集 (%s)</string>
 	<string name="msgs_prof_cont_add_local"	>ローカルプロファイルの追加</string>
 	<string name="msgs_prof_cont_add_remote">リモートプロファイルの追加</string>
 	<string name="msgs_prof_cont_add_sync"	>同期プロファイルの追加</string>
 	<string name="msgs_prof_cont_select_all">全プロファイルを選択</string>
 	<string name="msgs_prof_cont_unselect_all">全ての選択を解除</string>
-	<string name="msgs_prof_cont_copy">プロファイルのコピー</string>
-	<string name="msgs_prof_cont_rename">プロファイルの名前変更</string>
+	<string name="msgs_prof_cont_copy">コピー(%s)</string>
+	<string name="msgs_prof_cont_rename">名前変更(%s)</string>
 	
 	<string name="msgs_add_local_profile"	>ローカルプロファイルの追加</string>
 	<string name="msgs_add_remote_profile"	>リモートプロファイルの追加</string>

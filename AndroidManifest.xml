@@ -47,7 +47,7 @@
             android:configChanges="locale|keyboardHidden|orientation|layoutDirection"
             android:screenOrientation="unspecified" 
             android:alwaysRetainTaskState="true" 
-            android:icon="@drawable/ic_64_smbsync">
+            android:icon="@drawable/ic_64_smbsync" android:uiOptions="splitActionBarWhenNarrow">
        <!-- android:alwaysRetainTaskState="true"-->
             
             <intent-filter >

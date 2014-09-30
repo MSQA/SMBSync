@@ -366,8 +366,11 @@ public class LogFileManagementFragment extends DialogFragment{
     
     private void createContextMenuSingle(final AdapterLogFileManagementList lfm_adapter, final int pos) {
     	CustomContextMenu ccMenu=new CustomContextMenu(mFragment.getResources(), mFragment.getFragmentManager());
-    	
-    	ccMenu.addMenuItem(mContext.getString(R.string.msgs_log_management_menu_browse),R.drawable.ic_64_browse_text)
+
+    	String log_id=lfm_adapter.getItem(pos).log_file_name;
+
+    	ccMenu.addMenuItem(String.format(
+    			mContext.getString(R.string.msgs_log_management_menu_browse),log_id),R.drawable.ic_64_browse_text)
     	.setOnClickListener(new CustomContextMenuOnClickListener(){
 			@Override
 			public void onClick(CharSequence menuTitle) {
@@ -376,7 +379,8 @@ public class LogFileManagementFragment extends DialogFragment{
 				startActivity(intent);
 			}
     	});
-    	ccMenu.addMenuItem(mContext.getString(R.string.msgs_log_management_menu_send),R.drawable.ic_64_share)
+    	ccMenu.addMenuItem(String.format(
+    			mContext.getString(R.string.msgs_log_management_menu_send),log_id),R.drawable.ic_64_share)
     	.setOnClickListener(new CustomContextMenuOnClickListener(){
 			@Override
 			public void onClick(CharSequence menuTitle) {
@@ -384,7 +388,8 @@ public class LogFileManagementFragment extends DialogFragment{
 			}
     	});
     	if (!lfm_adapter.getItem(pos).isCurrentLogFile) {
-        	ccMenu.addMenuItem(mContext.getString(R.string.msgs_log_management_menu_delete),R.drawable.menu_trash)
+        	ccMenu.addMenuItem(String.format(
+        			mContext.getString(R.string.msgs_log_management_menu_delete),log_id),R.drawable.menu_trash)
         	.setOnClickListener(new CustomContextMenuOnClickListener(){
     			@Override
     			public void onClick(CharSequence menuTitle) {
@@ -398,14 +403,24 @@ public class LogFileManagementFragment extends DialogFragment{
     private void createContextMenuMultiple(final AdapterLogFileManagementList lfm_adapter) {
     	CustomContextMenu ccMenu=new CustomContextMenu(mFragment.getResources(), mFragment.getFragmentManager());
     	
-    	ccMenu.addMenuItem(mContext.getString(R.string.msgs_log_management_menu_send),R.drawable.ic_64_share)
+    	String log_id="", sep="";
+    	for(int i=0;i<lfm_adapter.getCount();i++) {
+    		if (lfm_adapter.getItem(i).isChecked) {
+    			log_id+=sep+lfm_adapter.getItem(i).log_file_name;
+    			if (log_id.length()>300) break;
+    		}
+    	}
+    	
+    	ccMenu.addMenuItem(String.format(
+    			mContext.getString(R.string.msgs_log_management_menu_send),log_id),R.drawable.ic_64_share)
     	.setOnClickListener(new CustomContextMenuOnClickListener(){
 			@Override
 			public void onClick(CharSequence menuTitle) {
 				sendLogFile(lfm_adapter);
 			}
     	});
-    	ccMenu.addMenuItem(mContext.getString(R.string.msgs_log_management_menu_delete),R.drawable.menu_trash)
+    	ccMenu.addMenuItem(String.format(
+    			mContext.getString(R.string.msgs_log_management_menu_delete),log_id),R.drawable.menu_trash)
     	.setOnClickListener(new CustomContextMenuOnClickListener(){
 			@Override
 			public void onClick(CharSequence menuTitle) {

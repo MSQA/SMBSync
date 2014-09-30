@@ -1986,18 +1986,21 @@ public class SMBSyncMain extends FragmentActivity {
 				}
 		});
 		
-		ccMenu.addMenuItem(msgs_sync_history_ccmeu_delete,R.drawable.menu_trash)
+		String item_id="";
+		String sep="";
+		for(int i=0;i<mGp.syncHistoryAdapter.getCount();i++) {
+			if (mGp.syncHistoryAdapter.getItem(i).isChecked) {
+				item_id+=sep+mGp.syncHistoryAdapter.getItem(i).sync_date+"_"+mGp.syncHistoryAdapter.getItem(i).sync_prof;
+				sep=",";
+				if (item_id.length()>300) break;
+			}
+		}
+		
+		ccMenu.addMenuItem(String.format(msgs_sync_history_ccmeu_delete,item_id),R.drawable.menu_trash)
 		.setOnClickListener(new CustomContextMenuOnClickListener() {
 			@Override
 			public void onClick(CharSequence menuTitle) {
 				confirmDeleteHistory();
-			}
-		});
-		ccMenu.addMenuItem(msgs_sync_history_ccmeu_unselectall)
-		.setOnClickListener(new CustomContextMenuOnClickListener() {
-			@Override
-			public void onClick(CharSequence menuTitle) {
-				setHistoryItemUnselectAll();
 			}
 		});
 		ccMenu.addMenuItem(msgs_sync_history_ccmeu_selectall)
@@ -2007,8 +2010,15 @@ public class SMBSyncMain extends FragmentActivity {
 				setHistoryItemSelectAll();
 			}
 		});
+		ccMenu.addMenuItem(msgs_sync_history_ccmeu_unselectall)
+		.setOnClickListener(new CustomContextMenuOnClickListener() {
+			@Override
+			public void onClick(CharSequence menuTitle) {
+				setHistoryItemUnselectAll();
+			}
+		});
 
-		ccMenu.addMenuItem(msgs_sync_history_ccmeu_copy_clipboard)
+		ccMenu.addMenuItem(String.format(msgs_sync_history_ccmeu_copy_clipboard,item_id),R.drawable.copy_clipboard)
 		.setOnClickListener(new CustomContextMenuOnClickListener() {
 			@Override
 			public void onClick(CharSequence menuTitle) {
@@ -2127,10 +2137,12 @@ public class SMBSyncMain extends FragmentActivity {
 
 		final SyncHistoryListItem item = mGp.syncHistoryAdapter.getItem(cin);
 		
+		String item_id=item.sync_date+"_"+item.sync_prof;
+		
 		boolean log_enabled=false;
 		if (!item.sync_result_file_path.equals("")) log_enabled=true;
-		ccMenu.addMenuItem(log_enabled,
-				getString(R.string.msgs_sync_history_ccmeu_show_log),R.drawable.ic_64_browse_text)
+		ccMenu.addMenuItem(log_enabled,String.format(
+				getString(R.string.msgs_sync_history_ccmeu_show_log),item_id),R.drawable.ic_64_browse_text)
 		.setOnClickListener(new CustomContextMenuOnClickListener() {
 			@Override
 			public void onClick(CharSequence menuTitle) {
@@ -2143,19 +2155,12 @@ public class SMBSyncMain extends FragmentActivity {
 			}
 		});
 		
-		ccMenu.addMenuItem(msgs_sync_history_ccmeu_delete,R.drawable.menu_trash)
+		ccMenu.addMenuItem(String.format(msgs_sync_history_ccmeu_delete,item_id),R.drawable.menu_trash)
 			.setOnClickListener(new CustomContextMenuOnClickListener() {
 				@Override
 				public void onClick(CharSequence menuTitle) {
 					confirmDeleteHistory();
 				}
-		});
-		ccMenu.addMenuItem(msgs_sync_history_ccmeu_unselectall)
-		.setOnClickListener(new CustomContextMenuOnClickListener() {
-			@Override
-			public void onClick(CharSequence menuTitle) {
-				setHistoryItemUnselectAll();
-			}
 		});
 		ccMenu.addMenuItem(msgs_sync_history_ccmeu_selectall)
 		.setOnClickListener(new CustomContextMenuOnClickListener() {
@@ -2164,7 +2169,14 @@ public class SMBSyncMain extends FragmentActivity {
 				setHistoryItemSelectAll();
 			}
 		});
-		ccMenu.addMenuItem(msgs_sync_history_ccmeu_copy_clipboard)
+		ccMenu.addMenuItem(msgs_sync_history_ccmeu_unselectall)
+		.setOnClickListener(new CustomContextMenuOnClickListener() {
+			@Override
+			public void onClick(CharSequence menuTitle) {
+				setHistoryItemUnselectAll();
+			}
+		});
+		ccMenu.addMenuItem(String.format(msgs_sync_history_ccmeu_copy_clipboard,item_id),R.drawable.copy_clipboard)
 		.setOnClickListener(new CustomContextMenuOnClickListener() {
 			@Override
 			public void onClick(CharSequence menuTitle) {
@@ -2343,8 +2355,29 @@ public class SMBSyncMain extends FragmentActivity {
 	private void createProfileContextMenu_Multiple(int idx,boolean sync) { 
 
 		boolean sync_enabled=false;
-		if (mGp.externalStorageIsMounted && !util.isRemoteDisable()&&sync) sync_enabled=true; 
-		ccMenu.addMenuItem(sync_enabled, msgs_prof_cont_mult_sync,R.drawable.ic_32_sync)
+		if (mGp.externalStorageIsMounted && !util.isRemoteDisable()&&sync) sync_enabled=true;
+		String sync_profile="";
+		String sync_msg_text="";
+		if (sync_enabled) {
+			String sep="";
+			for(int i=0;i<mGp.profileAdapter.getCount();i++) {
+				if (mGp.profileAdapter.getItem(i).getType().equals(SMBSYNC_PROF_TYPE_SYNC) && 
+						mGp.profileAdapter.getItem(i).isActive() &&
+						mGp.profileAdapter.getItem(i).isChecked()) {
+					sync_profile+=sep+mGp.profileAdapter.getItem(i).getName();
+					sep=",";
+					if (sync_profile.length()>300) break; 
+				}
+			}
+			if (sync_profile.equals("")) {
+				sync_msg_text=String.format(msgs_prof_cont_sync_not_available,sync_profile);
+				sync_enabled=false;
+			} else {
+				sync_msg_text=String.format(msgs_prof_cont_mult_sync,sync_profile);
+			}
+		}
+		
+		ccMenu.addMenuItem(sync_enabled, sync_msg_text,R.drawable.ic_32_sync)
 		.setOnClickListener(new CustomContextMenuOnClickListener() {
 			@Override
 			public void onClick(CharSequence menuTitle) {
@@ -2353,7 +2386,17 @@ public class SMBSyncMain extends FragmentActivity {
 			}
 		});
 
-		ccMenu.addMenuItem(msgs_prof_cont_mult_act,R.drawable.menu_active)
+		String sel_profile="";
+		String sep="";
+		for(int i=0;i<mGp.profileAdapter.getCount();i++) {
+			if (mGp.profileAdapter.getItem(i).isChecked()) {
+				sel_profile+=sep+mGp.profileAdapter.getItem(i).getName();
+				sep=",";
+				if (sel_profile.length()>300) break;
+			}
+		}
+
+		ccMenu.addMenuItem(String.format(msgs_prof_cont_mult_act,sel_profile),R.drawable.menu_active)
 			.setOnClickListener(new CustomContextMenuOnClickListener() {
 				@Override
 				public void onClick(CharSequence menuTitle) {
@@ -2362,7 +2405,7 @@ public class SMBSyncMain extends FragmentActivity {
 				}
 		});
 
-		ccMenu.addMenuItem(msgs_prof_cont_mult_inact,R.drawable.menu_inactive)
+		ccMenu.addMenuItem(String.format(msgs_prof_cont_mult_inact,sel_profile),R.drawable.menu_inactive)
 			.setOnClickListener(new CustomContextMenuOnClickListener() {
 				@Override
 				public void onClick(CharSequence menuTitle) {
@@ -2371,7 +2414,7 @@ public class SMBSyncMain extends FragmentActivity {
 				}
 		});
 
-		ccMenu.addMenuItem(msgs_prof_cont_mult_delete,R.drawable.menu_trash)
+		ccMenu.addMenuItem(String.format(msgs_prof_cont_mult_delete,sel_profile),R.drawable.menu_trash)
 			.setOnClickListener(new CustomContextMenuOnClickListener() {
 				@Override
 				public void onClick(CharSequence menuTitle) {
@@ -2411,10 +2454,12 @@ public class SMBSyncMain extends FragmentActivity {
 		
 		if (!i_type.equals("")) {
 			boolean sync_enabled=false, inact_enabled=false, act_enabled=false;
+			String sync_text=msgs_prof_cont_sync_not_available;
 			if (i_act.equals(SMBSYNC_PROF_ACTIVE)) {
 				if (mGp.externalStorageIsMounted && !util.isRemoteDisable() ) {
 					if (sync) {
 						sync_enabled=true;
+						sync_text=String.format(msgs_sync_profile,i_name);
 					}
 				}
 				inact_enabled=true;
@@ -2422,8 +2467,7 @@ public class SMBSyncMain extends FragmentActivity {
 			} else {
 				act_enabled=true;
 			}
-			ccMenu.addMenuItem(sync_enabled, 
-					String.format(msgs_sync_profile,i_name),R.drawable.ic_32_sync)
+			ccMenu.addMenuItem(sync_enabled, sync_text,R.drawable.ic_32_sync)
 					.setOnClickListener(new CustomContextMenuOnClickListener() {
 						@Override
 						public void onClick(CharSequence menuTitle) {
@@ -2473,7 +2517,7 @@ public class SMBSyncMain extends FragmentActivity {
 			});
 		};
 		
-		ccMenu.addMenuItem(String.format(msgs_prof_cont_sngl_wizard,i_name),R.drawable.ic_64_wizard)
+		ccMenu.addMenuItem(msgs_prof_cont_sngl_wizard,R.drawable.ic_64_wizard)
 	  	.setOnClickListener(new CustomContextMenuOnClickListener() {
 			@Override
 			public void onClick(CharSequence menuTitle) {
@@ -2484,7 +2528,7 @@ public class SMBSyncMain extends FragmentActivity {
 			}
 	  	});
 
-		ccMenu.addMenuItem(msgs_prof_cont_add_local,R.drawable.menu_add)
+		ccMenu.addMenuItem(msgs_prof_cont_add_local,R.drawable.add_local)
 			.setOnClickListener(new CustomContextMenuOnClickListener() {
 				@Override
 				public void onClick(CharSequence menuTitle) {
@@ -2495,7 +2539,7 @@ public class SMBSyncMain extends FragmentActivity {
 				}
 		});
 
-		ccMenu.addMenuItem(msgs_prof_cont_add_remote,R.drawable.menu_add)
+		ccMenu.addMenuItem(msgs_prof_cont_add_remote,R.drawable.add_remote)
 			.setOnClickListener(new CustomContextMenuOnClickListener() {
 				@Override
 				public void onClick(CharSequence menuTitle) {
@@ -2522,7 +2566,7 @@ public class SMBSyncMain extends FragmentActivity {
 //		}
 //		if (isRemoteExists && isLocalExists) {
 //		}
-		ccMenu.addMenuItem(msgs_prof_cont_add_sync,R.drawable.menu_add)
+		ccMenu.addMenuItem(msgs_prof_cont_add_sync,R.drawable.add_sync)
 		.setOnClickListener(new CustomContextMenuOnClickListener() {
 			@Override
 			public void onClick(CharSequence menuTitle) {
@@ -2534,7 +2578,7 @@ public class SMBSyncMain extends FragmentActivity {
 		});
 
 		if (!i_type.equals("")) {
-			ccMenu.addMenuItem(msgs_prof_cont_copy,R.drawable.menu_copy)
+			ccMenu.addMenuItem(String.format(msgs_prof_cont_copy,i_name),R.drawable.menu_copy)
 			.setOnClickListener(new CustomContextMenuOnClickListener() {
 				@Override
 				public void onClick(CharSequence menuTitle) {
@@ -2543,7 +2587,7 @@ public class SMBSyncMain extends FragmentActivity {
 				}
 			});
 
-			ccMenu.addMenuItem(msgs_prof_cont_rename,R.drawable.menu_rename)
+			ccMenu.addMenuItem(String.format(msgs_prof_cont_rename,i_name),R.drawable.menu_rename)
 			.setOnClickListener(new CustomContextMenuOnClickListener() {
 				@Override
 				public void onClick(CharSequence menuTitle) {
@@ -3807,6 +3851,7 @@ public class SMBSyncMain extends FragmentActivity {
 	private static String msgs_prof_cont_mult_act;
 	private static String msgs_prof_cont_mult_inact;
 	private static String msgs_prof_cont_mult_sync;
+	private static String msgs_prof_cont_sync_not_available;
 	private static String msgs_prof_cont_sngl_inact;
 	private static String msgs_prof_cont_sngl_delete;
 	private static String msgs_prof_cont_mult_delete;
@@ -3870,6 +3915,7 @@ public class SMBSyncMain extends FragmentActivity {
 		msgs_prof_cont_mult_act=getString(R.string.msgs_prof_cont_mult_act);
 		msgs_prof_cont_mult_inact=getString(R.string.msgs_prof_cont_mult_inact);
 		msgs_prof_cont_mult_sync=getString(R.string.msgs_prof_cont_mult_sync);
+		msgs_prof_cont_sync_not_available=getString(R.string.msgs_prof_cont_sync_not_available);
 		msgs_prof_cont_sngl_inact=getString(R.string.msgs_prof_cont_sngl_inact);
 		msgs_prof_cont_sngl_delete=getString(R.string.msgs_prof_cont_sngl_delete);
 		msgs_prof_cont_mult_delete=getString(R.string.msgs_prof_cont_mult_delete);
