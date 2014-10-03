@@ -2362,6 +2362,7 @@ public class SMBSyncMain extends FragmentActivity {
 			public void onClick(View v) {
 				ProfileListItem pfli=new ProfileListItem();
 				pfli.setActive(SMBSYNC_PROF_ACTIVE);
+				pfli.setForceLastModifiedUseSmbsync(false);
 				ProfileMaintSyncFragment pmsp=ProfileMaintSyncFragment.newInstance();
 				pmsp.showDialog(getSupportFragmentManager(), pmsp, "ADD", pfli, 
 						profUtil, util, commonDlg, ntfy);
