@@ -25,19 +25,23 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 import android.annotation.SuppressLint;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.wifi.WifiManager;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.os.RemoteException;
+
 import com.sentaroh.android.Utilities.NotifyEvent;
 import com.sentaroh.android.Utilities.NotifyEvent.NotifyEventListener;
 import com.sentaroh.android.Utilities.ThreadCtrl;
 
 @SuppressLint("Wakelock")
 public class SMBSyncService extends Service {
-	private GlobalParameters glblParms=null;
+	private GlobalParameters mGp=null;
 	
 	private SMBSyncUtil mUtil=null;
 	
@@ -47,15 +51,32 @@ public class SMBSyncService extends Service {
 	
 	private ISvcCallback callBackStub=null;
 
+	private WifiManager mWifiMgr=null;
+	
+	private WifiReceiver mWifiReceiver=new WifiReceiver();
+	
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		glblParms=(GlobalParameters) getApplication();
-		glblParms.svcContext=this.getApplicationContext();
-		NotificationUtil.initNotification(glblParms);
-		mUtil=new SMBSyncUtil(getApplicationContext(), "Service", glblParms);
+		mGp=(GlobalParameters) getApplication();
+		mGp.svcContext=this.getApplicationContext();
+		NotificationUtil.initNotification(mGp);
+		mUtil=new SMBSyncUtil(getApplicationContext(), "Service", mGp);
 		
 		mUtil.addDebugLogMsg(1,"I","onCreate entered");
+
+		mWifiMgr=(WifiManager)getSystemService(Context.WIFI_SERVICE);
+		
+		initWifiStatus();
+		
+		IntentFilter int_filter = new IntentFilter();
+  		int_filter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
+  		int_filter.addAction(WifiManager.RSSI_CHANGED_ACTION);
+  		int_filter.addAction(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION);
+		int_filter.addAction(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION);
+		int_filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
+		int_filter.addAction(WifiManager.NETWORK_IDS_CHANGED_ACTION);
+		registerReceiver(mWifiReceiver, int_filter);
 
 		mPartialWakeLock=((PowerManager)getSystemService(Context.POWER_SERVICE))
     			.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK
@@ -100,6 +121,7 @@ public class SMBSyncService extends Service {
 	public void onDestroy() {
 		super.onDestroy();
 		mUtil.addDebugLogMsg(1,"I","onDestroy entered");
+		unregisterReceiver(mWifiReceiver);
 		mUtil.closeLogFile();
 		android.os.Process.killProcess(android.os.Process.myPid());
 //		glblParms.logWriter.close();
@@ -139,7 +161,7 @@ public class SMBSyncService extends Service {
 		public void aidlStartForeground() throws RemoteException {
 			mUtil.addDebugLogMsg(1, "I", "aidlStartForeground entered");
 //			NotificationUtil.setNotificationEnabled(glblParms);
-			startForeground(R.string.app_name,glblParms.notification);
+			startForeground(R.string.app_name,mGp.notification);
 		}
 
 		@Override
@@ -168,7 +190,7 @@ public class SMBSyncService extends Service {
 		@Override
 		public void aidlShowNotificationMsg(String prof, String fp, String msg)
 				throws RemoteException {
-			NotificationUtil.showOngoingMsg(glblParms, prof, fp, msg);
+			NotificationUtil.showOngoingMsg(mGp, prof, fp, msg);
 		}
 		
 		@Override
@@ -176,7 +198,7 @@ public class SMBSyncService extends Service {
 				throws RemoteException {
 //			Log.v("","icon="+icon_res);
 //			Thread.currentThread().dumpStack();
-			NotificationUtil.setNotificationIcon(glblParms, icon_res);
+			NotificationUtil.setNotificationIcon(mGp, icon_res);
 		}
 		
 		@Override
@@ -202,7 +224,7 @@ public class SMBSyncService extends Service {
 	@SuppressLint("Wakelock")
 	private void startThread() {
 //		final Handler hndl=new Handler();
-		NotificationUtil.setNotificationIcon(glblParms, R.drawable.ic_48_smbsync_run_anim);
+		NotificationUtil.setNotificationIcon(mGp, R.drawable.ic_48_smbsync_run_anim);
 		tcConfirm.initThreadCtrl();
 		tcMirror.initThreadCtrl();
 		tcMirror.setEnabled();//enableAsyncTask();
@@ -211,7 +233,7 @@ public class SMBSyncService extends Service {
 		ntfy.setListener(new NotifyEventListener() {
 			@Override
 			public void positiveResponse(Context c, Object[] o) {
-				NotificationUtil.setNotificationIcon(glblParms, R.drawable.ic_48_smbsync_wait);
+				NotificationUtil.setNotificationIcon(mGp, R.drawable.ic_48_smbsync_wait);
 				String result_code="", result_msg="";
 				if (tcMirror.isThreadResultSuccess()) {
 					result_code="OK";
@@ -234,9 +256,80 @@ public class SMBSyncService extends Service {
 			} 
 		});
 		
-		Thread tm = new Thread(new MirrorIO(glblParms, ntfy, tcMirror, tcConfirm, callBackStub)); 
+		Thread tm = new Thread(new MirrorIO(mGp, ntfy, tcMirror, tcConfirm, callBackStub)); 
 		tm.setPriority(Thread.MIN_PRIORITY);
 		tm.start();
 	};
+	
+	private void initWifiStatus() {
+		mGp.wifiIsActive=mWifiMgr.isWifiEnabled();
+		if (mGp.wifiIsActive) mGp.wifiSsid=mWifiMgr.getConnectionInfo().getSSID();
+	}
+	
+    final private class WifiReceiver  extends BroadcastReceiver {
+		@Override
+		final public void onReceive(Context c, Intent in) {
+			String tssid=mWifiMgr.getConnectionInfo().getSSID();
+			String wssid="";
+			String ss=mWifiMgr.getConnectionInfo().getSupplicantState().toString();
+			if (tssid==null || tssid.equals("<unknown ssid>")) wssid="";
+			else wssid=tssid.replaceAll("\"", "");
+			if (wssid.equals("0x")) wssid="";
+			
+			boolean new_wifi_enabled=mWifiMgr.isWifiEnabled();
+			if (!new_wifi_enabled && mGp.wifiIsActive ) {
+				mUtil.addDebugLogMsg(1,"I","WIFI receiver, WIFI Off");
+				mGp.wifiSsid="";
+				mGp.wifiIsActive=false;
+				try {
+					callBackStub.cbWifiStatusChanged("On", "");
+				} catch (RemoteException e) {
+					e.printStackTrace();
+				}
+			} else {
+				if (ss.equals("COMPLETED") ||ss.equals("ASSOCIATING") || ss.equals("ASSOCIATED")) {
+					if (mGp.wifiSsid.equals("") && !wssid.equals("")) {
+						mUtil.addDebugLogMsg(1,"I","WIFI receiver, Connected WIFI Access point ssid=",wssid);
+						mGp.wifiSsid=wssid;
+						mGp.wifiIsActive=true;
+						try {
+							callBackStub.cbWifiStatusChanged("Connected", mGp.wifiSsid);
+						} catch (RemoteException e) {
+							e.printStackTrace();
+						}
+					}
+				} else if (ss.equals("INACTIVE") ||
+						ss.equals("DISCONNECTED") ||
+						ss.equals("UNINITIALIZED") ||
+						ss.equals("INTERFACE_DISABLED") ||
+						ss.equals("SCANNING")) {
+					if (mGp.wifiIsActive) {
+						if (!mGp.wifiSsid.equals("")) {
+							mUtil.addDebugLogMsg(1,"I","WIFI receiver, Disconnected WIFI Access point ssid=", mGp.wifiSsid);
+							mGp.wifiSsid="";
+							mGp.wifiIsActive=true;
+							try {
+								callBackStub.cbWifiStatusChanged("Disconnected", "");
+							} catch (RemoteException e) {
+								e.printStackTrace();
+							}
+						}
+					} else {
+						if (new_wifi_enabled) {
+							mUtil.addDebugLogMsg(1,"I","WIFI receiver, WIFI On");
+							mGp.wifiSsid="";
+							mGp.wifiIsActive=true;
+							try {
+								callBackStub.cbWifiStatusChanged("On", "");
+							} catch (RemoteException e) {
+								e.printStackTrace();
+							}
+						}
+					}
+				}
+			}
+		}
+    };
 
+	
 }

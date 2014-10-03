@@ -18,4 +18,5 @@
         android:textAppearance="?android:attr/textAppearanceMedium" >
     </ListView>
 
+  	<include layout="@layout/context_view_history" />    
 </LinearLayout>

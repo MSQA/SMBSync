@@ -17,7 +17,7 @@
     <string name="msgs_sync_can_not_sync_wlan_option_not_satisfied">Can not be synchronized because the condition of the wireless LAN option is not satisfied. Please chahnge you setting by Menu->Settings->WirelessLAN option.</string>
     <string name="msgs_sync_can_not_sync_no_valid_profile">It can not be synchronized for a valid sync profile does not exist. Please create a valid sync profile.</string>
     
-    <string name="msgs_no_profile_entry">Long click for add profile</string>
+    <string name="msgs_no_profile_entry">No profile</string>
     
     <string name="msgs_log_msg_cleared">Log message was cleared.</string>
 	<string name="msgs_log_freeze_scroll">Freeze scroll</string>    
@@ -34,14 +34,19 @@
     <string name="msgs_sync_history_count_copied">Copied:</string>
     <string name="msgs_sync_history_count_deleted">Deleted:</string>
     <string name="msgs_sync_history_count_ignored">Ignored:</string>
-    <string name="msgs_sync_history_ccmeu_show_log">Show log (%s)</string>
-    <string name="msgs_sync_history_ccmeu_delete">Delete history (%s)</string>
-    <string name="msgs_sync_history_ccmeu_selectall">Select all histories</string>
-    <string name="msgs_sync_history_ccmeu_unselectall">Unselect all histories</string>
-    <string name="msgs_sync_history_ccmeu_copy_clipboard">Copy clipboard (%s)</string>
+    <string name="xmsgs_sync_history_ccmeu_show_log">Show log (%s)</string>
+    <string name="xmsgs_sync_history_ccmeu_delete">Delete history (%s)</string>
+    <string name="xmsgs_sync_history_ccmeu_selectall">Select all histories</string>
+    <string name="xmsgs_sync_history_ccmeu_unselectall">Unselect all histories</string>
+    <string name="xmsgs_sync_history_ccmeu_copy_clipboard">Copy clipboard (%s)</string>
+	<string name="msgs_sync_history_empty">No history</string>    
     
+	<string name="msgs_sync_all_active_profiles">To sync the all valid sync profile</string>
+	<string name="msgs_sync_selected_profiles">To sync the selected valid sync profile</string>
+	
     <string name="msgs_sync_history_del_conf_all_history">Do you want to delete all history?</string>
     <string name="msgs_sync_history_del_conf_selected_history">Do you want to delete following history?</string>
+    <string name="msgs_sync_history_copy_completed">Copied to clipboard history that has been selected</string>
     
     <string name="profile_list_dir_const_string">DIR:</string>
     
@@ -50,7 +55,6 @@
     
     <string name="msgs_smbsync_main_start">Application was successfully started.</string>
     <string name="msgs_smbsync_main_restart">Application was restarted.</string>
-    <string name="msgs_smbsync_main_restart_msglost">Application was restarted, but message was lost.</string>
     <string name="msgs_smbsync_main_end">Application was being terminated.</string>
     <string name="msgs_smbsync_main_language_changed">Language of the system has been changed, but there is a point where the application has not been reflected dynamically. (For example, the profile edit dialog appearance and message of synchronous execution)\nYou must restart the application in order to fully reflect the modified. (If running synchronization, please restart synchronization from the end)</string>    
     <string name="msgs_smbsync_main_settings_force_log_enabled"	>To enable logging because Auto sync startup was enabled.</string>
@@ -70,26 +74,9 @@
 	<string name="msgs_duplicate_profile"	>The profile name is duplicated</string>
 	<string name="msgs_edit_local_profile"	>Edit local profile</string>
 
-	<string name="msgs_prof_cont_mult"		>Multiple selection</string>
-    <string name="msgs_prof_cont_sngl_act"	>Active (%s)</string>
-    <string name="msgs_prof_cont_sngl_wizard">Start a Sync creation wizard</string>
-	<string name="msgs_prof_cont_mult_act"	>Activate profiles(%s)</string>
-	<string name="msgs_prof_cont_mult_inact">Inactive profiles(%s)</string>
-	<string name="msgs_prof_cont_mult_sync" >Sync profiles(%s)</string>
-	<string name="msgs_prof_cont_sync_not_available" >Sync not available</string>
-	
-	<string name="msgs_prof_cont_sngl_inact">Inactive (%s)</string>
-	<string name="msgs_prof_cont_sngl_delete">Delete profile (%s)</string>
-	<string name="msgs_prof_cont_mult_delete">Delete profiles(%s)</string>
-	<string name="msgs_prof_cont_sngl_edit"	>Edit profile (%s)</string>
-	<string name="msgs_prof_cont_add_local"	>Add local profile</string>
-	<string name="msgs_prof_cont_add_remote">Add remote profile</string>
-	<string name="msgs_prof_cont_add_sync"	>Add Sync profile</string>
-	<string name="msgs_prof_cont_select_all">Select all profiles</string>
-	<string name="msgs_prof_cont_unselect_all">Unselect all profiles</string>
-	<string name="msgs_prof_cont_copy">Copy profile(%s)</string>
-	<string name="msgs_prof_cont_rename">Rename profile(%s)</string>
-	
+	<string name="msgs_prof_cont_to_activate_profile">To active the following profile</string>
+	<string name="msgs_prof_cont_to_inactivate_profile">To inactive the following profile</string>
+			
 	<string name="msgs_add_local_profile"	>Add local profile</string>
 	<string name="msgs_add_remote_profile"	>Add remote profile</string>
 	<string name="msgs_add_sync_profile"	>Add Sync profile</string>

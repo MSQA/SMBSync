@@ -83,14 +83,32 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
 		private NotifyEvent mNotifyCheckBoxEvent=null;
 		public void setNotifyCheckBoxEventHandler(NotifyEvent ntfy) {mNotifyCheckBoxEvent=ntfy;}
 
-		private boolean isShowCheckBox=true;
-//		public void setShowCheckBox(boolean p) {isShowCheckBox=p;}
-
-		public ArrayList<ProfileListItem> getAllItem() {return items;}
+		private boolean isShowCheckBox=false;
+		public void setShowCheckBox(boolean p) {isShowCheckBox=p;}
 		
-		public void setAllItem(ArrayList<ProfileListItem> p) {
+		public void setAllItemChecked(boolean p) {
+			if (items!=null) {
+				for (int i=0;i<items.size();i++) items.get(i).setChecked(p);
+			}
+		};
+		
+		public boolean isEmptyAdapter() {
+			boolean result=false;
+			if (items!=null) {
+				if (items.size()==0 || items.get(0).getType().equals("")) result=true;
+			} else {
+				result=true;
+			}
+			return result;
+		};
+
+		public ArrayList<ProfileListItem> getArrayList() {return items;}
+		
+		public void setArrayList(ArrayList<ProfileListItem> p) {
 			items.clear();
-			if (p!=null) items.addAll(p);
+			if (p!=null) {
+				for(int i=0;i<p.size();i++) items.add(p.get(i));
+			}
 			notifyDataSetChanged();
 		}
 
@@ -290,13 +308,13 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
              // 必ずsetChecked前にリスナを登録(convertView != null の場合は既に別行用のリスナが登録されている！)
              	holder.cbv_row_cb1.setOnCheckedChangeListener(new OnCheckedChangeListener() {
      				@Override
-     				public void onCheckedChanged(CompoundButton buttonView,
- 						boolean isChecked) {
+     				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+     					if (o.getType().equals("")) return;
      					o.setChecked(isChecked);
-     					items.set(p, o);
-     					if (mNotifyCheckBoxEvent!=null) mNotifyCheckBoxEvent.notifyToListener(true, null);
-     					}
-     				});
+	     				items.set(p, o);
+	     				if (mNotifyCheckBoxEvent!=null) mNotifyCheckBoxEvent.notifyToListener(true, null);
+     				}
+     			});
              	holder.cbv_row_cb1.setChecked(items.get(position).isChecked());
            	}
             return v;

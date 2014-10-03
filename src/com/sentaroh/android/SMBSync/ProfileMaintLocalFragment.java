@@ -266,13 +266,15 @@ public class ProfileMaintLocalFragment extends DialogFragment{
 	private int mProfileItemPos=-1;
 	@SuppressWarnings("unused")
 	private SMBSyncUtil mUtil=null;
+	private NotifyEvent mNotifyComplete=null;
     public void showDialog(FragmentManager fm, Fragment frag,
     		final String op_type,
 			final ProfileListItem pli,
 			int pin,
 			ProfileUtility pm,
 			SMBSyncUtil ut,
-			CommonDialog cd) {
+			CommonDialog cd,
+			NotifyEvent ntfy) {
     	if (DEBUG_ENABLE) Log.v(APPLICATION_TAG,SUB_APPLICATION_TAG+"showDialog");
     	mTerminateRequired=false;
     	mOpType=op_type;
@@ -281,6 +283,7 @@ public class ProfileMaintLocalFragment extends DialogFragment{
     	mProfileItemPos=pin;
     	mUtil=ut;
     	mCommonDlg=cd;
+    	mNotifyComplete=ntfy;
 	    FragmentTransaction ft = fm.beginTransaction();
 	    ft.add(frag,null);
 	    ft.commitAllowingStateLoss();
@@ -350,6 +353,7 @@ public class ProfileMaintLocalFragment extends DialogFragment{
 		btn_cancel.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				mDialog.dismiss();
+				if (mNotifyComplete!=null) mNotifyComplete.notifyToListener(false, null);
 //				glblParms.profileListView.setSelectionFromTop(currentViewPosX,currentViewPosY);
 			}
 		});
@@ -457,6 +461,8 @@ public class ProfileMaintLocalFragment extends DialogFragment{
 //						AdapterProfileList tfl= createProfileList(false,"");
 //						replaceglblParms.profileAdapterContent(tfl);
 //						glblParms.profileListView.setSelectionFromTop(pos,posTop);
+						ProfileUtility.setAllProfileToUnchecked(mGp.profileAdapter);
+						if (mNotifyComplete!=null) mNotifyComplete.notifyToListener(true, null);
 					} else {
 						((TextView) mDialog.findViewById(R.id.local_profile_dlg_msg))
 							.setText(mContext.getString(R.string.msgs_duplicate_profile));
@@ -469,7 +475,7 @@ public class ProfileMaintLocalFragment extends DialogFragment{
 
     };
     
-	public void editProfile(final ProfileListItem pfli) {
+	private void editProfile(final ProfileListItem pfli) {
 		mDialog.setContentView(R.layout.edit_profile_local);
 		
 		final TextView dlg_title=(TextView) mDialog.findViewById(R.id.local_profile_dlg_title);
@@ -531,6 +537,7 @@ public class ProfileMaintLocalFragment extends DialogFragment{
 		btn_cancel.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				mDialog.dismiss();
+				if (mNotifyComplete!=null) mNotifyComplete.notifyToListener(false, null);
 //				glblParms.profileListView.setSelectionFromTop(currentViewPosX, currentViewPosY);
 			}
 		});
@@ -601,6 +608,7 @@ public class ProfileMaintLocalFragment extends DialogFragment{
 								ProfileUtility.resolveSyncProfileRelation(mGp);
 								mProfUtil.saveProfileToFile(false,"","",mGp.profileAdapter,false);
 								mGp.profileAdapter.notifyDataSetChanged();
+								if (mNotifyComplete!=null) mNotifyComplete.notifyToListener(true, null);
 //								AdapterProfileList tfl= createProfileList(false,"");
 //								replaceglblParms.profileAdapterContent(tfl);
 							}

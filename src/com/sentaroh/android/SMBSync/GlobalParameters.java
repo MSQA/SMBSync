@@ -176,5 +176,8 @@ public class GlobalParameters extends Application{
     public Button progressSpinCancel=null;
     public OnClickListener progressSpinCancelListener=null;
 
+	public boolean wifiIsActive=false;
+	public String wifiSsid="";
+
 
 }

@@ -656,7 +656,7 @@ public class SMBSyncUtil {
 			    	l_array=line.split("\u0001");
 //			    	Log.v("","line="+line);
 //			    	Log.v("","em="+l_array[7]);
-			    	if (l_array!=null && l_array.length>=11) {
+			    	if (l_array!=null && l_array.length>=11 && !l_array[2].equals("")) {
 			    		SyncHistoryListItem hli=new SyncHistoryListItem();
 			    		try {
 				    		hli.sync_date=l_array[0];
@@ -706,7 +706,7 @@ public class SMBSyncUtil {
 		}
 		if (hl.size()==0) {
 			SyncHistoryListItem hli=new SyncHistoryListItem();
-			hli.sync_prof="No history";
+			hli.sync_prof="";
 			hl.add(hli);
 		}
 //		Log.v("","load hist ended");
@@ -739,7 +739,8 @@ public class SMBSyncUtil {
 //			String cpy_str, del_str, ign_str;
 			ArrayList<SyncHistoryListItem>del_list=new ArrayList<SyncHistoryListItem>();
 			for (int i=0;i<hl.size();i++) {
-				if (!hl.get(i).sync_prof.equals("No history")) {
+//				Log.v("","i="+i+", n="+hl.get(i).sync_prof);
+				if (!hl.get(i).sync_prof.equals("")) {
 					shli=hl.get(i);
 					if (i<max) {
 //						cpy_str=array2String(sb_buf,shli.sync_copied_file);
@@ -813,6 +814,9 @@ public class SMBSyncUtil {
 //	};
 	
 	public void addHistoryList(ArrayList<SyncHistoryListItem> hl, SyncHistoryListItem item) {
+		if (hl.size()==1) {
+			if (hl.get(0).sync_prof.equals("")) hl.remove(0);
+		}
 		hl.add(0,item);
 	};
 //	public void removeHistoryList(ArrayList<SyncHistoryListItem> hl, int pos) {

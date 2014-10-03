@@ -25,6 +25,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 import java.util.ArrayList;
 
+import com.sentaroh.android.Utilities.NotifyEvent;
+
 import android.content.Context;
 import android.graphics.Color;
 import android.view.LayoutInflater;
@@ -42,11 +44,15 @@ public class AdapterLogFileManagementList extends BaseAdapter{
 	private int textViewResourceId=0;
 	private Context c;
 	
+	private NotifyEvent mCheckBoxClickListener=null;
+	
 	public AdapterLogFileManagementList(Context context, int textViewResourceId,
-			ArrayList<LogFileManagemntListItem> objects) {
+			ArrayList<LogFileManagemntListItem> objects, NotifyEvent ntfy) {
 		c=context;
 		log_list=objects;
+		mCheckBoxClickListener=ntfy;
 		this.textViewResourceId=textViewResourceId;
+		if (isAnyItemSelected()) setShowCheckBox(true);
 	}
 	
 	public void replaceDataList(ArrayList<LogFileManagemntListItem> dl) {
@@ -69,6 +75,42 @@ public class AdapterLogFileManagementList extends BaseAdapter{
 		return arg0;
 	}
 
+	private boolean mShowCheckBox=false;
+	public void setShowCheckBox(boolean p) {mShowCheckBox=p;}
+	
+	public boolean isEmptyAdapter() {
+		boolean result=true;
+		if (log_list!=null) {
+			if (log_list.size()>0) {
+				if (log_list.get(0).log_file_name!=null) result=false;
+			}
+		}
+		return result;
+	};
+	
+	public boolean isAnyItemSelected() {
+		boolean result=false;
+		if (log_list!=null) {
+			for(int i=0;i<log_list.size();i++) {
+				if (log_list.get(i).isChecked) {
+					result=true;
+					break;
+				}
+			}
+		}
+		return result;
+	};
+	
+	public void setAllItemChecked(boolean p) {
+		if (log_list!=null) {
+			for(int i=0;i<log_list.size();i++) {
+				log_list.get(i).isChecked=p;
+			}
+		}
+		notifyDataSetChanged();
+	};
+	
+	
 	@Override
     final public View getView(final int position, View convertView, ViewGroup parent) {
 		ViewHolder holder;
@@ -98,16 +140,20 @@ public class AdapterLogFileManagementList extends BaseAdapter{
     		holder.tv_log_file_size.setText(o.log_file_size);
     		holder.tv_log_file_date.setText(o.log_file_last_modified_date);
     		holder.tv_log_file_time.setText(o.log_file_last_modified_time);
+    		if (mShowCheckBox) holder.cb_select.setVisibility(CheckBox.VISIBLE);
+    		else holder.cb_select.setVisibility(CheckBox.INVISIBLE);
          	holder.cb_select.setOnCheckedChangeListener(new OnCheckedChangeListener() {
     			@Override
     			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 //    				o.isChecked=isChecked;
     				getItem(position).isChecked=isChecked;
+    				if (mCheckBoxClickListener!=null) 
+    					mCheckBoxClickListener.notifyToListener(true, new Object[]{isChecked});
     			}
     		});
          	holder.cb_select.setChecked(getItem(position).isChecked);
         } else {
-    		holder.tv_log_file_name.setText("No log files");
+    		holder.tv_log_file_name.setText(c.getString(R.string.msgs_log_management_no_log_file));
     		holder.cb_select.setVisibility(TextView.GONE);
     		holder.tv_log_file_size.setVisibility(TextView.GONE);
     		holder.tv_log_file_date.setVisibility(TextView.GONE);

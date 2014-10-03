@@ -17,7 +17,7 @@
     <string name="msgs_sync_can_not_sync_wlan_option_not_satisfied">無線LANオプションの条件が成立しないため、同期できません。設定の無線LANオプションを変更してください。</string>
     <string name="msgs_sync_can_not_sync_no_valid_profile">有効な同期プロファイルが存在していないため同期できません。同期プロファイルを作成してください。</string>
     
-    <string name="msgs_no_profile_entry">長押しでプロファイルを追加できます</string>
+    <string name="msgs_no_profile_entry">プロファイルが空です。</string>
     
     <string name="msgs_log_msg_cleared">ログメッセージをクリアしました。</string>
     <string name="msgs_log_freeze_scroll">自動的にスクロールしない</string>
@@ -30,19 +30,19 @@
     
     <string name="msgs_sync_history_status_fail">失敗</string>
     <string name="msgs_sync_history_status_cancel">中止</string>
-    <string name="msgs_sync_history_status_success">正常</string>
+    <string name="msgs_sync_history_status_success">正常終了</string>
     <string name="msgs_sync_history_count_files">ファイル数</string>
     <string name="msgs_sync_history_count_copied">コピー:</string>
     <string name="msgs_sync_history_count_deleted">削除:</string>
     <string name="msgs_sync_history_count_ignored">無視:</string>
-    <string name="msgs_sync_history_ccmeu_show_log">ログ表示 (%s)</string>
-    <string name="msgs_sync_history_ccmeu_delete">履歴の削除 (%s)</string>
-    <string name="msgs_sync_history_ccmeu_selectall">全て選択</string>
-    <string name="msgs_sync_history_ccmeu_unselectall">全て選択解除</string>
-	<string name="msgs_sync_history_ccmeu_copy_clipboard">クリップボードにコピー (%s)</string>    
+	<string name="msgs_sync_history_empty">履歴はありません</string>
+	
+	<string name="msgs_sync_all_active_profiles">有効な全ての同期プロファイルを同期しています</string>
+	<string name="msgs_sync_selected_profiles">選択された有効な同期プロファイルを同期しています</string>
 	
     <string name="msgs_sync_history_del_conf_all_history">全ての履歴を削除しますか?</string>
     <string name="msgs_sync_history_del_conf_selected_history">下記の履歴を削除しますか?</string>
+    <string name="msgs_sync_history_copy_completed">選択された履歴をクリップボードにコピーしました</string>
     
     <string name="profile_list_dir_const_string">DIR:</string>
     
@@ -51,7 +51,6 @@
     
     <string name="msgs_smbsync_main_start"	>正常起動しました。</string>
     <string name="msgs_smbsync_main_restart">再起動しました。</string>
-    <string name="msgs_smbsync_main_restart_msglost">再起動しましたが、メッセージを回復できませんでした。</string>
     <string name="msgs_smbsync_main_end"	>正常終了します。</string>
     <string name="msgs_smbsync_main_language_changed">システムの言語が変更されましたが、アプリケーションに動的反映されていない個所があります。(同期実行中のメッセージやプロファイル編集画面の表示など)\n変更を完全に反映するためにはアプリケーションの再起動が必要です。(同期を実行中ならば、同期が終了してから再起動してください)</string>
     <string name="msgs_smbsync_main_settings_force_log_enabled"	>自動同期起動が有効なため、ログ記録を有効にしました。</string>
@@ -72,24 +71,8 @@
 	<string name="msgs_duplicate_profile"	>プロファイル名が重複しています</string>
 	<string name="msgs_edit_local_profile"	>ローカルプロファイルの編集</string>
 
-	<string name="msgs_prof_cont_mult"		>複数選択</string>
-    <string name="msgs_prof_cont_sngl_act"	>有効 (%s)</string>
-	<string name="msgs_prof_cont_sngl_wizard">同期作成ウィザードの起動</string>    
-	<string name="msgs_prof_cont_mult_act"	>プロファイルを有効にする(%s)</string>
-	<string name="msgs_prof_cont_mult_inact">プロファイルを無効にする(%s)</string>
-	<string name="msgs_prof_cont_mult_sync" >同期する(%s)</string>
-	<string name="msgs_prof_cont_sync_not_available" >同期不可</string>
-	<string name="msgs_prof_cont_sngl_inact">無効 (%s)</string>
-	<string name="msgs_prof_cont_sngl_delete">削除 (%s)</string>
-	<string name="msgs_prof_cont_mult_delete">削除する(%s)</string>
-	<string name="msgs_prof_cont_sngl_edit">編集 (%s)</string>
-	<string name="msgs_prof_cont_add_local"	>ローカルプロファイルの追加</string>
-	<string name="msgs_prof_cont_add_remote">リモートプロファイルの追加</string>
-	<string name="msgs_prof_cont_add_sync"	>同期プロファイルの追加</string>
-	<string name="msgs_prof_cont_select_all">全プロファイルを選択</string>
-	<string name="msgs_prof_cont_unselect_all">全ての選択を解除</string>
-	<string name="msgs_prof_cont_copy">コピー(%s)</string>
-	<string name="msgs_prof_cont_rename">名前変更(%s)</string>
+	<string name="msgs_prof_cont_to_activate_profile">下記プロフィルを有効にします</string>
+	<string name="msgs_prof_cont_to_inactivate_profile">下記プロフィルを無効にします</string>
 	
 	<string name="msgs_add_local_profile"	>ローカルプロファイルの追加</string>
 	<string name="msgs_add_remote_profile"	>リモートプロファイルの追加</string>

@@ -323,12 +323,14 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 	private SMBSyncUtil mUtil=null;
 	private CommonDialog mCommonDlg=null;
 	private FragmentManager mFragmentMgr=null;
+	private NotifyEvent mNotifyComplete=null;
     public void showDialog(FragmentManager fm, Fragment frag,
     		final String op_type,
 			final ProfileListItem pli,
 			ProfileUtility pm,
 			SMBSyncUtil ut,
-			CommonDialog cd) {
+			CommonDialog cd,
+			NotifyEvent ntfy) {
     	if (DEBUG_ENABLE) Log.v(APPLICATION_TAG,SUB_APPLICATION_TAG+"showDialog");
     	mTerminateRequired=false;
     	mFragmentMgr=fm;
@@ -337,6 +339,7 @@ public class ProfileMaintSyncFragment extends DialogFragment{
     	mProfUtil=pm;
     	mUtil=ut;
     	mCommonDlg=cd;
+    	mNotifyComplete=ntfy;
 	    FragmentTransaction ft = fm.beginTransaction();
 	    ft.add(frag,null);
 	    ft.commitAllowingStateLoss();
@@ -475,11 +478,11 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 					if (m_pli!=null) {
 						if (m_pli.getType().equals(SMBSYNC_PROF_TYPE_REMOTE)) {
 							  ProfileMaintLocalFragment pmlp=ProfileMaintLocalFragment.newInstance();
-							  pmlp.showDialog(mFragmentMgr, pmlp, "EDIT",m_pli, 0, mProfUtil, mUtil, mCommonDlg);
+							  pmlp.showDialog(mFragmentMgr, pmlp, "EDIT",m_pli, 0, mProfUtil, mUtil, mCommonDlg,null);
 
 						} else if (m_pli.getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
 							  ProfileMaintRemoteFragment pmrp=ProfileMaintRemoteFragment.newInstance();
-							  pmrp.showDialog(mFragmentMgr, pmrp, "EDIT",m_pli, 0, mProfUtil, mUtil, mCommonDlg);
+							  pmrp.showDialog(mFragmentMgr, pmrp, "EDIT",m_pli, 0, mProfUtil, mUtil, mCommonDlg,null);
 						}
 					}
 				}
@@ -495,10 +498,10 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 					if (m_pli!=null) {
 						if (m_pli.getType().equals(SMBSYNC_PROF_TYPE_REMOTE)) {
 							  ProfileMaintRemoteFragment pmrp=ProfileMaintRemoteFragment.newInstance();
-							  pmrp.showDialog(mFragmentMgr, pmrp, "EDIT",m_pli, 0, mProfUtil, mUtil, mCommonDlg);
+							  pmrp.showDialog(mFragmentMgr, pmrp, "EDIT",m_pli, 0, mProfUtil, mUtil, mCommonDlg,null);
 						} else if (m_pli.getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
 							  ProfileMaintLocalFragment pmlp=ProfileMaintLocalFragment.newInstance();
-							  pmlp.showDialog(mFragmentMgr, pmlp, "EDIT",m_pli, 0, mProfUtil, mUtil, mCommonDlg);
+							  pmlp.showDialog(mFragmentMgr, pmlp, "EDIT",m_pli, 0, mProfUtil, mUtil, mCommonDlg,null);
 						}
 					}
 				}
@@ -515,7 +518,7 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 			public void onTextChanged(CharSequence s, int start, int before, int count) {}
 			@Override
 			public void afterTextChanged(Editable s) {
-				if (!ProfileUtility.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_SYNC, s.toString(), mGp.profileAdapter.getAllItem())) {
+				if (!ProfileUtility.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_SYNC, s.toString(), mGp.profileAdapter.getArrayList())) {
 					String e_msg=auditSyncProfileField(mDialog);
 					if (e_msg.length()!=0) {
 						dlg_msg.setText(e_msg);
@@ -553,6 +556,7 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 		btn_cancel.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				mFragment.dismiss();
+				if (mNotifyComplete!=null) mNotifyComplete.notifyToListener(false, null);
 //				glblParms.profileListView.setSelectionFromTop(currentViewPosX,currentViewPosY);
 			}
 		});
@@ -567,9 +571,11 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 		// OKボタンの指定
 		btn_ok.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				if (saveSyncProfile(mDialog, pfli.getFileFilter(), 
-						pfli.getDirFilter(),0)) 
+				if (saveSyncProfile(mDialog, pfli.getFileFilter(), pfli.getDirFilter(),0)) {
 					mFragment.dismiss();
+					ProfileUtility.setAllProfileToUnchecked(mGp.profileAdapter);
+					if (mNotifyComplete!=null) mNotifyComplete.notifyToListener(true, null);
+				}
 			}
 		});
     };
@@ -858,12 +864,12 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 						  int pos=ProfileUtility.getProfilePos(m_name,mGp.profileAdapter);
 						  ProfileMaintRemoteFragment pmp=ProfileMaintRemoteFragment.newInstance();
 						  pmp.showDialog(mFragmentMgr, pmp, "EDIT", m_pli, 
-								  pos, mProfUtil, mUtil, mCommonDlg);
+								  pos, mProfUtil, mUtil, mCommonDlg,null);
 					} else if (m_pli.getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
 						  int pos=ProfileUtility.getProfilePos(m_name,mGp.profileAdapter);
 						  ProfileMaintLocalFragment pmp=ProfileMaintLocalFragment.newInstance();
 						  pmp.showDialog(mFragmentMgr, pmp, "EDIT", m_pli, 
-								  pos, mProfUtil, mUtil, mCommonDlg);
+								  pos, mProfUtil, mUtil, mCommonDlg,null);
 					}
 				}
 			}
@@ -896,12 +902,12 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 						  int pos=ProfileUtility.getProfilePos(t_name,mGp.profileAdapter);
 						  ProfileMaintRemoteFragment pmp=ProfileMaintRemoteFragment.newInstance();
 						  pmp.showDialog(mFragmentMgr, pmp, "EDIT", m_pli, 
-								  pos, mProfUtil, mUtil, mCommonDlg);
+								  pos, mProfUtil, mUtil, mCommonDlg,null);
 					} else if (m_pli.getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
 						  int pos=ProfileUtility.getProfilePos(t_name,mGp.profileAdapter);
 						  ProfileMaintLocalFragment pmp=ProfileMaintLocalFragment.newInstance();
 						  pmp.showDialog(mFragmentMgr, pmp, "EDIT", m_pli, 
-								  pos, mProfUtil, mUtil, mCommonDlg);
+								  pos, mProfUtil, mUtil, mCommonDlg,null);
 					}
 				}
 			}
@@ -955,6 +961,7 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 		btn_cancel.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				mFragment.dismiss();
+				if (mNotifyComplete!=null) mNotifyComplete.notifyToListener(false, null);
 	//			glblParms.profileListView.setSelectionFromTop(currentViewPosX,currentViewPosY);
 			}
 		});
@@ -970,8 +977,10 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 		btn_ok.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				int prof_num=ProfileUtility.getProfilePos(pfli.getName(), mGp.profileAdapter);
-				if (saveSyncProfile(mDialog, n_file_filter, n_dir_filter,prof_num)) 
+				if (saveSyncProfile(mDialog, n_file_filter, n_dir_filter,prof_num)) {
 					mFragment.dismiss();
+					if (mNotifyComplete!=null) mNotifyComplete.notifyToListener(true, null);
+				}
 			}
 		});
 	};

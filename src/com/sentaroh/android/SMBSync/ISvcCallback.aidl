@@ -8,4 +8,6 @@ interface ISvcCallback{
     void cbSendMessage(String cat, String flag, String sync_prof, 
     	String date, String time, String tag, String debug_or_msg, 
     	String fp, String msg_text);
+    	
+    void cbWifiStatusChanged(String status, String ssid);
 }

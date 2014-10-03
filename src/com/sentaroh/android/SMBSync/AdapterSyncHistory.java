@@ -68,8 +68,24 @@ public class AdapterSyncHistory extends ArrayAdapter<SyncHistoryListItem> {
 	private NotifyEvent mNotifyCheckBoxEvent=null;
 	public void setNotifyCheckBoxEventHandler(NotifyEvent ntfy) {mNotifyCheckBoxEvent=ntfy;}
 	
-	private boolean isShowCheckBox=true;
-//	public void setShowCheckBox(boolean p) {isShowCheckBox=p;}
+	private boolean isShowCheckBox=false;
+	public void setShowCheckBox(boolean p) {isShowCheckBox=p;}
+	
+	public void setAllItemChecked(boolean p) {
+		if (items!=null) {
+			for (int i=0;i<items.size();i++) items.get(i).isChecked=p;
+		}
+	};
+
+	public boolean isEmptyAdapter() {
+		boolean result=false;
+		if (items!=null) {
+			if (items.size()==0 || items.get(0).sync_prof.equals("")) result=true;
+		} else {
+			result=true;
+		}
+		return result;
+	}
 	
 	@Override
     public View getView(final int position, View convertView, ViewGroup parent) {
@@ -99,7 +115,7 @@ public class AdapterSyncHistory extends ArrayAdapter<SyncHistoryListItem> {
         final SyncHistoryListItem o = getItem(position);
 
         if (o != null ) {
-        	if (!o.sync_prof.equals("No history")) {
+        	if (!o.sync_prof.equals("")) {
             	holder.tv_date.setVisibility(TextView.VISIBLE);
             	holder.tv_time.setVisibility(TextView.VISIBLE);
             	holder.tv_status.setVisibility(TextView.VISIBLE);
@@ -135,8 +151,8 @@ public class AdapterSyncHistory extends ArrayAdapter<SyncHistoryListItem> {
            		
              	holder.cb_sel.setOnCheckedChangeListener(new OnCheckedChangeListener() {
      				@Override
-     				public void onCheckedChanged(CompoundButton buttonView,
-    						boolean isChecked) {
+     				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+     					if (o.sync_prof.equals("")) return;
 //     					o.isChecked=isChecked;
      					items.get(position).isChecked=isChecked;
      					if (mNotifyCheckBoxEvent!=null) mNotifyCheckBoxEvent.notifyToListener(true, null);
@@ -144,8 +160,7 @@ public class AdapterSyncHistory extends ArrayAdapter<SyncHistoryListItem> {
              	);
              	holder.cb_sel.setChecked(items.get(position).isChecked);
         	} else {
-        		holder.tv_prof.setText(o.sync_prof);
-
+        		holder.tv_prof.setText(c.getString(R.string.msgs_sync_history_empty));
         		holder.tv_date.setVisibility(TextView.GONE);
             	holder.tv_time.setVisibility(TextView.GONE);
             	holder.tv_status.setVisibility(TextView.GONE);
@@ -171,7 +186,7 @@ class SyncHistoryListItem {
 	
 	public String sync_date=null;
 	public String sync_time=null;
-	public String sync_prof=null;
+	public String sync_prof="";
 	public int sync_status=0;
 	public final static int SYNC_STATUS_SUCCESS=0;
 	public final static int SYNC_STATUS_CANCELLED=1;

@@ -302,13 +302,15 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 	private int mProfileItemPos=-1;
 	private SMBSyncUtil mUtil=null;
 	private CommonDialog mCommonDlg=null;
+	private NotifyEvent mNotifyComplete=null;
     public void showDialog(FragmentManager fm, Fragment frag,
     		final String op_type,
 			final ProfileListItem pli,
 			int pin,
 			ProfileUtility pm,
 			SMBSyncUtil ut,
-			CommonDialog cd) {
+			CommonDialog cd,
+			NotifyEvent ntfy) {
     	if (DEBUG_ENABLE) Log.v(APPLICATION_TAG,"showDialog");
     	mTerminateRequired=false;
     	mOpType=op_type;
@@ -317,6 +319,7 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
     	mProfileItemPos=pin;
     	mUtil=ut;
     	mCommonDlg=cd;
+    	mNotifyComplete=ntfy;
 	    FragmentTransaction ft = fm.beginTransaction();
 	    ft.add(frag,null);
 	    ft.commitAllowingStateLoss();
@@ -431,6 +434,7 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 		btn_cancel.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				mFragment.dismiss();
+				if (mNotifyComplete!=null) mNotifyComplete.notifyToListener(false, null);
 //				glblParms.profileListView.setSelectionFromTop(currentViewPosX,currentViewPosY);
 			}
 		});
@@ -509,8 +513,10 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 							prof_user,prof_pass,prof_share,prof_addr,prof_host,
 							remote_port, false,0);
 					mGp.profileAdapter.sort();
-					mGp.profileAdapter.notifyDataSetChanged();
+					ProfileUtility.setAllProfileToUnchecked(mGp.profileAdapter);
+//					mGp.profileAdapter.notifyDataSetChanged();
 					mProfUtil.saveProfileToFile(false,"","",mGp.profileAdapter,false);
+					if (mNotifyComplete!=null) mNotifyComplete.notifyToListener(true, null);
 				} else {
 					((TextView) mDialog.findViewById(R.id.remote_profile_dlg_msg))
 					.setText(mContext.getString(R.string.msgs_duplicate_profile));
@@ -1036,6 +1042,7 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 		btn_cancel.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				mFragment.dismiss();
+				if (mNotifyComplete!=null) mNotifyComplete.notifyToListener(false, null);
 			}
 		});
 		// Cancelリスナーの指定
@@ -1072,12 +1079,12 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 //					.setText(e_msg);
 //					return;
 //				} else {
-					mFragment.dismiss();
 					ProfileListItem item = mGp.profileAdapter.getItem(mProfileItemPos);
 					if (prof_name.equals(item.getName())||
 							(!prof_name.equals(item.getName()) &&
 							 !mProfUtil.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,
 									 SMBSYNC_PROF_TYPE_REMOTE, prof_name))) {
+						mFragment.dismiss();
 						if (NetworkUtil.isValidIpAddress(edithost.getText().toString())) {
 							remote_addr=edithost.getText().toString();
 						} else {
@@ -1099,6 +1106,7 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 //						AdapterProfileList tfl= createProfileList(false,"");
 //						replaceglblParms.profileAdapterContent(tfl);
 //						glblParms.profileListView.setSelectionFromTop(pos,posTop);
+						if (mNotifyComplete!=null) mNotifyComplete.notifyToListener(true, null);
 					} else {
 						((TextView) mDialog.findViewById(R.id.remote_profile_dlg_msg))
 						.setText(mContext.getString(R.string.msgs_duplicate_profile));

@@ -30,5 +30,6 @@
         android:text="Scheduler info"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
+    <include layout="@layout/context_view_profile" />
     
 </LinearLayout>

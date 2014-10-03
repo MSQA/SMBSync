@@ -94,14 +94,17 @@ public class ProfileCreationWizard {
 	private GlobalParameters glblParms=null;
 	private CommonDialog mCommonDlg=null;
 	
+	private NotifyEvent mNotifyComplete=null;
+	
 	public ProfileCreationWizard(GlobalParameters gp, Context c, SMBSyncUtil su, 
-			ProfileUtility pm, CommonDialog cd, AdapterProfileList pa) {
+			ProfileUtility pm, CommonDialog cd, AdapterProfileList pa, NotifyEvent ntfy) {
 		glblParms=gp;
 		util=su;
 		mContext=c;
 		profUtil=pm;
 		mCommonDlg=cd;
 		profileAdapter=pa;
+		mNotifyComplete=ntfy;
 	};
 	
 	public void wizardMain() {
@@ -257,6 +260,7 @@ public class ProfileCreationWizard {
 			public void onClick(View arg0) {
 				for (int i=0;i<mWizData.dialog_list.size();i++)
 					mWizData.dialog_list.get(i).dismiss();
+				if (mNotifyComplete!=null) mNotifyComplete.notifyToListener(false, null);
 			}
 		});
 		dialog.setOnCancelListener(new OnCancelListener(){
@@ -670,6 +674,7 @@ public class ProfileCreationWizard {
 			public void onClick(View arg0) {
 				for (int i=0;i<mWizData.dialog_list.size();i++)
 					mWizData.dialog_list.get(i).dismiss();
+				if (mNotifyComplete!=null) mNotifyComplete.notifyToListener(false, null);
 			}
 		});
 		dialog.setOnCancelListener(new OnCancelListener(){
@@ -1074,6 +1079,7 @@ public class ProfileCreationWizard {
 			public void onClick(View arg0) {
 				for (int i=0;i<mWizData.dialog_list.size();i++)
 					mWizData.dialog_list.get(i).dismiss();
+				if (mNotifyComplete!=null) mNotifyComplete.notifyToListener(false, null);
 			}
 		});
 		dialog.setOnCancelListener(new OnCancelListener(){
@@ -1523,6 +1529,7 @@ public class ProfileCreationWizard {
 			public void onClick(View arg0) {
 				for (int i=0;i<mWizData.dialog_list.size();i++)
 					mWizData.dialog_list.get(i).dismiss();
+				if (mNotifyComplete!=null) mNotifyComplete.notifyToListener(false, null);
 			}
 		});
 		dialog.setOnCancelListener(new OnCancelListener(){
@@ -1569,10 +1576,14 @@ public class ProfileCreationWizard {
 						
 						mCommonDlg.showCommonDialog(false, "I", 
 								mContext.getString(R.string.msgs_sync_wizard_confirm_profile_created), "", null);
+						
+						if (mNotifyComplete!=null) mNotifyComplete.notifyToListener(true, null);
 					}
 
 					@Override
-					public void negativeResponse(Context c, Object[] o) {}
+					public void negativeResponse(Context c, Object[] o) {
+						if (mNotifyComplete!=null) mNotifyComplete.notifyToListener(false, null);
+					}
 					
 				});
 				confirmProfileCreation(dialog, ntfy);

@@ -69,7 +69,6 @@ import android.os.Build;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.webkit.MimeTypeMap;
 
 import com.sentaroh.android.Utilities.DateUtil;
@@ -1798,7 +1797,7 @@ public class MirrorIO implements Runnable {
 						addDebugLogMsg(3,"I","Local file exists="+lf.exists());
 					if (!lf.exists()) {
 						String m_dir=targetUrl.replace(syncTargetLocalDir+"/","");
-						Log.v("","mdir="+m_dir);
+//						Log.v("","mdir="+m_dir);
 						if (!(m_dir.indexOf("/")<0 && !syncMasterDirFileProcess)) { 
 							if (confirmDelete(targetUrl)) {
 								deleteLocalItem(true,targetUrl);
@@ -2334,11 +2333,12 @@ public class MirrorIO implements Runnable {
 			tmp_wu=targetUrl.substring(0,(targetUrl.length()-1));
 			last_sep="/";
 		} else tmp_wu=targetUrl;
-		String target_dir=tmp_wu.substring(0,tmp_wu.lastIndexOf("/"));
-		target_dir=target_dir.substring(0,target_dir.lastIndexOf("/"))+"/";
-		String target_fn=tmp_wu.replace(target_dir, "");
-		target_fn=target_fn.substring(0,(target_fn.length()-1));
-		String tmp_target=target_dir+"SMBSync.work.tmp"+last_sep;
+//		String target_dir=tmp_wu.substring(0,tmp_wu.lastIndexOf("/"));
+//		target_dir=target_dir.substring(0,target_dir.lastIndexOf("/"))+"/";
+//		String target_fn=tmp_wu.replace(target_dir, "");
+//		target_fn=target_fn.substring(0,(target_fn.length()-1));
+//		String tmp_target=target_dir+"SMBSync.work.tmp"+last_sep;
+		String tmp_target=tmp_wu+".SMBSync.work"+last_sep;
 //		Log.v("","tmp="+tmp_target+", to="+targetUrl);
 		return tmp_target;
 	};
@@ -2400,7 +2400,7 @@ public class MirrorIO implements Runnable {
 						if (!lf.canRead()) addDebugLogMsg(1,"I","Directory ignored because can not read, fp="+masterUrl);
 					}
 				} else { // file copy
-					Log.v("","master="+masterUrl+", mirrorIoRootDir="+mirrorIoRootDir);
+//					Log.v("","master="+masterUrl+", mirrorIoRootDir="+mirrorIoRootDir);
 					if (isDirFilteredByFileName(masterUrl.replace(mirrorIoRootDir+"/", "")) &&
 							!isHiddenFile(lf) &&
 							isFileFiltered(masterUrl)) {

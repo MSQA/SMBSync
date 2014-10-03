@@ -446,7 +446,7 @@ public class SchedulerMain {
 			}
 		}
 		if (!found && ProfileUtility.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT, 
-						SMBSYNC_PROF_TYPE_SYNC, sel, mGp.profileAdapter.getAllItem())) {
+						SMBSYNC_PROF_TYPE_SYNC, sel, mGp.profileAdapter.getArrayList())) {
 			for(int i=0;i<adapter.getCount();i++) {
 				String prof_name=adapter.getItem(i).substring(1);
 				if (prof_name.compareToIgnoreCase(sel)>0) {

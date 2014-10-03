@@ -6,6 +6,8 @@
 	<string name="msgs_log_management_menu_delete">ログファイル削除 (%s)</string>
 	<string name="msgs_log_management_menu_send">ログファイル送信 (%s)</string>
 	
+	<string name="msgs_log_management_no_log_file">ログファイルは空です</string>
+	
 	<string name="msgs_log_management_delete_confirm_msg">下記のログファイルを削除しますか？</string>
 	
 	<string name="msgs_log_management_dlg_close">閉じる</string>

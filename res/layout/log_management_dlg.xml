@@ -25,6 +25,8 @@
         android:fadeScrollbars="false">
     </ListView>
 
+     <include layout="@layout/context_view_log_mgmt" />
+    
     <Button
         android:id="@+id/log_management_dlg_log_close"
         android:layout_width="match_parent"

@@ -84,6 +84,7 @@ import android.widget.CheckedTextView;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -99,7 +100,6 @@ import com.sentaroh.android.Utilities.NotifyEvent;
 import com.sentaroh.android.Utilities.NotifyEvent.NotifyEventListener;
 import com.sentaroh.android.Utilities.ThreadCtrl;
 import com.sentaroh.android.Utilities.ContextMenu.CustomContextMenu;
-import com.sentaroh.android.Utilities.ContextMenu.CustomContextMenuItem.CustomContextMenuOnCleanupListener;
 import com.sentaroh.android.Utilities.ContextMenu.CustomContextMenuItem.CustomContextMenuOnClickListener;
 import com.sentaroh.android.Utilities.Dialog.CommonDialog;
 
@@ -250,6 +250,7 @@ public class SMBSyncMain extends FragmentActivity {
 //					e.printStackTrace();
 //				}
 //		}
+		setProfileContextButtonNotselected();
 	};
 	
 	@Override
@@ -336,11 +337,15 @@ public class SMBSyncMain extends FragmentActivity {
 					deleteTaskData();
 					
 					setMsglistViewListener();
-					
+
+					setProfileContextButtonNotselected();
+					setProfileContextButtonListener();
 					setProfilelistItemClickListener();
 					setProfilelistLongClickListener();
 					setMsglistLongClickListener();
 					
+					setHistoryContextButtonListener();
+					setHistoryContextButtonNotselected();
 					setHistoryViewItemClickListener();
 					setHistoryViewLongClickListener();
 
@@ -355,9 +360,9 @@ public class SMBSyncMain extends FragmentActivity {
 							isExtraSpecAutoStart=isExtraSpecAutoTerm=isExtraSpecBgExec=false;
 							checkAutoStart(intent);
 						} else {
-							if (mGp.profileAdapter.getItem(0).getType().equals("")) {
+							if (mGp.profileAdapter.isEmptyAdapter()) {
 								ProfileCreationWizard sw=new ProfileCreationWizard(mGp, mContext, 
-											util, profUtil, commonDlg, mGp.profileAdapter);
+											util, profUtil, commonDlg, mGp.profileAdapter, null);
 								sw.wizardMain();
 							} else {
 								if (LocalFileLastModified.isLastModifiedWasUsed(mGp.profileAdapter))
@@ -510,10 +515,18 @@ public class SMBSyncMain extends FragmentActivity {
 		
 		setMsglistViewListener();
 		
+		if (ProfileUtility.isAnyProfileSelected(mGp.profileAdapter, SMBSYNC_PROF_GROUP_DEFAULT)) setProfileContextButtonSelected();
+		else setProfileContextButtonNotselected();
+		
+		setProfileContextButtonListener();
 		setProfilelistItemClickListener();
 		setProfilelistLongClickListener();
 		setMsglistLongClickListener();
-		
+
+		if (isHistoryItemSelected()) setHistoryContextButtonSelected();
+		else setHistoryContextButtonNotselected();
+
+		setHistoryContextButtonListener();
 		setHistoryViewItemClickListener();
 		setHistoryViewLongClickListener();
 
@@ -651,7 +664,7 @@ public class SMBSyncMain extends FragmentActivity {
 
 	private boolean enableProfileConfirmCopyDeleteIfRequired() {
 		boolean result=false;
-		if (mGp.profileAdapter.getItem(0).getType().equals("")) result=true;
+		if (mGp.profileAdapter.isEmptyAdapter()) result=true;
 		
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		
@@ -867,7 +880,7 @@ public class SMBSyncMain extends FragmentActivity {
 		util.addDebugLogMsg(1,"I","onPrepareOptionsMenu entered, isUiEnabled()="+isUiEnabled());
 //		menu.findItem(R.id.menu_top_scheduler).setVisible(false);
 		if (isUiEnabled()) {
-			menu.findItem(R.id.menu_top_sync).setEnabled(true);
+//			menu.findItem(R.id.menu_top_sync).setEnabled(true);
 			menu.findItem(R.id.menu_top_browse_log).setEnabled(true);
 			menu.findItem(R.id.menu_top_export).setEnabled(true);
 			menu.findItem(R.id.menu_top_import).setEnabled(true);
@@ -875,9 +888,9 @@ public class SMBSyncMain extends FragmentActivity {
 			menu.findItem(R.id.menu_top_about).setEnabled(true);
 			menu.findItem(R.id.menu_top_settings).setEnabled(true);
 			menu.findItem(R.id.menu_top_log_management).setEnabled(true);
-			menu.findItem(R.id.menu_top_scheduler).setVisible(true);
+			menu.findItem(R.id.menu_top_scheduler).setEnabled(true);
 			if (!mGp.externalStorageIsMounted) {
-				menu.findItem(R.id.menu_top_sync).setEnabled(false);
+//				menu.findItem(R.id.menu_top_sync).setEnabled(false);
 				menu.findItem(R.id.menu_top_browse_log).setEnabled(false);
 				menu.findItem(R.id.menu_top_export).setEnabled(false);
 				menu.findItem(R.id.menu_top_import).setEnabled(false);
@@ -888,7 +901,7 @@ public class SMBSyncMain extends FragmentActivity {
 			if (!LocalFileLastModified.isLastModifiedWasUsed(mGp.profileAdapter))
 				menu.findItem(R.id.menu_top_last_mod_list).setEnabled(false);
 		} else {
-			menu.findItem(R.id.menu_top_sync).setEnabled(false);
+//			menu.findItem(R.id.menu_top_sync).setEnabled(false);
 			
 			menu.findItem(R.id.menu_top_browse_log).setEnabled(true);
 			if (!mGp.externalStorageIsMounted) {
@@ -905,44 +918,49 @@ public class SMBSyncMain extends FragmentActivity {
 			menu.findItem(R.id.menu_top_about).setEnabled(false);
 			menu.findItem(R.id.menu_top_settings).setEnabled(false);
 			menu.findItem(R.id.menu_top_log_management).setEnabled(false);
-			menu.findItem(R.id.menu_top_scheduler).setVisible(false);
+			menu.findItem(R.id.menu_top_scheduler).setEnabled(false);
 		}
         return super.onPrepareOptionsMenu(menu);
 	};
 	
+	@SuppressWarnings("unused")
 	private long mToastNextIssuedTimeSyncOption=0l;
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-			case R.id.menu_top_sync:
-				if (!util.isRemoteDisable()) {
-					if (profUtil.getActiveSyncProfileCount(mGp.profileAdapter)>0) {
-						syncActiveProfile();
-					} else {
-						NotifyEvent ntfy=new NotifyEvent(mContext);
-						ntfy.setListener(new NotifyEventListener(){
-							@Override
-							public void positiveResponse(Context c, Object[] o) {
-								ProfileCreationWizard sw=new ProfileCreationWizard(mGp, mContext, 
-										util, profUtil, commonDlg, mGp.profileAdapter);
-								sw.wizardMain();
-							}
-							@Override
-							public void negativeResponse(Context c, Object[] o) {}
-						});
-						commonDlg.showCommonDialog(false, "W", "", 
-								mContext.getString(R.string.msgs_sync_can_not_sync_no_valid_profile), ntfy);
-					}
-				} else {
-					if (mToastNextIssuedTimeSyncOption<System.currentTimeMillis()) {
-						Toast.makeText(mContext, 
-							mContext.getString(R.string.msgs_sync_can_not_sync_wlan_option_not_satisfied), 
-							Toast.LENGTH_SHORT)
-							.show();
-						mToastNextIssuedTimeSyncOption=System.currentTimeMillis()+2000;
-					}
-				}
-				return true;
+//			case R.id.menu_top_sync:
+//				if (!util.isRemoteDisable()) {
+//					if (profUtil.getActiveSyncProfileCount(mGp.profileAdapter)>0) {
+//						if (ProfileUtility.getSyncProfileSelectedItemCount(mGp.profileAdapter, SMBSYNC_PROF_GROUP_DEFAULT)>0) {
+//							syncSelectedProfile();
+//						} else {
+//							syncActiveProfile();
+//						}
+//					} else {
+//						NotifyEvent ntfy=new NotifyEvent(mContext);
+//						ntfy.setListener(new NotifyEventListener(){
+//							@Override
+//							public void positiveResponse(Context c, Object[] o) {
+//								ProfileCreationWizard sw=new ProfileCreationWizard(mGp, mContext, 
+//										util, profUtil, commonDlg, mGp.profileAdapter,null);
+//								sw.wizardMain();
+//							}
+//							@Override
+//							public void negativeResponse(Context c, Object[] o) {}
+//						});
+//						commonDlg.showCommonDialog(false, "W", "", 
+//								mContext.getString(R.string.msgs_sync_can_not_sync_no_valid_profile), ntfy);
+//					}
+//				} else {
+//					if (mToastNextIssuedTimeSyncOption<System.currentTimeMillis()) {
+//						Toast.makeText(mContext, 
+//							mContext.getString(R.string.msgs_sync_can_not_sync_wlan_option_not_satisfied), 
+//							Toast.LENGTH_SHORT)
+//							.show();
+//						mToastNextIssuedTimeSyncOption=System.currentTimeMillis()+2000;
+//					}
+//				}
+//				return true;
 			case R.id.menu_top_browse_log:
 				invokeLogFileBrowser();
 				return true;
@@ -1136,6 +1154,13 @@ public class SMBSyncMain extends FragmentActivity {
 				if (parm[1]) {
 					SchedulerMain.setSchedulerInfo(mGp, mContext, null);
 				}
+				if (ProfileUtility.isAnyProfileSelected(mGp.profileAdapter, SMBSYNC_PROF_GROUP_DEFAULT)) {
+					mGp.profileAdapter.setShowCheckBox(true);
+					setProfileContextButtonSelected();
+				} else {
+					setProfileContextButtonNotselected();
+					mGp.profileAdapter.setShowCheckBox(false);
+				}
 			}
 
 			@Override
@@ -1290,7 +1315,8 @@ public class SMBSyncMain extends FragmentActivity {
 	private void terminateApplication() {
 		if (tabHost.getCurrentTab()==0) {//
 			if (ProfileUtility.isAnyProfileSelected(mGp.profileAdapter,SMBSYNC_PROF_GROUP_DEFAULT)) {
-				resetAllCheckedItem();
+				ProfileUtility.setAllProfileToUnchecked(mGp.profileAdapter);
+				setProfileContextButtonNotselected();
 				return;
 			}
 		} else if (tabHost.getCurrentTab()==1) {
@@ -1483,6 +1509,9 @@ public class SMBSyncMain extends FragmentActivity {
 		
 		if (!mGp.settingAutoStart) mGp.settingAutoTerm=false;
 		
+		if (ProfileUtility.isAnyProfileSelected(mGp.profileAdapter, SMBSYNC_PROF_GROUP_DEFAULT)) setProfileContextButtonSelected();
+		else setProfileContextButtonNotselected();
+
 //		if (isJcifsOptionChanged() && restartStatus!=0) {
 //			commonDlg.showCommonDialog(false,"W",
 //					"",mContext.getString(R.string.msgs_smbsync_main_settings_jcifs_changed_restart),null);
@@ -1858,9 +1887,10 @@ public class SMBSyncMain extends FragmentActivity {
 				SyncHistoryListItem item = mGp.syncHistoryList.get(position);
 				if (isHistoryItemSelected()) {
 					item.isChecked=!item.isChecked;
-//					if (!isHistoryItemSelected()) {
-//						mGp.syncHistoryAdapter.setShowCheckBox(false);
-//					}
+					if (!isHistoryItemSelected()) {
+						mGp.syncHistoryAdapter.setShowCheckBox(false);
+						setHistoryContextButtonNotselected();
+					}
 					mGp.syncHistoryListView.setEnabled(true);
 				} else {
 					if (!item.sync_result_file_path.equals("")) {
@@ -1882,20 +1912,23 @@ public class SMBSyncMain extends FragmentActivity {
 			}
 		});
 		
-//		NotifyEvent ntfy=new NotifyEvent(mContext);
-//		ntfy.setListener(new NotifyEventListener(){
-//			@Override
-//			public void positiveResponse(Context c, Object[] o) {
-//				if (!isHistoryItemSelected()) {
-//					mGp.syncHistoryAdapter.setShowCheckBox(false);
-//					mGp.syncHistoryAdapter.notifyDataSetChanged();
-//				}
-//			}
-//
-//			@Override
-//			public void negativeResponse(Context c, Object[] o) {}
-//		});
-//		mGp.syncHistoryAdapter.setNotifyCheckBoxEventHandler(ntfy);
+		NotifyEvent ntfy=new NotifyEvent(mContext);
+		ntfy.setListener(new NotifyEventListener(){
+			@Override
+			public void positiveResponse(Context c, Object[] o) {
+				if (!isHistoryItemSelected()) {
+					mGp.syncHistoryAdapter.setShowCheckBox(false);
+					mGp.syncHistoryAdapter.notifyDataSetChanged();
+					setHistoryContextButtonNotselected();
+				} else {
+					setHistoryContextButtonSelected();
+				}
+			}
+
+			@Override
+			public void negativeResponse(Context c, Object[] o) {}
+		});
+		mGp.syncHistoryAdapter.setNotifyCheckBoxEventHandler(ntfy);
 	};
 
 	private boolean isHistoryItemSelected() {
@@ -1913,120 +1946,73 @@ public class SMBSyncMain extends FragmentActivity {
 			.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 			@Override
 			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
-					int arg2, long arg3) {
+					int pos, long arg3) {
+				if (mGp.syncHistoryAdapter.isEmptyAdapter()) return true;
 //				if (isHistoryItemSelected()) {
-//					createHistoryContextMenu(arg1, arg2);
+//					setHistoryItemUnselectAll() ;
+//					mGp.syncHistoryAdapter.setShowCheckBox(true);
+//					mGp.syncHistoryAdapter.getItem(pos).isChecked=true;
+//					mGp.syncHistoryAdapter.notifyDataSetChanged();
+//					setHistoryContextButtonSelected();
 //				} else {
 //					mGp.syncHistoryAdapter.setShowCheckBox(true);
-//					mGp.syncHistoryAdapter.getItem(arg2).isChecked=true;
+//					mGp.syncHistoryAdapter.getItem(pos).isChecked=true;
 //					mGp.syncHistoryAdapter.notifyDataSetChanged();
+//					setHistoryContextButtonSelected();
 //				}
-				createHistoryContextMenu(arg1, arg2);
+				if (!mGp.syncHistoryAdapter.getItem(pos).isChecked) {
+					mGp.syncHistoryAdapter.setShowCheckBox(true);
+					mGp.syncHistoryAdapter.getItem(pos).isChecked=true;
+					mGp.syncHistoryAdapter.notifyDataSetChanged();
+					setHistoryContextButtonSelected();
+				}
 				return true;
 			}
 		});
 	};
 
-	private void createHistoryContextMenu(View view, int idx) {
-		int prev_selected_cnt=0;
-		for (int i=0;i<mGp.syncHistoryAdapter.getCount();i++) {
-			if (mGp.syncHistoryAdapter.getItem(i).isChecked) {
-				prev_selected_cnt++;
-			}
-		}
-		if (prev_selected_cnt==0) {//Not selected
-			setHistoryItemChecked(idx,true);
-//			mGp.syncHistoryAdapter.setShowCheckBox(true);
-			mGp.syncHistoryAdapter.notifyDataSetChanged();
-			createHistoryContextMenu_Single(idx);
-		} else if (prev_selected_cnt==1) {//Previous selected was single
-			for (int i=0;i<mGp.syncHistoryAdapter.getCount();i++) {
-				if (mGp.syncHistoryAdapter.getItem(i).isChecked) {
-					if (i!=idx) {
-						setHistoryItemChecked(i,false);
-						setHistoryItemChecked(idx,true);
-//						mGp.syncHistoryAdapter.setShowCheckBox(true);
-						mGp.syncHistoryAdapter.notifyDataSetChanged();
-					}
-				}
-			}
-			createHistoryContextMenu_Single(idx);
-		} else {
-			boolean already_selected=false;
-			for (int i=0;i<mGp.syncHistoryAdapter.getCount();i++) {
-				if (mGp.syncHistoryAdapter.getItem(i).isChecked) {
-					if (i==idx) {
-						already_selected=true;
-						break;
-					}
-				}
-			}
-			if (already_selected) {
-				createHistoryContextMenu_Multiple(idx);
-			} else {
-				setHistoryItemUnselectAll();
-				setHistoryItemChecked(idx,true);
-//				mGp.syncHistoryAdapter.setShowCheckBox(true);
-				mGp.syncHistoryAdapter.notifyDataSetChanged();
-				createHistoryContextMenu_Single(idx);
-			}
-		}
-	};
-	
-	private void createHistoryContextMenu_Multiple(int idx) { 
-
-		ccMenu.addMenuItem(msgs_move_to_top,R.drawable.menu_top)
-		.setOnClickListener(new CustomContextMenuOnClickListener() {
+	private void setHistoryContextButtonListener() {
+		LinearLayout ll_prof=(LinearLayout) findViewById(R.id.context_view_history);
+        ImageButton ib_move_top=(ImageButton)ll_prof.findViewById(R.id.context_button_move_to_top);
+        ImageButton ib_move_bottom=(ImageButton)ll_prof.findViewById(R.id.context_button_move_to_bottom);
+//        ImageButton ib_show_log=(ImageButton)ll_prof.findViewById(R.id.context_button_show_log);
+        ImageButton ib_delete_history=(ImageButton)ll_prof.findViewById(R.id.context_button_delete);
+        ImageButton ib_copy_to_clipboard=(ImageButton)ll_prof.findViewById(R.id.context_button_copy_to_clipboard);
+        ImageButton ib_select_all=(ImageButton)ll_prof.findViewById(R.id.context_button_select_all);
+        ImageButton ib_unselect_all=(ImageButton)ll_prof.findViewById(R.id.context_button_unselect_all);
+        
+        ib_move_top.setOnClickListener(new OnClickListener(){
 			@Override
-			public void onClick(CharSequence menuTitle) {
+			public void onClick(View v) {
 				mGp.syncHistoryListView.setSelection(0);
 			}
-		});
-		
-		ccMenu.addMenuItem(msgs_move_to_bottom,R.drawable.menu_bottom)
-			.setOnClickListener(new CustomContextMenuOnClickListener() {
-				@Override
-				public void onClick(CharSequence menuTitle) {
-					mGp.syncHistoryListView.setSelection(mGp.syncHistoryAdapter.getCount()-1);
-				}
-		});
-		
-		String item_id="";
-		String sep="";
-		for(int i=0;i<mGp.syncHistoryAdapter.getCount();i++) {
-			if (mGp.syncHistoryAdapter.getItem(i).isChecked) {
-				item_id+=sep+mGp.syncHistoryAdapter.getItem(i).sync_date+"_"+mGp.syncHistoryAdapter.getItem(i).sync_prof;
-				sep=",";
-				if (item_id.length()>300) break;
-			}
-		}
-		
-		ccMenu.addMenuItem(String.format(msgs_sync_history_ccmeu_delete,item_id),R.drawable.menu_trash)
-		.setOnClickListener(new CustomContextMenuOnClickListener() {
+        });
+        ib_move_bottom.setOnClickListener(new OnClickListener(){
 			@Override
-			public void onClick(CharSequence menuTitle) {
+			public void onClick(View v) {
+				mGp.syncHistoryListView.setSelection(mGp.syncHistoryAdapter.getCount()-1);
+			}
+        });
+//        ib_show_log.setOnClickListener(new OnClickListener(){
+//			@Override
+//			public void onClick(View v) {
+//				Intent intent = 
+//						new Intent(android.content.Intent.ACTION_VIEW);
+//				intent.setDataAndType(
+//						Uri.parse("file://"+item.sync_result_file_path),
+//						"text/plain");
+//				startActivityForResult(intent,1);
+//			}
+//        });
+        ib_delete_history.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
 				confirmDeleteHistory();
 			}
-		});
-		ccMenu.addMenuItem(msgs_sync_history_ccmeu_selectall, R.drawable.select_all)
-		.setOnClickListener(new CustomContextMenuOnClickListener() {
+        });
+        ib_copy_to_clipboard.setOnClickListener(new OnClickListener(){
 			@Override
-			public void onClick(CharSequence menuTitle) {
-				setHistoryItemSelectAll();
-			}
-		});
-		ccMenu.addMenuItem(msgs_sync_history_ccmeu_unselectall, R.drawable.unselect_all)
-		.setOnClickListener(new CustomContextMenuOnClickListener() {
-			@Override
-			public void onClick(CharSequence menuTitle) {
-				setHistoryItemUnselectAll();
-			}
-		});
-
-		ccMenu.addMenuItem(String.format(msgs_sync_history_ccmeu_copy_clipboard,item_id),R.drawable.copy_clipboard)
-		.setOnClickListener(new CustomContextMenuOnClickListener() {
-			@Override
-			public void onClick(CharSequence menuTitle) {
+			public void onClick(View v) {
 				 ClipboardManager cm = 
 					      (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 				 StringBuilder out= new StringBuilder(256);
@@ -2053,27 +2039,107 @@ public class SMBSyncMain extends FragmentActivity {
 					 }
 				 }
 				 if (out.length()>0) cm.setText(out);
+				 Toast.makeText(mContext, mContext.getString(R.string.msgs_sync_history_copy_completed), 
+							Toast.LENGTH_SHORT)
+							.show();
+
 			}
-		});
-		ccMenu.createMenu();
+        });
+
+        ib_select_all.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				setHistoryItemSelectAll();
+				mGp.syncHistoryAdapter.setShowCheckBox(true);
+				setHistoryContextButtonSelected();
+			}
+        });
+        ib_unselect_all.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				setHistoryItemUnselectAll();
+				mGp.syncHistoryAdapter.setShowCheckBox(false);
+				setHistoryContextButtonNotselected();
+			}
+        });
+
+	};
+
+	private void setHistoryContextButtonSelected() {
+		LinearLayout ll_prof=(LinearLayout) findViewById(R.id.context_view_history);
+		LinearLayout ll_move_top=(LinearLayout)ll_prof.findViewById(R.id.context_button_move_to_top_view);
+		LinearLayout ll_move_bottom=(LinearLayout)ll_prof.findViewById(R.id.context_button_move_to_bottom_view);
+//		LinearLayout ll_show_log=(LinearLayout)ll_prof.findViewById(R.id.context_button_show_log_view);
+		LinearLayout ll_delete_history=(LinearLayout)ll_prof.findViewById(R.id.context_button_delete_view);
+		LinearLayout ll_copy_to_clipboard=(LinearLayout)ll_prof.findViewById(R.id.context_button_copy_to_clipboard_view);
+		LinearLayout ll_select_all=(LinearLayout)ll_prof.findViewById(R.id.context_button_select_all_view);
+		LinearLayout ll_unselect_all=(LinearLayout)ll_prof.findViewById(R.id.context_button_unselect_all_view);
+
+//		int sel_cnt=0;
+//		for (int i=0;i<mGp.syncHistoryAdapter.getCount();i++) {
+//			if (mGp.syncHistoryAdapter.getItem(i).isChecked) {
+//				sel_cnt++;
+//			}
+//		}
+		
+		ll_move_top.setVisibility(ImageButton.VISIBLE);
+		ll_move_bottom.setVisibility(ImageButton.VISIBLE);
+		
+//		if (sel_cnt==1) ll_show_log.setVisibility(ImageButton.VISIBLE);
+//		else ll_show_log.setVisibility(ImageButton.GONE);
+		
+		ll_delete_history.setVisibility(ImageButton.VISIBLE);
+		ll_copy_to_clipboard.setVisibility(ImageButton.VISIBLE);
+        
+        ll_select_all.setVisibility(ImageButton.VISIBLE);
+        ll_unselect_all.setVisibility(ImageButton.VISIBLE);
+	};
+
+	private void setHistoryContextButtonNotselected() {
+		LinearLayout ll_prof=(LinearLayout) findViewById(R.id.context_view_history);
+		LinearLayout ll_move_top=(LinearLayout)ll_prof.findViewById(R.id.context_button_move_to_top_view);
+		LinearLayout ll_move_bottom=(LinearLayout)ll_prof.findViewById(R.id.context_button_move_to_bottom_view);
+//		LinearLayout ll_show_log=(LinearLayout)ll_prof.findViewById(R.id.context_button_show_log_view);
+		LinearLayout ll_delete_history=(LinearLayout)ll_prof.findViewById(R.id.context_button_delete_view);
+		LinearLayout ll_copy_to_clipboard=(LinearLayout)ll_prof.findViewById(R.id.context_button_copy_to_clipboard_view);
+		LinearLayout ll_select_all=(LinearLayout)ll_prof.findViewById(R.id.context_button_select_all_view);
+		LinearLayout ll_unselect_all=(LinearLayout)ll_prof.findViewById(R.id.context_button_unselect_all_view);
+
+		if (!mGp.syncHistoryAdapter.isEmptyAdapter())  {
+			ll_move_top.setVisibility(ImageButton.VISIBLE);
+			ll_move_bottom.setVisibility(ImageButton.VISIBLE);
+			ll_delete_history.setVisibility(ImageButton.GONE);
+			ll_copy_to_clipboard.setVisibility(ImageButton.GONE);
+			ll_select_all.setVisibility(ImageButton.VISIBLE);
+	        ll_unselect_all.setVisibility(ImageButton.GONE);
+		} else {
+			ll_move_top.setVisibility(ImageButton.GONE);
+			ll_move_bottom.setVisibility(ImageButton.GONE);
+			ll_delete_history.setVisibility(ImageButton.GONE);
+			ll_copy_to_clipboard.setVisibility(ImageButton.GONE);
+			ll_select_all.setVisibility(ImageButton.GONE);
+	        ll_unselect_all.setVisibility(ImageButton.GONE);
+		}
 	};
 
 	private void setHistoryItemUnselectAll() {
 		for (int i=0;i<mGp.syncHistoryAdapter.getCount();i++) mGp.syncHistoryAdapter.getItem(i).isChecked=false;
-//		mGp.syncHistoryAdapter.setShowCheckBox(false);
+		mGp.syncHistoryAdapter.setShowCheckBox(false);
 		mGp.syncHistoryAdapter.notifyDataSetChanged();
-	}
+		setHistoryContextButtonNotselected();
+	};
 
 	private void setHistoryItemSelectAll() {
 		for (int i=0;i<mGp.syncHistoryAdapter.getCount();i++) mGp.syncHistoryAdapter.getItem(i).isChecked=true;
-//		mGp.syncHistoryAdapter.setShowCheckBox(true);
+		mGp.syncHistoryAdapter.setShowCheckBox(true);
 		mGp.syncHistoryAdapter.notifyDataSetChanged();
-	}
+		setHistoryContextButtonSelected();
+	};
 
+	@SuppressWarnings("unused")
 	private void setHistoryItemChecked(int pos, boolean p) {
 		mGp.syncHistoryAdapter.getItem(pos).isChecked=p;
 	};
-
 
 	private void confirmDeleteHistory() {
 		String conf_list="";
@@ -2102,9 +2168,14 @@ public class SMBSyncMain extends FragmentActivity {
 						mGp.syncHistoryAdapter.remove(mGp.syncHistoryAdapter.getItem(i));
 					}
 				}
+				if (mGp.syncHistoryAdapter.getCount()==0) {
+					SyncHistoryListItem shli=new SyncHistoryListItem();
+					mGp.syncHistoryAdapter.add(shli);
+				}
 				util.saveHistoryList(mGp.syncHistoryAdapter.getSyncHistoryList());
 //				mGp.syncHistoryAdapter.setSyncHistoryList(util.loadHistoryList());
 				mGp.syncHistoryAdapter.notifyDataSetChanged();
+				setHistoryContextButtonNotselected();
 			}
 			@Override
 			public void negativeResponse(Context c, Object[] o) {}
@@ -2118,102 +2189,9 @@ public class SMBSyncMain extends FragmentActivity {
 			msgtext=getString(R.string.msgs_sync_history_del_conf_selected_history)+
 					conf_list;
 		}
-		
 		commonDlg.showCommonDialog(true, "W",subtitle, msgtext, ntfy);
 	};
 	
-	private void createHistoryContextMenu_Single(final int cin) { 
-
-		ccMenu.addMenuItem(msgs_move_to_top,R.drawable.menu_top)
-		.setOnClickListener(new CustomContextMenuOnClickListener() {
-			@Override
-			public void onClick(CharSequence menuTitle) {
-				mGp.syncHistoryListView.setSelection(0);
-			}
-		});
-		
-		ccMenu.addMenuItem(msgs_move_to_bottom,R.drawable.menu_bottom)
-			.setOnClickListener(new CustomContextMenuOnClickListener() {
-				@Override
-				public void onClick(CharSequence menuTitle) {
-					mGp.syncHistoryListView.setSelection(mGp.syncHistoryAdapter.getCount()-1);
-				}
-		});
-
-		final SyncHistoryListItem item = mGp.syncHistoryAdapter.getItem(cin);
-		
-		String item_id=item.sync_date+"_"+item.sync_prof;
-		
-		boolean log_enabled=false;
-		if (!item.sync_result_file_path.equals("")) log_enabled=true;
-		ccMenu.addMenuItem(log_enabled,String.format(
-				getString(R.string.msgs_sync_history_ccmeu_show_log),item_id),R.drawable.ic_64_browse_text)
-		.setOnClickListener(new CustomContextMenuOnClickListener() {
-			@Override
-			public void onClick(CharSequence menuTitle) {
-				Intent intent = 
-						new Intent(android.content.Intent.ACTION_VIEW);
-				intent.setDataAndType(
-						Uri.parse("file://"+item.sync_result_file_path),
-						"text/plain");
-				startActivityForResult(intent,1);
-			}
-		});
-		
-		ccMenu.addMenuItem(String.format(msgs_sync_history_ccmeu_delete,item_id),R.drawable.menu_trash)
-			.setOnClickListener(new CustomContextMenuOnClickListener() {
-				@Override
-				public void onClick(CharSequence menuTitle) {
-					confirmDeleteHistory();
-				}
-		});
-		ccMenu.addMenuItem(msgs_sync_history_ccmeu_selectall, R.drawable.select_all)
-		.setOnClickListener(new CustomContextMenuOnClickListener() {
-			@Override
-			public void onClick(CharSequence menuTitle) {
-				setHistoryItemSelectAll();
-			}
-		});
-		ccMenu.addMenuItem(msgs_sync_history_ccmeu_unselectall, R.drawable.unselect_all)
-		.setOnClickListener(new CustomContextMenuOnClickListener() {
-			@Override
-			public void onClick(CharSequence menuTitle) {
-				setHistoryItemUnselectAll();
-			}
-		});
-		ccMenu.addMenuItem(String.format(msgs_sync_history_ccmeu_copy_clipboard,item_id),R.drawable.copy_clipboard)
-		.setOnClickListener(new CustomContextMenuOnClickListener() {
-			@Override
-			public void onClick(CharSequence menuTitle) {
-				 ClipboardManager cm = 
-					      (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-				 SyncHistoryListItem hli=mGp.syncHistoryAdapter.getItem(cin);
-				 
-				 StringBuilder out= new StringBuilder(256);
-				 out.append(hli.sync_date).append(" ");
-				 out.append(hli.sync_time).append(" ");
-				 out.append(hli.sync_prof).append("\n");
-            	if (hli.sync_status==SyncHistoryListItem.SYNC_STATUS_SUCCESS) {
-            		out.append(mContext.getString(R.string.msgs_sync_history_status_success)).append("\n");
-            	} else if (hli.sync_status==SyncHistoryListItem.SYNC_STATUS_ERROR) {
-            		out.append(mContext.getString(R.string.msgs_sync_history_status_fail)).append("\n");
-            	} else if (hli.sync_status==SyncHistoryListItem.SYNC_STATUS_CANCELLED) {
-            		out.append(mContext.getString(R.string.msgs_sync_history_status_cancel)).append("\n");
-            	}
-            	out.append(mContext.getString(R.string.msgs_sync_history_count_copied))
-            		.append(Integer.toString(hli.sync_result_no_of_copied)).append(" ");
-            	out.append(mContext.getString(R.string.msgs_sync_history_count_deleted))
-        			.append(Integer.toString(hli.sync_result_no_of_deleted)).append(" ");
-            	out.append(mContext.getString(R.string.msgs_sync_history_count_ignored))
-        			.append(Integer.toString(hli.sync_result_no_of_ignored)).append(" ");
-            	out.append("\n").append(hli.sync_error_text);
-            	cm.setText(out);
-			}
-		});
-
-		ccMenu.createMenu();
-	};
-
 	private void setMsglistViewListener() {
 		CheckBox cb_freeze_scroll=(CheckBox)findViewById(R.id.message_view_scroll_freeze);
 		cb_freeze_scroll.setOnCheckedChangeListener(new OnCheckedChangeListener(){
@@ -2256,29 +2234,35 @@ public class SMBSyncMain extends FragmentActivity {
 					},1000);
 				} else {
 					item.setChecked(!item.isChecked());
-//					if (!ProfileUtility.isAnyProfileSelected(mGp.profileAdapter,SMBSYNC_PROF_GROUP_DEFAULT)) {
-//						mGp.profileAdapter.setShowCheckBox(false);
-//					}
+					if (!ProfileUtility.isAnyProfileSelected(mGp.profileAdapter,SMBSYNC_PROF_GROUP_DEFAULT)) {
+						mGp.profileAdapter.setShowCheckBox(false);
+						setProfileContextButtonNotselected();
+					} else {
+						setProfileContextButtonSelected();
+					}
 					mGp.profileListView.setEnabled(true);
 				}
 				mGp.profileAdapter.notifyDataSetChanged();
 			}
 		});
 		
-//		NotifyEvent ntfy=new NotifyEvent(mContext);
-//		ntfy.setListener(new NotifyEventListener(){
-//			@Override
-//			public void positiveResponse(Context c, Object[] o) {
-//				if (!ProfileUtility.isAnyProfileSelected(mGp.profileAdapter,SMBSYNC_PROF_GROUP_DEFAULT)) {
-//					mGp.profileAdapter.setShowCheckBox(false);
-//					mGp.profileAdapter.notifyDataSetChanged();
-//				}
-//			}
-//
-//			@Override
-//			public void negativeResponse(Context c, Object[] o) {}
-//		});
-//		mGp.profileAdapter.setNotifyCheckBoxEventHandler(ntfy);
+		NotifyEvent ntfy=new NotifyEvent(mContext);
+		ntfy.setListener(new NotifyEventListener(){
+			@Override
+			public void positiveResponse(Context c, Object[] o) {
+				if (!ProfileUtility.isAnyProfileSelected(mGp.profileAdapter,SMBSYNC_PROF_GROUP_DEFAULT)) {
+					mGp.profileAdapter.setShowCheckBox(false);
+					mGp.profileAdapter.notifyDataSetChanged();
+					setProfileContextButtonNotselected();
+				} else {
+					setProfileContextButtonSelected();
+				}
+			}
+
+			@Override
+			public void negativeResponse(Context c, Object[] o) {}
+		});
+		mGp.profileAdapter.setNotifyCheckBoxEventHandler(ntfy);
 	};
 
 	private void setProfilelistLongClickListener() {
@@ -2286,356 +2270,329 @@ public class SMBSyncMain extends FragmentActivity {
 			.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 			@Override
 			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
-					int arg2, long arg3) {
+					int pos, long arg3) {
+				if (mGp.profileAdapter.isEmptyAdapter()) return true;
 //				if (ProfileUtility.isAnyProfileSelected(mGp.profileAdapter,SMBSYNC_PROF_GROUP_DEFAULT)) {
-//					createProfileContextMenu(arg1, arg2);
+//					resetAllCheckedItem();
+//					mGp.profileAdapter.setShowCheckBox(true);
+//					mGp.profileAdapter.getItem(pos).setChecked(true);
+//					mGp.profileAdapter.notifyDataSetChanged();
+//					setProfileContextButtonSelected();
 //				} else {
 //					mGp.profileAdapter.setShowCheckBox(true);
-//					mGp.profileAdapter.getItem(arg2).setChecked(true);
+//					mGp.profileAdapter.getItem(pos).setChecked(true);
 //					mGp.profileAdapter.notifyDataSetChanged();
+//					setProfileContextButtonSelected();
 //				}
-				createProfileContextMenu(arg1, arg2);
+				if (!mGp.profileAdapter.getItem(pos).isChecked()) {
+					mGp.profileAdapter.setShowCheckBox(true);
+					mGp.profileAdapter.getItem(pos).setChecked(true);
+					mGp.profileAdapter.notifyDataSetChanged();
+					setProfileContextButtonSelected();
+				}
 				return true;
 			}
 		});
 	};
-	
-	private void createProfileContextMenu(View view, int idx) {
-		int prev_selected_cnt=0;
-		boolean sync=false;
-		for (int i=0;i<mGp.profileAdapter.getCount();i++) {
-			if (mGp.profileAdapter.getItem(i).isChecked()) {
-				prev_selected_cnt++;
+
+	private void setProfileContextButtonListener() {
+		LinearLayout ll_prof=(LinearLayout) findViewById(R.id.context_view_profile);
+        ImageButton ib_activete=(ImageButton)ll_prof.findViewById(R.id.context_button_activate);
+        ImageButton ib_inactivete=(ImageButton)ll_prof.findViewById(R.id.context_button_inactivate);
+        ImageButton ib_add_local=(ImageButton)ll_prof.findViewById(R.id.context_button_add_local);
+        ImageButton ib_add_remote=(ImageButton)ll_prof.findViewById(R.id.context_button_add_remote);
+        ImageButton ib_add_sync=(ImageButton)ll_prof.findViewById(R.id.context_button_add_sync);
+        ImageButton ib_start_wizard=(ImageButton)ll_prof.findViewById(R.id.context_button_start_wizard);
+        ImageButton ib_copy_profile=(ImageButton)ll_prof.findViewById(R.id.context_button_copy_profile);
+        ImageButton ib_delete_profile=(ImageButton)ll_prof.findViewById(R.id.context_button_delete);
+//        ImageButton ib_edit_profile=(ImageButton)ll_prof.findViewById(R.id.context_button_edit_profile);
+        ImageButton ib_rename_profile=(ImageButton)ll_prof.findViewById(R.id.context_button_rename_profile);
+        ImageButton ib_sync=(ImageButton)ll_prof.findViewById(R.id.context_button_sync);
+        ImageButton ib_select_all=(ImageButton)ll_prof.findViewById(R.id.context_button_select_all);
+        ImageButton ib_unselect_all=(ImageButton)ll_prof.findViewById(R.id.context_button_unselect_all);
+
+        final NotifyEvent ntfy=new NotifyEvent(mContext);
+        ntfy.setListener(new NotifyEventListener(){
+			@Override
+			public void positiveResponse(Context c, Object[] o) {
+				if (ProfileUtility.isAnyProfileSelected(mGp.profileAdapter, SMBSYNC_PROF_GROUP_DEFAULT)) setProfileContextButtonSelected();
+				else setProfileContextButtonNotselected();
 			}
-		}
-		if (prev_selected_cnt==0) {//Not selected
-			ProfileUtility.setProfileToChecked(true, mGp.profileAdapter, idx);
-//			mGp.profileAdapter.setShowCheckBox(true);
-			mGp.profileAdapter.notifyDataSetChanged();
-			if (mGp.profileAdapter.getItem(idx).getType().equals(SMBSYNC_PROF_TYPE_SYNC)) sync=true;
-			createProfileContextMenu_Single(idx, sync);
-		} else if (prev_selected_cnt==1) {//Previous selected was single
-			for (int i=0;i<mGp.profileAdapter.getCount();i++) {
-				if (mGp.profileAdapter.getItem(i).isChecked()) {
-					if (i!=idx) {
-						ProfileUtility.setProfileToChecked(false, mGp.profileAdapter, i);
-						ProfileUtility.setProfileToChecked(true, mGp.profileAdapter, idx);
-//						mGp.profileAdapter.setShowCheckBox(true);
-						mGp.profileAdapter.notifyDataSetChanged();
-					}
-				}
+			@Override
+			public void negativeResponse(Context c, Object[] o) {}
+        });
+        
+        ib_activete.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				confirmActivate(mGp.profileAdapter);
+				
 			}
-			if (mGp.profileAdapter.getItem(idx).getType().equals(SMBSYNC_PROF_TYPE_SYNC)) sync=true;
-			createProfileContextMenu_Single(idx, sync);
-		} else {
-			boolean already_selected=false;
-			for (int i=0;i<mGp.profileAdapter.getCount();i++) {
-				if (mGp.profileAdapter.getItem(i).isChecked()) {
-					if (i==idx) {
-						already_selected=true;
+        });
+        ib_inactivete.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				confirmInactivate(mGp.profileAdapter);
+			}
+        });
+        ib_add_local.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				ProfileListItem pfli=new ProfileListItem();
+				pfli.setActive(SMBSYNC_PROF_ACTIVE);
+				ProfileMaintLocalFragment pmsp=ProfileMaintLocalFragment.newInstance();
+				pmsp.showDialog(getSupportFragmentManager(), pmsp, "ADD", new ProfileListItem(), 
+						0, profUtil, util, commonDlg, ntfy);
+			}
+        });
+        ib_add_remote.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				String c_ip=SMBSyncUtil.getLocalIpAddress();
+				ProfileListItem pfli=new ProfileListItem();
+				pfli.setAddr(c_ip);
+				pfli.setActive(SMBSYNC_PROF_ACTIVE);
+				ProfileMaintRemoteFragment pmsp=ProfileMaintRemoteFragment.newInstance();
+				pmsp.showDialog(getSupportFragmentManager(), pmsp, "ADD", pfli, 
+						0, profUtil, util, commonDlg, ntfy);
+			}
+        });
+        ib_add_sync.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				ProfileListItem pfli=new ProfileListItem();
+				pfli.setActive(SMBSYNC_PROF_ACTIVE);
+				ProfileMaintSyncFragment pmsp=ProfileMaintSyncFragment.newInstance();
+				pmsp.showDialog(getSupportFragmentManager(), pmsp, "ADD", pfli, 
+						profUtil, util, commonDlg, ntfy);
+			}
+        });
+        ib_start_wizard.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				ProfileCreationWizard sw=new ProfileCreationWizard(mGp, mContext, 
+						util, profUtil, commonDlg, mGp.profileAdapter, ntfy);
+				sw.wizardMain();
+			}
+        });
+        ib_copy_profile.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				for(int i=0;i<mGp.profileAdapter.getCount();i++) {
+					ProfileListItem item=mGp.profileAdapter.getItem(i);
+					if (item.isChecked()) {
+						profUtil.copyProfile(item);
 						break;
 					}
 				}
 			}
-			if (already_selected) {
-				for (int i=0;i<mGp.profileAdapter.getCount();i++) {
-					if (mGp.profileAdapter.getItem(i).isChecked()) 
-						if (mGp.profileAdapter.getItem(i).getType().equals(SMBSYNC_PROF_TYPE_SYNC)) {
-							sync=true;
-							break;
-						}
-				}
-				createProfileContextMenu_Multiple(idx,sync);
-			} else {
-				resetAllCheckedItem();
-				ProfileUtility.setProfileToChecked(true, mGp.profileAdapter, idx);
-//				mGp.profileAdapter.setShowCheckBox(true);
-				mGp.profileAdapter.notifyDataSetChanged();
-				if (mGp.profileAdapter.getItem(idx).getType().equals(SMBSYNC_PROF_TYPE_SYNC)) sync=true;
-				createProfileContextMenu_Single(idx, sync);
-			}
-		}
-	};
-	
-	private void createProfileContextMenu_Multiple(int idx,boolean sync) { 
-
-		boolean sync_enabled=false;
-		if (mGp.externalStorageIsMounted && !util.isRemoteDisable()&&sync) sync_enabled=true;
-		String sync_profile="";
-		String sync_msg_text="";
-		if (sync_enabled) {
-			String sep="";
-			for(int i=0;i<mGp.profileAdapter.getCount();i++) {
-				if (mGp.profileAdapter.getItem(i).getType().equals(SMBSYNC_PROF_TYPE_SYNC) && 
-						mGp.profileAdapter.getItem(i).isActive() &&
-						mGp.profileAdapter.getItem(i).isChecked()) {
-					sync_profile+=sep+mGp.profileAdapter.getItem(i).getName();
-					sep=",";
-					if (sync_profile.length()>300) break; 
-				}
-			}
-			if (sync_profile.equals("")) {
-				sync_msg_text=String.format(msgs_prof_cont_sync_not_available,sync_profile);
-				sync_enabled=false;
-			} else {
-				sync_msg_text=String.format(msgs_prof_cont_mult_sync,sync_profile);
-			}
-		}
-		
-		ccMenu.addMenuItem(sync_enabled, sync_msg_text,R.drawable.ic_32_sync)
-		.setOnClickListener(new CustomContextMenuOnClickListener() {
+        });
+        ib_delete_profile.setOnClickListener(new OnClickListener(){
 			@Override
-			public void onClick(CharSequence menuTitle) {
-				syncSelectedProfile();
-//				resetAllCheckedItem();
+			public void onClick(View v) {
+				profUtil.deleteProfile(ntfy);
 			}
-		});
-
-		String sel_profile="";
-		String sep="";
-		for(int i=0;i<mGp.profileAdapter.getCount();i++) {
-			if (mGp.profileAdapter.getItem(i).isChecked()) {
-				sel_profile+=sep+mGp.profileAdapter.getItem(i).getName();
-				sep=",";
-				if (sel_profile.length()>300) break;
-			}
-		}
-
-		ccMenu.addMenuItem(String.format(msgs_prof_cont_mult_act,sel_profile),R.drawable.menu_active)
-			.setOnClickListener(new CustomContextMenuOnClickListener() {
-				@Override
-				public void onClick(CharSequence menuTitle) {
-					profUtil.setProfileToActive(mGp);
-//					resetAllCheckedItem();
-				}
-		});
-
-		ccMenu.addMenuItem(String.format(msgs_prof_cont_mult_inact,sel_profile),R.drawable.menu_inactive)
-			.setOnClickListener(new CustomContextMenuOnClickListener() {
-				@Override
-				public void onClick(CharSequence menuTitle) {
-					profUtil.setProfileToInactive();
-//					resetAllCheckedItem();
-				}
-		});
-
-		ccMenu.addMenuItem(String.format(msgs_prof_cont_mult_delete,sel_profile),R.drawable.menu_trash)
-			.setOnClickListener(new CustomContextMenuOnClickListener() {
-				@Override
-				public void onClick(CharSequence menuTitle) {
-					profUtil.deleteProfile();
-//					resetAllCheckedItem();
-				}
-		});
-
-		ccMenu.addMenuItem(msgs_prof_cont_select_all, R.drawable.select_all)
-		.setOnClickListener(new CustomContextMenuOnClickListener() {
+        });
+//        ib_edit_profile.setOnClickListener(new OnClickListener(){
+//			@Override
+//			public void onClick(View v) {
+//				for(int i=0;i<mGp.profileAdapter.getCount();i++) {
+//					ProfileListItem item=mGp.profileAdapter.getItem(i);
+//					if (item.isChecked()) {
+//						  editProfile(item.getName(), item.getType(), item.getActive(), i);
+//						  break;
+//					}
+//				}
+//			}
+//        });
+        ib_rename_profile.setOnClickListener(new OnClickListener(){
 			@Override
-			public void onClick(CharSequence menuTitle) {
+			public void onClick(View v) {
+				for(int i=0;i<mGp.profileAdapter.getCount();i++) {
+					ProfileListItem item=mGp.profileAdapter.getItem(i);
+					if (item.isChecked()) {
+						profUtil.renameProfile(item);				
+						break;
+					}
+				}
+			}
+        });
+        ib_sync.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				if (ProfileUtility.getSyncProfileSelectedItemCount(mGp.profileAdapter, SMBSYNC_PROF_GROUP_DEFAULT)>0) {
+					syncSelectedProfile();
+					Toast.makeText(mContext, 
+							mContext.getString(R.string.msgs_sync_selected_profiles), 
+							Toast.LENGTH_LONG)
+							.show();
+				}  else {
+					syncActiveProfile();
+					Toast.makeText(mContext, 
+							mContext.getString(R.string.msgs_sync_all_active_profiles), 
+							Toast.LENGTH_LONG)
+							.show();
+				}
+				ProfileUtility.setAllProfileToUnchecked(mGp.profileAdapter);
+			}
+        });
+        ib_select_all.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
 				for (int i=0;i<mGp.profileAdapter.getCount();i++) {
 					ProfileUtility.setProfileToChecked(true, mGp.profileAdapter, i);
 				}
 				mGp.profileAdapter.notifyDataSetChanged();
+				mGp.profileAdapter.setShowCheckBox(true);
+				setProfileContextButtonSelected();
 			}
-		});
-		ccMenu.addMenuItem(msgs_prof_cont_unselect_all, R.drawable.unselect_all)
-		.setOnClickListener(new CustomContextMenuOnClickListener() {
+        });
+        ib_unselect_all.setOnClickListener(new OnClickListener(){
 			@Override
-			public void onClick(CharSequence menuTitle) {
-				resetAllCheckedItem();
+			public void onClick(View v) {
+				ProfileUtility.setAllProfileToUnchecked(mGp.profileAdapter);
+//				for (int i=0;i<mGp.profileAdapter.getCount();i++) {
+//					ProfileUtility.setProfileToChecked(false, mGp.profileAdapter, i);
+//				}
+				mGp.profileAdapter.notifyDataSetChanged();
+				setProfileContextButtonNotselected();
 			}
-		});
+        });
 
-		ccMenu.createMenu();
-		
 	};
 
-	private void createProfileContextMenu_Single(final int cin, boolean sync) { 
-
-		final ProfileListItem item = mGp.profileAdapter.getItem(cin);
-		final String i_type = item.getType();
-		final String i_act = item.getActive();
-		final String i_name = item.getName();
-		
-		if (!i_type.equals("")) {
-			boolean sync_enabled=false, inact_enabled=false, act_enabled=false;
-			String sync_text=msgs_prof_cont_sync_not_available;
-			if (i_act.equals(SMBSYNC_PROF_ACTIVE)) {
-				if (mGp.externalStorageIsMounted && !util.isRemoteDisable() ) {
-					if (sync) {
-						sync_enabled=true;
-						sync_text=String.format(msgs_sync_profile,i_name);
-					}
-				}
-				inact_enabled=true;
-
-			} else {
-				act_enabled=true;
-			}
-			ccMenu.addMenuItem(sync_enabled, sync_text,R.drawable.ic_32_sync)
-					.setOnClickListener(new CustomContextMenuOnClickListener() {
-						@Override
-						public void onClick(CharSequence menuTitle) {
-							syncSelectedProfile();
-//							resetAllCheckedItem();
-						}
-			});
-			if (inact_enabled) {
-				ccMenu.addMenuItem(
-						String.format(msgs_prof_cont_sngl_inact,i_name),R.drawable.menu_inactive)
-					.setOnClickListener(new CustomContextMenuOnClickListener() {
-					@Override
-					public void onClick(CharSequence menuTitle) {
-						profUtil.setProfileToInactive();
-//						resetAllCheckedItem();
-					}
-				});
-			}
-			if (act_enabled) {
-				ccMenu.addMenuItem(act_enabled,
-						String.format(msgs_prof_cont_sngl_act,i_name),R.drawable.menu_active)
-					.setOnClickListener(new CustomContextMenuOnClickListener() {
-					@Override
-					public void onClick(CharSequence menuTitle) {
-						profUtil.setProfileToActive(mGp);
-//						resetAllCheckedItem();
-					}
-				});
-			}
-			
-			ccMenu.addMenuItem(String.format(msgs_prof_cont_sngl_edit,i_name),R.drawable.menu_edit)
-			  	.setOnClickListener(new CustomContextMenuOnClickListener() {
-				  @Override
-				  public void onClick(CharSequence menuTitle) {
-					  editProfile(i_name, i_type,i_act, cin);
-//					  resetAllCheckedItem();
-				  }
-			});
+	private void confirmActivate(AdapterProfileList pa) {
+		NotifyEvent ntfy=new NotifyEvent(mContext);
+		ntfy.setListener(new NotifyEventListener(){
+			@Override
+			public void positiveResponse(Context c, Object[] o) {
+				profUtil.setProfileToActive(mGp);
 				
-		    ccMenu.addMenuItem(String.format(msgs_prof_cont_sngl_delete,i_name),R.drawable.menu_trash)
-				.setOnClickListener(new CustomContextMenuOnClickListener() {
-					@Override
-					public void onClick(CharSequence menuTitle) {
-						profUtil.deleteProfile();
-//						resetAllCheckedItem();
-					}
-			});
-		};
-		
-		ccMenu.addMenuItem(msgs_prof_cont_sngl_wizard,R.drawable.ic_64_wizard)
-	  	.setOnClickListener(new CustomContextMenuOnClickListener() {
-			@Override
-			public void onClick(CharSequence menuTitle) {
-				ProfileCreationWizard sw=new ProfileCreationWizard(mGp, mContext, 
-						util, profUtil, commonDlg, mGp.profileAdapter);
-				sw.wizardMain();
-//				resetAllCheckedItem();
+				ProfileUtility.setAllProfileToUnchecked(mGp.profileAdapter);
 			}
-	  	});
 
-		ccMenu.addMenuItem(msgs_prof_cont_add_local,R.drawable.add_local)
-			.setOnClickListener(new CustomContextMenuOnClickListener() {
-				@Override
-				public void onClick(CharSequence menuTitle) {
-					ProfileMaintLocalFragment pmsp=ProfileMaintLocalFragment.newInstance();
-					pmsp.showDialog(getSupportFragmentManager(), pmsp, "ADD", new ProfileListItem(), 
-							0, profUtil, util, commonDlg);
-//					resetAllCheckedItem();
-				}
-		});
-
-		ccMenu.addMenuItem(msgs_prof_cont_add_remote,R.drawable.add_remote)
-			.setOnClickListener(new CustomContextMenuOnClickListener() {
-				@Override
-				public void onClick(CharSequence menuTitle) {
-					String c_ip=SMBSyncUtil.getLocalIpAddress();
-					ProfileListItem pfli=new ProfileListItem();
-					pfli.setAddr(c_ip);
-					
-					ProfileMaintRemoteFragment pmsp=ProfileMaintRemoteFragment.newInstance();
-					pmsp.showDialog(getSupportFragmentManager(), pmsp, "ADD", pfli, 
-							0, profUtil, util, commonDlg);
-//					resetAllCheckedItem();
-				}
-		});
-
-//		boolean isRemoteExists=false, isLocalExists=false;
-//		for (int i=0;i<glblParms.profileAdapter.getCount();i++) {
-//			if (glblParms.profileAdapter.getItem(i).getType().equals(SMBSYNC_PROF_TYPE_REMOTE)) {
-//				isRemoteExists=true;
-//			} 
-//			if (glblParms.profileAdapter.getItem(i).getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
-//				isLocalExists=true;
-//			} 
-//			if (isRemoteExists && isLocalExists) break;
-//		}
-//		if (isRemoteExists && isLocalExists) {
-//		}
-		ccMenu.addMenuItem(msgs_prof_cont_add_sync,R.drawable.add_sync)
-		.setOnClickListener(new CustomContextMenuOnClickListener() {
 			@Override
-			public void onClick(CharSequence menuTitle) {
-				ProfileMaintSyncFragment pmsp=ProfileMaintSyncFragment.newInstance();
-				pmsp.showDialog(getSupportFragmentManager(), pmsp, "ADD", new ProfileListItem(), 
-						profUtil, util, commonDlg);
-//				resetAllCheckedItem();
-			}
+			public void negativeResponse(Context c, Object[] o) {}
 		});
-
-		if (!i_type.equals("")) {
-			ccMenu.addMenuItem(String.format(msgs_prof_cont_copy,i_name),R.drawable.menu_copy)
-			.setOnClickListener(new CustomContextMenuOnClickListener() {
-				@Override
-				public void onClick(CharSequence menuTitle) {
-					profUtil.copyProfile(item);
-//					resetAllCheckedItem();
-				}
-			});
-
-			ccMenu.addMenuItem(String.format(msgs_prof_cont_rename,i_name),R.drawable.menu_rename)
-			.setOnClickListener(new CustomContextMenuOnClickListener() {
-				@Override
-				public void onClick(CharSequence menuTitle) {
-					profUtil.renameProfile(item);
-//					resetAllCheckedItem();
-				}
-			});
-			ccMenu.addMenuItem(msgs_prof_cont_select_all, R.drawable.select_all)
-			.setOnClickListener(new CustomContextMenuOnClickListener() {
-				@Override
-				public void onClick(CharSequence menuTitle) {
-					for (int i=0;i<mGp.profileAdapter.getCount();i++) {
-						ProfileUtility.setProfileToChecked(true, mGp.profileAdapter, i);
-					}
-					mGp.profileAdapter.notifyDataSetChanged();
-				}
-			});
-			ccMenu.addMenuItem(msgs_prof_cont_unselect_all, R.drawable.unselect_all)
-			.setOnClickListener(new CustomContextMenuOnClickListener() {
-				@Override
-				public void onClick(CharSequence menuTitle) {
-					resetAllCheckedItem();
-				}
-			});
+		String msg=mContext.getString(R.string.msgs_prof_cont_to_activate_profile)+"\n";
+//		String sep="";
+		for(int i=0;i<pa.getCount();i++) {
+			if (pa.getItem(i).isChecked()) {
+				msg+=pa.getItem(i).getName()+"\n";
+			}
 		}
-		// set onClick listener for mContext menu
-		ccMenu.createMenu(new CustomContextMenuOnCleanupListener(){
+//		msg+="\n";
+		commonDlg.showCommonDialog(true, "W", msg, "", ntfy);
+	};
+
+	private void confirmInactivate(AdapterProfileList pa) {
+		NotifyEvent ntfy=new NotifyEvent(mContext);
+		ntfy.setListener(new NotifyEventListener(){
 			@Override
-			public void onCleanup() {
-//				Log.v("","onCleanup entered");
-//				resetAllCheckedItem();
+			public void positiveResponse(Context c, Object[] o) {
+				profUtil.setProfileToInactive();
+				
+				ProfileUtility.setAllProfileToUnchecked(mGp.profileAdapter);
 			}
+
+			@Override
+			public void negativeResponse(Context c, Object[] o) {}
 		});
-	};
-	
-	private void resetAllCheckedItem() {
-		for (int i=0;i<mGp.profileAdapter.getCount();i++) {
-			ProfileUtility.setProfileToChecked(false, mGp.profileAdapter, i);
+		String msg=mContext.getString(R.string.msgs_prof_cont_to_inactivate_profile)+"\n";
+//		String sep="";
+		for(int i=0;i<pa.getCount();i++) {
+			if (pa.getItem(i).isChecked()) {
+				msg+=pa.getItem(i).getName()+"\n";
+			}
 		}
-//		mGp.profileAdapter.setShowCheckBox(false);
-		mGp.profileAdapter.notifyDataSetChanged();
+//		msg+="\n";
+		commonDlg.showCommonDialog(true, "W", msg, "", ntfy);
 	};
-	
+
+	private void setProfileContextButtonSelected() {
+		LinearLayout ll_prof=(LinearLayout) findViewById(R.id.context_view_profile);
+		LinearLayout ll_sync=(LinearLayout)ll_prof.findViewById(R.id.context_button_sync_view);
+        LinearLayout ll_activete=(LinearLayout)ll_prof.findViewById(R.id.context_button_activate_view);
+        LinearLayout ll_inactivete=(LinearLayout)ll_prof.findViewById(R.id.context_button_inactivate_view);
+        LinearLayout ll_add_local=(LinearLayout)ll_prof.findViewById(R.id.context_button_add_local_view);
+        LinearLayout ll_add_remote=(LinearLayout)ll_prof.findViewById(R.id.context_button_add_remote_view);
+        LinearLayout ll_add_sync=(LinearLayout)ll_prof.findViewById(R.id.context_button_add_sync_view);
+        LinearLayout ll_start_wizard=(LinearLayout)ll_prof.findViewById(R.id.context_button_start_wizard_view);
+        LinearLayout ll_copy_profile=(LinearLayout)ll_prof.findViewById(R.id.context_button_copy_profile_view);
+        LinearLayout ll_delete_profile=(LinearLayout)ll_prof.findViewById(R.id.context_button_delete_view);
+        LinearLayout ll_rename_profile=(LinearLayout)ll_prof.findViewById(R.id.context_button_rename_profile_view);
+        LinearLayout ll_select_all=(LinearLayout)ll_prof.findViewById(R.id.context_button_select_all_view);
+        LinearLayout ll_unselect_all=(LinearLayout)ll_prof.findViewById(R.id.context_button_unselect_all_view);
+        
+        int sel_cnt=ProfileUtility.getAnyProfileSelectedItemCount(mGp.profileAdapter, SMBSYNC_PROF_GROUP_DEFAULT);
+
+        if (!util.isRemoteDisable()) {
+        	boolean act_sync_prof=false;
+        	for(int i=0;i<mGp.profileAdapter.getCount();i++) {
+        		if (mGp.profileAdapter.getItem(i).isChecked() &&
+        				mGp.profileAdapter.getItem(i).getType().equals(SMBSYNC_PROF_TYPE_SYNC) &&
+        				mGp.profileAdapter.getItem(i).isActive()) {
+        			act_sync_prof=true;
+        			break;
+        		}
+        	}
+        	if (act_sync_prof) ll_sync.setVisibility(ImageButton.VISIBLE);
+        	else ll_sync.setVisibility(ImageButton.GONE);
+        } else ll_sync.setVisibility(ImageButton.GONE);
+
+
+        ll_activete.setVisibility(ImageButton.VISIBLE);
+        ll_inactivete.setVisibility(ImageButton.VISIBLE);
+        ll_add_local.setVisibility(ImageButton.GONE);
+        ll_add_remote.setVisibility(ImageButton.GONE);
+        ll_add_sync.setVisibility(ImageButton.GONE);
+        ll_start_wizard.setVisibility(ImageButton.GONE);
+        
+        if (sel_cnt==1) ll_copy_profile.setVisibility(ImageButton.VISIBLE);
+        else ll_copy_profile.setVisibility(ImageButton.GONE);
+        
+        ll_delete_profile.setVisibility(ImageButton.VISIBLE);
+        
+        if (sel_cnt==1) ll_rename_profile.setVisibility(ImageButton.VISIBLE);
+        else ll_rename_profile.setVisibility(ImageButton.GONE);
+        
+        ll_select_all.setVisibility(ImageButton.VISIBLE);
+        ll_unselect_all.setVisibility(ImageButton.VISIBLE);
+	};
+
+	private void setProfileContextButtonNotselected() {
+		LinearLayout ll_prof=(LinearLayout) findViewById(R.id.context_view_profile);
+		LinearLayout ll_sync=(LinearLayout)ll_prof.findViewById(R.id.context_button_sync_view);
+        LinearLayout ll_activete=(LinearLayout)ll_prof.findViewById(R.id.context_button_activate_view);
+        LinearLayout ll_inactivete=(LinearLayout)ll_prof.findViewById(R.id.context_button_inactivate_view);
+        LinearLayout ll_add_local=(LinearLayout)ll_prof.findViewById(R.id.context_button_add_local_view);
+        LinearLayout ll_add_remote=(LinearLayout)ll_prof.findViewById(R.id.context_button_add_remote_view);
+        LinearLayout ll_add_sync=(LinearLayout)ll_prof.findViewById(R.id.context_button_add_sync_view);
+        LinearLayout ll_start_wizard=(LinearLayout)ll_prof.findViewById(R.id.context_button_start_wizard_view);
+        LinearLayout ll_copy_profile=(LinearLayout)ll_prof.findViewById(R.id.context_button_copy_profile_view);
+        LinearLayout ll_delete_profile=(LinearLayout)ll_prof.findViewById(R.id.context_button_delete_view);
+        LinearLayout ll_rename_profile=(LinearLayout)ll_prof.findViewById(R.id.context_button_rename_profile_view);
+        LinearLayout ll_select_all=(LinearLayout)ll_prof.findViewById(R.id.context_button_select_all_view);
+        LinearLayout ll_unselect_all=(LinearLayout)ll_prof.findViewById(R.id.context_button_unselect_all_view);
+        
+        if (!util.isRemoteDisable()) ll_sync.setVisibility(ImageButton.VISIBLE);
+        else ll_sync.setVisibility(ImageButton.GONE);
+        
+        ll_activete.setVisibility(ImageButton.GONE);
+        ll_inactivete.setVisibility(ImageButton.GONE);
+        ll_add_local.setVisibility(ImageButton.VISIBLE);
+        ll_add_remote.setVisibility(ImageButton.VISIBLE);
+        ll_add_sync.setVisibility(ImageButton.VISIBLE);
+        ll_start_wizard.setVisibility(ImageButton.VISIBLE);
+        ll_copy_profile.setVisibility(ImageButton.GONE);
+        ll_delete_profile.setVisibility(ImageButton.GONE);
+        ll_rename_profile.setVisibility(ImageButton.GONE);
+        if (!mGp.profileAdapter.isEmptyAdapter()) ll_select_all.setVisibility(ImageButton.VISIBLE);
+        else ll_select_all.setVisibility(ImageButton.GONE);
+        ll_unselect_all.setVisibility(ImageButton.GONE);
+
+	};
+
 	private void createMsglistContextMenu(View view, int idx) {
 
 		ccMenu.addMenuItem(msgs_move_to_top,R.drawable.menu_top)
@@ -2673,15 +2630,15 @@ public class SMBSyncMain extends FragmentActivity {
 		if (prof_type.equals(SMBSYNC_PROF_TYPE_REMOTE)) {
 			  ProfileMaintRemoteFragment pmp=ProfileMaintRemoteFragment.newInstance();
 			  pmp.showDialog(getSupportFragmentManager(), pmp, "EDIT", item, 
-					  prof_num, profUtil, util, commonDlg);
+					  prof_num, profUtil, util, commonDlg,null);
 		} else if (prof_type.equals(SMBSYNC_PROF_TYPE_LOCAL)) {
 			  ProfileMaintLocalFragment pmp=ProfileMaintLocalFragment.newInstance();
 			  pmp.showDialog(getSupportFragmentManager(), pmp, "EDIT", item, 
-					  prof_num, profUtil, util, commonDlg);
+					  prof_num, profUtil, util, commonDlg,null);
 		} else if (prof_type.equals(SMBSYNC_PROF_TYPE_SYNC)) {
 			  ProfileMaintSyncFragment pmsp=ProfileMaintSyncFragment.newInstance();
 			  pmsp.showDialog(getSupportFragmentManager(), pmsp, "EDIT", item, 
-						profUtil, util, commonDlg);
+						profUtil, util, commonDlg,null);
 		}
 	};
 
@@ -2939,6 +2896,7 @@ public class SMBSyncMain extends FragmentActivity {
 //		setHistoryViewItemClickListener();
 		mGp.syncHistoryAdapter.setSyncHistoryList(mGp.syncHistoryList);
 		mGp.syncHistoryAdapter.notifyDataSetChanged();
+		setHistoryContextButtonNotselected();
 		
 //		playBackDefaultNotification();
 //		vibrateDefaultPattern();
@@ -3080,6 +3038,18 @@ public class SMBSyncMain extends FragmentActivity {
 				final String tag,final String debug_or_msg, final String fp, final String msg_text)
 				throws RemoteException {
 		}
+		
+		@Override
+		public void cbWifiStatusChanged(String status, String ssid) throws RemoteException {
+			mUiHandler.post(new Runnable(){
+				@Override
+				public void run() {
+					if (ProfileUtility.isAnyProfileSelected(mGp.profileAdapter, SMBSYNC_PROF_GROUP_DEFAULT)) setProfileContextButtonSelected();
+					else setProfileContextButtonNotselected();
+				}
+			});
+		}
+
     };
 
 	private ISvcClient mSvcClient=null;
@@ -3781,7 +3751,7 @@ public class SMBSyncMain extends FragmentActivity {
 			if (!isTaskDataExisted() || mGp.msgListAdapter.resetDataChanged())  {
 				ActivityDataHolder data = new ActivityDataHolder();
 				data.ml=mGp.msgListAdapter.getAllItem();
-				data.pl=mGp.profileAdapter.getAllItem();
+				data.pl=mGp.profileAdapter.getArrayList();
 				try {
 				    FileOutputStream fos = openFileOutput(SMBSYNC_SERIALIZABLE_FILE_NAME, MODE_PRIVATE);
 				    BufferedOutputStream bos=new BufferedOutputStream(fos,4096*256);
@@ -3827,7 +3797,7 @@ public class SMBSyncMain extends FragmentActivity {
 				mGp.msgListAdapter.resetDataChanged();
 				
 				mGp.profileAdapter.clear();
-				mGp.profileAdapter.setAllItem(data.pl);
+				mGp.profileAdapter.setArrayList(data.pl);
 			    util.addDebugLogMsg(1,"I", "Restart data was restored.");
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -3851,29 +3821,10 @@ public class SMBSyncMain extends FragmentActivity {
 	    }
 	};
 	
-    @SuppressWarnings("unused")
-	private static String msgs_prof_cont_mult;
-    private static String msgs_prof_cont_sngl_act;
-	private static String msgs_prof_cont_mult_act;
-	private static String msgs_prof_cont_mult_inact;
-	private static String msgs_prof_cont_mult_sync;
-	private static String msgs_prof_cont_sync_not_available;
-	private static String msgs_prof_cont_sngl_inact;
-	private static String msgs_prof_cont_sngl_delete;
-	private static String msgs_prof_cont_mult_delete;
-	private static String msgs_prof_cont_sngl_edit;
-	private static String msgs_prof_cont_select_all;
-	private static String msgs_prof_cont_unselect_all;
-	
 	private static String msgs_active_sync_prof_not_found	;
-	private static String msgs_prof_cont_add_local	;
-	private static String msgs_prof_cont_add_remote	;
-	private static String msgs_prof_cont_add_sync	;
 	private static String msgs_clear_log_message	;
 	private static String msgs_move_to_bottom	;
 	private static String msgs_move_to_top	;
-	private static String msgs_sync_profile	;
-//	private static String msgs_terminate_application	;
 
 	private static String msgs_master_profile_not_found;
 	private static String msgs_target_profile_not_found;
@@ -3881,72 +3832,22 @@ public class SMBSyncMain extends FragmentActivity {
 	
 	private static String msgs_smbsync_main_start;
 	private static String msgs_smbsync_main_restart;
-	@SuppressWarnings("unused")
-	private static String msgs_smbsync_main_restart_msglost;
 	private static String msgs_smbsync_main_end;
 	
-//   	private static String msgs_setting_log_opt_chg;
-//   	private static String msgs_setting_log_dir_chg;
-   	
     private static String msgs_sync_select_prof_no_active_profile;
     
-    private static String msgs_prof_cont_copy;
-    private static String msgs_prof_cont_rename;
-    
-    private static String msgs_sync_history_ccmeu_delete;
-    private static String msgs_sync_history_ccmeu_unselectall;
-    private static String msgs_sync_history_ccmeu_selectall;
-    private static String msgs_sync_history_ccmeu_copy_clipboard;
-    
-    private static String msgs_prof_cont_sngl_wizard="";
-    
-//    private static String msgs_dlg_hardkey_back_button;
-    
 	private void loadMsgString() {
-		
-		msgs_prof_cont_sngl_wizard=getString(R.string.msgs_prof_cont_sngl_wizard);
-		
-		msgs_sync_history_ccmeu_delete=getString(R.string.msgs_sync_history_ccmeu_delete);
-		msgs_sync_history_ccmeu_unselectall=getString(R.string.msgs_sync_history_ccmeu_unselectall);
-		msgs_sync_history_ccmeu_selectall=getString(R.string.msgs_sync_history_ccmeu_selectall);
-		msgs_sync_history_ccmeu_copy_clipboard=getString(R.string.msgs_sync_history_ccmeu_copy_clipboard);
-		
-		msgs_prof_cont_copy=getString(R.string.msgs_prof_cont_copy);
-		msgs_prof_cont_rename=getString(R.string.msgs_prof_cont_rename);
-		
 		msgs_sync_select_prof_no_active_profile=getString(R.string.msgs_sync_select_prof_no_active_profile);
 
-		msgs_prof_cont_mult=getString(R.string.msgs_prof_cont_mult);
-	    msgs_prof_cont_sngl_act=getString(R.string.msgs_prof_cont_sngl_act);
-		msgs_prof_cont_mult_act=getString(R.string.msgs_prof_cont_mult_act);
-		msgs_prof_cont_mult_inact=getString(R.string.msgs_prof_cont_mult_inact);
-		msgs_prof_cont_mult_sync=getString(R.string.msgs_prof_cont_mult_sync);
-		msgs_prof_cont_sync_not_available=getString(R.string.msgs_prof_cont_sync_not_available);
-		msgs_prof_cont_sngl_inact=getString(R.string.msgs_prof_cont_sngl_inact);
-		msgs_prof_cont_sngl_delete=getString(R.string.msgs_prof_cont_sngl_delete);
-		msgs_prof_cont_mult_delete=getString(R.string.msgs_prof_cont_mult_delete);
-		msgs_prof_cont_sngl_edit=getString(R.string.msgs_prof_cont_sngl_edit);
-		msgs_prof_cont_select_all=getString(R.string.msgs_prof_cont_select_all);
-		msgs_prof_cont_unselect_all=getString(R.string.msgs_prof_cont_unselect_all);
-		
-//		msgs_setting_log_opt_chg =getString(R.string.msgs_setting_log_opt_chg);
-//		msgs_setting_log_dir_chg =getString(R.string.msgs_setting_log_dir_chg);
-		
 	    msgs_smbsync_main_start=	getString(R.string.msgs_smbsync_main_start);
 	    msgs_smbsync_main_restart=	getString(R.string.msgs_smbsync_main_restart);
-	    msgs_smbsync_main_restart_msglost=	getString(R.string.msgs_smbsync_main_restart_msglost);
 	    msgs_smbsync_main_end=	getString(R.string.msgs_smbsync_main_end);
 		
 		
 		msgs_active_sync_prof_not_found	=	getString(R.string.msgs_active_sync_prof_not_found	);
-		msgs_prof_cont_add_local			=	getString(R.string.msgs_prof_cont_add_local	);
-		msgs_prof_cont_add_remote			=	getString(R.string.msgs_prof_cont_add_remote	);
-		msgs_prof_cont_add_sync			=	getString(R.string.msgs_prof_cont_add_sync	);
 		msgs_clear_log_message			=	getString(R.string.msgs_clear_log_message);
 		msgs_move_to_bottom				=	getString(R.string.msgs_move_to_bottom	);
 		msgs_move_to_top				=	getString(R.string.msgs_move_to_top	);
-		msgs_sync_profile				=	getString(R.string.msgs_sync_profile	);
-//		msgs_terminate_application		=	getString(R.string.msgs_terminate_application	);
 		msgs_master_profile_not_found	=	getString(R.string.msgs_master_profile_not_found);
 		msgs_target_profile_not_found	=	getString(R.string.msgs_target_profile_not_found);
 		msgs_invalid_profile_combination=	getString(R.string.msgs_invalid_profile_combination);
