@@ -36,7 +36,7 @@
         android:layout_marginTop="10dp">
         <Button
             android:id="@+id/copy_delete_confirm_noall"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/msgs_mirror_confirm_noall_btn"
@@ -44,7 +44,7 @@
         <!-- style="?android:attr/buttonStyleSmall" -->
         <Button
             android:id="@+id/copy_delete_confirm_yesall"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/msgs_mirror_confirm_yesall_btn"
