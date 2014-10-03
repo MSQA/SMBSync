@@ -7,7 +7,7 @@
 -->
     <item android:id="@+id/menu_top_scheduler"
           android:title="@string/msgs_menu_scheduler"
-          android:icon="@drawable/timer"
+          android:icon="@drawable/ic_32_timer"
           android:showAsAction="ifRoom|withText"
           />
     <item android:id="@+id/menu_top_browse_log"

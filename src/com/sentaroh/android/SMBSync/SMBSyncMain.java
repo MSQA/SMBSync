@@ -2434,6 +2434,7 @@ public class SMBSyncMain extends FragmentActivity {
 							.show();
 				}
 				ProfileUtility.setAllProfileToUnchecked(mGp.profileAdapter);
+				setProfileContextButtonNotselected();
 			}
         });
         ib_select_all.setOnClickListener(new OnClickListener(){
