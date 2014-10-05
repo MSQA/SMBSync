@@ -70,6 +70,7 @@ public class AdapterSyncHistory extends ArrayAdapter<SyncHistoryListItem> {
 	
 	private boolean isShowCheckBox=false;
 	public void setShowCheckBox(boolean p) {isShowCheckBox=p;}
+	public boolean isShowCheckBox() {return isShowCheckBox;}
 	
 	public void setAllItemChecked(boolean p) {
 		if (items!=null) {
@@ -104,6 +105,7 @@ public class AdapterSyncHistory extends ArrayAdapter<SyncHistoryListItem> {
     		holder.tv_cnt_copied=(TextView)v.findViewById(R.id.sync_history_list_view_count_copied);
     		holder.tv_cnt_deleted=(TextView)v.findViewById(R.id.sync_history_list_view_count_deleted);
     		holder.tv_cnt_ignored=(TextView)v.findViewById(R.id.sync_history_list_view_count_ignored);
+    		holder.tv_seq=(TextView)v.findViewById(R.id.sync_history_list_view_seq);
     		holder.tv_error=(TextView)v.findViewById(R.id.sync_history_list_view_error_text);
     		holder.ll_count=(LinearLayout)v.findViewById(R.id.sync_history_list_view_count);
     		holder.ll_main=(LinearLayout)v.findViewById(R.id.sync_history_list_view);
@@ -116,6 +118,7 @@ public class AdapterSyncHistory extends ArrayAdapter<SyncHistoryListItem> {
 
         if (o != null ) {
         	if (!o.sync_prof.equals("")) {
+        		holder.tv_seq.setText(String.format("%1$3d",position));
             	holder.tv_date.setVisibility(TextView.VISIBLE);
             	holder.tv_time.setVisibility(TextView.VISIBLE);
             	holder.tv_status.setVisibility(TextView.VISIBLE);
@@ -176,7 +179,7 @@ public class AdapterSyncHistory extends ArrayAdapter<SyncHistoryListItem> {
 	static class ViewHolder {
 		CheckBox cb_sel;
 		TextView tv_date,tv_time,tv_prof, tv_status,tv_cnt_copied, tv_cnt_deleted, tv_cnt_ignored;
-		TextView tv_error;
+		TextView tv_error, tv_seq;
 		LinearLayout ll_count, ll_main;
 	}
 

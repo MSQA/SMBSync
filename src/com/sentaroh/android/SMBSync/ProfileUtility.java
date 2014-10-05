@@ -911,9 +911,9 @@ public class ProfileUtility {
 		}
 	};
 	
-	static public void setAllProfileToUnchecked(AdapterProfileList pa) {
+	static public void setAllProfileToUnchecked(boolean hideCheckBox, AdapterProfileList pa) {
 		pa.setAllItemChecked(false);
-		pa.setShowCheckBox(false);
+		if (hideCheckBox) pa.setShowCheckBox(false);
 		pa.notifyDataSetChanged();
 	};
 	
@@ -1026,7 +1026,7 @@ public class ProfileUtility {
 					mGp.profileAdapter.setShowCheckBox(false);
 				}
 				
-				ProfileUtility.setAllProfileToUnchecked(mGp.profileAdapter);
+				ProfileUtility.setAllProfileToUnchecked(true, mGp.profileAdapter);
 				
 				p_ntfy.notifyToListener(true, null);
 			}
@@ -1477,7 +1477,7 @@ public class ProfileUtility {
 
 				saveProfileToFile(false,"","",mGp.profileAdapter,false);
 				
-				ProfileUtility.setAllProfileToUnchecked(mGp.profileAdapter);
+				ProfileUtility.setAllProfileToUnchecked(true, mGp.profileAdapter);
 //				AdapterProfileList tfl= createProfileList(false,"");
 //				replaceglblParms.profileAdapterContent(tfl);
 //				glblParms.profileAdapter.setNotifyOnChange(true);

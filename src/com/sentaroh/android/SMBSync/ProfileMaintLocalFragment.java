@@ -461,7 +461,7 @@ public class ProfileMaintLocalFragment extends DialogFragment{
 //						AdapterProfileList tfl= createProfileList(false,"");
 //						replaceglblParms.profileAdapterContent(tfl);
 //						glblParms.profileListView.setSelectionFromTop(pos,posTop);
-						ProfileUtility.setAllProfileToUnchecked(mGp.profileAdapter);
+						ProfileUtility.setAllProfileToUnchecked(true, mGp.profileAdapter);
 						if (mNotifyComplete!=null) mNotifyComplete.notifyToListener(true, null);
 					} else {
 						((TextView) mDialog.findViewById(R.id.local_profile_dlg_msg))

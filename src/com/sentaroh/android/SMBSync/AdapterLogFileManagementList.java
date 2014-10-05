@@ -77,6 +77,7 @@ public class AdapterLogFileManagementList extends BaseAdapter{
 
 	private boolean mShowCheckBox=false;
 	public void setShowCheckBox(boolean p) {mShowCheckBox=p;}
+	public boolean isShowCheckBox() {return mShowCheckBox;}
 	
 	public boolean isEmptyAdapter() {
 		boolean result=true;

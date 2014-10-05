@@ -263,8 +263,11 @@ public class SMBSyncService extends Service {
 	
 	private void initWifiStatus() {
 		mGp.wifiIsActive=mWifiMgr.isWifiEnabled();
-		if (mGp.wifiIsActive) mGp.wifiSsid=mWifiMgr.getConnectionInfo().getSSID();
-	}
+		if (mGp.wifiIsActive) {
+			if (mWifiMgr.getConnectionInfo().getSSID()!=null) mGp.wifiSsid=mWifiMgr.getConnectionInfo().getSSID();
+			else mGp.wifiSsid="";
+		}
+	};
 	
     final private class WifiReceiver  extends BroadcastReceiver {
 		@Override

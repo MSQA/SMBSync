@@ -82,9 +82,10 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
 		
 		private NotifyEvent mNotifyCheckBoxEvent=null;
 		public void setNotifyCheckBoxEventHandler(NotifyEvent ntfy) {mNotifyCheckBoxEvent=ntfy;}
-
+		
 		private boolean isShowCheckBox=false;
 		public void setShowCheckBox(boolean p) {isShowCheckBox=p;}
+		public boolean isShowCheckBox() {return isShowCheckBox;}
 		
 		public void setAllItemChecked(boolean p) {
 			if (items!=null) {

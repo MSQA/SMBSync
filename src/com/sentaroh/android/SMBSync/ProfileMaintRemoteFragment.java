@@ -513,7 +513,7 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 							prof_user,prof_pass,prof_share,prof_addr,prof_host,
 							remote_port, false,0);
 					mGp.profileAdapter.sort();
-					ProfileUtility.setAllProfileToUnchecked(mGp.profileAdapter);
+					ProfileUtility.setAllProfileToUnchecked(true, mGp.profileAdapter);
 //					mGp.profileAdapter.notifyDataSetChanged();
 					mProfUtil.saveProfileToFile(false,"","",mGp.profileAdapter,false);
 					if (mNotifyComplete!=null) mNotifyComplete.notifyToListener(true, null);

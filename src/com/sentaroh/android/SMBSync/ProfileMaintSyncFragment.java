@@ -573,7 +573,7 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 			public void onClick(View v) {
 				if (saveSyncProfile(mDialog, pfli.getFileFilter(), pfli.getDirFilter(),0)) {
 					mFragment.dismiss();
-					ProfileUtility.setAllProfileToUnchecked(mGp.profileAdapter);
+					ProfileUtility.setAllProfileToUnchecked(true, mGp.profileAdapter);
 					if (mNotifyComplete!=null) mNotifyComplete.notifyToListener(true, null);
 				}
 			}

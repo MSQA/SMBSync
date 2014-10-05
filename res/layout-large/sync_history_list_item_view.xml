@@ -8,10 +8,16 @@
     android:orientation="horizontal" 
     xmlns:tools="http://schemas.android.com/tools" tools:ignore="HardcodedText">
 
+    <TextView
+        android:id="@+id/sync_history_list_view_seq"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0000"
+        android:textAppearance="?android:attr/textAppearanceMedium"/>
+    
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
         android:layout_weight="1"
         android:orientation="vertical" >
 
@@ -136,7 +142,6 @@
         android:id="@+id/sync_history_list_view_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="10dp"
         android:text="Success"
