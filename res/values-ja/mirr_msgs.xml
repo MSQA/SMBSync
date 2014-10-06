@@ -23,7 +23,7 @@
     <string name="msgs_mirror_prof_file_bypass_media_store_change">ファイルの最終更新時間が違っていましたが、メディアストアオプションが有効なため更新を無視しました。</string>
     <string name="msgs_mirror_task_ended">同期タスクが終了しました。</string>
     <string name="msgs_mirror_task_started">同期タスクを開始しました。</string>
-    <string name="msgs_mirror_task_result_stats" formatted="false">コピー=%s, 削除=%s, 無視=%s, 警告=%s, エラー=%s</string>
+    <string name="msgs_mirror_task_result_stats" formatted="false">コピー=%s, 削除=%s, 無視=%s, 警告=%s, リトライ=%s, エラー=%s</string>
     <string name="msgs_mirror_prof_ms_different_file_last_mod" formatted="false">
         	メディアストアとファイルで最終更新時間が違っています。 ファイル=%s , メディアストア=%s</string>
     <string name="msgs_mirror_prof_ms_read_error">メディアストアから情報を取得できませんでした。</string>

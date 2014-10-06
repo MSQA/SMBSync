@@ -118,9 +118,9 @@ public class MirrorIO implements Runnable {
 //	private final int SMBSYNC_ERROR_ASYNC_KILL = -10;
 
 	private long totalTransferByte = 0, totalTransferTime=0;
-	private int copyCount, deleteCount, ignoreCount;
+	private int copyCount, deleteCount, ignoreCount, retryCount=0;
 	private int totalCopyCnt=0, totalDeleteCnt=0, totalIgnoreCnt=0, 
-				totalWarningMsgCnt=0, totalErrorMsgCnt=0;
+				totalWarningMsgCnt=0, totalErrorMsgCnt=0, totalRetryCnt=0;
 	
 	private ThreadCtrl tcMirror=null;
 	private ThreadCtrl tcConfirm=null;
@@ -355,13 +355,13 @@ public class MirrorIO implements Runnable {
         
 		NotificationUtil.showOngoingMsg(mGp,msgs_mirror_task_started);
 		waitMediaScanner(true);//wait for media scanner service connection
-		totalCopyCnt=totalDeleteCnt=totalIgnoreCnt=totalWarningMsgCnt=totalErrorMsgCnt=0;
+		totalCopyCnt=totalDeleteCnt=totalIgnoreCnt=totalWarningMsgCnt=totalRetryCnt=totalErrorMsgCnt=0;
 		boolean error_occured_but_ignored=false;
 		for (int i = 0; i < syncList.size(); i++) {
 			totalTransferByte = totalTransferTime= 0;
 			isExceptionOccured=isSyncParmError=false;
 			isExceptionRetryRequired=false;
-			copyCount=deleteCount=ignoreCount=0;
+			copyCount=deleteCount=ignoreCount=retryCount=0;
 //			mHistoryCopiedList=new ArrayList<String>();
 //			mHistoryDeletedList=new ArrayList<String>();
 //			mHistoryIgnoredList=new ArrayList<String>();
@@ -405,6 +405,7 @@ public class MirrorIO implements Runnable {
 				totalCopyCnt+=copyCount;
 				totalDeleteCnt+=deleteCount;
 				totalIgnoreCnt+=ignoreCount;
+				totalRetryCnt+=retryCount;
 				if (tcMirror.isEnabled()) {
 					if (!isSyncParmError && !isExceptionOccured) {
 						addLogMsg("I","",String.format(msgs_mirror_prof_no_of_copy,
@@ -419,13 +420,14 @@ public class MirrorIO implements Runnable {
 						}
 						addLogMsg("I","",msgs_mirror_prof_success_end);
 						addHistoryList(SyncHistoryListItem.SYNC_STATUS_SUCCESS,
-								copyCount,deleteCount,ignoreCount,"");
+								copyCount,deleteCount,ignoreCount, retryCount, "");
 						mUtil.saveHistoryList(mGp.syncHistoryList);
 						closeSyncResultLog();
 					} else { 
 						addLogMsg("E","",msgs_mirror_prof_was_failed);
 						addHistoryList(SyncHistoryListItem.SYNC_STATUS_ERROR,
-								copyCount,deleteCount,ignoreCount,tcMirror.getThreadMessage());
+								copyCount,deleteCount,ignoreCount,  retryCount,
+								tcMirror.getThreadMessage());
 						mUtil.saveHistoryList(mGp.syncHistoryList);
 						closeSyncResultLog();
 						tcMirror.setExtraDataInt(1);//Indicate error occured
@@ -437,7 +439,8 @@ public class MirrorIO implements Runnable {
 					}
 				} else {
 					addLogMsg("W","",msgs_mirror_prof_was_cancelled);
-					addHistoryList(SyncHistoryListItem.SYNC_STATUS_CANCELLED,copyCount,deleteCount,ignoreCount,"");
+					addHistoryList(SyncHistoryListItem.SYNC_STATUS_CANCELLED,
+							copyCount,deleteCount, ignoreCount, retryCount, "");
 					mUtil.saveHistoryList(mGp.syncHistoryList);
 					closeSyncResultLog();
 					isSyncParmError=true;
@@ -453,7 +456,7 @@ public class MirrorIO implements Runnable {
 		NotificationUtil.showOngoingMsg(mGp,msgs_mirror_task_ended);
 
 		addLogMsg("I","",String.format(msgs_mirror_task_result_stats, 
-				totalCopyCnt, totalDeleteCnt, totalIgnoreCnt,totalWarningMsgCnt,totalErrorMsgCnt));
+				totalCopyCnt, totalDeleteCnt, totalIgnoreCnt,totalWarningMsgCnt,totalRetryCnt,totalErrorMsgCnt));
 
 		String end_msg="";
 		if (!tcMirror.isEnabled()) {
@@ -510,7 +513,7 @@ public class MirrorIO implements Runnable {
 	};
 	
 	final private void addHistoryList(int status, int copy_cnt, int del_cnt, int ignore_cnt,
-			String error_msg) {
+			int retry_cnt, String error_msg) {
 		String date_time=DateUtil.convDateTimeTo_YearMonthDayHourMinSec(System.currentTimeMillis());
 		String date=date_time.substring(0,10);
 		String time=date_time.substring(11);
@@ -522,6 +525,7 @@ public class MirrorIO implements Runnable {
 		hli.sync_result_no_of_copied=copy_cnt;
 		hli.sync_result_no_of_deleted=del_cnt;
 		hli.sync_result_no_of_ignored=ignore_cnt;
+		hli.sync_result_no_of_retry=retry_cnt;
 		hli.sync_error_text=error_msg;
 //		if (!mGp.currentLogFilePath.equals("")) hli.isLogFileAvailable=true;
 //		hli.sync_log_file_path=mGp.currentLogFilePath;
@@ -1460,6 +1464,7 @@ public class MirrorIO implements Runnable {
 					addLogMsg("I","",mGp.svcContext.getString(R.string.msgs_mirror_retry_ignored_by_limit));
 					return false;//Retry abort
 				} else {
+					retryCount++;
 					addDebugLogMsg(1,"I","Retry wait entered");
 					synchronized(tcMirror) {
 						try {

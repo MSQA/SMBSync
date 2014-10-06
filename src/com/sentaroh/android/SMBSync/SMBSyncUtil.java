@@ -667,7 +667,7 @@ public class SMBSyncUtil {
 				    		hli.sync_result_no_of_deleted=Integer.valueOf(l_array[5]);
 				    		hli.sync_result_no_of_ignored=Integer.valueOf(l_array[6]);
 				    		hli.sync_error_text=l_array[7].replaceAll("\u0002", "\n");
-//				    		hli.sync_copied_file=string2Array(l_array[8]);
+				    		if (!l_array[8].equals(" ")) hli.sync_result_no_of_retry=Integer.valueOf(l_array[8]);
 //				    		hli.sync_deleted_file=string2Array(l_array[9]);
 //				    		hli.sync_ignored_file=string2Array(l_array[10]);
 				    		if (l_array.length>=12) {
@@ -757,7 +757,7 @@ public class SMBSyncUtil {
 							.append(shli.sync_result_no_of_deleted).append("\u0001")
 							.append(shli.sync_result_no_of_ignored).append("\u0001")
 							.append(shli.sync_error_text.replaceAll("\n", "\u0002")).append("\u0001")
-							.append(" ").append("\u0001") //Dummy
+							.append(shli.sync_result_no_of_retry).append("\u0001") //retry count
 							.append(" ").append("\u0001") //Dummy
 							.append(" ").append("\u0001") //Dummy 
 							.append(lfp).append("\u0001")

@@ -267,6 +267,7 @@ public class SMBSyncService extends Service {
 			if (mWifiMgr.getConnectionInfo().getSSID()!=null) mGp.wifiSsid=mWifiMgr.getConnectionInfo().getSSID();
 			else mGp.wifiSsid="";
 		}
+		mUtil.addDebugLogMsg(1,"I","Wi-Fi Status, Active="+mGp.wifiIsActive+", SSID="+mGp.wifiSsid);
 	};
 	
     final private class WifiReceiver  extends BroadcastReceiver {
@@ -285,7 +286,7 @@ public class SMBSyncService extends Service {
 				mGp.wifiSsid="";
 				mGp.wifiIsActive=false;
 				try {
-					callBackStub.cbWifiStatusChanged("On", "");
+					if (callBackStub!=null) callBackStub.cbWifiStatusChanged("On", "");
 				} catch (RemoteException e) {
 					e.printStackTrace();
 				}
@@ -296,7 +297,7 @@ public class SMBSyncService extends Service {
 						mGp.wifiSsid=wssid;
 						mGp.wifiIsActive=true;
 						try {
-							callBackStub.cbWifiStatusChanged("Connected", mGp.wifiSsid);
+							if (callBackStub!=null) callBackStub.cbWifiStatusChanged("Connected", mGp.wifiSsid);
 						} catch (RemoteException e) {
 							e.printStackTrace();
 						}
@@ -312,7 +313,7 @@ public class SMBSyncService extends Service {
 							mGp.wifiSsid="";
 							mGp.wifiIsActive=true;
 							try {
-								callBackStub.cbWifiStatusChanged("Disconnected", "");
+								if (callBackStub!=null) callBackStub.cbWifiStatusChanged("Disconnected", "");
 							} catch (RemoteException e) {
 								e.printStackTrace();
 							}
@@ -323,7 +324,7 @@ public class SMBSyncService extends Service {
 							mGp.wifiSsid="";
 							mGp.wifiIsActive=true;
 							try {
-								callBackStub.cbWifiStatusChanged("On", "");
+								if (callBackStub!=null) callBackStub.cbWifiStatusChanged("On", "");
 							} catch (RemoteException e) {
 								e.printStackTrace();
 							}

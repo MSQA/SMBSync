@@ -34,6 +34,7 @@
     <string name="msgs_sync_history_count_copied">Copied:</string>
     <string name="msgs_sync_history_count_deleted">Deleted:</string>
     <string name="msgs_sync_history_count_ignored">Ignored:</string>
+    <string name="msgs_sync_history_count_retry">Retry:</string>
     <string name="xmsgs_sync_history_ccmeu_show_log">Show log (%s)</string>
     <string name="xmsgs_sync_history_ccmeu_delete">Delete history (%s)</string>
     <string name="xmsgs_sync_history_ccmeu_selectall">Select all histories</string>

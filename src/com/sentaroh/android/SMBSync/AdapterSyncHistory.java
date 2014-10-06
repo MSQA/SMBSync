@@ -78,6 +78,16 @@ public class AdapterSyncHistory extends ArrayAdapter<SyncHistoryListItem> {
 		}
 	};
 
+	public boolean isAnyItemSelected() {
+		boolean result=false;
+		for (int i=0;i<items.size();i++) 
+			if (items.get(i).isChecked) {
+				result=true;
+				break;
+			}
+		return result;
+	};
+	
 	public boolean isEmptyAdapter() {
 		boolean result=false;
 		if (items!=null) {
@@ -105,6 +115,7 @@ public class AdapterSyncHistory extends ArrayAdapter<SyncHistoryListItem> {
     		holder.tv_cnt_copied=(TextView)v.findViewById(R.id.sync_history_list_view_count_copied);
     		holder.tv_cnt_deleted=(TextView)v.findViewById(R.id.sync_history_list_view_count_deleted);
     		holder.tv_cnt_ignored=(TextView)v.findViewById(R.id.sync_history_list_view_count_ignored);
+//    		holder.tv_cnt_retry=(TextView)v.findViewById(R.id.sync_history_list_view_count_retry);
     		holder.tv_seq=(TextView)v.findViewById(R.id.sync_history_list_view_seq);
     		holder.tv_error=(TextView)v.findViewById(R.id.sync_history_list_view_error_text);
     		holder.ll_count=(LinearLayout)v.findViewById(R.id.sync_history_list_view_count);
@@ -144,6 +155,7 @@ public class AdapterSyncHistory extends ArrayAdapter<SyncHistoryListItem> {
             	holder.tv_cnt_copied.setText(Integer.toString(o.sync_result_no_of_copied));
             	holder.tv_cnt_deleted.setText(Integer.toString(o.sync_result_no_of_deleted));
             	holder.tv_cnt_ignored.setText(Integer.toString(o.sync_result_no_of_ignored));
+//            	holder.tv_cnt_retry.setText(Integer.toString(o.sync_result_no_of_retry));
             	
             	if (o.sync_error_text!=null && !o.sync_error_text.equals("")) {
            			holder.tv_error.setVisibility(TextView.VISIBLE);
@@ -178,7 +190,8 @@ public class AdapterSyncHistory extends ArrayAdapter<SyncHistoryListItem> {
 	
 	static class ViewHolder {
 		CheckBox cb_sel;
-		TextView tv_date,tv_time,tv_prof, tv_status,tv_cnt_copied, tv_cnt_deleted, tv_cnt_ignored;
+		TextView tv_date,tv_time,tv_prof, tv_status,tv_cnt_copied, tv_cnt_deleted, 
+			tv_cnt_ignored;//, tv_cnt_retry;
 		TextView tv_error, tv_seq;
 		LinearLayout ll_count, ll_main;
 	}
@@ -198,6 +211,7 @@ class SyncHistoryListItem {
 	public int sync_result_no_of_copied=0;
 	public int sync_result_no_of_deleted=0;
 	public int sync_result_no_of_ignored=0;
+	public int sync_result_no_of_retry=0;
 	
 	public String sync_error_text="";
 	

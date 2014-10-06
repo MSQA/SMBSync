@@ -120,10 +120,11 @@
 	            android:layout_marginRight="10dp"
 	            android:ellipsize="end"
 	            android:maxLines="1"
-	            android:text="9999999200"
+	            android:text="200"
 	            android:textSize="12sp"
 	            tools:ignore="HardcodedText" />
-	        	        	
+
+	        	        	        	        	
 	    </LinearLayout>
 	    
 	    <TextView

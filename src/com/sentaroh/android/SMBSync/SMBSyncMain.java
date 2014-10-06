@@ -250,7 +250,7 @@ public class SMBSyncMain extends FragmentActivity {
 //					e.printStackTrace();
 //				}
 //		}
-		setProfileContextButtonNormalMode();
+		setProfileContextButtonHide();
 	};
 	
 	@Override
@@ -505,35 +505,38 @@ public class SMBSyncMain extends FragmentActivity {
 	    		changeLanguageCode(newConfig);
 	    	}
 	    }
-	    final ViewSaveArea vsa=new ViewSaveArea();
-	    saveViewContent(vsa);
 	    
-	    setContentView(R.layout.main);
-	    
-		createTabView() ;
-		initAdapterAndView();
-		
-		setMsglistViewListener();
-		
-		if (mGp.profileAdapter.isShowCheckBox()) setProfileContextButtonSelectMode();
-		else setProfileContextButtonNormalMode();
-		
-		setProfileContextButtonListener();
-		setProfilelistItemClickListener();
-		setProfilelistLongClickListener();
-		setMsglistLongClickListener();
+	    if (Build.VERSION.SDK_INT>10) {
+		    final ViewSaveArea vsa=new ViewSaveArea();
+		    saveViewContent(vsa);
+		    
+		    setContentView(R.layout.main);
+		    
+			createTabView() ;
+			initAdapterAndView();
+			
+			setMsglistViewListener();
+			
+			if (mGp.profileAdapter.isShowCheckBox()) setProfileContextButtonSelectMode();
+			else setProfileContextButtonNormalMode();
+			
+			setProfileContextButtonListener();
+			setProfilelistItemClickListener();
+			setProfilelistLongClickListener();
+			setMsglistLongClickListener();
 
-		if (isHistoryItemSelected()) setHistoryContextButtonSelected();
-		else setHistoryContextButtonNotselected();
+			if (mGp.syncHistoryAdapter.isAnyItemSelected()) setHistoryContextButtonSelected();
+			else setHistoryContextButtonNotselected();
 
-		setHistoryContextButtonListener();
-		setHistoryViewItemClickListener();
-		setHistoryViewLongClickListener();
+			setHistoryContextButtonListener();
+			setHistoryViewItemClickListener();
+			setHistoryViewLongClickListener();
 
-		restoreViewContent(vsa);
-		
-		if (isUiEnabled()) setUiEnabled();
-		else setUiDisabled();
+			restoreViewContent(vsa);
+			
+			if (isUiEnabled()) setUiEnabled();
+			else setUiDisabled();
+	    }
 		
 //		refreshOptionMenu();
 	};
@@ -712,7 +715,7 @@ public class SMBSyncMain extends FragmentActivity {
 	};
 	
 	private void initAdapterAndView() {
-		mGp.msgListView.setFastScrollEnabled(true);
+		if (isUiEnabled()) mGp.msgListView.setFastScrollEnabled(true);
 		
 		mGp.msgListView.setAdapter(mGp.msgListAdapter);
 		mGp.msgListView.setDrawingCacheEnabled(true);
@@ -720,7 +723,7 @@ public class SMBSyncMain extends FragmentActivity {
 		mGp.msgListView.setFocusable(true);
 		mGp.msgListView.setFocusableInTouchMode(true);
 		mGp.msgListView.setSelected(true);
-		setFastScrollListener(mGp.msgListView);
+		if (isUiEnabled()) setFastScrollListener(mGp.msgListView);
 		
 		mGp.profileListView.setAdapter(mGp.profileAdapter);
 		
@@ -849,6 +852,7 @@ public class SMBSyncMain extends FragmentActivity {
 	    mGp.progressSpinStatus=(TextView)findViewById(R.id.profile_progress_spin_status);
 	    mGp.progressSpinCancel=(Button)findViewById(R.id.profile_progress_spin_btn_cancel);
 
+	    createContextView();
 	};
 	
 	class OnTabChange implements OnTabChangeListener {
@@ -1909,7 +1913,7 @@ public class SMBSyncMain extends FragmentActivity {
 				SyncHistoryListItem item = mGp.syncHistoryList.get(position);
 				if (mGp.syncHistoryAdapter.isShowCheckBox()) {
 					item.isChecked=!item.isChecked;
-					if (!isHistoryItemSelected()) {
+					if (!mGp.syncHistoryAdapter.isAnyItemSelected()) {
 //						mGp.syncHistoryAdapter.setShowCheckBox(false);
 						setHistoryContextButtonNotselected();
 					}
@@ -1938,7 +1942,7 @@ public class SMBSyncMain extends FragmentActivity {
 		ntfy.setListener(new NotifyEventListener(){
 			@Override
 			public void positiveResponse(Context c, Object[] o) {
-				if (!isHistoryItemSelected()) {
+				if (!mGp.syncHistoryAdapter.isAnyItemSelected()) {
 //					mGp.syncHistoryAdapter.setShowCheckBox(false);
 					mGp.syncHistoryAdapter.notifyDataSetChanged();
 					setHistoryContextButtonNotselected();
@@ -1953,16 +1957,6 @@ public class SMBSyncMain extends FragmentActivity {
 		mGp.syncHistoryAdapter.setNotifyCheckBoxEventHandler(ntfy);
 	};
 
-	private boolean isHistoryItemSelected() {
-		boolean result=false;
-		for (int i=0;i<mGp.syncHistoryList.size();i++) 
-			if (mGp.syncHistoryList.get(i).isChecked) {
-				result=true;
-				break;
-			}
-		return result;
-	}
-	
 	private void setHistoryViewLongClickListener() {
 		mGp.syncHistoryListView
 			.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -1970,7 +1964,7 @@ public class SMBSyncMain extends FragmentActivity {
 			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
 					int pos, long arg3) {
 				if (mGp.syncHistoryAdapter.isEmptyAdapter()) return true;
-//				if (isHistoryItemSelected()) {
+//				if (mGp.syncHistoryAdapter.isAnyItemSelected()) {
 //					setHistoryItemUnselectAll() ;
 //					mGp.syncHistoryAdapter.setShowCheckBox(true);
 //					mGp.syncHistoryAdapter.getItem(pos).isChecked=true;
@@ -1994,22 +1988,14 @@ public class SMBSyncMain extends FragmentActivity {
 	};
 
 	private void setHistoryContextButtonListener() {
-		LinearLayout ll_prof=(LinearLayout) findViewById(R.id.context_view_history);
-        ImageButton ib_move_top=(ImageButton)ll_prof.findViewById(R.id.context_button_move_to_top);
-        ImageButton ib_move_bottom=(ImageButton)ll_prof.findViewById(R.id.context_button_move_to_bottom);
-//        ImageButton ib_show_log=(ImageButton)ll_prof.findViewById(R.id.context_button_show_log);
-        ImageButton ib_delete_history=(ImageButton)ll_prof.findViewById(R.id.context_button_delete);
-        ImageButton ib_copy_to_clipboard=(ImageButton)ll_prof.findViewById(R.id.context_button_copy_to_clipboard);
-        ImageButton ib_select_all=(ImageButton)ll_prof.findViewById(R.id.context_button_select_all);
-        ImageButton ib_unselect_all=(ImageButton)ll_prof.findViewById(R.id.context_button_unselect_all);
         
-        ib_move_top.setOnClickListener(new OnClickListener(){
+        mContextHistoryButtonMoveTop.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
 				mGp.syncHistoryListView.setSelection(0);
 			}
         });
-        ib_move_bottom.setOnClickListener(new OnClickListener(){
+        mContextHistoryButtonMoveBottom.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
 				mGp.syncHistoryListView.setSelection(mGp.syncHistoryAdapter.getCount()-1);
@@ -2026,13 +2012,13 @@ public class SMBSyncMain extends FragmentActivity {
 //				startActivityForResult(intent,1);
 //			}
 //        });
-        ib_delete_history.setOnClickListener(new OnClickListener(){
+        mContextHistoryButtonDeleteHistory.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
 				confirmDeleteHistory();
 			}
         });
-        ib_copy_to_clipboard.setOnClickListener(new OnClickListener(){
+        mContextHistiryButtonHistiryCopyClipboard.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
 				 ClipboardManager cm = 
@@ -2068,7 +2054,7 @@ public class SMBSyncMain extends FragmentActivity {
 			}
         });
 
-        ib_select_all.setOnClickListener(new OnClickListener(){
+        mContextHistiryButtonSelectAll.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
 				setHistoryItemSelectAll();
@@ -2076,7 +2062,7 @@ public class SMBSyncMain extends FragmentActivity {
 				setHistoryContextButtonSelected();
 			}
         });
-        ib_unselect_all.setOnClickListener(new OnClickListener(){
+        mContextHistiryButtonUnselectAll.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
 				setHistoryItemUnselectAll();
@@ -2088,59 +2074,34 @@ public class SMBSyncMain extends FragmentActivity {
 	};
 
 	private void setHistoryContextButtonSelected() {
-		LinearLayout ll_prof=(LinearLayout) findViewById(R.id.context_view_history);
-		LinearLayout ll_move_top=(LinearLayout)ll_prof.findViewById(R.id.context_button_move_to_top_view);
-		LinearLayout ll_move_bottom=(LinearLayout)ll_prof.findViewById(R.id.context_button_move_to_bottom_view);
-//		LinearLayout ll_show_log=(LinearLayout)ll_prof.findViewById(R.id.context_button_show_log_view);
-		LinearLayout ll_delete_history=(LinearLayout)ll_prof.findViewById(R.id.context_button_delete_view);
-		LinearLayout ll_copy_to_clipboard=(LinearLayout)ll_prof.findViewById(R.id.context_button_copy_to_clipboard_view);
-		LinearLayout ll_select_all=(LinearLayout)ll_prof.findViewById(R.id.context_button_select_all_view);
-		LinearLayout ll_unselect_all=(LinearLayout)ll_prof.findViewById(R.id.context_button_unselect_all_view);
-
-//		int sel_cnt=0;
-//		for (int i=0;i<mGp.syncHistoryAdapter.getCount();i++) {
-//			if (mGp.syncHistoryAdapter.getItem(i).isChecked) {
-//				sel_cnt++;
-//			}
-//		}
-		
-		ll_move_top.setVisibility(ImageButton.VISIBLE);
-		ll_move_bottom.setVisibility(ImageButton.VISIBLE);
+		mContextHistiryViewMoveTop.setVisibility(ImageButton.VISIBLE);
+		mContextHistiryViewMoveBottom.setVisibility(ImageButton.VISIBLE);
 		
 //		if (sel_cnt==1) ll_show_log.setVisibility(ImageButton.VISIBLE);
 //		else ll_show_log.setVisibility(ImageButton.GONE);
 		
-		ll_delete_history.setVisibility(ImageButton.VISIBLE);
-		ll_copy_to_clipboard.setVisibility(ImageButton.VISIBLE);
+		mContextHistiryViewDeleteHistory.setVisibility(ImageButton.VISIBLE);
+		mContextHistiryViewHistoryCopyClipboard.setVisibility(ImageButton.VISIBLE);
         
-        ll_select_all.setVisibility(ImageButton.VISIBLE);
-        ll_unselect_all.setVisibility(ImageButton.VISIBLE);
+        mContextHistiryViewSelectAll.setVisibility(ImageButton.VISIBLE);
+        mContextHistiryViewUnselectAll.setVisibility(ImageButton.VISIBLE);
 	};
 
 	private void setHistoryContextButtonNotselected() {
-		LinearLayout ll_prof=(LinearLayout) findViewById(R.id.context_view_history);
-		LinearLayout ll_move_top=(LinearLayout)ll_prof.findViewById(R.id.context_button_move_to_top_view);
-		LinearLayout ll_move_bottom=(LinearLayout)ll_prof.findViewById(R.id.context_button_move_to_bottom_view);
-//		LinearLayout ll_show_log=(LinearLayout)ll_prof.findViewById(R.id.context_button_show_log_view);
-		LinearLayout ll_delete_history=(LinearLayout)ll_prof.findViewById(R.id.context_button_delete_view);
-		LinearLayout ll_copy_to_clipboard=(LinearLayout)ll_prof.findViewById(R.id.context_button_copy_to_clipboard_view);
-		LinearLayout ll_select_all=(LinearLayout)ll_prof.findViewById(R.id.context_button_select_all_view);
-		LinearLayout ll_unselect_all=(LinearLayout)ll_prof.findViewById(R.id.context_button_unselect_all_view);
-
 		if (!mGp.syncHistoryAdapter.isEmptyAdapter())  {
-			ll_move_top.setVisibility(ImageButton.VISIBLE);
-			ll_move_bottom.setVisibility(ImageButton.VISIBLE);
-			ll_delete_history.setVisibility(ImageButton.GONE);
-			ll_copy_to_clipboard.setVisibility(ImageButton.GONE);
-			ll_select_all.setVisibility(ImageButton.VISIBLE);
-	        ll_unselect_all.setVisibility(ImageButton.GONE);
+			mContextHistiryViewMoveTop.setVisibility(ImageButton.VISIBLE);
+			mContextHistiryViewMoveBottom.setVisibility(ImageButton.VISIBLE);
+			mContextHistiryViewDeleteHistory.setVisibility(ImageButton.GONE);
+			mContextHistiryViewHistoryCopyClipboard.setVisibility(ImageButton.GONE);
+			mContextHistiryViewSelectAll.setVisibility(ImageButton.VISIBLE);
+	        mContextHistiryViewUnselectAll.setVisibility(ImageButton.GONE);
 		} else {
-			ll_move_top.setVisibility(ImageButton.GONE);
-			ll_move_bottom.setVisibility(ImageButton.GONE);
-			ll_delete_history.setVisibility(ImageButton.GONE);
-			ll_copy_to_clipboard.setVisibility(ImageButton.GONE);
-			ll_select_all.setVisibility(ImageButton.GONE);
-	        ll_unselect_all.setVisibility(ImageButton.GONE);
+			mContextHistiryViewMoveTop.setVisibility(ImageButton.GONE);
+			mContextHistiryViewMoveBottom.setVisibility(ImageButton.GONE);
+			mContextHistiryViewDeleteHistory.setVisibility(ImageButton.GONE);
+			mContextHistiryViewHistoryCopyClipboard.setVisibility(ImageButton.GONE);
+			mContextHistiryViewSelectAll.setVisibility(ImageButton.GONE);
+	        mContextHistiryViewUnselectAll.setVisibility(ImageButton.GONE);
 		}
 	};
 
@@ -2300,22 +2261,132 @@ public class SMBSyncMain extends FragmentActivity {
 		});
 	};
 
-	private void setProfileContextButtonListener() {
-		LinearLayout ll_prof=(LinearLayout) findViewById(R.id.context_view_profile);
-        ImageButton ib_activete=(ImageButton)ll_prof.findViewById(R.id.context_button_activate);
-        ImageButton ib_inactivete=(ImageButton)ll_prof.findViewById(R.id.context_button_inactivate);
-        ImageButton ib_add_local=(ImageButton)ll_prof.findViewById(R.id.context_button_add_local);
-        ImageButton ib_add_remote=(ImageButton)ll_prof.findViewById(R.id.context_button_add_remote);
-        ImageButton ib_add_sync=(ImageButton)ll_prof.findViewById(R.id.context_button_add_sync);
-        ImageButton ib_start_wizard=(ImageButton)ll_prof.findViewById(R.id.context_button_start_wizard);
-        ImageButton ib_copy_profile=(ImageButton)ll_prof.findViewById(R.id.context_button_copy_profile);
-        ImageButton ib_delete_profile=(ImageButton)ll_prof.findViewById(R.id.context_button_delete);
-//        ImageButton ib_edit_profile=(ImageButton)ll_prof.findViewById(R.id.context_button_edit_profile);
-        ImageButton ib_rename_profile=(ImageButton)ll_prof.findViewById(R.id.context_button_rename_profile);
-        ImageButton ib_sync=(ImageButton)ll_prof.findViewById(R.id.context_button_sync);
-        ImageButton ib_select_all=(ImageButton)ll_prof.findViewById(R.id.context_button_select_all);
-        ImageButton ib_unselect_all=(ImageButton)ll_prof.findViewById(R.id.context_button_unselect_all);
+    private ImageButton mContextProfileButtonActivete=null;
+    private ImageButton mContextProfileButtonInactivete=null;
+    private ImageButton mContextProfileButtonAddLocal=null;
+    private ImageButton mContextProfileButtonAddRemote=null;
+    private ImageButton mContextProfileButtonAddSync=null;
+    private ImageButton mContextProfileButtonStartWizard=null;
+    private ImageButton mContextProfileButtonCopyProfile=null;
+    private ImageButton mContextProfileButtonDeleteProfile=null;
+    private ImageButton mContextProfileButtonRenameProfile=null;
+    private ImageButton mContextProfileButtonSync=null;
+    private ImageButton mContextProfileButtonSelectAll=null;
+    private ImageButton mContextProfileButtonUnselectAll=null;
 
+//    private Bitmap mContextProfileBitmapActive=null;
+//    private Bitmap mContextProfileBitmapInactive=null;
+//    private Bitmap mContextProfileBitmapAddLocal=null;
+//    private Bitmap mContextProfileBitmapAddRemote=null;
+//    private Bitmap mContextProfileBitmapAddSync=null;
+//    private Bitmap mContextProfileBitmapStartWizard=null;
+//    private Bitmap mContextProfileBitmapCopyProfile=null;
+//    private Bitmap mContextProfileBitmapDeleteProfile=null;
+//    private Bitmap mContextProfileBitmapRenameProfile=null;
+//    private Bitmap mContextProfileBitmapSync=null;
+//    private Bitmap mContextProfileBitmapSelectAll=null;
+//    private Bitmap mContextProfileBitmapUnselectAll=null;
+
+    private LinearLayout mContextProfileViewSync=null;
+    private LinearLayout mContextProfileViewActivete=null;
+    private LinearLayout mContextProfileViewInactivete=null;
+    private LinearLayout mContextProfileViewAddLocal=null;
+    private LinearLayout mContextProfileViewAddRemote=null;
+    private LinearLayout mContextProfileViewAddSync=null;
+    private LinearLayout mContextProfileViewStartWizard=null;
+    private LinearLayout mContextProfileViewCopyProfile=null;
+    private LinearLayout mContextProfileViewDeleteProfile=null;
+    private LinearLayout mContextProfileViewRenameProfile=null;
+    private LinearLayout mContextProfileViewSelectAll=null;
+    private LinearLayout mContextProfileViewUnselectAll=null;
+
+    private ImageButton mContextHistoryButtonMoveTop=null;
+    private ImageButton mContextHistoryButtonMoveBottom=null;
+    private ImageButton mContextHistoryButtonDeleteHistory=null;
+    private ImageButton mContextHistiryButtonHistiryCopyClipboard=null;
+    private ImageButton mContextHistiryButtonSelectAll=null;
+    private ImageButton mContextHistiryButtonUnselectAll=null;
+
+    private LinearLayout mContextHistiryViewMoveTop=null;
+    private LinearLayout mContextHistiryViewMoveBottom=null;
+    private LinearLayout mContextHistiryViewDeleteHistory=null;
+    private LinearLayout mContextHistiryViewHistoryCopyClipboard=null;
+    private LinearLayout mContextHistiryViewSelectAll=null;
+    private LinearLayout mContextHistiryViewUnselectAll=null;
+    
+    private void createContextView() {
+//    	if (mContextProfileBitmapActive==null) {
+//    		mContextProfileBitmapActive=BitmapFactory.decodeResource(getResources(), R.drawable.menu_active);
+//    	    mContextProfileBitmapInactive=BitmapFactory.decodeResource(getResources(), R.drawable.menu_inactive);
+//    	    mContextProfileBitmapAddLocal=BitmapFactory.decodeResource(getResources(), R.drawable.add_local);
+//    	    mContextProfileBitmapAddRemote=BitmapFactory.decodeResource(getResources(), R.drawable.add_remote);
+//    	    mContextProfileBitmapAddSync=BitmapFactory.decodeResource(getResources(), R.drawable.add_sync);
+//    	    mContextProfileBitmapStartWizard=BitmapFactory.decodeResource(getResources(), R.drawable.ic_64_wizard);
+//    	    mContextProfileBitmapCopyProfile=BitmapFactory.decodeResource(getResources(), R.drawable.menu_copy);
+//    	    mContextProfileBitmapDeleteProfile=BitmapFactory.decodeResource(getResources(), R.drawable.menu_trash);
+//    	    mContextProfileBitmapRenameProfile=BitmapFactory.decodeResource(getResources(), R.drawable.menu_rename);
+//    	    mContextProfileBitmapSync=BitmapFactory.decodeResource(getResources(), R.drawable.ic_32_sync);
+//    	    mContextProfileBitmapSelectAll=BitmapFactory.decodeResource(getResources(), R.drawable.select_all);
+//    	    mContextProfileBitmapUnselectAll=BitmapFactory.decodeResource(getResources(), R.drawable.unselect_all);
+//    	}
+    	LinearLayout ll_prof=(LinearLayout) findViewById(R.id.context_view_profile);
+        mContextProfileButtonActivete=(ImageButton)ll_prof.findViewById(R.id.context_button_activate);
+        mContextProfileButtonInactivete=(ImageButton)ll_prof.findViewById(R.id.context_button_inactivate);
+        mContextProfileButtonAddLocal=(ImageButton)ll_prof.findViewById(R.id.context_button_add_local);
+        mContextProfileButtonAddRemote=(ImageButton)ll_prof.findViewById(R.id.context_button_add_remote);
+        mContextProfileButtonAddSync=(ImageButton)ll_prof.findViewById(R.id.context_button_add_sync);
+        mContextProfileButtonStartWizard=(ImageButton)ll_prof.findViewById(R.id.context_button_start_wizard);
+        mContextProfileButtonCopyProfile=(ImageButton)ll_prof.findViewById(R.id.context_button_copy_profile);
+        mContextProfileButtonDeleteProfile=(ImageButton)ll_prof.findViewById(R.id.context_button_delete);
+        mContextProfileButtonRenameProfile=(ImageButton)ll_prof.findViewById(R.id.context_button_rename_profile);
+        mContextProfileButtonSync=(ImageButton)ll_prof.findViewById(R.id.context_button_sync);
+        mContextProfileButtonSelectAll=(ImageButton)ll_prof.findViewById(R.id.context_button_select_all);
+        mContextProfileButtonUnselectAll=(ImageButton)ll_prof.findViewById(R.id.context_button_unselect_all);
+
+//        mContextProfileButtonActivete.setImageBitmap(mContextProfileBitmapActive);
+//        mContextProfileButtonInactivete.setImageBitmap(mContextProfileBitmapInactive);
+//        mContextProfileButtonAddLocal.setImageBitmap(mContextProfileBitmapAddLocal);
+//        mContextProfileButtonAddRemote.setImageBitmap(mContextProfileBitmapAddRemote);
+//        mContextProfileButtonAddSync.setImageBitmap(mContextProfileBitmapAddSync);
+//        mContextProfileButtonStartWizard.setImageBitmap(mContextProfileBitmapStartWizard);
+//        mContextProfileButtonCopyProfile.setImageBitmap(mContextProfileBitmapCopyProfile);
+//        mContextProfileButtonDeleteProfile.setImageBitmap(mContextProfileBitmapDeleteProfile);
+//        mContextProfileButtonRenameProfile.setImageBitmap(mContextProfileBitmapRenameProfile);
+//        mContextProfileButtonSync.setImageBitmap(mContextProfileBitmapSync);
+//        mContextProfileButtonSelectAll.setImageBitmap(mContextProfileBitmapSelectAll);
+//        mContextProfileButtonUnselectAll.setImageBitmap(mContextProfileBitmapUnselectAll);
+        
+        mContextProfileViewSync=(LinearLayout)ll_prof.findViewById(R.id.context_button_sync_view);
+        mContextProfileViewActivete=(LinearLayout)ll_prof.findViewById(R.id.context_button_activate_view);
+        mContextProfileViewInactivete=(LinearLayout)ll_prof.findViewById(R.id.context_button_inactivate_view);
+        mContextProfileViewAddLocal=(LinearLayout)ll_prof.findViewById(R.id.context_button_add_local_view);
+        mContextProfileViewAddRemote=(LinearLayout)ll_prof.findViewById(R.id.context_button_add_remote_view);
+        mContextProfileViewAddSync=(LinearLayout)ll_prof.findViewById(R.id.context_button_add_sync_view);
+        mContextProfileViewStartWizard=(LinearLayout)ll_prof.findViewById(R.id.context_button_start_wizard_view);
+        mContextProfileViewCopyProfile=(LinearLayout)ll_prof.findViewById(R.id.context_button_copy_profile_view);
+        mContextProfileViewDeleteProfile=(LinearLayout)ll_prof.findViewById(R.id.context_button_delete_view);
+        mContextProfileViewRenameProfile=(LinearLayout)ll_prof.findViewById(R.id.context_button_rename_profile_view);
+        mContextProfileViewSelectAll=(LinearLayout)ll_prof.findViewById(R.id.context_button_select_all_view);
+        mContextProfileViewUnselectAll=(LinearLayout)ll_prof.findViewById(R.id.context_button_unselect_all_view);
+
+    	LinearLayout ll_hist=(LinearLayout) findViewById(R.id.context_view_history);
+        mContextHistoryButtonMoveTop=(ImageButton)ll_hist.findViewById(R.id.context_button_move_to_top);
+        mContextHistoryButtonMoveBottom=(ImageButton)ll_hist.findViewById(R.id.context_button_move_to_bottom);
+        mContextHistoryButtonDeleteHistory=(ImageButton)ll_hist.findViewById(R.id.context_button_delete);
+        mContextHistiryButtonHistiryCopyClipboard=(ImageButton)ll_hist.findViewById(R.id.context_button_copy_to_clipboard);
+        mContextHistiryButtonSelectAll=(ImageButton)ll_hist.findViewById(R.id.context_button_select_all);
+        mContextHistiryButtonUnselectAll=(ImageButton)ll_hist.findViewById(R.id.context_button_unselect_all);
+
+    	mContextHistiryViewMoveTop=(LinearLayout)ll_hist.findViewById(R.id.context_button_move_to_top_view);
+    	mContextHistiryViewMoveBottom=(LinearLayout)ll_hist.findViewById(R.id.context_button_move_to_bottom_view);
+    	mContextHistiryViewDeleteHistory=(LinearLayout)ll_hist.findViewById(R.id.context_button_delete_view);
+    	mContextHistiryViewHistoryCopyClipboard=(LinearLayout)ll_hist.findViewById(R.id.context_button_copy_to_clipboard_view);
+    	mContextHistiryViewSelectAll=(LinearLayout)ll_hist.findViewById(R.id.context_button_select_all_view);
+    	mContextHistiryViewUnselectAll=(LinearLayout)ll_hist.findViewById(R.id.context_button_unselect_all_view);
+
+    }
+	
+	private void setProfileContextButtonListener() {
         final NotifyEvent ntfy=new NotifyEvent(mContext);
         ntfy.setListener(new NotifyEventListener(){
 			@Override
@@ -2327,20 +2398,20 @@ public class SMBSyncMain extends FragmentActivity {
 			public void negativeResponse(Context c, Object[] o) {}
         });
         
-        ib_activete.setOnClickListener(new OnClickListener(){
+        mContextProfileButtonActivete.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
 				confirmActivate(mGp.profileAdapter);
 				
 			}
         });
-        ib_inactivete.setOnClickListener(new OnClickListener(){
+        mContextProfileButtonInactivete.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
 				confirmInactivate(mGp.profileAdapter);
 			}
         });
-        ib_add_local.setOnClickListener(new OnClickListener(){
+        mContextProfileButtonAddLocal.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
 				ProfileListItem pfli=new ProfileListItem();
@@ -2350,7 +2421,7 @@ public class SMBSyncMain extends FragmentActivity {
 						0, profUtil, util, commonDlg, ntfy);
 			}
         });
-        ib_add_remote.setOnClickListener(new OnClickListener(){
+        mContextProfileButtonAddRemote.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
 				String c_ip=SMBSyncUtil.getLocalIpAddress();
@@ -2362,7 +2433,7 @@ public class SMBSyncMain extends FragmentActivity {
 						0, profUtil, util, commonDlg, ntfy);
 			}
         });
-        ib_add_sync.setOnClickListener(new OnClickListener(){
+        mContextProfileButtonAddSync.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
 				ProfileListItem pfli=new ProfileListItem();
@@ -2373,7 +2444,7 @@ public class SMBSyncMain extends FragmentActivity {
 						profUtil, util, commonDlg, ntfy);
 			}
         });
-        ib_start_wizard.setOnClickListener(new OnClickListener(){
+        mContextProfileButtonStartWizard.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
 				ProfileCreationWizard sw=new ProfileCreationWizard(mGp, mContext, 
@@ -2381,7 +2452,7 @@ public class SMBSyncMain extends FragmentActivity {
 				sw.wizardMain();
 			}
         });
-        ib_copy_profile.setOnClickListener(new OnClickListener(){
+        mContextProfileButtonCopyProfile.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
 				for(int i=0;i<mGp.profileAdapter.getCount();i++) {
@@ -2393,7 +2464,7 @@ public class SMBSyncMain extends FragmentActivity {
 				}
 			}
         });
-        ib_delete_profile.setOnClickListener(new OnClickListener(){
+        mContextProfileButtonDeleteProfile.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
 				profUtil.deleteProfile(ntfy);
@@ -2411,7 +2482,7 @@ public class SMBSyncMain extends FragmentActivity {
 //				}
 //			}
 //        });
-        ib_rename_profile.setOnClickListener(new OnClickListener(){
+        mContextProfileButtonRenameProfile.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
 				for(int i=0;i<mGp.profileAdapter.getCount();i++) {
@@ -2423,7 +2494,7 @@ public class SMBSyncMain extends FragmentActivity {
 				}
 			}
         });
-        ib_sync.setOnClickListener(new OnClickListener(){
+        mContextProfileButtonSync.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
 				if (ProfileUtility.getSyncProfileSelectedItemCount(mGp.profileAdapter, SMBSYNC_PROF_GROUP_DEFAULT)>0) {
@@ -2443,7 +2514,7 @@ public class SMBSyncMain extends FragmentActivity {
 				setProfileContextButtonNormalMode();
 			}
         });
-        ib_select_all.setOnClickListener(new OnClickListener(){
+        mContextProfileButtonSelectAll.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
 				for (int i=0;i<mGp.profileAdapter.getCount();i++) {
@@ -2454,7 +2525,7 @@ public class SMBSyncMain extends FragmentActivity {
 				setProfileContextButtonSelectMode();
 			}
         });
-        ib_unselect_all.setOnClickListener(new OnClickListener(){
+        mContextProfileButtonUnselectAll.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
 				ProfileUtility.setAllProfileToUnchecked(false, mGp.profileAdapter);
@@ -2517,25 +2588,11 @@ public class SMBSyncMain extends FragmentActivity {
 	};
 
 	private void setProfileContextButtonSelectMode() {
-		LinearLayout ll_prof=(LinearLayout) findViewById(R.id.context_view_profile);
-		LinearLayout ll_sync=(LinearLayout)ll_prof.findViewById(R.id.context_button_sync_view);
-		ImageButton ib_sync=(ImageButton)ll_prof.findViewById(R.id.context_button_sync);
-        LinearLayout ll_activete=(LinearLayout)ll_prof.findViewById(R.id.context_button_activate_view);
-        LinearLayout ll_inactivete=(LinearLayout)ll_prof.findViewById(R.id.context_button_inactivate_view);
-        LinearLayout ll_add_local=(LinearLayout)ll_prof.findViewById(R.id.context_button_add_local_view);
-        LinearLayout ll_add_remote=(LinearLayout)ll_prof.findViewById(R.id.context_button_add_remote_view);
-        LinearLayout ll_add_sync=(LinearLayout)ll_prof.findViewById(R.id.context_button_add_sync_view);
-        LinearLayout ll_start_wizard=(LinearLayout)ll_prof.findViewById(R.id.context_button_start_wizard_view);
-        LinearLayout ll_copy_profile=(LinearLayout)ll_prof.findViewById(R.id.context_button_copy_profile_view);
-        LinearLayout ll_delete_profile=(LinearLayout)ll_prof.findViewById(R.id.context_button_delete_view);
-        LinearLayout ll_rename_profile=(LinearLayout)ll_prof.findViewById(R.id.context_button_rename_profile_view);
-        LinearLayout ll_select_all=(LinearLayout)ll_prof.findViewById(R.id.context_button_select_all_view);
-        LinearLayout ll_unselect_all=(LinearLayout)ll_prof.findViewById(R.id.context_button_unselect_all_view);
         
         int sel_cnt=ProfileUtility.getAnyProfileSelectedItemCount(mGp.profileAdapter, SMBSYNC_PROF_GROUP_DEFAULT);
         boolean any_selected=ProfileUtility.isAnyProfileSelected(mGp.profileAdapter, SMBSYNC_PROF_GROUP_DEFAULT);
 
-		ll_sync.setVisibility(ImageButton.VISIBLE);
+		mContextProfileViewSync.setVisibility(ImageButton.VISIBLE);
 
         if (!util.isRemoteDisable()) {
         	boolean act_sync_prof=false;
@@ -2548,15 +2605,15 @@ public class SMBSyncMain extends FragmentActivity {
         		}
         	}
         	if (act_sync_prof) {
-        		ib_sync.setImageResource(R.drawable.ic_32_sync);
-        		ib_sync.setEnabled(true);
+        		mContextProfileButtonSync.setImageResource(R.drawable.ic_32_sync);
+        		mContextProfileButtonSync.setEnabled(true);
         	} else {
-        		ib_sync.setImageResource(R.drawable.ic_32_sync_disabled);
-        		ib_sync.setEnabled(false);
+        		mContextProfileButtonSync.setImageResource(R.drawable.ic_32_sync_disabled);
+        		mContextProfileButtonSync.setEnabled(false);
         	}
         } else {
-        	ib_sync.setImageResource(R.drawable.ic_32_sync_disabled);
-        	ib_sync.setEnabled(false);
+        	mContextProfileButtonSync.setImageResource(R.drawable.ic_32_sync_disabled);
+        	mContextProfileButtonSync.setEnabled(false);
         }
 
     	boolean act_prof_selected=false, inact_prof_selected=false;
@@ -2571,72 +2628,75 @@ public class SMBSyncMain extends FragmentActivity {
     	}
 
     	if (inact_prof_selected) {
-            if (any_selected) ll_activete.setVisibility(ImageButton.VISIBLE);
-            else ll_activete.setVisibility(ImageButton.GONE);
-    	} else ll_activete.setVisibility(ImageButton.GONE);
+            if (any_selected) mContextProfileViewActivete.setVisibility(ImageButton.VISIBLE);
+            else mContextProfileViewActivete.setVisibility(ImageButton.GONE);
+    	} else mContextProfileViewActivete.setVisibility(ImageButton.GONE);
         
     	if (act_prof_selected) {
-            if (any_selected) ll_inactivete.setVisibility(ImageButton.VISIBLE);
-            else ll_inactivete.setVisibility(ImageButton.GONE);
-    	} else ll_inactivete.setVisibility(ImageButton.GONE);
+            if (any_selected) mContextProfileViewInactivete.setVisibility(ImageButton.VISIBLE);
+            else mContextProfileViewInactivete.setVisibility(ImageButton.GONE);
+    	} else mContextProfileViewInactivete.setVisibility(ImageButton.GONE);
         
-        ll_add_local.setVisibility(ImageButton.GONE);
-        ll_add_remote.setVisibility(ImageButton.GONE);
-        ll_add_sync.setVisibility(ImageButton.GONE);
-        ll_start_wizard.setVisibility(ImageButton.GONE);
+        mContextProfileViewAddLocal.setVisibility(ImageButton.GONE);
+        mContextProfileViewAddRemote.setVisibility(ImageButton.GONE);
+        mContextProfileViewAddSync.setVisibility(ImageButton.GONE);
+        mContextProfileViewStartWizard.setVisibility(ImageButton.GONE);
         
-        if (sel_cnt==1) ll_copy_profile.setVisibility(ImageButton.VISIBLE);
-        else ll_copy_profile.setVisibility(ImageButton.GONE);
+        if (sel_cnt==1) mContextProfileViewCopyProfile.setVisibility(ImageButton.VISIBLE);
+        else mContextProfileViewCopyProfile.setVisibility(ImageButton.GONE);
         
-        if (any_selected) ll_delete_profile.setVisibility(ImageButton.VISIBLE);
-        else ll_delete_profile.setVisibility(ImageButton.GONE);
+        if (any_selected) mContextProfileViewDeleteProfile.setVisibility(ImageButton.VISIBLE);
+        else mContextProfileViewDeleteProfile.setVisibility(ImageButton.GONE);
         
-        if (sel_cnt==1) ll_rename_profile.setVisibility(ImageButton.VISIBLE);
-        else ll_rename_profile.setVisibility(ImageButton.GONE);
+        if (sel_cnt==1) mContextProfileViewRenameProfile.setVisibility(ImageButton.VISIBLE);
+        else mContextProfileViewRenameProfile.setVisibility(ImageButton.GONE);
         
-        ll_select_all.setVisibility(ImageButton.VISIBLE);
+        mContextProfileViewSelectAll.setVisibility(ImageButton.VISIBLE);
         
-        if (any_selected) ll_unselect_all.setVisibility(ImageButton.VISIBLE);
-        else ll_unselect_all.setVisibility(ImageButton.GONE);
+        if (any_selected) mContextProfileViewUnselectAll.setVisibility(ImageButton.VISIBLE);
+        else mContextProfileViewUnselectAll.setVisibility(ImageButton.GONE);
+	};
+
+	private void setProfileContextButtonHide() {
+        
+        mContextProfileViewSync.setVisibility(ImageButton.GONE);
+        mContextProfileViewActivete.setVisibility(ImageButton.GONE);
+        mContextProfileViewInactivete.setVisibility(ImageButton.GONE);
+        mContextProfileViewAddLocal.setVisibility(ImageButton.GONE);
+        mContextProfileViewAddRemote.setVisibility(ImageButton.GONE);
+        mContextProfileViewAddSync.setVisibility(ImageButton.GONE);
+        mContextProfileViewStartWizard.setVisibility(ImageButton.GONE);
+        mContextProfileViewCopyProfile.setVisibility(ImageButton.GONE);
+        mContextProfileViewDeleteProfile.setVisibility(ImageButton.GONE);
+        mContextProfileViewRenameProfile.setVisibility(ImageButton.GONE);
+        mContextProfileViewSelectAll.setVisibility(ImageButton.GONE);
+        mContextProfileViewUnselectAll.setVisibility(ImageButton.GONE);
+
 	};
 
 	private void setProfileContextButtonNormalMode() {
-		LinearLayout ll_prof=(LinearLayout) findViewById(R.id.context_view_profile);
-		LinearLayout ll_sync=(LinearLayout)ll_prof.findViewById(R.id.context_button_sync_view);
-		ImageButton ib_sync=(ImageButton)ll_prof.findViewById(R.id.context_button_sync);
-        LinearLayout ll_activete=(LinearLayout)ll_prof.findViewById(R.id.context_button_activate_view);
-        LinearLayout ll_inactivete=(LinearLayout)ll_prof.findViewById(R.id.context_button_inactivate_view);
-        LinearLayout ll_add_local=(LinearLayout)ll_prof.findViewById(R.id.context_button_add_local_view);
-        LinearLayout ll_add_remote=(LinearLayout)ll_prof.findViewById(R.id.context_button_add_remote_view);
-        LinearLayout ll_add_sync=(LinearLayout)ll_prof.findViewById(R.id.context_button_add_sync_view);
-        LinearLayout ll_start_wizard=(LinearLayout)ll_prof.findViewById(R.id.context_button_start_wizard_view);
-        LinearLayout ll_copy_profile=(LinearLayout)ll_prof.findViewById(R.id.context_button_copy_profile_view);
-        LinearLayout ll_delete_profile=(LinearLayout)ll_prof.findViewById(R.id.context_button_delete_view);
-        LinearLayout ll_rename_profile=(LinearLayout)ll_prof.findViewById(R.id.context_button_rename_profile_view);
-        LinearLayout ll_select_all=(LinearLayout)ll_prof.findViewById(R.id.context_button_select_all_view);
-        LinearLayout ll_unselect_all=(LinearLayout)ll_prof.findViewById(R.id.context_button_unselect_all_view);
         
-        ll_sync.setVisibility(ImageButton.VISIBLE);
+        mContextProfileViewSync.setVisibility(ImageButton.VISIBLE);
         if (!util.isRemoteDisable()) {
-    		ib_sync.setImageResource(R.drawable.ic_32_sync);
-    		ib_sync.setEnabled(true);
+    		mContextProfileButtonSync.setImageResource(R.drawable.ic_32_sync);
+    		mContextProfileButtonSync.setEnabled(true);
         } else {
-        	ib_sync.setImageResource(R.drawable.ic_32_sync_disabled);
-        	ib_sync.setEnabled(false);
+        	mContextProfileButtonSync.setImageResource(R.drawable.ic_32_sync_disabled);
+        	mContextProfileButtonSync.setEnabled(false);
         }
         
-        ll_activete.setVisibility(ImageButton.GONE);
-        ll_inactivete.setVisibility(ImageButton.GONE);
-        ll_add_local.setVisibility(ImageButton.VISIBLE);
-        ll_add_remote.setVisibility(ImageButton.VISIBLE);
-        ll_add_sync.setVisibility(ImageButton.VISIBLE);
-        ll_start_wizard.setVisibility(ImageButton.VISIBLE);
-        ll_copy_profile.setVisibility(ImageButton.GONE);
-        ll_delete_profile.setVisibility(ImageButton.GONE);
-        ll_rename_profile.setVisibility(ImageButton.GONE);
-        if (!mGp.profileAdapter.isEmptyAdapter()) ll_select_all.setVisibility(ImageButton.VISIBLE);
-        else ll_select_all.setVisibility(ImageButton.GONE);
-        ll_unselect_all.setVisibility(ImageButton.GONE);
+        mContextProfileViewActivete.setVisibility(ImageButton.GONE);
+        mContextProfileViewInactivete.setVisibility(ImageButton.GONE);
+        mContextProfileViewAddLocal.setVisibility(ImageButton.VISIBLE);
+        mContextProfileViewAddRemote.setVisibility(ImageButton.VISIBLE);
+        mContextProfileViewAddSync.setVisibility(ImageButton.VISIBLE);
+        mContextProfileViewStartWizard.setVisibility(ImageButton.VISIBLE);
+        mContextProfileViewCopyProfile.setVisibility(ImageButton.GONE);
+        mContextProfileViewDeleteProfile.setVisibility(ImageButton.GONE);
+        mContextProfileViewRenameProfile.setVisibility(ImageButton.GONE);
+        if (!mGp.profileAdapter.isEmptyAdapter()) mContextProfileViewSelectAll.setVisibility(ImageButton.VISIBLE);
+        else mContextProfileViewSelectAll.setVisibility(ImageButton.GONE);
+        mContextProfileViewUnselectAll.setVisibility(ImageButton.GONE);
 
 	};
 
@@ -2949,6 +3009,8 @@ public class SMBSyncMain extends FragmentActivity {
 //		vibrateDefaultPattern();
 
 		mGp.msgListView.setFastScrollEnabled(true);
+		setFastScrollListener(mGp.msgListView);
+		
 		util.flushLogFile();
 		setWifiOff();
 		if ((!isExtraSpecAutoTerm && mGp.settingAutoStart && mGp.settingAutoTerm) || 

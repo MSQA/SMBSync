@@ -118,13 +118,12 @@
 	            android:id="@+id/sync_history_list_view_count_ignored"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
-	            android:text="9999999200"
+	            android:text="200"
 	            android:ellipsize="end"
 	            android:maxLines="1"
 	            android:layout_marginRight="10dp"
 	            android:textAppearance="?android:attr/textAppearanceMedium"
 	             />
-	        	        	
 	    </LinearLayout>
 	    
 	    <TextView

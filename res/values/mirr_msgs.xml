@@ -23,7 +23,7 @@
     <string name="msgs_mirror_prof_file_bypass_media_store_change">The files last modification time was different, media store option was valid but ignores the update for.</string>
     <string name="msgs_mirror_task_ended">Sync task was ended.</string>
     <string name="msgs_mirror_task_started">Sync task has started.</string>
-    <string name="msgs_mirror_task_result_stats" formatted="false">No of copies=%s, No of deletes=%s, No of ignores=%s, No of warnings=%s, No of errors=%s</string>
+    <string name="msgs_mirror_task_result_stats" formatted="false">No of copies=%s, No of deletes=%s, No of ignores=%s, No of warnings=%s, No of retries=%s, No of errors=%s</string>
     <string name="msgs_mirror_prof_ms_different_file_last_mod" formatted="false">
         Last modified time was different between local and MediaStore.  
         Local file last modified=%s , MediaStore last modified=%s</string>
