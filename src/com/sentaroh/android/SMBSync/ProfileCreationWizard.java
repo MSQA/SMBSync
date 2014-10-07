@@ -1493,7 +1493,7 @@ public class ProfileCreationWizard {
 			public void onClick(View v) {
 				ArrayList<ProfileListItem>pl=new ArrayList<ProfileListItem>();
 				AdapterProfileList t_prof=new AdapterProfileList(mContext, 
-							R.layout.profile_list_item_view, pl, "");
+							R.layout.profile_list_item_view, pl);
 				syncWizardCreateProfile(t_prof);
 				NotifyEvent ntfy=new NotifyEvent(mContext);
 				//Listen setRemoteShare response 

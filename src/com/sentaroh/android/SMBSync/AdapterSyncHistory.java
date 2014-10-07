@@ -50,6 +50,7 @@ public class AdapterSyncHistory extends ArrayAdapter<SyncHistoryListItem> {
 		c=context;
 		id=textViewResourceId;
 		items=objects;
+        vi=(LayoutInflater)c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
 
 	@Override
@@ -98,13 +99,13 @@ public class AdapterSyncHistory extends ArrayAdapter<SyncHistoryListItem> {
 		return result;
 	}
 	
+	private LayoutInflater vi =null;
 	@Override
     public View getView(final int position, View convertView, ViewGroup parent) {
 		final ViewHolder holder;
 		
         View v = convertView;
         if (v == null) {
-            LayoutInflater vi = (LayoutInflater)c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             v = vi.inflate(id, null);
             holder=new ViewHolder();
     		holder.cb_sel=(CheckBox)v.findViewById(R.id.sync_history_list_view_cb);
@@ -134,8 +135,6 @@ public class AdapterSyncHistory extends ArrayAdapter<SyncHistoryListItem> {
             	holder.tv_time.setVisibility(TextView.VISIBLE);
             	holder.tv_status.setVisibility(TextView.VISIBLE);
             	holder.ll_count.setVisibility(TextView.VISIBLE);
-            	if (isShowCheckBox) holder.cb_sel.setVisibility(TextView.VISIBLE);
-            	else holder.cb_sel.setVisibility(TextView.INVISIBLE);
 
              	holder.tv_date.setText(o.sync_date);
             	holder.tv_time.setText(o.sync_time);
@@ -163,7 +162,10 @@ public class AdapterSyncHistory extends ArrayAdapter<SyncHistoryListItem> {
            		} else {
            			holder.tv_error.setVisibility(TextView.GONE);
            		}
-           		
+
+            	if (isShowCheckBox) holder.cb_sel.setVisibility(TextView.VISIBLE);
+            	else holder.cb_sel.setVisibility(TextView.INVISIBLE);
+
              	holder.cb_sel.setOnCheckedChangeListener(new OnCheckedChangeListener() {
      				@Override
      				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {

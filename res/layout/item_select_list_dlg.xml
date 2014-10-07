@@ -46,6 +46,9 @@
         android:text=""
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
+    <include layout="@layout/context_view_file_select" 
+        android:visibility="gone"/>
+    
     <include layout="@layout/divider_line1" />
 
     <TextView

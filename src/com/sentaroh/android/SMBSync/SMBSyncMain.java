@@ -144,7 +144,7 @@ public class SMBSyncMain extends FragmentActivity {
     private static Handler mUiHandler=new Handler();
 	private WifiManager.WifiLock mWifiLock=null;
 
-	private Locale mCurrentLocal=null;
+	private Locale mCurrentLocale=null;
 	
 	@Override  
 	protected void onSaveInstanceState(Bundle outState) {  
@@ -171,7 +171,7 @@ public class SMBSyncMain extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 //		requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-		mCurrentLocal=getResources().getConfiguration().locale;
+		mCurrentLocale=getResources().getConfiguration().locale;
 		
 		setContentView(R.layout.main);
 		mContext=this;
@@ -179,7 +179,17 @@ public class SMBSyncMain extends FragmentActivity {
 		mGp.enableMainUi=true;
 		mGp.uiHandler=new Handler();
 		mGp.SMBSync_External_Root_Dir=LocalMountPoint.getExternalStorageDir();
-		
+
+		if (util==null) util=new SMBSyncUtil(this.getApplicationContext(),"Main", mGp);
+		util.setActivityIsForeground(true);
+		util.openLogFile();
+
+		initSettingsParms();
+		applySettingParms();
+
+		util.addDebugLogMsg(1,"I","onCreate entered, "+"resartStatus="+restartStatus+
+				", isActivityForeground="+util.isActivityForeground());
+
         startService(new Intent(mContext, SMBSyncService.class));
 
 		mDimScreenWakelock=((PowerManager)getSystemService(Context.POWER_SERVICE))
@@ -196,9 +206,9 @@ public class SMBSyncMain extends FragmentActivity {
 
 //		if (Build.VERSION.SDK_INT>=14)
 //			this.getActionBar().setHomeButtonEnabled(false);
-		
-		if (util==null) util=new SMBSyncUtil(this.getApplicationContext(),"Main", mGp);
-		util.setActivityIsForeground(true);
+
+		checkExternalStorage();
+		mGp.SMBSync_Internal_Root_Dir=getFilesDir().toString();
 
 		if (ccMenu ==null) ccMenu = new CustomContextMenu(getResources(),getSupportFragmentManager());
 		commonDlg=new CommonDialog(mContext, getSupportFragmentManager());
@@ -206,36 +216,24 @@ public class SMBSyncMain extends FragmentActivity {
 		ArrayList<MsgListItem> tml =new ArrayList<MsgListItem>();
 		mGp.msgListAdapter = new AdapterMessageList(this,R.layout.msg_list_item_view,tml);
 
-		ArrayList<ProfileListItem> tml1 =new ArrayList<ProfileListItem>();
-		mGp.profileAdapter=new AdapterProfileList(this, R.layout.profile_list_item_view, tml1,
-						mGp.SMBSync_External_Root_Dir);
+		if (profUtil==null) 
+			profUtil=new ProfileUtility(util,this, commonDlg,ccMenu, mGp,getSupportFragmentManager());
+		
+		mGp.profileAdapter=profUtil.createProfileList(false,"");
 		currentViewType="P";
 
 		mGp.syncHistoryList=util.loadHistoryList();
 		mGp.syncHistoryAdapter=new AdapterSyncHistory(mContext, R.layout.sync_history_list_item_view, 
 				mGp.syncHistoryList);
 		
+		
 		createTabView() ;
-		loadMsgString();
-		initSettingsParms();
-		applySettingParms();
-		
-		checkExternalStorage();
-		mGp.SMBSync_Internal_Root_Dir=getFilesDir().toString();
-		
-		util.openLogFile();
 		
 		initAdapterAndView();
-		
-		util.addDebugLogMsg(1,"I","onCreate entered, "+"resartStatus="+restartStatus+
-					", isActivityForeground="+util.isActivityForeground());
 		
 		initJcifsOption();
 		
 		getApplVersionName();
-
-		if (profUtil==null) 
-			profUtil=new ProfileUtility(util,this, commonDlg,ccMenu, mGp,getSupportFragmentManager());
 		
 		SchedulerMain.sendTimerRequest(mContext, SCHEDULER_INTENT_SET_TIMER_IF_NOT_SET);
 //		if (Build.VERSION.SDK_INT >= 19) {
@@ -324,13 +322,14 @@ public class SMBSyncMain extends FragmentActivity {
 					
 					if (restartStatus==0) {
 						startupWarning();
-						util.addLogMsg("I",msgs_smbsync_main_start+" Version "+packageVersionName );
-						showNotificationMsg(msgs_smbsync_main_start+" Version "+packageVersionName );
+						util.addLogMsg("I",
+								mContext.getString(R.string.msgs_smbsync_main_start)+" Version "+packageVersionName );
+						showNotificationMsg(mContext.getString(R.string.msgs_smbsync_main_start)+" Version "+packageVersionName );
 					} else if (restartStatus==2) {
 						restoreTaskData();
 						if (currentViewType.equals("M")) tabHost.setCurrentTab(1);
-						util.addLogMsg("I",msgs_smbsync_main_restart+" Version "+packageVersionName);
-						showNotificationMsg(msgs_smbsync_main_restart+" Version "+packageVersionName);
+						util.addLogMsg("I",mContext.getString(R.string.msgs_smbsync_main_restart)+" Version "+packageVersionName);
+						showNotificationMsg(mContext.getString(R.string.msgs_smbsync_main_restart)+" Version "+packageVersionName);
 					}
 					listSMBSyncOption();
 
@@ -493,15 +492,15 @@ public class SMBSyncMain extends FragmentActivity {
 	    if (util!=null) {
 	    	util.addDebugLogMsg(1,"I","onConfigurationChanged Entered, " ,
 	    			"New orientation="+newConfig.orientation+
-	    			", Current language=",mCurrentLocal.getLanguage(),
+	    			", Current language=",mCurrentLocale.getLanguage(),
 	    			", New language=",newConfig.locale.getLanguage());
 	    }
 	    if (newConfig.locale.getLanguage().equals("ja")) {
-	    	if (!mCurrentLocal.getLanguage().equals("ja")) {//to ja
+	    	if (!mCurrentLocale.getLanguage().equals("ja")) {//to ja
 	    		changeLanguageCode(newConfig);
 	    	}
 	    } else {
-	    	if (mCurrentLocal.getLanguage().equals("ja")) {//to en（Default)
+	    	if (mCurrentLocale.getLanguage().equals("ja")) {//to en（Default)
 	    		changeLanguageCode(newConfig);
 	    	}
 	    }
@@ -509,9 +508,17 @@ public class SMBSyncMain extends FragmentActivity {
 	    if (Build.VERSION.SDK_INT>10) {
 		    final ViewSaveArea vsa=new ViewSaveArea();
 		    saveViewContent(vsa);
-		    
+		    releaseImageResource();
 		    setContentView(R.layout.main);
 		    
+		    mGp.syncHistoryListView.setAdapter(null);
+			mGp.syncHistoryAdapter=new AdapterSyncHistory(mContext, R.layout.sync_history_list_item_view, 
+					mGp.syncHistoryList);
+		    
+			mGp.profileListView.setAdapter(null);
+			ArrayList<ProfileListItem>pfl=mGp.profileAdapter.getArrayList();
+			mGp.profileAdapter=new AdapterProfileList(mContext, R.layout.profile_list_item_view, pfl);
+			
 			createTabView() ;
 			initAdapterAndView();
 			
@@ -536,9 +543,24 @@ public class SMBSyncMain extends FragmentActivity {
 			
 			if (isUiEnabled()) setUiEnabled();
 			else setUiDisabled();
+	    } else {
+//	    	releaseImageResource();
+	    	ViewSaveArea vsa=new ViewSaveArea();
+		    vsa.sync_list_view_pos_x=mGp.syncHistoryListView.getFirstVisiblePosition();
+		    if (mGp.syncHistoryListView.getChildAt(0)!=null) vsa.sync_list_view_pos_y=mGp.syncHistoryListView.getChildAt(0).getTop();
+
+		    mGp.syncHistoryListView.setAdapter(null);
+			mGp.syncHistoryAdapter=new AdapterSyncHistory(mContext, R.layout.sync_history_list_item_view, 
+					mGp.syncHistoryList);
+			
+			mGp.syncHistoryListView.setAdapter(mGp.syncHistoryAdapter);
+			mGp.syncHistoryListView.setClickable(true);
+			mGp.syncHistoryListView.setFocusable(true);
+			mGp.syncHistoryListView.setFocusableInTouchMode(true);
+
+			
+			mGp.syncHistoryListView.setSelectionFromTop(vsa.sync_list_view_pos_x, vsa.sync_list_view_pos_y);
 	    }
-		
-//		refreshOptionMenu();
 	};
 
 	private void saveViewContent(ViewSaveArea vsa) {
@@ -632,13 +654,12 @@ public class SMBSyncMain extends FragmentActivity {
 	
 	private void changeLanguageCode(final Configuration newConfig) {
 		util.addLogMsg("I",getString(R.string.msgs_smbsync_main_language_changed));
-	    loadMsgString();
 //	    refreshOptionMenu();
 //		mTabChildviewProf.setTabTitle(getString(R.string.msgs_tab_name_prof));
 //		mTabChildviewMsg.setTabTitle(getString(R.string.msgs_tab_name_msg));
 //		mTabChildviewHist.setTabTitle(getString(R.string.msgs_tab_name_history));
 		profUtil.loadMsgString();
-		mCurrentLocal=newConfig.locale;
+		mCurrentLocale=newConfig.locale;
 		
 		commonDlg.showCommonDialog(false, "W", "", 
 				getString(R.string.msgs_smbsync_main_language_changed), null);
@@ -802,22 +823,16 @@ public class SMBSyncMain extends FragmentActivity {
 		tabHost=(TabHost)findViewById(android.R.id.tabhost);
 		tabHost.setup();
 
-		mTabChildviewProf = 
-			new CustomTabContentView(this,getString(R.string.msgs_tab_name_prof));
-		TabHost.TabSpec tabSpec=
-			tabHost.newTabSpec("prof").setIndicator(mTabChildviewProf).setContent(R.id.profile_view);
+		mTabChildviewProf = new CustomTabContentView(this,getString(R.string.msgs_tab_name_prof));
+		TabHost.TabSpec tabSpec= tabHost.newTabSpec("prof").setIndicator(mTabChildviewProf).setContent(R.id.profile_view);
 		tabHost.addTab(tabSpec);
 		
-		mTabChildviewMsg = 
-			new CustomTabContentView(this,getString(R.string.msgs_tab_name_msg));
-		tabSpec=
-			tabHost.newTabSpec("msg").setIndicator(mTabChildviewMsg).setContent(R.id.message_view);
+		mTabChildviewMsg = new CustomTabContentView(this,getString(R.string.msgs_tab_name_msg));
+		tabSpec= tabHost.newTabSpec("msg").setIndicator(mTabChildviewMsg).setContent(R.id.message_view);
 		tabHost.addTab(tabSpec);
 
-		mTabChildviewHist = 
-				new CustomTabContentView(this,getString(R.string.msgs_tab_name_history));
-		tabSpec=
-			tabHost.newTabSpec("hst").setIndicator(mTabChildviewHist).setContent(R.id.history_view);
+		mTabChildviewHist = new CustomTabContentView(this,getString(R.string.msgs_tab_name_history));
+		tabSpec= tabHost.newTabSpec("hst").setIndicator(mTabChildviewHist).setContent(R.id.history_view);
 		tabHost.addTab(tabSpec);
 
 		if (restartStatus==0) tabHost.setCurrentTab(0);
@@ -1352,7 +1367,7 @@ public class SMBSyncMain extends FragmentActivity {
 				return;
 			}
 		}
-		util.addLogMsg("I",msgs_smbsync_main_end);
+		util.addLogMsg("I",mContext.getString(R.string.msgs_smbsync_main_end));
 		isTaskTermination = true; // exit cleanly
 		finish();
 	};
@@ -1535,8 +1550,10 @@ public class SMBSyncMain extends FragmentActivity {
 		
 		if (!mGp.settingAutoStart) mGp.settingAutoTerm=false;
 		
-		if (ProfileUtility.isAnyProfileSelected(mGp.profileAdapter, SMBSYNC_PROF_GROUP_DEFAULT)) setProfileContextButtonSelectMode();
-		else setProfileContextButtonNormalMode();
+		if (mGp.profileAdapter!=null) {
+			if (ProfileUtility.isAnyProfileSelected(mGp.profileAdapter, SMBSYNC_PROF_GROUP_DEFAULT)) setProfileContextButtonSelectMode();
+			else setProfileContextButtonNormalMode();
+		}
 
 //		if (isJcifsOptionChanged() && restartStatus!=0) {
 //			commonDlg.showCommonDialog(false,"W",
@@ -2314,6 +2331,39 @@ public class SMBSyncMain extends FragmentActivity {
     private LinearLayout mContextHistiryViewSelectAll=null;
     private LinearLayout mContextHistiryViewUnselectAll=null;
     
+    private void releaseImageResource(){
+    	releaseImageBtnRes(mContextProfileButtonActivete);
+    	releaseImageBtnRes(mContextProfileButtonInactivete);
+    	releaseImageBtnRes(mContextProfileButtonAddLocal);
+    	releaseImageBtnRes(mContextProfileButtonAddRemote);
+    	releaseImageBtnRes(mContextProfileButtonAddSync);
+    	releaseImageBtnRes(mContextProfileButtonStartWizard);
+    	releaseImageBtnRes(mContextProfileButtonCopyProfile);
+    	releaseImageBtnRes(mContextProfileButtonDeleteProfile);
+    	releaseImageBtnRes(mContextProfileButtonRenameProfile);
+    	releaseImageBtnRes(mContextProfileButtonSync);
+    	releaseImageBtnRes(mContextProfileButtonSelectAll);
+    	releaseImageBtnRes(mContextProfileButtonUnselectAll);
+
+    	releaseImageBtnRes(mContextHistoryButtonMoveTop);
+    	releaseImageBtnRes(mContextHistoryButtonMoveBottom);
+    	releaseImageBtnRes(mContextHistoryButtonDeleteHistory);
+    	releaseImageBtnRes(mContextHistiryButtonHistiryCopyClipboard);
+    	releaseImageBtnRes(mContextHistiryButtonSelectAll);
+    	releaseImageBtnRes(mContextHistiryButtonUnselectAll);
+    	
+    	mGp.profileListView.setAdapter(null);
+    	mGp.syncHistoryListView.setAdapter(null);
+    };
+    
+    private void releaseImageBtnRes(ImageButton ib) {
+//    	((BitmapDrawable) ib.getDrawable()).getBitmap().recycle();
+        ib.setImageDrawable(null);
+//    	ib.setBackground(null);
+    	ib.setBackgroundDrawable(null);
+    	ib.setImageBitmap(null);
+    };
+    
     private void createContextView() {
 //    	if (mContextProfileBitmapActive==null) {
 //    		mContextProfileBitmapActive=BitmapFactory.decodeResource(getResources(), R.drawable.menu_active);
@@ -2702,7 +2752,7 @@ public class SMBSyncMain extends FragmentActivity {
 
 	private void createMsglistContextMenu(View view, int idx) {
 
-		ccMenu.addMenuItem(msgs_move_to_top,R.drawable.menu_top)
+		ccMenu.addMenuItem(mContext.getString(R.string.msgs_move_to_top),R.drawable.menu_top)
 			.setOnClickListener(new CustomContextMenuOnClickListener() {
 				@Override
 				public void onClick(CharSequence menuTitle) {
@@ -2710,7 +2760,7 @@ public class SMBSyncMain extends FragmentActivity {
 				}
 		});
 		
-		ccMenu.addMenuItem(msgs_move_to_bottom,R.drawable.menu_bottom)
+		ccMenu.addMenuItem(mContext.getString(R.string.msgs_move_to_bottom),R.drawable.menu_bottom)
 			.setOnClickListener(new CustomContextMenuOnClickListener() {
 				@Override
 				public void onClick(CharSequence menuTitle) {
@@ -2718,7 +2768,7 @@ public class SMBSyncMain extends FragmentActivity {
 				}
 		});
 
-		ccMenu.addMenuItem(msgs_clear_log_message,R.drawable.menu_clear)
+		ccMenu.addMenuItem(mContext.getString(R.string.msgs_clear_log_message),R.drawable.menu_clear)
 			.setOnClickListener(new CustomContextMenuOnClickListener() {
 				@Override
 				public void onClick(CharSequence menuTitle) {
@@ -2763,8 +2813,8 @@ public class SMBSyncMain extends FragmentActivity {
 		}
 		
 		if (alp.isEmpty()) {
-			util.addLogMsg("E",msgs_sync_select_prof_no_active_profile);
-			commonDlg.showCommonDialog(false, "E", "", msgs_sync_select_prof_no_active_profile, null);
+			util.addLogMsg("E",mContext.getString(R.string.msgs_sync_select_prof_no_active_profile));
+			commonDlg.showCommonDialog(false, "E", "", mContext.getString(R.string.msgs_sync_select_prof_no_active_profile), null);
 		} else {
 			tabHost.setCurrentTab(1);
 			startMirrorTask(alp);
@@ -2784,8 +2834,8 @@ public class SMBSyncMain extends FragmentActivity {
 		}
 
 		if (alp.isEmpty()) {
-			util.addLogMsg("E",msgs_active_sync_prof_not_found);
-			commonDlg.showCommonDialog(false, "E", "", msgs_active_sync_prof_not_found, null);
+			util.addLogMsg("E",mContext.getString(R.string.msgs_active_sync_prof_not_found));
+			commonDlg.showCommonDialog(false, "E", "", mContext.getString(R.string.msgs_active_sync_prof_not_found), null);
 		} else {
 			tabHost.setCurrentTab(1);
 			startMirrorTask(alp);
@@ -3699,14 +3749,14 @@ public class SMBSyncMain extends FragmentActivity {
 					}
 		} else {
 			if (mirror_prof_master_type.equals("R") && mirror_prof_target_type.equals("R")) {
-				util.addLogMsg("E",String.format(msgs_invalid_profile_combination,
+				util.addLogMsg("E",String.format(mContext.getString(R.string.msgs_invalid_profile_combination),
 						mp_profname));
 			} else {
 				if (!build_success_master)
-					util.addLogMsg("E",String.format(msgs_master_profile_not_found,
+					util.addLogMsg("E",String.format(mContext.getString(R.string.msgs_master_profile_not_found),
 						mp_profname));
 				if (!build_success_target)
-					util.addLogMsg("E",String.format(msgs_target_profile_not_found,
+					util.addLogMsg("E",String.format(mContext.getString(R.string.msgs_target_profile_not_found),
 							mp_profname));
 			}
 		}
@@ -3928,39 +3978,6 @@ public class SMBSyncMain extends FragmentActivity {
 		    lf.delete();
 		    util.addDebugLogMsg(1,"I", "RestartData was delete.");
 	    }
-	};
-	
-	private static String msgs_active_sync_prof_not_found	;
-	private static String msgs_clear_log_message	;
-	private static String msgs_move_to_bottom	;
-	private static String msgs_move_to_top	;
-
-	private static String msgs_master_profile_not_found;
-	private static String msgs_target_profile_not_found;
-	private static String msgs_invalid_profile_combination;
-	
-	private static String msgs_smbsync_main_start;
-	private static String msgs_smbsync_main_restart;
-	private static String msgs_smbsync_main_end;
-	
-    private static String msgs_sync_select_prof_no_active_profile;
-    
-	private void loadMsgString() {
-		msgs_sync_select_prof_no_active_profile=getString(R.string.msgs_sync_select_prof_no_active_profile);
-
-	    msgs_smbsync_main_start=	getString(R.string.msgs_smbsync_main_start);
-	    msgs_smbsync_main_restart=	getString(R.string.msgs_smbsync_main_restart);
-	    msgs_smbsync_main_end=	getString(R.string.msgs_smbsync_main_end);
-		
-		
-		msgs_active_sync_prof_not_found	=	getString(R.string.msgs_active_sync_prof_not_found	);
-		msgs_clear_log_message			=	getString(R.string.msgs_clear_log_message);
-		msgs_move_to_bottom				=	getString(R.string.msgs_move_to_bottom	);
-		msgs_move_to_top				=	getString(R.string.msgs_move_to_top	);
-		msgs_master_profile_not_found	=	getString(R.string.msgs_master_profile_not_found);
-		msgs_target_profile_not_found	=	getString(R.string.msgs_target_profile_not_found);
-		msgs_invalid_profile_combination=	getString(R.string.msgs_invalid_profile_combination);
-	
 	};
 	
 	public class CustomTabContentView extends FrameLayout {  

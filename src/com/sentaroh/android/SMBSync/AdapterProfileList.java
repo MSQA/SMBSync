@@ -57,19 +57,16 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
 		private Context c;
 		private int id;
 		private ArrayList<ProfileListItem>items;
-		@SuppressWarnings("unused")
-		private String SMBSync_External_Root_Dir;
 		
 		public AdapterProfileList(Context context, int textViewResourceId,
-				ArrayList<ProfileListItem> objects, String esd) {
+				ArrayList<ProfileListItem> objects) {
 			super(context, textViewResourceId, objects);
 			c = context;
 			id = textViewResourceId;
 			items = objects;
-			SMBSync_External_Root_Dir=esd;
 		}
 		public ProfileListItem getItem(int i) {
-			 return items.get(i);
+			return items.get(i);
 		}
 		public  void remove(int i) {
 			items.remove(i);

@@ -100,6 +100,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckedTextView;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -124,8 +125,6 @@ import com.sentaroh.android.Utilities.Widget.CustomSpinnerAdapter;
 
 public class ProfileUtility {
 
-	private boolean errorCreateProfileList;
-
 	private CustomContextMenu ccMenu=null;
 	private String smbUser,smbPass;
 	
@@ -137,30 +136,18 @@ public class ProfileUtility {
 		importedSettingParmList=new ArrayList<PreferenceParmListIItem>();
 	
 	private CommonDialog commonDlg=null;
-	
 	private GlobalParameters mGp=null;
-	
 	private FragmentManager mFragMgr=null;
 
 	ProfileUtility (SMBSyncUtil mu, Context c,  
 			CommonDialog cd, CustomContextMenu ccm, GlobalParameters gp, FragmentManager fm) {
 		mContext=c;
-		
 		mGp=gp;
-		
 		util=mu;
-		
 		loadMsgString();
-		
 		commonDlg=cd;
-		
 		ccMenu=ccm;
-		
 		mFragMgr=fm;
-		
-		AdapterProfileList tpfa=createProfileList(false,"");
-		mGp.profileAdapter.setArrayList(tpfa.getArrayList());
-		mGp.profileAdapter.notifyDataSetChanged();
 	};
 
 	public void importProfileDlg(final String lurl, final String ldir, 
@@ -178,11 +165,11 @@ public class ProfileUtility {
 					public void positiveResponse(Context c, Object[] o) {
 						mGp.profilePassword=(String)o[0];
 		    			final AdapterProfileList tfl = createProfileList(true,fpath);
-		    			ProfileListItem pli=tfl.getItem(0);
-		    			if (errorCreateProfileList) {
+		    			if (tfl==null) {
 			    			commonDlg.showCommonDialog(false,"E",
 			    					String.format(msgs_import_prof_fail,fpath),"",null);
 		    			} else {
+			    			ProfileListItem pli=tfl.getItem(0);
 		    				if (tfl.getCount()==1 && pli.getType().equals("")) {
 		    	    			commonDlg.showCommonDialog(false,"E",
 		    	    					String.format(msgs_import_prof_fail_no_valid_item,fpath),"",null);
@@ -2439,6 +2426,10 @@ public class ProfileUtility {
 				((TextView)dialog.findViewById(R.id.item_select_list_dlg_subtitle))
 		    		.setText(msgs_current_dir+" "+remurl+remdir);
 		        final TextView dlg_msg=(TextView)dialog.findViewById(R.id.item_select_list_dlg_msg);
+		        final LinearLayout ll_context=(LinearLayout)dialog.findViewById(R.id.context_view_file_select);
+		        ll_context.setVisibility(LinearLayout.VISIBLE);
+		        final ImageButton ib_select_all=(ImageButton)ll_context.findViewById(R.id.context_button_select_all);
+		        final ImageButton ib_unselect_all=(ImageButton)ll_context.findViewById(R.id.context_button_unselect_all);
 			    final Button btn_ok=(Button)dialog.findViewById(R.id.item_select_list_dlg_ok_btn);
 		        dlg_msg.setVisibility(TextView.VISIBLE);
 				
@@ -2455,8 +2446,31 @@ public class ProfileUtility {
 			    lv.setAdapter(tfa);
 			    lv.setScrollingCacheEnabled(false);
 			    lv.setScrollbarFadingEnabled(false);
-			    lv.setFastScrollEnabled(true);
+//			    lv.setFastScrollEnabled(true);
 				
+			    ib_select_all.setOnClickListener(new OnClickListener(){
+					@Override
+					public void onClick(View v) {
+						for(int i=0;i<tfa.getDataItemCount();i++) {
+							TreeFilelistItem tfli=tfa.getDataItem(i);
+							if (!tfli.isHideListItem()) tfa.setDataItemIsSelected(i);
+						}
+						tfa.notifyDataSetChanged();
+						btn_ok.setEnabled(true);
+					}
+			    });
+
+			    ib_unselect_all.setOnClickListener(new OnClickListener(){
+					@Override
+					public void onClick(View v) {
+						for(int i=0;i<tfa.getDataItemCount();i++) {
+							tfa.setDataItemIsUnselected(i);
+						}
+						tfa.notifyDataSetChanged();
+						btn_ok.setEnabled(false);
+					}
+			    });
+
 				lv.setOnItemClickListener(new OnItemClickListener(){
 					public void onItemClick(AdapterView<?> items, View view, int idx, long id) {
 			            // リストアイテムを選択したときの処理
@@ -2471,36 +2485,14 @@ public class ProfileUtility {
 					public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
 							final int position, long arg3) {
 			  			final int t_pos=tfa.getItem(position);
+			    		final TreeFilelistItem tfi=tfa.getDataItem(t_pos);
+						if (tfi.getName().startsWith("---")) return true;
 			  			if (tfa.getDataItem(t_pos).isChecked()) {
-				  			ccMenu.addMenuItem(mContext.getString(R.string.msgs_file_select_unselect_this_entry)
-									+" "+tfa.getDataItem(t_pos).getPath()+
-									tfa.getDataItem(t_pos).getName())
-							.setOnClickListener(new CustomContextMenuOnClickListener() {
-						  		@Override
-								public void onClick(CharSequence menuTitle) {
-						    		final TreeFilelistItem tfi=tfa.getDataItem(t_pos);
-									if (tfi.getName().startsWith("---")) return;
-									tfa.setDataItemIsUnselected(t_pos);
-									if (tfa.isDataItemIsSelected()) btn_ok.setEnabled(true);
-									else btn_ok.setEnabled(false);
-								}
-						  	});
+			  				tfa.setDataItemIsUnselected(t_pos);
 			  			} else {
-				  			ccMenu.addMenuItem(mContext.getString(R.string.msgs_file_select_select_this_entry)
-									+" "+tfa.getDataItem(t_pos).getPath()+
-									tfa.getDataItem(t_pos).getName())
-							.setOnClickListener(new CustomContextMenuOnClickListener() {
-						  		@Override
-								public void onClick(CharSequence menuTitle) {
-						    		final TreeFilelistItem tfi=tfa.getDataItem(t_pos);
-									if (tfi.getName().startsWith("---")) return;
-									tfa.setDataItemIsSelected(t_pos);
-									btn_ok.setEnabled(true);
-								}
-						  	});
+			  				tfa.setDataItemIsSelected(t_pos);
 			  			}
-						ccMenu.createMenu();
-						return false;
+						return true;
 					}
 				});
 
@@ -2515,14 +2507,7 @@ public class ProfileUtility {
 					}
 					@Override
 					public void negativeResponse(Context arg0, Object[] arg1) {
-						boolean checked=false;
-						for (int i=0;i<tfa.getDataItemCount();i++) {
-							if (tfa.getDataItem(i).isChecked()) {
-								checked=true;
-								break;
-							}
-						}
-						if (checked) btn_ok.setEnabled(true);
+						if (tfa.isDataItemIsSelected()) btn_ok.setEnabled(true);
 						else btn_ok.setEnabled(false);
 					}
 				});
@@ -2566,19 +2551,16 @@ public class ProfileUtility {
 			}
 		});
 		createRemoteFileList(remurl,remdir,ntfy,true);
-		
 	};
-
+	
 	private boolean addDirFilter(boolean check_only, TreeFilelistAdapter tfa, 
 			AdapterFilterList fla, String cdir, TextView dlg_msg) {
         String sel="", add_msg="";
         //check duplicate entry
         for (int i=0;i<tfa.getCount();i++) {
         	if (tfa.getDataItem(i).isChecked()) {
-        		if (tfa.getDataItem(i).getPath().length()==1) 
-            		sel=tfa.getDataItem(i).getName();
-        		else sel=tfa.getDataItem(i).getPath()+
-        				tfa.getDataItem(i).getName();
+        		if (tfa.getDataItem(i).getPath().length()==1) sel=tfa.getDataItem(i).getName();
+        		else sel=tfa.getDataItem(i).getPath()+tfa.getDataItem(i).getName();
         		sel=sel.replaceFirst(cdir, "");
         		if (isFilterExists(sel,fla)) {
         			String mtxt=mContext.getString(R.string.msgs_filter_list_duplicate_filter_specified);
@@ -3978,9 +3960,7 @@ public class ProfileUtility {
 	};
 	
 	public AdapterProfileList createProfileList(boolean sdcard, String fp) {
-		AdapterProfileList pfl;
-		
-		errorCreateProfileList=false;
+		AdapterProfileList pfl=null;
 		
 		ArrayList<ProfileListItem> sync = new ArrayList<ProfileListItem>();
 		ArrayList<ProfileListItem> rem = new ArrayList<ProfileListItem>();
@@ -4030,18 +4010,18 @@ public class ProfileUtility {
 					br.close();
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();
-					errorCreateProfileList=true;
 					util.addLogMsg("E",String.format(msgs_create_profile_error,fp));
 					util.addLogMsg("E",e.toString());
+					return null;
 				} catch (IOException e) {
 					e.printStackTrace();
-					errorCreateProfileList=true;
 					util.addLogMsg("E",String.format(msgs_create_profile_error,fp));
 					util.addLogMsg("E",e.toString());
+					return null;
 				}
 			} else {
-				errorCreateProfileList=true;
 				util.addLogMsg("E",String.format(msgs_create_profile_not_found,fp));
+				return null;
 			}
 
 		} else {
@@ -4090,7 +4070,7 @@ public class ProfileUtility {
 				e.printStackTrace();
 				util.addLogMsg("E",String.format(msgs_create_profile_error,pf));
 				util.addLogMsg("E",e.toString());
-				errorCreateProfileList=true;
+				return null;
 			}
 		}
 
@@ -4100,15 +4080,15 @@ public class ProfileUtility {
 		sync.addAll(rem);
 		sync.addAll(lcl); 
 
-		pfl = new AdapterProfileList(mContext, R.layout.profile_list_item_view, sync,"");
-		for (int i=0;i<pfl.getCount();i++) {
-			ProfileListItem item = pfl.getItem(i);
+		for (int i=0;i<sync.size();i++) {
+			ProfileListItem item = sync.get(i);
 			if (item.getMasterType().equals("")) {
-				item.setMasterType(getProfileType(item.getMasterName(), pfl));
-				item.setTargetType(getProfileType(item.getTargetName(), pfl));
-				pfl.replace(item, i);
+				item.setMasterType(getProfileType(item.getMasterName(), sync));
+				item.setTargetType(getProfileType(item.getTargetName(), sync));
+//				pfl.replace(item, i);
 			}
 		}
+		pfl = new AdapterProfileList(mContext, R.layout.profile_list_item_view, sync);
 
 		if (pfl.getCount() == 0) {
 			if (BUILD_FOR_AMAZON) {
@@ -5029,9 +5009,13 @@ public class ProfileUtility {
 	};
 	
 	public static String getProfileType(String pfn, AdapterProfileList pa) {
-		for (int i=0;i<pa.getCount();i++)
-			if (pa.getItem(i).getName().equals(pfn)) 
-				return pa.getItem(i).getType(); 
+		return getProfileType(pfn,pa.getArrayList());
+	}; 
+
+	public static String getProfileType(String pfn, ArrayList<ProfileListItem> pfl) {
+		for (int i=0;i<pfl.size();i++)
+			if (pfl.get(i).getName().equals(pfn)) 
+				return pfl.get(i).getType(); 
 		return "";
 	};
 
@@ -5210,9 +5194,11 @@ public class ProfileUtility {
 	static private void addImportSettingsParm(String pl, ArrayList<PreferenceParmListIItem>ispl) {
 		String tmp_ps=pl.substring(7,pl.length());
 		String[] tmp_pl=tmp_ps.split("\t");// {"type","name","active",options...};
-		String[] parm= new String[90];
-		for (int i=0;i<30;i++) parm[i]="";
-		for (int i=0;i<tmp_pl.length;i++) {
+		String[] parm= new String[10];
+		for (int i=0;i<10;i++) parm[i]="";
+		int cnt=10;
+		if (tmp_pl.length<10) cnt=tmp_pl.length;
+		for (int i=0;i<cnt;i++) {
 			if (tmp_pl[i]==null) parm[i]="";
 			else {
 				if (tmp_pl[i]==null) parm[i]="";
