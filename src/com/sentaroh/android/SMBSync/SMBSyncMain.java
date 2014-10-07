@@ -1192,6 +1192,11 @@ public class SMBSyncMain extends FragmentActivity {
 					applySettingParms();
 					checkJcifsOptionChanged();
 					SchedulerMain.sendTimerRequest(mContext, SCHEDULER_INTENT_SET_TIMER);
+					if (mGp.profileAdapter!=null) {
+						if (ProfileUtility.isAnyProfileSelected(mGp.profileAdapter, SMBSYNC_PROF_GROUP_DEFAULT)) setProfileContextButtonSelectMode();
+						else setProfileContextButtonNormalMode();
+					}
+
 				}
 				if (parm[1]) {
 					SchedulerMain.setSchedulerInfo(mGp, mContext, null);
@@ -1550,10 +1555,6 @@ public class SMBSyncMain extends FragmentActivity {
 		
 		if (!mGp.settingAutoStart) mGp.settingAutoTerm=false;
 		
-		if (mGp.profileAdapter!=null) {
-			if (ProfileUtility.isAnyProfileSelected(mGp.profileAdapter, SMBSYNC_PROF_GROUP_DEFAULT)) setProfileContextButtonSelectMode();
-			else setProfileContextButtonNormalMode();
-		}
 
 //		if (isJcifsOptionChanged() && restartStatus!=0) {
 //			commonDlg.showCommonDialog(false,"W",
@@ -1898,6 +1899,10 @@ public class SMBSyncMain extends FragmentActivity {
 			checkJcifsOptionChanged();
 			listSMBSyncOption();
 			enableProfileConfirmCopyDeleteIfRequired();
+			if (mGp.profileAdapter!=null) {
+				if (ProfileUtility.isAnyProfileSelected(mGp.profileAdapter, SMBSYNC_PROF_GROUP_DEFAULT)) setProfileContextButtonSelectMode();
+				else setProfileContextButtonNormalMode();
+			}
 		} else if (requestCode==1) {
 			util.addDebugLogMsg(1,"I","Return from browse log file.");
 			util.setActivityIsForeground(true);
