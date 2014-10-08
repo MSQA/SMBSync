@@ -457,7 +457,7 @@ public class SMBSyncUtil {
 	@SuppressLint("SdCardPath")
 	public void openLogFile() {
 		addDebugLogMsg(2,"I","open log file entered. esm="+mGp.externalStorageIsMounted);
-		
+//		Log.v("","lo="+mGp.settingLogOption+", lw="+mGp.logWriter);
 		if (!mGp.settingLogOption.equals("0") && mGp.logWriter==null) {
 			SimpleDateFormat df=null;
 			df = new SimpleDateFormat("yyyy-MM-dd");
@@ -478,7 +478,7 @@ public class SMBSyncUtil {
 		} else fp=t_fd+"/"+mGp.settingLogMsgFilename;
 		File lf=new File(t_fd);
 		if(!lf.exists()) lf.mkdirs();
-		
+//		Log.v("","lfn="+fp);
 		try {
 			BufferedWriter bw;
 			FileWriter fw ;

@@ -79,10 +79,7 @@ import android.view.View.OnClickListener;
 import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.CheckedTextView;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -100,7 +97,6 @@ import com.sentaroh.android.Utilities.NotifyEvent;
 import com.sentaroh.android.Utilities.NotifyEvent.NotifyEventListener;
 import com.sentaroh.android.Utilities.ThreadCtrl;
 import com.sentaroh.android.Utilities.ContextMenu.CustomContextMenu;
-import com.sentaroh.android.Utilities.ContextMenu.CustomContextMenuItem.CustomContextMenuOnClickListener;
 import com.sentaroh.android.Utilities.Dialog.CommonDialog;
 
 @SuppressWarnings("deprecation")
@@ -180,12 +176,16 @@ public class SMBSyncMain extends FragmentActivity {
 		mGp.uiHandler=new Handler();
 		mGp.SMBSync_External_Root_Dir=LocalMountPoint.getExternalStorageDir();
 
+		checkExternalStorage();
+		mGp.SMBSync_Internal_Root_Dir=getFilesDir().toString();
+
 		if (util==null) util=new SMBSyncUtil(this.getApplicationContext(),"Main", mGp);
 		util.setActivityIsForeground(true);
-		util.openLogFile();
 
 		initSettingsParms();
 		applySettingParms();
+
+		util.openLogFile();
 
 		util.addDebugLogMsg(1,"I","onCreate entered, "+"resartStatus="+restartStatus+
 				", isActivityForeground="+util.isActivityForeground());
@@ -206,9 +206,6 @@ public class SMBSyncMain extends FragmentActivity {
 
 //		if (Build.VERSION.SDK_INT>=14)
 //			this.getActionBar().setHomeButtonEnabled(false);
-
-		checkExternalStorage();
-		mGp.SMBSync_Internal_Root_Dir=getFilesDir().toString();
 
 		if (ccMenu ==null) ccMenu = new CustomContextMenu(getResources(),getSupportFragmentManager());
 		commonDlg=new CommonDialog(mContext, getSupportFragmentManager());
@@ -335,13 +332,14 @@ public class SMBSyncMain extends FragmentActivity {
 
 					deleteTaskData();
 					
-					setMsglistViewListener();
+					setMessageContextButtonListener();
+					setMessageContextButtonNormalMode();
 
 					setProfileContextButtonNormalMode();
 					setProfileContextButtonListener();
 					setProfilelistItemClickListener();
 					setProfilelistLongClickListener();
-					setMsglistLongClickListener();
+//					setMsglistLongClickListener();
 					
 					setHistoryContextButtonListener();
 					setHistoryContextButtonNotselected();
@@ -522,7 +520,8 @@ public class SMBSyncMain extends FragmentActivity {
 			createTabView() ;
 			initAdapterAndView();
 			
-			setMsglistViewListener();
+			setMessageContextButtonListener();
+			setMessageContextButtonNormalMode();
 			
 			if (mGp.profileAdapter.isShowCheckBox()) setProfileContextButtonSelectMode();
 			else setProfileContextButtonNormalMode();
@@ -530,7 +529,7 @@ public class SMBSyncMain extends FragmentActivity {
 			setProfileContextButtonListener();
 			setProfilelistItemClickListener();
 			setProfilelistLongClickListener();
-			setMsglistLongClickListener();
+//			setMsglistLongClickListener();
 
 			if (mGp.syncHistoryAdapter.isAnyItemSelected()) setHistoryContextButtonSelected();
 			else setHistoryContextButtonNotselected();
@@ -547,17 +546,17 @@ public class SMBSyncMain extends FragmentActivity {
 //	    	releaseImageResource();
 	    	ViewSaveArea vsa=new ViewSaveArea();
 		    vsa.sync_list_view_pos_x=mGp.syncHistoryListView.getFirstVisiblePosition();
-		    if (mGp.syncHistoryListView.getChildAt(0)!=null) vsa.sync_list_view_pos_y=mGp.syncHistoryListView.getChildAt(0).getTop();
+		    if (mGp.syncHistoryListView.getChildAt(0)!=null) 
+		    	vsa.sync_list_view_pos_y=mGp.syncHistoryListView.getChildAt(0).getTop();
 
 		    mGp.syncHistoryListView.setAdapter(null);
-			mGp.syncHistoryAdapter=new AdapterSyncHistory(mContext, R.layout.sync_history_list_item_view, 
-					mGp.syncHistoryList);
+			mGp.syncHistoryAdapter=
+				new AdapterSyncHistory(mContext, R.layout.sync_history_list_item_view, mGp.syncHistoryList);
 			
 			mGp.syncHistoryListView.setAdapter(mGp.syncHistoryAdapter);
 			mGp.syncHistoryListView.setClickable(true);
 			mGp.syncHistoryListView.setFocusable(true);
 			mGp.syncHistoryListView.setFocusableInTouchMode(true);
-
 			
 			mGp.syncHistoryListView.setSelectionFromTop(vsa.sync_list_view_pos_x, vsa.sync_list_view_pos_y);
 	    }
@@ -2037,10 +2036,10 @@ public class SMBSyncMain extends FragmentActivity {
 			}
         });
         mContextHistiryButtonHistiryCopyClipboard.setOnClickListener(new OnClickListener(){
+        	private long next_issued_time=0;
 			@Override
 			public void onClick(View v) {
-				 ClipboardManager cm = 
-					      (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+				 ClipboardManager cm = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 				 StringBuilder out= new StringBuilder(256);
 				 for (int i=0;i<mGp.syncHistoryAdapter.getCount();i++){
 					 if (mGp.syncHistoryAdapter.getItem(i).isChecked) {
@@ -2065,10 +2064,12 @@ public class SMBSyncMain extends FragmentActivity {
 					 }
 				 }
 				 if (out.length()>0) cm.setText(out);
-				 Toast.makeText(mContext, mContext.getString(R.string.msgs_sync_history_copy_completed), 
-							Toast.LENGTH_SHORT)
-							.show();
-
+				 if (next_issued_time<System.currentTimeMillis()) {
+					 Toast.makeText(mContext, mContext.getString(R.string.msgs_sync_history_copy_completed), 
+								Toast.LENGTH_SHORT)
+								.show();
+					 next_issued_time=System.currentTimeMillis()+2000;
+				 }
 			}
         });
 
@@ -2193,29 +2194,18 @@ public class SMBSyncMain extends FragmentActivity {
 		commonDlg.showCommonDialog(true, "W",subtitle, msgtext, ntfy);
 	};
 	
-	private void setMsglistViewListener() {
-		CheckBox cb_freeze_scroll=(CheckBox)findViewById(R.id.message_view_scroll_freeze);
-		cb_freeze_scroll.setOnCheckedChangeListener(new OnCheckedChangeListener(){
-			@Override
-			public void onCheckedChanged(CompoundButton arg0, boolean isChecked) {
-				mGp.freezeMessageViewScroll=isChecked;
-			}
-		});
-	}
 	
-	private void setMsglistLongClickListener() {
-		mGp.msgListView
-			.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-			@Override
-			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
-					int arg2, long arg3) {
-				createMsglistContextMenu(arg1, arg2);
-				return true;
-			}
-		});
-	};
+//	private void setMsglistLongClickListener() {
+//		mGp.msgListView
+//			.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+//			@Override
+//			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+//					int arg2, long arg3) {
+//				return true;
+//			}
+//		});
+//	};
 	
-
 	private void setProfilelistItemClickListener() {
 		mGp.profileListView.setEnabled(true);
 		mGp.profileListView
@@ -2331,7 +2321,17 @@ public class SMBSyncMain extends FragmentActivity {
     private LinearLayout mContextHistiryViewHistoryCopyClipboard=null;
     private LinearLayout mContextHistiryViewSelectAll=null;
     private LinearLayout mContextHistiryViewUnselectAll=null;
-    
+
+    private ImageButton mContextMessageButtonMoveTop=null;
+    private ImageButton mContextMessageButtonPinned=null;
+    private ImageButton mContextMessageButtonMoveBottom=null;
+    private ImageButton mContextMessageButtonClear=null;
+
+    private LinearLayout mContextMessageViewMoveTop=null;
+    private LinearLayout mContextMessageViewPinned=null;
+    private LinearLayout mContextMessageViewMoveBottom=null;
+    private LinearLayout mContextMessageViewClear=null;
+
     private void releaseImageResource(){
     	releaseImageBtnRes(mContextProfileButtonActivete);
     	releaseImageBtnRes(mContextProfileButtonInactivete);
@@ -2352,7 +2352,12 @@ public class SMBSyncMain extends FragmentActivity {
     	releaseImageBtnRes(mContextHistiryButtonHistiryCopyClipboard);
     	releaseImageBtnRes(mContextHistiryButtonSelectAll);
     	releaseImageBtnRes(mContextHistiryButtonUnselectAll);
-    	
+
+    	releaseImageBtnRes(mContextMessageButtonMoveTop);
+    	releaseImageBtnRes(mContextMessageButtonPinned);
+    	releaseImageBtnRes(mContextMessageButtonMoveBottom);
+    	releaseImageBtnRes(mContextMessageButtonClear);
+
     	mGp.profileListView.setAdapter(null);
     	mGp.syncHistoryListView.setAdapter(null);
     };
@@ -2435,7 +2440,17 @@ public class SMBSyncMain extends FragmentActivity {
     	mContextHistiryViewSelectAll=(LinearLayout)ll_hist.findViewById(R.id.context_button_select_all_view);
     	mContextHistiryViewUnselectAll=(LinearLayout)ll_hist.findViewById(R.id.context_button_unselect_all_view);
 
-    }
+    	LinearLayout ll_msg=(LinearLayout) findViewById(R.id.context_view_message);
+    	mContextMessageButtonPinned=(ImageButton)ll_msg.findViewById(R.id.context_button_pinned);
+        mContextMessageButtonMoveTop=(ImageButton)ll_msg.findViewById(R.id.context_button_move_to_top);
+        mContextMessageButtonMoveBottom=(ImageButton)ll_msg.findViewById(R.id.context_button_move_to_bottom);
+        mContextMessageButtonClear=(ImageButton)ll_msg.findViewById(R.id.context_button_clear);
+
+        mContextMessageViewPinned=(LinearLayout)ll_msg.findViewById(R.id.context_button_pinned_view);
+        mContextMessageViewMoveTop=(LinearLayout)ll_msg.findViewById(R.id.context_button_move_to_top_view);
+        mContextMessageViewMoveBottom=(LinearLayout)ll_msg.findViewById(R.id.context_button_move_to_bottom_view);
+        mContextMessageViewClear=(LinearLayout)ll_msg.findViewById(R.id.context_button_clear_view);
+    };
 	
 	private void setProfileContextButtonListener() {
         final NotifyEvent ntfy=new NotifyEvent(mContext);
@@ -2751,37 +2766,75 @@ public class SMBSyncMain extends FragmentActivity {
 
 	};
 
-	private void createMsglistContextMenu(View view, int idx) {
-
-		ccMenu.addMenuItem(mContext.getString(R.string.msgs_move_to_top),R.drawable.menu_top)
-			.setOnClickListener(new CustomContextMenuOnClickListener() {
-				@Override
-				public void onClick(CharSequence menuTitle) {
-					mGp.msgListView.setSelection(0);
-				}
-		});
-		
-		ccMenu.addMenuItem(mContext.getString(R.string.msgs_move_to_bottom),R.drawable.menu_bottom)
-			.setOnClickListener(new CustomContextMenuOnClickListener() {
-				@Override
-				public void onClick(CharSequence menuTitle) {
+	@SuppressLint("ShowToast")
+	private void setMessageContextButtonListener() {
+		final Toast toast_active=Toast.makeText(mContext, mContext.getString(R.string.msgs_log_activate_pinned), 
+				Toast.LENGTH_SHORT);
+		final Toast toast_inactive=Toast.makeText(mContext, mContext.getString(R.string.msgs_log_inactivate_pinned), 
+					Toast.LENGTH_SHORT);
+        mContextMessageButtonPinned.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				mGp.freezeMessageViewScroll=!mGp.freezeMessageViewScroll;
+				if (mGp.freezeMessageViewScroll) {
+					mContextMessageButtonPinned.setImageResource(R.drawable.pinned_active);
+					toast_inactive.cancel();
+					toast_active.show();
+				} else {
+					mContextMessageButtonPinned.setImageResource(R.drawable.pinned_inactive);
 					mGp.msgListView.setSelection(mGp.msgListView.getCount()-1);
+					toast_active.cancel();
+					toast_inactive.show();
 				}
-		});
+			}
+        });
 
-		ccMenu.addMenuItem(mContext.getString(R.string.msgs_clear_log_message),R.drawable.menu_clear)
-			.setOnClickListener(new CustomContextMenuOnClickListener() {
-				@Override
-				public void onClick(CharSequence menuTitle) {
-					mGp.msgListView.setSelection(0);
-					mGp.msgListAdapter.clear();
-					util.addLogMsg("W",getString(R.string.msgs_log_msg_cleared));
-				}
-		});
+        mContextMessageButtonMoveTop.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				mGp.msgListView.setSelection(0);
+			}
+        });
+        mContextMessageButtonMoveBottom.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				mGp.msgListView.setSelection(mGp.msgListView.getCount()-1);
+			}
+        });
+        mContextMessageButtonClear.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				NotifyEvent ntfy=new NotifyEvent(mContext);
+				ntfy.setListener(new NotifyEventListener(){
+					@Override
+					public void positiveResponse(Context c, Object[] o) {
+						mGp.msgListView.setSelection(0);
+						mGp.msgListAdapter.clear();
+						util.addLogMsg("W",getString(R.string.msgs_log_msg_cleared));
+					}
 
-		ccMenu.createMenu();
+					@Override
+					public void negativeResponse(Context c, Object[] o) {}
+				});
+				commonDlg.showCommonDialog(true, "W", 
+						mContext.getString(R.string.msgs_log_confirm_clear_all_msg), "", ntfy);
+			}
+        });
+
 	};
-	
+
+	private void setMessageContextButtonNormalMode() {
+        mContextMessageViewPinned.setVisibility(LinearLayout.VISIBLE);
+		if (mGp.freezeMessageViewScroll) {
+			mContextMessageButtonPinned.setImageResource(R.drawable.pinned_active);
+		} else {
+			mContextMessageButtonPinned.setImageResource(R.drawable.pinned_inactive);
+		}
+        mContextMessageViewMoveTop.setVisibility(LinearLayout.VISIBLE);
+        mContextMessageViewMoveBottom.setVisibility(LinearLayout.VISIBLE);
+        mContextMessageViewClear.setVisibility(LinearLayout.VISIBLE);
+	};
+
 	private void editProfile(String prof_name, String prof_type,
 			String prof_act, int prof_num) {
 		ProfileListItem item = mGp.profileAdapter.getItem(prof_num);

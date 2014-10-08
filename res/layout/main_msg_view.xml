@@ -17,13 +17,6 @@
         android:textAppearance="?android:attr/textAppearanceMedium" >
     </ListView>
 
-    <include layout="@layout/divider_line1" />
-    
-	<CheckBox
-	    style="@style/check_box_style"
-	    android:id="@+id/message_view_scroll_freeze"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-	    android:text="@string/msgs_log_freeze_scroll" />
+    <include layout="@layout/context_view_message" />
     
 </LinearLayout>

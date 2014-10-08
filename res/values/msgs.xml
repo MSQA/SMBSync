@@ -20,7 +20,10 @@
     <string name="msgs_no_profile_entry">No profile</string>
     
     <string name="msgs_log_msg_cleared">Log message was cleared.</string>
-	<string name="msgs_log_freeze_scroll">Freeze scroll</string>    
+	<string name="msgs_log_confirm_clear_all_msg">Do you want to clear the log message?</string>
+	<string name="msgs_log_activate_pinned">Auto Scroll is no longer valid</string>
+	<string name="msgs_log_inactivate_pinned">Auto Scroll is now enabled</string>
+		
     <string name="msgs_sync_list_array_mtype_mirr">MIRR</string>
     <string name="msgs_sync_list_array_mtype_copy">COPY</string>
     <string name="msgs_sync_list_array_mtype_move">MOVE</string>
@@ -35,11 +38,6 @@
     <string name="msgs_sync_history_count_deleted">Deleted:</string>
     <string name="msgs_sync_history_count_ignored">Ignored:</string>
     <string name="msgs_sync_history_count_retry">Retry:</string>
-    <string name="xmsgs_sync_history_ccmeu_show_log">Show log (%s)</string>
-    <string name="xmsgs_sync_history_ccmeu_delete">Delete history (%s)</string>
-    <string name="xmsgs_sync_history_ccmeu_selectall">Select all histories</string>
-    <string name="xmsgs_sync_history_ccmeu_unselectall">Unselect all histories</string>
-    <string name="xmsgs_sync_history_ccmeu_copy_clipboard">Copy clipboard (%s)</string>
 	<string name="msgs_sync_history_empty">No history</string>    
     
 	<string name="msgs_sync_all_active_profiles">To sync the all valid sync profile</string>
