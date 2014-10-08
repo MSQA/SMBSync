@@ -1899,10 +1899,6 @@ public class SMBSyncMain extends FragmentActivity {
 			checkJcifsOptionChanged();
 			listSMBSyncOption();
 			enableProfileConfirmCopyDeleteIfRequired();
-			if (mGp.profileAdapter!=null) {
-				if (ProfileUtility.isAnyProfileSelected(mGp.profileAdapter, SMBSYNC_PROF_GROUP_DEFAULT)) setProfileContextButtonSelectMode();
-				else setProfileContextButtonNormalMode();
-			}
 		} else if (requestCode==1) {
 			util.addDebugLogMsg(1,"I","Return from browse log file.");
 			util.setActivityIsForeground(true);

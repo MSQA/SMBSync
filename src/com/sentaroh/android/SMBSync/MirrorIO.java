@@ -728,7 +728,6 @@ public class MirrorIO implements Runnable {
 				+ ", remoteUrl=" + remoteUrl
 				+ ", syncMasterLocalDir=" + syncMasterLocalDir
 				+ ", syncTargetLocalDir=" + syncTargetLocalDir
-				+ ", syncRemoteUserid=" + syncRemoteUserid
 				+ ", syncMasterDirFileProcess="+syncMasterDirFileProcess
 				+ ", syncProfileConfirmRequired="+syncProfileConfirmRequired
 				+ ", syncProfileUseJavaLastModified="+syncProfileUseJavaLastModified
@@ -738,7 +737,7 @@ public class MirrorIO implements Runnable {
 				+ ", syncProfileSyncHiddenFile="+syncProfileSyncHiddenFile
 				+ ", fileFilter=" + mipl.getFileFilter()
 				+ ", dirFilter=" + mipl.getDirFilter());
- 			addDebugLogMsg(9,"I","syncRemotePassword=" + syncRemotePassword);
+ 			addDebugLogMsg(9,"I","syncRemoteUserid=" + syncRemoteUserid+", syncRemotePassword=" + syncRemotePassword);
 		}
 	};
 	
@@ -1051,11 +1050,11 @@ public class MirrorIO implements Runnable {
 
 		if (mGp.debugLevel>=1) { 
         	for (int i=0;i<mediaStoreImageList.size();i++) 
-        		addDebugLogMsg(1,"I","mediaStoreImageList="+mediaStoreImageList.get(i));
+        		addDebugLogMsg(2,"I","mediaStoreImageList="+mediaStoreImageList.get(i));
         	for (int i=0;i<mediaStoreAudioList.size();i++) 
-        		addDebugLogMsg(1,"I","mediaStoreAudioList="+mediaStoreAudioList.get(i));
+        		addDebugLogMsg(2,"I","mediaStoreAudioList="+mediaStoreAudioList.get(i));
         	for (int i=0;i<mediaStoreVideoList.size();i++) 
-        		addDebugLogMsg(1,"I","mediaStoreVideoList="+mediaStoreVideoList.get(i));
+        		addDebugLogMsg(2,"I","mediaStoreVideoList="+mediaStoreVideoList.get(i));
 //        	for (int i=0;i<mediaStoreFilesList.size();i++) 
 //        		sendDebugLogMsg(1,"I","mediaStoreFilesList="+mediaStoreFilesList.get(i));
         }

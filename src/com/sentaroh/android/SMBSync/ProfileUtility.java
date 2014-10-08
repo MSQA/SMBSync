@@ -2256,6 +2256,12 @@ public class ProfileUtility {
     		.setText(msgs_current_dir+" "+item.getLocalMountPoint()+"/"+cdir);
         final TextView dlg_msg=(TextView)dialog.findViewById(R.id.item_select_list_dlg_msg);
 	    final Button btn_ok=(Button)dialog.findViewById(R.id.item_select_list_dlg_ok_btn);
+
+	    final LinearLayout ll_context=(LinearLayout)dialog.findViewById(R.id.context_view_file_select);
+        ll_context.setVisibility(LinearLayout.VISIBLE);
+        final ImageButton ib_select_all=(ImageButton)ll_context.findViewById(R.id.context_button_select_all);
+        final ImageButton ib_unselect_all=(ImageButton)ll_context.findViewById(R.id.context_button_unselect_all);
+
         dlg_msg.setVisibility(TextView.VISIBLE);
 
 //        if (rows.size()<=2) 
@@ -2274,8 +2280,30 @@ public class ProfileUtility {
         tfa.setDataList(tfl);
         lv.setScrollingCacheEnabled(false);
         lv.setScrollbarFadingEnabled(false);
-        lv.setFastScrollEnabled(true);
-        
+
+	    ib_select_all.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				for(int i=0;i<tfa.getDataItemCount();i++) {
+					TreeFilelistItem tfli=tfa.getDataItem(i);
+					if (!tfli.isHideListItem()) tfa.setDataItemIsSelected(i);
+				}
+				tfa.notifyDataSetChanged();
+				btn_ok.setEnabled(true);
+			}
+	    });
+
+	    ib_unselect_all.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				for(int i=0;i<tfa.getDataItemCount();i++) {
+					tfa.setDataItemIsUnselected(i);
+				}
+				tfa.notifyDataSetChanged();
+				btn_ok.setEnabled(false);
+			}
+	    });
+
         lv.setOnItemClickListener(new OnItemClickListener(){
         	public void onItemClick(AdapterView<?> items, View view, int idx, long id) {
 	    		final int pos=tfa.getItem(idx);
@@ -2289,36 +2317,12 @@ public class ProfileUtility {
 			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
 					final int position, long arg3) {
 	  			final int t_pos=tfa.getItem(position);
-	  			if (tfa.getDataItem(t_pos).isChecked()) { 
-		  			ccMenu.addMenuItem(mContext.getString(R.string.msgs_file_select_unselect_this_entry)
-							+" "+tfa.getDataItem(t_pos).getPath()+
-							tfa.getDataItem(t_pos).getName())
-					.setOnClickListener(new CustomContextMenuOnClickListener() {
-				  		@Override
-						public void onClick(CharSequence menuTitle) {
-				    		final TreeFilelistItem tfi=tfa.getDataItem(t_pos);
-							if (tfi.getName().startsWith("---")) return;
-							tfa.setDataItemIsUnselected(t_pos);
-							if (tfa.isDataItemIsSelected()) btn_ok.setEnabled(true);
-							else btn_ok.setEnabled(false);
-						}
-				  	});
-	  			} else {
-		  			ccMenu.addMenuItem(mContext.getString(R.string.msgs_file_select_select_this_entry)
-							+" "+tfa.getDataItem(t_pos).getPath()+
-							tfa.getDataItem(t_pos).getName())
-					.setOnClickListener(new CustomContextMenuOnClickListener() {
-				  		@Override
-						public void onClick(CharSequence menuTitle) {
-				    		final TreeFilelistItem tfi=tfa.getDataItem(t_pos);
-							if (tfi.getName().startsWith("---")) return;
-							tfa.setDataItemIsSelected(t_pos);
-							btn_ok.setEnabled(true);
-						}
-				  	});
+	    		final TreeFilelistItem tfi=tfa.getDataItem(t_pos);
+				if (tfi.getName().startsWith("---")) return true;
+	  			if (!tfa.getDataItem(t_pos).isChecked()) {
+	  				tfa.setDataItemIsSelected(t_pos);
 	  			}
-				ccMenu.createMenu();
-				return false;
+				return true;
 			}
 		});
 
@@ -2479,7 +2483,8 @@ public class ProfileUtility {
 						if (tfi.getName().startsWith("---")) return;
 						expandHideRemoteDirTree(remurl, pos,tfi,tfa);
 					}
-				});	 
+				});
+				
 				lv.setOnItemLongClickListener(new OnItemLongClickListener(){
 					@Override
 					public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
@@ -2487,9 +2492,7 @@ public class ProfileUtility {
 			  			final int t_pos=tfa.getItem(position);
 			    		final TreeFilelistItem tfi=tfa.getDataItem(t_pos);
 						if (tfi.getName().startsWith("---")) return true;
-			  			if (tfa.getDataItem(t_pos).isChecked()) {
-			  				tfa.setDataItemIsUnselected(t_pos);
-			  			} else {
+			  			if (!tfa.getDataItem(t_pos).isChecked()) {
 			  				tfa.setDataItemIsSelected(t_pos);
 			  			}
 						return true;
@@ -2521,7 +2524,6 @@ public class ProfileUtility {
 			        	addDirFilter(false,tfa,fla,remdir,dlg_msg);
 			            dialog.dismiss();
 			            p_ntfy.notifyToListener(true,null );
-
 			        }
 			    });
 				//CANCELボタンの指定
@@ -5194,25 +5196,16 @@ public class ProfileUtility {
 	static private void addImportSettingsParm(String pl, ArrayList<PreferenceParmListIItem>ispl) {
 		String tmp_ps=pl.substring(7,pl.length());
 		String[] tmp_pl=tmp_ps.split("\t");// {"type","name","active",options...};
-		String[] parm= new String[10];
-		for (int i=0;i<10;i++) parm[i]="";
-		int cnt=10;
-		if (tmp_pl.length<10) cnt=tmp_pl.length;
-		for (int i=0;i<cnt;i++) {
-			if (tmp_pl[i]==null) parm[i]="";
-			else {
-				if (tmp_pl[i]==null) parm[i]="";
-				else parm[i]=tmp_pl[i];
-			}
-		}
-		if (parm[1].equals(SMBSYNC_PROF_TYPE_SETTINGS)) {
+		if (tmp_pl[1]!=null && tmp_pl.length>=5 && tmp_pl[1].equals(SMBSYNC_PROF_TYPE_SETTINGS)) {
 //			String[] val = new String[]{parm[2],parm[3],parm[4]};
 			PreferenceParmListIItem ppli=new PreferenceParmListIItem();
-			ppli.parms_key=parm[2];
-			ppli.parms_type=parm[3];
-			ppli.parms_value=parm[4];
-//			Log.v("","key="+parm[2]+", value="+parm[4]+", type="+parm[3]);
-			ispl.add(ppli);
+			if (tmp_pl[2]!=null) ppli.parms_key=tmp_pl[2];
+			if (tmp_pl[3]!=null) ppli.parms_type=tmp_pl[3];
+			if (tmp_pl[4]!=null) ppli.parms_value=tmp_pl[4];
+			if (!ppli.parms_key.equals("") && !ppli.parms_type.equals("")) {
+//				Log.v("","key="+tmp_pl[2]+", value="+tmp_pl[4]+", type="+tmp_pl[3]);
+				ispl.add(ppli);
+			}
 		}
 	};
 
