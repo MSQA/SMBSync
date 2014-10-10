@@ -53,13 +53,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        layout="@layout/context_button_copy_profile" />
+        layout="@layout/context_button_copy" />
 
     <include
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        layout="@layout/context_button_rename_profile" />
+        layout="@layout/context_button_rename" />
 
     <include
         android:layout_width="0dp"

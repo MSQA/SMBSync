@@ -2392,9 +2392,9 @@ public class SMBSyncMain extends FragmentActivity {
         mContextProfileButtonAddRemote=(ImageButton)ll_prof.findViewById(R.id.context_button_add_remote);
         mContextProfileButtonAddSync=(ImageButton)ll_prof.findViewById(R.id.context_button_add_sync);
         mContextProfileButtonStartWizard=(ImageButton)ll_prof.findViewById(R.id.context_button_start_wizard);
-        mContextProfileButtonCopyProfile=(ImageButton)ll_prof.findViewById(R.id.context_button_copy_profile);
+        mContextProfileButtonCopyProfile=(ImageButton)ll_prof.findViewById(R.id.context_button_copy);
         mContextProfileButtonDeleteProfile=(ImageButton)ll_prof.findViewById(R.id.context_button_delete);
-        mContextProfileButtonRenameProfile=(ImageButton)ll_prof.findViewById(R.id.context_button_rename_profile);
+        mContextProfileButtonRenameProfile=(ImageButton)ll_prof.findViewById(R.id.context_button_rename);
         mContextProfileButtonSync=(ImageButton)ll_prof.findViewById(R.id.context_button_sync);
         mContextProfileButtonSelectAll=(ImageButton)ll_prof.findViewById(R.id.context_button_select_all);
         mContextProfileButtonUnselectAll=(ImageButton)ll_prof.findViewById(R.id.context_button_unselect_all);
@@ -2419,9 +2419,9 @@ public class SMBSyncMain extends FragmentActivity {
         mContextProfileViewAddRemote=(LinearLayout)ll_prof.findViewById(R.id.context_button_add_remote_view);
         mContextProfileViewAddSync=(LinearLayout)ll_prof.findViewById(R.id.context_button_add_sync_view);
         mContextProfileViewStartWizard=(LinearLayout)ll_prof.findViewById(R.id.context_button_start_wizard_view);
-        mContextProfileViewCopyProfile=(LinearLayout)ll_prof.findViewById(R.id.context_button_copy_profile_view);
+        mContextProfileViewCopyProfile=(LinearLayout)ll_prof.findViewById(R.id.context_button_copy_view);
         mContextProfileViewDeleteProfile=(LinearLayout)ll_prof.findViewById(R.id.context_button_delete_view);
-        mContextProfileViewRenameProfile=(LinearLayout)ll_prof.findViewById(R.id.context_button_rename_profile_view);
+        mContextProfileViewRenameProfile=(LinearLayout)ll_prof.findViewById(R.id.context_button_rename_view);
         mContextProfileViewSelectAll=(LinearLayout)ll_prof.findViewById(R.id.context_button_select_all_view);
         mContextProfileViewUnselectAll=(LinearLayout)ll_prof.findViewById(R.id.context_button_unselect_all_view);
 
@@ -2777,11 +2777,11 @@ public class SMBSyncMain extends FragmentActivity {
 			public void onClick(View v) {
 				mGp.freezeMessageViewScroll=!mGp.freezeMessageViewScroll;
 				if (mGp.freezeMessageViewScroll) {
-					mContextMessageButtonPinned.setImageResource(R.drawable.pinned_active);
+					mContextMessageButtonPinned.setImageResource(R.drawable.context_button_pinned_active);
 					toast_inactive.cancel();
 					toast_active.show();
 				} else {
-					mContextMessageButtonPinned.setImageResource(R.drawable.pinned_inactive);
+					mContextMessageButtonPinned.setImageResource(R.drawable.context_button_pinned_inactive);
 					mGp.msgListView.setSelection(mGp.msgListView.getCount()-1);
 					toast_active.cancel();
 					toast_inactive.show();
@@ -2826,9 +2826,9 @@ public class SMBSyncMain extends FragmentActivity {
 	private void setMessageContextButtonNormalMode() {
         mContextMessageViewPinned.setVisibility(LinearLayout.VISIBLE);
 		if (mGp.freezeMessageViewScroll) {
-			mContextMessageButtonPinned.setImageResource(R.drawable.pinned_active);
+			mContextMessageButtonPinned.setImageResource(R.drawable.context_button_pinned_active);
 		} else {
-			mContextMessageButtonPinned.setImageResource(R.drawable.pinned_inactive);
+			mContextMessageButtonPinned.setImageResource(R.drawable.context_button_pinned_inactive);
 		}
         mContextMessageViewMoveTop.setVisibility(LinearLayout.VISIBLE);
         mContextMessageViewMoveBottom.setVisibility(LinearLayout.VISIBLE);
