@@ -37,6 +37,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.support.v4.app.NotificationCompat.BigTextStyle;
 import android.support.v4.app.NotificationCompat.Builder;
+import android.util.Log;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -178,6 +179,22 @@ public class GlobalParameters extends Application{
 
 	public boolean wifiIsActive=false;
 	public String wifiSsid="";
+	
+	public boolean onLowMemory=false;
 
+	public GlobalParameters() {};
+	
+	@Override
+	public void  onCreate() {
+		super.onCreate();
+		Log.v("SMBSyncGP","onCreate entered");
+		onLowMemory=false;
+	};
+	
+	@Override
+	public void onLowMemory() {
+		Log.v("SMBSyncGP","onLowMemory entered");
+		onLowMemory=true;
+	}
 
 }

@@ -2,9 +2,10 @@
 <resources>
 	<string name="msgs_log_management_title">ログファイル管理</string>
 	
-	<string name="msgs_log_management_menu_browse">ログファイル表示 (%s)</string>
-	<string name="msgs_log_management_menu_delete">ログファイル削除 (%s)</string>
-	<string name="msgs_log_management_menu_send">ログファイル送信 (%s)</string>
+	<string name="msgs_log_management_label_delete">ログの削除</string>
+	<string name="msgs_log_management_label_share">ログの共有</string>
+	<string name="msgs_log_management_label_select_all">全てを選択</string>
+	<string name="msgs_log_management_label_unselect_all">全ての選択を解除</string>
 	
 	<string name="msgs_log_management_no_log_file">ログファイルは空です</string>
 	

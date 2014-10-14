@@ -2,10 +2,11 @@
 <resources>
 	<string name="msgs_log_management_title">Log management</string>
 	
-	<string name="msgs_log_management_menu_browse">Browse log file (%s)</string>
-	<string name="msgs_log_management_menu_delete">Delete log file (%s)</string>
-	<string name="msgs_log_management_menu_send">Send log file (%s)</string>
-	
+	<string name="msgs_log_management_label_delete">Delete log item</string>
+	<string name="msgs_log_management_label_share">Share log item</string>
+	<string name="msgs_log_management_label_select_all">Select all log item</string>
+	<string name="msgs_log_management_label_unselect_all">Unselect all log item</string>
+			
 	<string name="msgs_log_management_no_log_file">No log files</string>
 	
 	<string name="msgs_log_management_delete_confirm_msg">Delete the following log files.</string>

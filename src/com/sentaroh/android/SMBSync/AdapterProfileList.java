@@ -310,7 +310,8 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
      					if (o.getType().equals("")) return;
      					o.setChecked(isChecked);
 	     				items.set(p, o);
-	     				if (mNotifyCheckBoxEvent!=null) mNotifyCheckBoxEvent.notifyToListener(true, null);
+	     				if (mNotifyCheckBoxEvent!=null && isShowCheckBox) 
+	     					mNotifyCheckBoxEvent.notifyToListener(true, null);
      				}
      			});
              	holder.cbv_row_cb1.setChecked(items.get(position).isChecked());

@@ -77,6 +77,32 @@
 	<string name="msgs_prof_cont_to_activate_profile">下記プロフィルを有効にします</string>
 	<string name="msgs_prof_cont_to_inactivate_profile">下記プロフィルを無効にします</string>
 	
+	<string name="msgs_prof_cont_label_activate">有効にする</string>
+	<string name="msgs_prof_cont_label_inactivate">無効にする</string>
+	<string name="msgs_prof_cont_label_delete">削除する</string>
+	<string name="msgs_prof_cont_label_copy">コピーする</string>
+	<string name="msgs_prof_cont_label_add_local">ローカルプロファイルを追加する</string>
+	<string name="msgs_prof_cont_label_add_remote">リモートプロファイルを追加する</string>
+	<string name="msgs_prof_cont_label_add_sync">同期プロファイルを追加する</string>
+	<string name="msgs_prof_cont_label_start_wizard">同期作成ウィザードを開始する</string>
+	<string name="msgs_prof_cont_label_rename">改名する</string>
+	<string name="msgs_prof_cont_label_sync">同期する</string>
+	<string name="msgs_prof_cont_label_select_all">全て選択する</string>
+	<string name="msgs_prof_cont_label_unselect_all">全ての選択を解除する</string>
+	
+	<string name="msgs_hist_cont_label_move_top">最上部に移動</string>
+	<string name="msgs_hist_cont_label_move_bottom">最下部に移動</string>
+	<string name="msgs_hist_cont_label_delete">履歴削除</string>
+	<string name="msgs_hist_cont_label_copy">クリップボードにコピー</string>
+	<string name="msgs_hist_cont_label_select_all">全て選択</string>
+	<string name="msgs_hist_cont_label_unselect_all">全ての選択を解除</string>
+
+	<string name="msgs_msg_cont_label_move_top">最上部に移動</string>
+	<string name="msgs_msg_cont_label_move_bottom">最下部に移動</string>
+	<string name="msgs_msg_cont_label_pinned_active">自動スクロール有効</string>
+	<string name="msgs_msg_cont_label_pinned_inactive">自動スクロール無効</string>
+	<string name="msgs_msg_cont_label_clear">クリア</string>
+				
 	<string name="msgs_add_local_profile"	>ローカルプロファイルの追加</string>
 	<string name="msgs_add_remote_profile"	>リモートプロファイルの追加</string>
 	<string name="msgs_add_sync_profile">同期プロファイルの追加</string>

@@ -75,6 +75,32 @@
 
 	<string name="msgs_prof_cont_to_activate_profile">To active the following profile</string>
 	<string name="msgs_prof_cont_to_inactivate_profile">To inactive the following profile</string>
+	
+	<string name="msgs_prof_cont_label_activate">Activate</string>
+	<string name="msgs_prof_cont_label_inactivate">Inactivate</string>
+	<string name="msgs_prof_cont_label_delete">Delete profile</string>
+	<string name="msgs_prof_cont_label_copy">Copy profile</string>
+	<string name="msgs_prof_cont_label_add_local">Add local profile</string>
+	<string name="msgs_prof_cont_label_add_remote">Add remote profile</string>
+	<string name="msgs_prof_cont_label_add_sync">Add sync profile</string>
+	<string name="msgs_prof_cont_label_start_wizard">Start profile creation wizard</string>
+	<string name="msgs_prof_cont_label_rename">Rename profile</string>
+	<string name="msgs_prof_cont_label_sync">Start sync</string>
+	<string name="msgs_prof_cont_label_select_all">Select all profile</string>
+	<string name="msgs_prof_cont_label_unselect_all">Unselect all profile</string>
+	
+	<string name="msgs_hist_cont_label_move_top">Move to top</string>
+	<string name="msgs_hist_cont_label_move_bottom">Move to bottom</string>
+	<string name="msgs_hist_cont_label_delete">Delete history item</string>
+	<string name="msgs_hist_cont_label_copy">Copy to clipboard</string>
+	<string name="msgs_hist_cont_label_select_all">Select all history item</string>
+	<string name="msgs_hist_cont_label_unselect_all">Unselect all history item</string>
+	
+	<string name="msgs_msg_cont_label_move_top">Move to top</string>
+	<string name="msgs_msg_cont_label_move_bottom">Move to bottom</string>
+	<string name="msgs_msg_cont_label_pinned_active">Disable auto scroll</string>
+	<string name="msgs_msg_cont_label_pinned_inactive">Enable auto scroll</string>
+	<string name="msgs_msg_cont_label_clear">クリア</string>
 			
 	<string name="msgs_add_local_profile"	>Add local profile</string>
 	<string name="msgs_add_remote_profile"	>Add remote profile</string>

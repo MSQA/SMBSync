@@ -101,7 +101,19 @@ public class AdapterLogFileManagementList extends BaseAdapter{
 		}
 		return result;
 	};
-	
+
+	public int getItemSelectedCount() {
+		int result=0;
+		if (log_list!=null) {
+			for(int i=0;i<log_list.size();i++) {
+				if (log_list.get(i).isChecked) {
+					result++;
+				}
+			}
+		}
+		return result;
+	};
+
 	public void setAllItemChecked(boolean p) {
 		if (log_list!=null) {
 			for(int i=0;i<log_list.size();i++) {
@@ -148,7 +160,7 @@ public class AdapterLogFileManagementList extends BaseAdapter{
     			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 //    				o.isChecked=isChecked;
     				getItem(position).isChecked=isChecked;
-    				if (mCheckBoxClickListener!=null) 
+    				if (mCheckBoxClickListener!=null && mShowCheckBox) 
     					mCheckBoxClickListener.notifyToListener(true, new Object[]{isChecked});
     			}
     		});

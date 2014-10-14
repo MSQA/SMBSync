@@ -88,7 +88,16 @@ public class AdapterSyncHistory extends ArrayAdapter<SyncHistoryListItem> {
 			}
 		return result;
 	};
-	
+
+	public int getItemSelectedCount() {
+		int result=0;
+		for (int i=0;i<items.size();i++) 
+			if (items.get(i).isChecked) {
+				result++;
+			}
+		return result;
+	};
+
 	public boolean isEmptyAdapter() {
 		boolean result=false;
 		if (items!=null) {
@@ -130,7 +139,8 @@ public class AdapterSyncHistory extends ArrayAdapter<SyncHistoryListItem> {
 
         if (o != null ) {
         	if (!o.sync_prof.equals("")) {
-        		holder.tv_seq.setText(String.format("%1$3d",position));
+        		holder.tv_seq.setText(String.format("%1$3d",position+1));
+        		holder.tv_seq.setVisibility(TextView.VISIBLE);
             	holder.tv_date.setVisibility(TextView.VISIBLE);
             	holder.tv_time.setVisibility(TextView.VISIBLE);
             	holder.tv_status.setVisibility(TextView.VISIBLE);
@@ -172,12 +182,14 @@ public class AdapterSyncHistory extends ArrayAdapter<SyncHistoryListItem> {
      					if (o.sync_prof.equals("")) return;
 //     					o.isChecked=isChecked;
      					items.get(position).isChecked=isChecked;
-     					if (mNotifyCheckBoxEvent!=null) mNotifyCheckBoxEvent.notifyToListener(true, null);
+     					if (mNotifyCheckBoxEvent!=null && isShowCheckBox) 
+     						mNotifyCheckBoxEvent.notifyToListener(true, null);
      				}}
              	);
              	holder.cb_sel.setChecked(items.get(position).isChecked);
         	} else {
         		holder.tv_prof.setText(c.getString(R.string.msgs_sync_history_empty));
+        		holder.tv_seq.setVisibility(TextView.GONE);
         		holder.tv_date.setVisibility(TextView.GONE);
             	holder.tv_time.setVisibility(TextView.GONE);
             	holder.tv_status.setVisibility(TextView.GONE);
