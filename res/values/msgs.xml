@@ -8,6 +8,7 @@
 	<string name="msgs_application_already_started">Ignored the start request from an external application or scheduled, ｂecause sync is already running.</string>
 		    
 	<string name="msgs_sync_select_prof_no_active_profile">Active sync profile was not found.</string>
+	<string name="msgs_sync_prof_name_list">Sync has been started by the following profile</string>
 	
     <string name="msgs_notification_sync_active">Synchronization is active.</string>
     <string name="msgs_notification_smbsync_active">SMBSync was started.</string>
@@ -53,7 +54,8 @@
     <string name="msgs_filelist_error">An error occurred while creating the remote file list.</string>
     
     <string name="msgs_smbsync_main_start">Application was successfully started.</string>
-    <string name="msgs_smbsync_main_restart">Application was restarted.</string>
+    <string name="msgs_smbsync_main_restart_by_killed">Application was restarted, because application is killed after the move to the background in last time.</string>
+    <string name="msgs_smbsync_main_restart_by_destroyed">Application was restarted because destroyed of the activity is requested.　Please disable it if you&#8217;re to enable the &#8220;Don&#8217;t keep activities&#8221; in the Settings->developer options.</string>
     <string name="msgs_smbsync_main_end">Application was being terminated.</string>
     <string name="msgs_smbsync_main_language_changed">Language of the system has been changed, but there is a point where the application has not been reflected dynamically. (For example, the profile edit dialog appearance and message of synchronous execution)\nYou must restart the application in order to fully reflect the modified. (If running synchronization, please restart synchronization from the end)</string>    
     <string name="msgs_smbsync_main_settings_force_log_enabled"	>To enable logging because Auto sync startup was enabled.</string>
@@ -64,7 +66,6 @@
     <string name="msgs_save_to_profile_error">"Save profile was failed. file=%s</string>
     
     <string name="msgs_dir_empty"			>--- Directory is empty ---</string>
-	<string name="delete_msgs_no_profile"			>--- No remote or local profile ---</string>
  	<string name="msgs_override"			>override?</string>
 	<string name="msgs_active_sync_prof_not_found">Active sync profile can not be found.</string>
 	<string name="msgs_clear_log_message"	>Clear log messages</string>
@@ -76,15 +77,15 @@
 	<string name="msgs_prof_cont_to_activate_profile">To active the following profile</string>
 	<string name="msgs_prof_cont_to_inactivate_profile">To inactive the following profile</string>
 	
-	<string name="msgs_prof_cont_label_activate">Activate</string>
-	<string name="msgs_prof_cont_label_inactivate">Inactivate</string>
-	<string name="msgs_prof_cont_label_delete">Delete profile</string>
-	<string name="msgs_prof_cont_label_copy">Copy profile</string>
+	<string name="msgs_prof_cont_label_activate">To activate</string>
+	<string name="msgs_prof_cont_label_inactivate">To inactivate</string>
+	<string name="msgs_prof_cont_label_delete">To delete profile</string>
+	<string name="msgs_prof_cont_label_copy">To copy profile</string>
 	<string name="msgs_prof_cont_label_add_local">Add local profile</string>
 	<string name="msgs_prof_cont_label_add_remote">Add remote profile</string>
 	<string name="msgs_prof_cont_label_add_sync">Add sync profile</string>
 	<string name="msgs_prof_cont_label_start_wizard">Start profile creation wizard</string>
-	<string name="msgs_prof_cont_label_rename">Rename profile</string>
+	<string name="msgs_prof_cont_label_rename">To rename profile</string>
 	<string name="msgs_prof_cont_label_sync">Start sync</string>
 	<string name="msgs_prof_cont_label_select_all">Select all profile</string>
 	<string name="msgs_prof_cont_label_unselect_all">Unselect all profile</string>
@@ -98,9 +99,9 @@
 	
 	<string name="msgs_msg_cont_label_move_top">Move to top</string>
 	<string name="msgs_msg_cont_label_move_bottom">Move to bottom</string>
-	<string name="msgs_msg_cont_label_pinned_active">Disable auto scroll</string>
-	<string name="msgs_msg_cont_label_pinned_inactive">Enable auto scroll</string>
-	<string name="msgs_msg_cont_label_clear">クリア</string>
+	<string name="msgs_msg_cont_label_pinned_active">To disable auto scroll</string>
+	<string name="msgs_msg_cont_label_pinned_inactive">To enable auto scroll</string>
+	<string name="msgs_msg_cont_label_clear">To clear message</string>
 			
 	<string name="msgs_add_local_profile"	>Add local profile</string>
 	<string name="msgs_add_remote_profile"	>Add remote profile</string>

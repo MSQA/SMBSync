@@ -28,13 +28,17 @@ import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_SYNC_WIFI_OPTION_CO
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
+import com.sentaroh.android.SMBSync.SMBSyncMain.ViewSaveArea;
+
 import android.app.Application;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.net.wifi.WifiManager;
 import android.os.Handler;
+import android.os.PowerManager.WakeLock;
 import android.support.v4.app.NotificationCompat.BigTextStyle;
 import android.support.v4.app.NotificationCompat.Builder;
 import android.util.Log;
@@ -46,6 +50,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class GlobalParameters extends Application{
+	public boolean initialyzeCompleted=false;
 	
 	public Context svcContext=null;
 	
@@ -181,7 +186,15 @@ public class GlobalParameters extends Application{
 	public String wifiSsid="";
 	
 	public boolean onLowMemory=false;
+	
+	public WakeLock mDimScreenWakelock=null;
+	public WifiManager.WifiLock mWifiLock=null;
 
+	public boolean isApplicationIsRestartRequested=false;
+	public ViewSaveArea mainViewSaveArea=null;
+	public boolean confirmDialogShowed=false;
+	public String confirmDialogFilePath="", confirmDialogMethod="";
+	
 	public GlobalParameters() {};
 	
 	@Override
@@ -198,3 +211,5 @@ public class GlobalParameters extends Application{
 	}
 
 }
+
+

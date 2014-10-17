@@ -5,7 +5,7 @@
     android:versionCode="137"
     android:versionName="2.18">
 
-    <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="17"/>
+    <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="11"/>
     
 	<uses-permission android:name="android.permission.INTERNET"/>
    	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
@@ -45,11 +45,13 @@
             android:name=".SMBSyncMain"
             android:launchMode="singleTask"
             android:theme="@style/Theme.AppCompat"
-            android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|layoutDirection|fontScale"
+            android:configChanges="locale|keyboardHidden|orientation|screenSize|layoutDirection"
             android:screenOrientation="unspecified" 
             android:alwaysRetainTaskState="true" 
             android:icon="@drawable/ic_64_smbsync" >
-       <!-- android:alwaysRetainTaskState="true"-->
+		<!-- android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|layoutDirection|fontScale"-->			
+	　　 	<!-- android:configChanges="locale|keyboardHidden|orientation|layoutDirection"-->
+       	<!-- android:alwaysRetainTaskState="true"-->
             
             <intent-filter >
                 <action android:name="android.intent.action.MAIN" />
@@ -64,6 +66,7 @@
             android:icon="@drawable/ic_64_smbsync">
         </activity>
         <!-- android:noHistory="true"  -->
+        
         <service android:name=".SMBSyncService"/>
         
     </application>
