@@ -5293,6 +5293,7 @@ public class ProfileUtility {
 		saveSettingsParmsToFileBoolean(c, group, pw, false, encrypt_required,cp,c.getString(R.string.settings_suppress_warning_mixed_mp));
 		saveSettingsParmsToFileString(c, group, pw, "0", encrypt_required,cp,c.getString(R.string.settings_playback_ringtone_when_sync_ended));
 		saveSettingsParmsToFileString(c, group, pw, "0", encrypt_required,cp,c.getString(R.string.settings_vibrate_when_sync_ended));
+		saveSettingsParmsToFileBoolean(c, group, pw, false, encrypt_required,cp,c.getString(R.string.settings_show_sync_on_action_bar));
 
 		saveSettingsParmsToFileString(c, group, pw, "0",    encrypt_required,cp,c.getString(R.string.settings_media_store_last_mod_time));
 		saveSettingsParmsToFileString(c, group, pw, "3",    encrypt_required,cp,c.getString(R.string.settings_file_diff_time_seconds));

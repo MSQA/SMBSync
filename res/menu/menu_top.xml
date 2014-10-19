@@ -1,11 +1,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:appv7="http://schemas.android.com/apk/res-auto">
-<!-- 
     <item android:id="@+id/menu_top_sync"
           android:title="@string/msgs_menu_sync" 
-          android:icon="@drawable/ic_32_bw_sync"
+          android:icon="@drawable/ic_32_sync"
           appv7:showAsAction="ifRoom|withText"/>
--->
     <item android:id="@+id/menu_top_scheduler"
           android:title="@string/msgs_menu_scheduler"
           android:icon="@drawable/ic_32_timer"

@@ -180,7 +180,7 @@ public class SMBSyncMain extends ActionBarActivity {
 		setContentView(R.layout.main);
 		mContext=this;
 		mGp=(GlobalParameters) getApplication();
-		mGp.enableMainUi=true;
+//		mGp.enableMainUi=true;
 		mGp.uiHandler=new Handler();
 		mGp.SMBSync_External_Root_Dir=LocalMountPoint.getExternalStorageDir();
 
@@ -319,7 +319,6 @@ public class SMBSyncMain extends ActionBarActivity {
 //				setScreenOn();
 			}
 		} else {
-			setUiEnabled();
 			NotifyEvent svc_ntfy=new NotifyEvent(mContext);
 			svc_ntfy.setListener(new NotifyEventListener(){
 				@Override
@@ -330,6 +329,7 @@ public class SMBSyncMain extends ActionBarActivity {
 					if (restartType==RESTART_BY_DESTOROYED) {
 						resumeByDestroyed();
 					} else {
+						setUiEnabled();
 						resumeByNormal();
 					}
 
@@ -350,10 +350,11 @@ public class SMBSyncMain extends ActionBarActivity {
 			showNotificationMsg(mContext.getString(R.string.msgs_smbsync_main_start)+" Version "+packageVersionName );
 		} else if (restartType==RESTART_BY_KILLED) {
 			restoreTaskData();
-			if (currentViewType.equals("M")) tabHost.setCurrentTab(1);
-			else if (currentViewType.equals("H")) tabHost.setCurrentTab(2);
+//			if (currentViewType.equals("M")) tabHost.setCurrentTab(1);
+//			else if (currentViewType.equals("H")) tabHost.setCurrentTab(2);
 			util.addLogMsg("I",mContext.getString(R.string.msgs_smbsync_main_restart_by_killed)+" Version "+packageVersionName);
 			showNotificationMsg(mContext.getString(R.string.msgs_smbsync_main_restart_by_killed)+" Version "+packageVersionName);
+			tabHost.setCurrentTab(1);
 		}
 		listSMBSyncOption();
 
@@ -398,8 +399,8 @@ public class SMBSyncMain extends ActionBarActivity {
 
 	private void resumeByDestroyed() {
 		tabHost.setOnTabChangedListener(null);
-		if (currentViewType.equals("M")) tabHost.setCurrentTab(1);
-		else if (currentViewType.equals("H")) tabHost.setCurrentTab(2);
+//		if (currentViewType.equals("M")) tabHost.setCurrentTab(1);
+//		else if (currentViewType.equals("H")) tabHost.setCurrentTab(2);
 		util.addLogMsg("W",mContext.getString(R.string.msgs_smbsync_main_restart_by_destroyed)+" Version "+packageVersionName);
 		showNotificationMsg(mContext.getString(R.string.msgs_smbsync_main_restart_by_destroyed)+" Version "+packageVersionName);
 //		commonDlg.showCommonDialog(false, "W", mContext.getString(R.string.msgs_smbsync_main_restart_by_destroyed), "", null);
@@ -421,6 +422,9 @@ public class SMBSyncMain extends ActionBarActivity {
 		initAdapterAndView();
 
 		restoreViewContent(mGp.mainViewSaveArea);
+		
+		tabHost.setCurrentTab(1);
+
 		tabHost.setOnTabChangedListener(new OnTabChange());
 		
 		setMessageContextButtonListener();
@@ -435,20 +439,23 @@ public class SMBSyncMain extends ActionBarActivity {
 		
 		setHistoryViewItemClickListener();
 		setHistoryViewLongClickListener();
+		
+		setHistoryContextButtonNormalMode();
+		setProfileContextButtonNormalMode();
 
-		if (currentViewType.equals("P")) {
-			if (mGp.syncHistoryAdapter.isShowCheckBox()) setHistoryContextButtonSelectMode();
-			else setHistoryContextButtonNormalMode();
-			
-			if (mGp.profileAdapter.isShowCheckBox()) setProfileContextButtonSelectMode();
-			else setProfileContextButtonNormalMode();
-		} else if (currentViewType.equals("H")) {
-			if (mGp.profileAdapter.isShowCheckBox()) setProfileContextButtonSelectMode();
-			else setProfileContextButtonNormalMode();
-
-			if (mGp.syncHistoryAdapter.isShowCheckBox()) setHistoryContextButtonSelectMode();
-			else setHistoryContextButtonNormalMode();
-		}
+//		if (currentViewType.equals("P")) {
+//			if (mGp.syncHistoryAdapter.isShowCheckBox()) setHistoryContextButtonSelectMode();
+//			else setHistoryContextButtonNormalMode();
+//			
+//			if (mGp.profileAdapter.isShowCheckBox()) setProfileContextButtonSelectMode();
+//			else setProfileContextButtonNormalMode();
+//		} else if (currentViewType.equals("H")) {
+//			if (mGp.profileAdapter.isShowCheckBox()) setProfileContextButtonSelectMode();
+//			else setProfileContextButtonNormalMode();
+//
+//			if (mGp.syncHistoryAdapter.isShowCheckBox()) setHistoryContextButtonSelectMode();
+//			else setHistoryContextButtonNormalMode();
+//		}
 		
 		if (mGp.confirmDialogShowed)
 			showConfirmDialog(mGp.confirmDialogFilePath, mGp.confirmDialogMethod);
@@ -1061,28 +1068,43 @@ public class SMBSyncMain extends ActionBarActivity {
 		util.addDebugLogMsg(1,"I","onPrepareOptionsMenu entered, isUiEnabled()="+isUiEnabled());
 //		menu.findItem(R.id.menu_top_scheduler).setVisible(false);
 		if (isUiEnabled()) {
-//			menu.findItem(R.id.menu_top_sync).setEnabled(true);
-			menu.findItem(R.id.menu_top_browse_log).setEnabled(true);
-			menu.findItem(R.id.menu_top_export).setEnabled(true);
-			menu.findItem(R.id.menu_top_import).setEnabled(true);
-			menu.findItem(R.id.menu_top_last_mod_list).setEnabled(true);
 			menu.findItem(R.id.menu_top_about).setEnabled(true);
 			menu.findItem(R.id.menu_top_settings).setEnabled(true);
-			menu.findItem(R.id.menu_top_log_management).setEnabled(true);
 			menu.findItem(R.id.menu_top_scheduler).setEnabled(true);
 			if (!mGp.externalStorageIsMounted) {
-//				menu.findItem(R.id.menu_top_sync).setEnabled(false);
 				menu.findItem(R.id.menu_top_browse_log).setEnabled(false);
 				menu.findItem(R.id.menu_top_export).setEnabled(false);
 				menu.findItem(R.id.menu_top_import).setEnabled(false);
+				menu.findItem(R.id.menu_top_last_mod_list).setEnabled(false);
 				menu.findItem(R.id.menu_top_log_management).setEnabled(false);
+			} else {
+				if (mGp.logWriter==null) menu.findItem(R.id.menu_top_browse_log).setEnabled(false);
+				else menu.findItem(R.id.menu_top_browse_log).setEnabled(true);
+				menu.findItem(R.id.menu_top_export).setEnabled(true);
+				menu.findItem(R.id.menu_top_import).setEnabled(true);
+				menu.findItem(R.id.menu_top_last_mod_list).setEnabled(true);
+				menu.findItem(R.id.menu_top_log_management).setEnabled(true);
 			}
-			if (mGp.logWriter==null)
-				menu.findItem(R.id.menu_top_browse_log).setEnabled(false);
+			if (mGp.settingMenuItemSyncShowed) {
+				if (mContextProfileButtonSync.isEnabled()) {
+					menu.findItem(R.id.menu_top_sync).setEnabled(true);
+					menu.findItem(R.id.menu_top_sync).setIcon(R.drawable.ic_32_sync);
+				} else {
+					menu.findItem(R.id.menu_top_sync).setEnabled(false);
+					menu.findItem(R.id.menu_top_sync).setIcon(R.drawable.ic_32_sync_disabled);
+				}
+			} else {
+				menu.findItem(R.id.menu_top_sync).setVisible(false);
+			}
 			if (!LocalFileLastModified.isLastModifiedWasUsed(mGp.profileAdapter))
 				menu.findItem(R.id.menu_top_last_mod_list).setEnabled(false);
 		} else {
-//			menu.findItem(R.id.menu_top_sync).setEnabled(false);
+			if (mGp.settingMenuItemSyncShowed) {
+				menu.findItem(R.id.menu_top_sync).setEnabled(false);
+				menu.findItem(R.id.menu_top_sync).setIcon(R.drawable.ic_32_sync_disabled);
+			} else {
+				menu.findItem(R.id.menu_top_sync).setVisible(false);
+			}
 			
 			menu.findItem(R.id.menu_top_browse_log).setEnabled(true);
 			if (!mGp.externalStorageIsMounted) {
@@ -1103,20 +1125,15 @@ public class SMBSyncMain extends ActionBarActivity {
 		}
         return super.onPrepareOptionsMenu(menu);
 	};
-	
+
 	@SuppressWarnings("unused")
 	private long mToastNextIssuedTimeSyncOption=0l;
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-//			case R.id.menu_top_sync:
+			case R.id.menu_top_sync:
 //				if (!util.isRemoteDisable()) {
 //					if (profUtil.getActiveSyncProfileCount(mGp.profileAdapter)>0) {
-//						if (ProfileUtility.getSyncProfileSelectedItemCount(mGp.profileAdapter, SMBSYNC_PROF_GROUP_DEFAULT)>0) {
-//							syncSelectedProfile();
-//						} else {
-//							syncActiveProfile();
-//						}
 //					} else {
 //						NotifyEvent ntfy=new NotifyEvent(mContext);
 //						ntfy.setListener(new NotifyEventListener(){
@@ -1141,7 +1158,8 @@ public class SMBSyncMain extends ActionBarActivity {
 //						mToastNextIssuedTimeSyncOption=System.currentTimeMillis()+2000;
 //					}
 //				}
-//				return true;
+				mContextProfileButtonSync.performClick();
+				return true;
 			case android.R.id.home:
 				processHomeButtonPress();
 				return true;
@@ -1718,6 +1736,9 @@ public class SMBSyncMain extends ActionBarActivity {
 		mGp.settingRingtoneWhenSyncEnded=
 				prefs.getString(getString(R.string.settings_playback_ringtone_when_sync_ended), "0");
 
+		mGp.settingMenuItemSyncShowed=
+				prefs.getBoolean(getString(R.string.settings_show_sync_on_action_bar), false);
+		
 		mGp.settingScreenOnOption=
 				prefs.getString(getString(R.string.settings_keep_screen_on), GlobalParameters.KEEP_SCREEN_ON_WHEN_SCREEN_UNLOCKED);
 
@@ -1749,9 +1770,10 @@ public class SMBSyncMain extends ActionBarActivity {
 //			commonDlg.showCommonDialog(false,"W",
 //					"",mContext.getString(R.string.msgs_smbsync_main_settings_jcifs_changed_restart),null);
 //		}
-		
-//		refreshOptionMenu();
-//		
+		if (mGp.profileAdapter!=null && mContextProfileViewSync!=null) {
+			if (mGp.profileAdapter.isShowCheckBox()) setProfileContextButtonSelectMode();
+			else setProfileContextButtonNormalMode();
+		}
 	};
 
 	private boolean isCheckWifiOffRequired=false;
@@ -2951,7 +2973,8 @@ public class SMBSyncMain extends ActionBarActivity {
 		
         boolean any_selected=ProfileUtility.isAnyProfileSelected(mGp.profileAdapter, SMBSYNC_PROF_GROUP_DEFAULT);
 
-		mContextProfileViewSync.setVisibility(ImageButton.VISIBLE);
+        if (!mGp.settingMenuItemSyncShowed) mContextProfileViewSync.setVisibility(ImageButton.VISIBLE);
+        else mContextProfileViewSync.setVisibility(ImageButton.GONE);
 
         if (!util.isRemoteDisable()) {
         	boolean act_sync_prof=false;
@@ -2974,7 +2997,7 @@ public class SMBSyncMain extends ActionBarActivity {
         	mContextProfileButtonSync.setImageResource(R.drawable.ic_32_sync_disabled);
         	mContextProfileButtonSync.setEnabled(false);
         }
-
+        
     	boolean act_prof_selected=false, inact_prof_selected=false;
     	if (any_selected) {
         	for(int i=0;i<tot_cnt;i++) {
@@ -3015,6 +3038,8 @@ public class SMBSyncMain extends ActionBarActivity {
         
         if (any_selected) mContextProfileViewUnselectAll.setVisibility(ImageButton.VISIBLE);
         else mContextProfileViewUnselectAll.setVisibility(ImageButton.GONE);
+        
+        refreshOptionMenu();
 	};
 
 	private void setProfileContextButtonHide() {
@@ -3050,7 +3075,9 @@ public class SMBSyncMain extends ActionBarActivity {
 		mGp.profileAdapter.setShowCheckBox(false);
 		mGp.profileAdapter.notifyDataSetChanged();
 
-        mContextProfileViewSync.setVisibility(ImageButton.VISIBLE);
+        if (!mGp.settingMenuItemSyncShowed) mContextProfileViewSync.setVisibility(ImageButton.VISIBLE);
+        else mContextProfileViewSync.setVisibility(ImageButton.GONE);
+
         if (!util.isRemoteDisable()) {
     		mContextProfileButtonSync.setImageResource(R.drawable.ic_32_sync);
     		mContextProfileButtonSync.setEnabled(true);
@@ -3072,7 +3099,8 @@ public class SMBSyncMain extends ActionBarActivity {
         else mContextProfileViewSelectAll.setVisibility(ImageButton.GONE);
         mContextProfileViewUnselectAll.setVisibility(ImageButton.GONE);
 
-	};
+        refreshOptionMenu();
+    };
 
 	@SuppressLint("ShowToast")
 	private void setMessageContextButtonListener() {
@@ -3285,8 +3313,9 @@ public class SMBSyncMain extends ActionBarActivity {
 	@SuppressLint("NewApi")
 	final private void refreshOptionMenu() {
 		util.addDebugLogMsg(1,"I","refreshOptionMenu entered");
-		if (Build.VERSION.SDK_INT>=11)
-			this.invalidateOptionsMenu();
+//		if (Build.VERSION.SDK_INT>=11)
+//			this.invalidateOptionsMenu();
+		supportInvalidateOptionsMenu();
 	};
 
 	private void startMirrorTask(ArrayList<MirrorIoParmList> alp) {
@@ -3428,9 +3457,15 @@ public class SMBSyncMain extends ActionBarActivity {
 
 	private void mirrorTaskEnded(String result_code, String result_msg) {
 		setUiEnabled();
+		mGp.mirrorIoParms=null;
+		mGp.progressBarCancelListener=null;
+		mGp.progressBarImmedListener=null;
+		mGp.progressSpinCancelListener=null;
+		mGp.progressBarCancel.setOnClickListener(null);
+		mGp.progressSpinCancel.setOnClickListener(null);
+		mGp.progressBarImmed.setOnClickListener(null);
 
-		final LinearLayout ll_spin=(LinearLayout)findViewById(R.id.profile_progress_spin);
-		ll_spin.setVisibility(LinearLayout.GONE);
+		mGp.progressSpinView.setVisibility(LinearLayout.GONE);
 		
 //		mGp.syncHistoryAdapter=new AdapterSyncHistory(mContext, R.layout.sync_history_list_item_view, 
 //				mGp.syncHistoryList);
@@ -3594,6 +3629,7 @@ public class SMBSyncMain extends ActionBarActivity {
 			mUiHandler.post(new Runnable(){
 				@Override
 				public void run() {
+					refreshOptionMenu();
 					if (mGp.profileAdapter.isShowCheckBox()) setProfileContextButtonSelectMode();
 					else setProfileContextButtonNormalMode();
 				}
@@ -3666,6 +3702,7 @@ public class SMBSyncMain extends ActionBarActivity {
 			}
 		}
 	};
+	
 
 	private void showConfirmDialog(String fp, String method) {
 		util.addDebugLogMsg(1,"I","showConfirmDialog entered");
@@ -3682,6 +3719,16 @@ public class SMBSyncMain extends ActionBarActivity {
 				} catch (RemoteException e) {
 					e.printStackTrace();
 				}
+				mGp.confirmYesListener=null;
+				mGp.confirmYesAllListener=null;
+				mGp.confirmNoListener=null;
+				mGp.confirmNoAllListener=null;
+				mGp.confirmCancelListener=null;
+				mGp.confirmCancel.setOnClickListener(null);
+				mGp.confirmYes.setOnClickListener(null);
+				mGp.confirmYesAll.setOnClickListener(null);
+				mGp.confirmNo.setOnClickListener(null);
+				mGp.confirmNoAll.setOnClickListener(null);
 			}
 			@Override
 			public void negativeResponse(Context c, Object[] o) {
@@ -3691,6 +3738,16 @@ public class SMBSyncMain extends ActionBarActivity {
 				} catch (RemoteException e) {
 					e.printStackTrace();
 				}
+				mGp.confirmYesListener=null;
+				mGp.confirmYesAllListener=null;
+				mGp.confirmNoListener=null;
+				mGp.confirmNoAllListener=null;
+				mGp.confirmCancelListener=null;
+				mGp.confirmCancel.setOnClickListener(null);
+				mGp.confirmYes.setOnClickListener(null);
+				mGp.confirmYesAll.setOnClickListener(null);
+				mGp.confirmNo.setOnClickListener(null);
+				mGp.confirmNoAll.setOnClickListener(null);
 			}
 		});
 		

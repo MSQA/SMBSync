@@ -136,6 +136,10 @@
         <item>2</item>
         <item>3</item>
     </string-array>	    
+
+	<string name="settings_show_sync_on_action_bar_title">Show of the sync button</string>
+    <string name="settings_show_sync_on_action_bar_summary_ena">Show the sync button in menu at the top of screen.</string>
+	<string name="settings_show_sync_on_action_bar">settings_show_sync_on_action_bar</string>	
     		
 	<string name="settings_log_title">Log</string>	    
 	<string name="settings_log_preference_screen_title">Log</string>

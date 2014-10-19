@@ -86,6 +86,10 @@
 			android:dialogTitle="@string/settings_vibrate_when_sync_ended_dialog_title"
 			android:entries="@array/settings_vibrate_when_sync_ended_list_entries"
 			android:entryValues="@array/settings_vibrate_when_sync_ended_list_values" />
+	    <CheckBoxPreference
+			android:key="@string/settings_show_sync_on_action_bar"
+			android:title="@string/settings_show_sync_on_action_bar_title"
+			android:summary="@string/settings_show_sync_on_action_bar_summary_ena" />
   	    	    	    	    
 	</PreferenceCategory>	    
 	<PreferenceCategory android:title="@string/settings_log_preference_screen_title">

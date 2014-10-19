@@ -119,6 +119,7 @@ public class SMBSyncSettings extends PreferenceActivity{
 
 		initSettingValueBeforeHc(shared_pref,getString(R.string.settings_playback_ringtone_when_sync_ended));
 		initSettingValueBeforeHc(shared_pref,getString(R.string.settings_vibrate_when_sync_ended));
+		initSettingValueBeforeHc(shared_pref,getString(R.string.settings_show_sync_on_action_bar));
 		
     	initSettingValueBeforeHc(shared_pref,getString(R.string.settings_media_scanner_non_media_files_scan));
     	initSettingValueBeforeHc(shared_pref,getString(R.string.settings_media_scanner_scan_extstg));
@@ -359,8 +360,10 @@ public class SMBSyncSettings extends PreferenceActivity{
 				pref_key
 					.setSummary(c.getString(R.string.settings_vibrate_when_sync_ended_summary_no));
 			}
+		} else if (key_string.equals(c.getString(R.string.settings_show_sync_on_action_bar))) {
+			isChecked=true;
     	}
-
+		
     	return isChecked;
 	};
 
@@ -803,6 +806,7 @@ public class SMBSyncSettings extends PreferenceActivity{
     		
     		initSettingValueAfterHc(shared_pref,getString(R.string.settings_playback_ringtone_when_sync_ended));
     		initSettingValueAfterHc(shared_pref,getString(R.string.settings_vibrate_when_sync_ended));
+    		initSettingValueAfterHc(shared_pref,getString(R.string.settings_show_sync_on_action_bar));
     		
         };
         

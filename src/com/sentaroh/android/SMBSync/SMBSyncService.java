@@ -293,7 +293,7 @@ public class SMBSyncService extends Service {
 			} else {
 				if (ss.equals("COMPLETED") ||ss.equals("ASSOCIATING") || ss.equals("ASSOCIATED")) {
 					if (mGp.wifiSsid.equals("") && !wssid.equals("")) {
-						mUtil.addDebugLogMsg(1,"I","WIFI receiver, Connected WIFI Access point ssid=",wssid);
+						mUtil.addDebugLogMsg(1,"I","WIFI receiver, Connected WIFI Access point ssid="+wssid);
 						mGp.wifiSsid=wssid;
 						mGp.wifiIsActive=true;
 						try {
@@ -309,7 +309,7 @@ public class SMBSyncService extends Service {
 						ss.equals("SCANNING")) {
 					if (mGp.wifiIsActive) {
 						if (!mGp.wifiSsid.equals("")) {
-							mUtil.addDebugLogMsg(1,"I","WIFI receiver, Disconnected WIFI Access point ssid=", mGp.wifiSsid);
+							mUtil.addDebugLogMsg(1,"I","WIFI receiver, Disconnected WIFI Access point ssid="+mGp.wifiSsid);
 							mGp.wifiSsid="";
 							mGp.wifiIsActive=true;
 							try {

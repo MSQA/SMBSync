@@ -122,7 +122,7 @@ public class GlobalParameters extends Application{
 	public static final String KEEP_SCREEN_ON_WHEN_SCREEN_UNLOCKED="2";
 	public boolean settingWifiLockRequired=true;
 	public String settingWifiOption=SMBSYNC_SYNC_WIFI_OPTION_CONNECTED_ANY_AP;
-//	public boolean settingAltUiEnabled=true;
+	public boolean settingMenuItemSyncShowed=false;
 	public boolean settingShowSyncDetailMessage=true;
 	public boolean settingShowRemotePortOption=true;
 	public String settingLogOption="0";
