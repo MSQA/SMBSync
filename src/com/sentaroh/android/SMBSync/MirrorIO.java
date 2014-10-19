@@ -248,6 +248,7 @@ public class MirrorIO implements Runnable {
 		newFileLastModifiedList=new ArrayList<FileLastModifiedEntryItem>();
 		
 //		syncHistoryList=mUtil.loadHistoryList();
+		mGp.addedSyncHistoryList=new ArrayList<SyncHistoryListItem>();
 	};
 
 	@SuppressWarnings("unused")
@@ -532,6 +533,7 @@ public class MirrorIO implements Runnable {
 		hli.sync_result_file_path=mSyncHistroryResultFilepath;
 		
 		mUtil.addHistoryList(mGp.syncHistoryList, hli);
+		mGp.addedSyncHistoryList.add(hli);
 	};
 	
 	final private void initSyncParm(MirrorIoParmList mipl) {

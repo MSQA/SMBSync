@@ -101,6 +101,7 @@ public class GlobalParameters extends Application{
 	public ListView syncHistoryListView=null;
 	public AdapterSyncHistory syncHistoryAdapter=null;
 	public ArrayList<SyncHistoryListItem> syncHistoryList=null;
+	public ArrayList<SyncHistoryListItem> addedSyncHistoryList=null;
 	
 	//Message view
 	public boolean freezeMessageViewScroll=false;

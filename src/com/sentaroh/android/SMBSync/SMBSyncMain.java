@@ -2755,7 +2755,7 @@ public class SMBSyncMain extends ActionBarActivity {
         mContextProfileButtonActivete.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
-				confirmActivate(mGp.profileAdapter);
+				confirmActivate(mGp.profileAdapter, ntfy);
 				
 			}
         });
@@ -2764,7 +2764,7 @@ public class SMBSyncMain extends ActionBarActivity {
         mContextProfileButtonInactivete.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
-				confirmInactivate(mGp.profileAdapter);
+				confirmInactivate(mGp.profileAdapter, ntfy);
 			}
         });
         ContextButtonUtil.setButtonLabelListener(mContext, mContextProfileButtonInactivete,mContext.getString(R.string.msgs_prof_cont_label_inactivate));
@@ -2915,14 +2915,14 @@ public class SMBSyncMain extends ActionBarActivity {
 
 	};
 
-	private void confirmActivate(AdapterProfileList pa) {
+	private void confirmActivate(AdapterProfileList pa, final NotifyEvent p_ntfy) {
 		NotifyEvent ntfy=new NotifyEvent(mContext);
 		ntfy.setListener(new NotifyEventListener(){
 			@Override
 			public void positiveResponse(Context c, Object[] o) {
 				profUtil.setProfileToActive(mGp);
-				
 				ProfileUtility.setAllProfileToUnchecked(true, mGp.profileAdapter);
+				p_ntfy.notifyToListener(true, null);
 			}
 
 			@Override
@@ -2931,7 +2931,7 @@ public class SMBSyncMain extends ActionBarActivity {
 		String msg=mContext.getString(R.string.msgs_prof_cont_to_activate_profile)+"\n";
 //		String sep="";
 		for(int i=0;i<pa.getCount();i++) {
-			if (pa.getItem(i).isChecked()) {
+			if (pa.getItem(i).isChecked() && !pa.getItem(i).isActive()) {
 				msg+=pa.getItem(i).getName()+"\n";
 			}
 		}
@@ -2939,14 +2939,14 @@ public class SMBSyncMain extends ActionBarActivity {
 		commonDlg.showCommonDialog(true, "W", msg, "", ntfy);
 	};
 
-	private void confirmInactivate(AdapterProfileList pa) {
+	private void confirmInactivate(AdapterProfileList pa, final NotifyEvent p_ntfy) {
 		NotifyEvent ntfy=new NotifyEvent(mContext);
 		ntfy.setListener(new NotifyEventListener(){
 			@Override
 			public void positiveResponse(Context c, Object[] o) {
 				profUtil.setProfileToInactive();
-				
 				ProfileUtility.setAllProfileToUnchecked(true, mGp.profileAdapter);
+				p_ntfy.notifyToListener(true, null);
 			}
 
 			@Override
@@ -2955,7 +2955,7 @@ public class SMBSyncMain extends ActionBarActivity {
 		String msg=mContext.getString(R.string.msgs_prof_cont_to_inactivate_profile)+"\n";
 //		String sep="";
 		for(int i=0;i<pa.getCount();i++) {
-			if (pa.getItem(i).isChecked()) {
+			if (pa.getItem(i).isChecked() && pa.getItem(i).isActive()) {
 				msg+=pa.getItem(i).getName()+"\n";
 			}
 		}
