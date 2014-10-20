@@ -115,5 +115,9 @@ public class Constants {
 	public static final String SMBSYNC_PROFILE_CONFIRM_COPY_DELETE_NOT_REQUIRED = "NOT_REQUIRED";
 	public static final String SMBSYNC_PROFILE_CONFIRM_COPY_DELETE_REQUIRED = "REQUIRED";
 
+	public static final String SMBSYNC_PROFILE_2_CONFIRM_COPY_DELETE = "system_nr_profile_2_confirm_copy_delete";
+	public static final String SMBSYNC_PROFILE_2_CONFIRM_COPY_DELETE_NOT_REQUIRED = "NOT_REQUIRED";
+	public static final String SMBSYNC_PROFILE_2_CONFIRM_COPY_DELETE_REQUIRED = "REQUIRED";
+
 	public static final String SMBSYNC_PROFILE_RETRY_COUNT="3";
 }

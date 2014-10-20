@@ -712,6 +712,36 @@ public class SMBSyncUtil {
 //		Log.v("","load hist ended");
 		return hl;
 	};
+	
+	public void housekeepHistoryList() {
+		Thread th=new Thread() {
+			@Override
+			public void run() {
+				String dir=mGp.SMBSync_External_Root_Dir+"/SMBSync/result_log";
+				File lf=new File(dir);
+				if (lf.exists()) {
+					File[] fl=lf.listFiles();
+					if (fl!=null && fl.length>0) {
+						for(int i=0;i<fl.length;i++) {
+							String fp=fl[i].getPath();
+							boolean found=false;
+							for (int j=0;j<mGp.syncHistoryList.size();j++) {
+								if (mGp.syncHistoryList.get(j).sync_result_file_path.equals(fp)) {
+									found=true;
+									break;
+								}
+							}
+							if (!found) {
+								File tlf=new File(fp);
+								tlf.delete();
+								addDebugLogMsg(1,"I","Sync history result log was delete because file name not registerd to SyncHistoryList, fp="+fp);							}
+						}
+					}
+				}
+			}
+		};
+		th.start();
+	};
 
 	final public String createSyncResultFilePath(String syncProfName) {
 		String dir=mGp.SMBSync_External_Root_Dir+"/SMBSync/result_log";

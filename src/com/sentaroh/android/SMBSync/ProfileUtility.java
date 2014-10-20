@@ -642,6 +642,11 @@ public class ProfileUtility {
 			@Override
 			public void onClick(View arg0) {
 				if (ctv_reset_profile.isChecked()) mGp.profileAdapter.clear();
+				else {
+					if (mGp.profileAdapter.getCount()==1 && mGp.profileAdapter.getItem(0).getType().equals("")) {
+						mGp.profileAdapter.clear();
+					}
+				}
 				importSelectedProfileItem(imp_list_adapt,tfl,
 						ctv_import_settings.isChecked(),
 						ctv_import_schedule.isChecked(),
@@ -5330,10 +5335,12 @@ public class ProfileUtility {
     	saveSettingsParmsToFileBoolean(c, group, pw, false,   encrypt_required,cp,SCHEDULER_SYNC_WIFI_ON_BEFORE_SYNC_START_KEY);
     	saveSettingsParmsToFileBoolean(c, group, pw, false,   encrypt_required,cp,SCHEDULER_SYNC_WIFI_OFF_AFTER_SYNC_END_KEY);
     	saveSettingsParmsToFileString(c, group, pw, SCHEDULER_SYNC_DELAYED_TIME_FOR_WIFI_ON_DEFAULT_VALUE,
-    													   encrypt_required,cp,SCHEDULER_SYNC_DELAYED_TIME_FOR_WIFI_ON_KEY);
+    													   	encrypt_required,cp,SCHEDULER_SYNC_DELAYED_TIME_FOR_WIFI_ON_KEY);
     	
 		saveSettingsParmsToFileString(c, group, pw, SMBSYNC_PROFILE_CONFIRM_COPY_DELETE_REQUIRED, 
-														   encrypt_required,cp,SMBSYNC_PROFILE_CONFIRM_COPY_DELETE);
+														   	encrypt_required,cp,SMBSYNC_PROFILE_CONFIRM_COPY_DELETE);
+		saveSettingsParmsToFileString(c, group, pw, SMBSYNC_PROFILE_2_CONFIRM_COPY_DELETE_REQUIRED, 
+				   											encrypt_required,cp,SMBSYNC_PROFILE_2_CONFIRM_COPY_DELETE);
 
 	};
 

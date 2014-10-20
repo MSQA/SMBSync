@@ -1764,10 +1764,10 @@ public class MirrorIO implements Runnable {
 		String t_dir="";
 		if (mf.isDirectory()) t_dir=mf.getPath();
 			else t_dir=mf.getParent();
-		if (!isDirExcluded(t_dir.replace(syncTargetLocalDir+"/", "")) && 
+		if (!isDirExcluded(t_dir.replace(syncTargetLocalDir, "")) && 
 				!isHiddenDirectory(mf) &&
 //				isDirectoryToBeProcessed(t_dir.replace(syncTargetLocalDir+"/", ""))
-				isDirToBeProcessed(t_dir.replace(syncTargetLocalDir+"/", ""))
+				isDirToBeProcessed(t_dir.replace(syncTargetLocalDir, ""))
 				){ 
 			if (mf.isDirectory()) { // Directory Delete
 				lf = new File(masterUrl);

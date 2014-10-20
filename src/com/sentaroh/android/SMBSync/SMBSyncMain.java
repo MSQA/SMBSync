@@ -131,11 +131,11 @@ public class SMBSyncMain extends ActionBarActivity {
 			extraValueAutoTerm=false,
 			extraValueBgExec=false;
 	
-	private int restartType=RESTART_NORMAL;
-	private static int RESTART_NORMAL=0;
+	private int restartType=NORMAL_START;
+	private static int NORMAL_START=0;
 	private static int RESTART_WITH_OUT_INITIALYZE=1;
 	private static int RESTART_BY_KILLED=2;
-	private static int RESTART_BY_DESTOROYED=3;
+	private static int RESTART_BY_DESTROYED=3;
 	
 	
 	private static ServiceConnection mSvcConnection=null;
@@ -148,6 +148,7 @@ public class SMBSyncMain extends ActionBarActivity {
 	private ActionBar mActionBar=null;
 	
 	private String currentViewType="P";
+	private ArrayList<Intent> mPendingRequestIntent=new ArrayList<Intent>();
 	
 	@Override  
 	protected void onSaveInstanceState(Bundle out) {  
@@ -161,7 +162,7 @@ public class SMBSyncMain extends ActionBarActivity {
 		super.onRestoreInstanceState(in);
 		util.addDebugLogMsg(1, "I", "onRestoreInstanceState entered.");
 		currentViewType=in.getString("currentViewType");
-		if (mGp.isApplicationIsRestartRequested) restartType=RESTART_BY_DESTOROYED;
+		if (mGp.isApplicationIsRestartRequested) restartType=RESTART_BY_DESTROYED;
 		else restartType=RESTART_BY_KILLED;
 	};
  
@@ -229,6 +230,7 @@ public class SMBSyncMain extends ActionBarActivity {
 			mGp.profileAdapter=profUtil.createProfileList(false,"");
 			
 			mGp.syncHistoryList=util.loadHistoryList();
+			util.housekeepHistoryList();
 			mGp.syncHistoryAdapter=new AdapterSyncHistory(mContext, R.layout.sync_history_list_item_view, 
 					mGp.syncHistoryList);
 			currentViewType="P";
@@ -267,38 +269,14 @@ public class SMBSyncMain extends ActionBarActivity {
 		util.setActivityIsForeground(true);
 	};
 
-
 	@Override
 	protected void onNewIntent(Intent intent) {
 		super.onNewIntent(intent);
 		util.addDebugLogMsg(1,"I","onNewIntent entered, "+"resartStatus="+restartType);
-		SchedulerMain.setSchedulerInfo(mGp, mContext,null);
-		if (restartType==RESTART_NORMAL || restartType==RESTART_WITH_OUT_INITIALYZE) {
-			if (mGp.mirrorThreadActive) {
-				if (isAutoStartRequested(intent)) {
-					commonDlg.showCommonDialog(false, "W", "", 
-							mContext.getString(R.string.msgs_application_already_started), null);
-					util.addLogMsg("W",mContext.getString(R.string.msgs_application_already_started));
-				}
-			} else {
-				if (isAutoStartRequested(intent)) {
-					if (!mGp.supressAutoStart) {
-	 					util.addDebugLogMsg(1,"I","onNewIntent Auto start data found.");
-						isExtraSpecAutoStart=isExtraSpecAutoTerm=isExtraSpecBgExec=false;
-						checkAutoStart(intent);
-					} else {
-						tabHost.setCurrentTab(1);
-						util.addLogMsg("W",
-								mContext.getString(R.string.msgs_main_auto_start_ignored_by_other_msg));
-					}
-				}
-			}
-		} else {
-			mPendingRequestIntent=intent;
+		synchronized(mPendingRequestIntent) {
+			mPendingRequestIntent.add(intent);
 		}
 	};
-	
-	private Intent mPendingRequestIntent=null;
 	
 	@Override
 	protected void onResume() {
@@ -316,8 +294,8 @@ public class SMBSyncMain extends ActionBarActivity {
 						mGp.msgListView.setSelection(mGp.msgListAdapter.getCount()-1);
 					}
 				});
-//				setScreenOn();
 			}
+			processAutoStartIntent();
 		} else {
 			NotifyEvent svc_ntfy=new NotifyEvent(mContext);
 			svc_ntfy.setListener(new NotifyEventListener(){
@@ -325,14 +303,43 @@ public class SMBSyncMain extends ActionBarActivity {
 				public void positiveResponse(Context c, Object[] o) {
 					svcStartForeground();
 					setCallbackListener();
+					listSMBSyncOption();
 					
-					if (restartType==RESTART_BY_DESTOROYED) {
-						resumeByDestroyed();
-					} else {
+					if (restartType==NORMAL_START) {
 						setUiEnabled();
-						resumeByNormal();
+						startupWarning();
+						util.addLogMsg("I",mContext.getString(R.string.msgs_smbsync_main_start)+" Version "+packageVersionName );
+						showNotificationMsg(mContext.getString(R.string.msgs_smbsync_main_start)+" Version "+packageVersionName );
+						synchronized(mPendingRequestIntent) {
+							mPendingRequestIntent.add(getIntent());
+						}
+					} else if (restartType==RESTART_BY_KILLED) {
+						setUiEnabled();
+						restoreTaskData();
+						util.addLogMsg("I",mContext.getString(R.string.msgs_smbsync_main_restart_by_killed)+" Version "+packageVersionName);
+						showNotificationMsg(mContext.getString(R.string.msgs_smbsync_main_restart_by_killed)+" Version "+packageVersionName);
+						tabHost.setCurrentTab(1);
+					} else if (restartType==RESTART_BY_DESTROYED) {
+						util.addLogMsg("W",mContext.getString(R.string.msgs_smbsync_main_restart_by_destroyed)+" Version "+packageVersionName);
+						showNotificationMsg(mContext.getString(R.string.msgs_smbsync_main_restart_by_destroyed)+" Version "+packageVersionName);
+						restoreViewAndTabData();
 					}
+					setMessageContextButtonListener();
+					setMessageContextButtonNormalMode();
 
+					setProfileContextButtonListener();
+					setProfilelistItemClickListener();
+					setProfilelistLongClickListener();
+					setProfileContextButtonNormalMode();
+
+					setHistoryContextButtonListener();
+					setHistoryViewItemClickListener();
+					setHistoryViewLongClickListener();
+					setHistoryContextButtonNormalMode();
+					
+					deleteTaskData();
+					processAutoStartIntent();
+					SchedulerMain.setSchedulerInfo(mGp, mContext,null);
 					restartType=RESTART_WITH_OUT_INITIALYZE;
 				}
 				@Override
@@ -341,121 +348,21 @@ public class SMBSyncMain extends ActionBarActivity {
 			openService(svc_ntfy);
 		}
 	};
-	
-	private void resumeByNormal() {
-		if (restartType==RESTART_NORMAL) {
-			startupWarning();
-			util.addLogMsg("I",
-					mContext.getString(R.string.msgs_smbsync_main_start)+" Version "+packageVersionName );
-			showNotificationMsg(mContext.getString(R.string.msgs_smbsync_main_start)+" Version "+packageVersionName );
-		} else if (restartType==RESTART_BY_KILLED) {
-			restoreTaskData();
-//			if (currentViewType.equals("M")) tabHost.setCurrentTab(1);
-//			else if (currentViewType.equals("H")) tabHost.setCurrentTab(2);
-			util.addLogMsg("I",mContext.getString(R.string.msgs_smbsync_main_restart_by_killed)+" Version "+packageVersionName);
-			showNotificationMsg(mContext.getString(R.string.msgs_smbsync_main_restart_by_killed)+" Version "+packageVersionName);
-			tabHost.setCurrentTab(1);
-		}
-		listSMBSyncOption();
 
-		deleteTaskData();
-		
-		setMessageContextButtonListener();
-		setMessageContextButtonNormalMode();
-
-		setProfileContextButtonNormalMode();
-		setProfileContextButtonListener();
-		setProfilelistItemClickListener();
-		setProfilelistLongClickListener();
-//		setMsglistLongClickListener();
-		
-		setHistoryContextButtonListener();
-		setHistoryContextButtonNormalMode();
-		setHistoryViewItemClickListener();
-		setHistoryViewLongClickListener();
-
-		SchedulerMain.setSchedulerInfo(mGp, mContext,null);
-
-		Intent intent=null;
-		if (restartType==RESTART_BY_KILLED) intent=mPendingRequestIntent;
-		else intent=getIntent();
-
-		if (enableProfileConfirmCopyDeleteIfRequired()) {
-			if (isAutoStartRequested(intent) || mGp.settingAutoStart) {
-				isExtraSpecAutoStart=isExtraSpecAutoTerm=isExtraSpecBgExec=false;
-				checkAutoStart(intent);
-			} else {
-				if (mGp.profileAdapter.isEmptyAdapter()) {
-					ProfileCreationWizard sw=new ProfileCreationWizard(mGp, mContext, 
-								util, profUtil, commonDlg, mGp.profileAdapter, null);
-					sw.wizardMain();
-				} else {
-					if (LocalFileLastModified.isLastModifiedWasUsed(mGp.profileAdapter))
-						checkLastModifiedListValidity();
-				}
-			}
-		}
-	};
-
-	private void resumeByDestroyed() {
-		tabHost.setOnTabChangedListener(null);
-//		if (currentViewType.equals("M")) tabHost.setCurrentTab(1);
-//		else if (currentViewType.equals("H")) tabHost.setCurrentTab(2);
-		util.addLogMsg("W",mContext.getString(R.string.msgs_smbsync_main_restart_by_destroyed)+" Version "+packageVersionName);
-		showNotificationMsg(mContext.getString(R.string.msgs_smbsync_main_restart_by_destroyed)+" Version "+packageVersionName);
-//		commonDlg.showCommonDialog(false, "W", mContext.getString(R.string.msgs_smbsync_main_restart_by_destroyed), "", null);
-		
-		listSMBSyncOption();
-
-		deleteTaskData();
-		
+	private void restoreViewAndTabData() {
 		ArrayList<ProfileListItem>pfl=mGp.profileAdapter.getArrayList();
 		mGp.profileAdapter=new AdapterProfileList(mContext, R.layout.profile_list_item_view, pfl);
 		mGp.profileAdapter.setShowCheckBox(mGp.mainViewSaveArea.prof_adapter_show_cb);
 		mGp.profileAdapter.notifyDataSetChanged();
 		
-		mGp.syncHistoryAdapter=new AdapterSyncHistory(mContext, R.layout.sync_history_list_item_view, 
-				mGp.syncHistoryList);
+		mGp.syncHistoryAdapter=new AdapterSyncHistory(mContext, R.layout.sync_history_list_item_view, mGp.syncHistoryList);
 		mGp.syncHistoryAdapter.setShowCheckBox(mGp.mainViewSaveArea.sync_adapter_show_cb);
 		mGp.syncHistoryAdapter.notifyDataSetChanged();
-
+		tabHost.setOnTabChangedListener(null);
 		initAdapterAndView();
-
 		restoreViewContent(mGp.mainViewSaveArea);
-		
 		tabHost.setCurrentTab(1);
-
 		tabHost.setOnTabChangedListener(new OnTabChange());
-		
-		setMessageContextButtonListener();
-		setMessageContextButtonNormalMode();
-
-		setProfileContextButtonListener();
-		setProfilelistItemClickListener();
-		setProfilelistLongClickListener();
-//		setMsglistLongClickListener();
-
-		setHistoryContextButtonListener();
-		
-		setHistoryViewItemClickListener();
-		setHistoryViewLongClickListener();
-		
-		setHistoryContextButtonNormalMode();
-		setProfileContextButtonNormalMode();
-
-//		if (currentViewType.equals("P")) {
-//			if (mGp.syncHistoryAdapter.isShowCheckBox()) setHistoryContextButtonSelectMode();
-//			else setHistoryContextButtonNormalMode();
-//			
-//			if (mGp.profileAdapter.isShowCheckBox()) setProfileContextButtonSelectMode();
-//			else setProfileContextButtonNormalMode();
-//		} else if (currentViewType.equals("H")) {
-//			if (mGp.profileAdapter.isShowCheckBox()) setProfileContextButtonSelectMode();
-//			else setProfileContextButtonNormalMode();
-//
-//			if (mGp.syncHistoryAdapter.isShowCheckBox()) setHistoryContextButtonSelectMode();
-//			else setHistoryContextButtonNormalMode();
-//		}
 		
 		if (mGp.confirmDialogShowed)
 			showConfirmDialog(mGp.confirmDialogFilePath, mGp.confirmDialogMethod);
@@ -463,35 +370,64 @@ public class SMBSyncMain extends ActionBarActivity {
 		if (isUiEnabled()) setUiEnabled();
 		else setUiDisabled();
 
-		SchedulerMain.setSchedulerInfo(mGp, mContext,null);
 		mGp.mainViewSaveArea=null;
-		
-		if (!mGp.mirrorThreadActive){
-			if (enableProfileConfirmCopyDeleteIfRequired()) {
-				if (isAutoStartRequested(mPendingRequestIntent) || mGp.settingAutoStart) {
-					isExtraSpecAutoStart=isExtraSpecAutoTerm=isExtraSpecBgExec=false;
-					checkAutoStart(mPendingRequestIntent);
-				} else {
-					if (mGp.profileAdapter.isEmptyAdapter()) {
-						ProfileCreationWizard sw=new ProfileCreationWizard(mGp, mContext, 
-									util, profUtil, commonDlg, mGp.profileAdapter, null);
-						sw.wizardMain();
-					} else {
-						if (LocalFileLastModified.isLastModifiedWasUsed(mGp.profileAdapter))
-							checkLastModifiedListValidity();
+	};
+	
+	private void processAutoStartIntent() {
+		util.addDebugLogMsg(1,"I","processAutoStartIntent entered, "+"resartStatus="+restartType+
+				", No of intent="+mPendingRequestIntent.size());
+		if (mPendingRequestIntent.size()>0) {
+			synchronized(mPendingRequestIntent) {
+				ArrayList<Intent>il=new ArrayList<Intent>();
+				il.addAll(mPendingRequestIntent);
+				for(int i=0;i<il.size();i++) {
+					Intent intent=il.get(i);
+					
+					if (restartType==NORMAL_START) {
+						if (enableProfileConfirmCopyDeleteIfRequired()) {
+							if (isAutoStartRequested(intent) || mGp.settingAutoStart) {
+								isExtraSpecAutoStart=isExtraSpecAutoTerm=isExtraSpecBgExec=false;
+								checkAutoStart(intent);
+							} else {
+								if (mGp.profileAdapter.isEmptyAdapter()) {
+									ProfileCreationWizard sw=new ProfileCreationWizard(mGp, mContext, 
+												util, profUtil, commonDlg, mGp.profileAdapter, null);
+									sw.wizardMain();
+								} else {
+									if (LocalFileLastModified.isLastModifiedWasUsed(mGp.profileAdapter))
+										checkLastModifiedListValidity();
+								}
+							}
+						}
+					} else if (restartType==RESTART_WITH_OUT_INITIALYZE || 
+							restartType==RESTART_BY_KILLED || restartType==RESTART_BY_DESTROYED) {
+						if (mGp.mirrorThreadActive) {
+							if (isAutoStartRequested(intent)) {
+								commonDlg.showCommonDialog(false, "W", "", 
+										mContext.getString(R.string.msgs_application_already_started), null);
+								util.addLogMsg("W",mContext.getString(R.string.msgs_application_already_started));
+							}
+						} else {
+							if (isAutoStartRequested(intent)) {
+								if (!mGp.supressAutoStart) {
+				 					util.addDebugLogMsg(1,"I","Auto start data found.");
+									isExtraSpecAutoStart=isExtraSpecAutoTerm=isExtraSpecBgExec=false;
+									checkAutoStart(intent);
+								} else {
+									tabHost.setCurrentTab(1);
+									util.addLogMsg("W",
+											mContext.getString(R.string.msgs_main_auto_start_ignored_by_other_msg));
+								}
+							}
+						}
 					}
+					mPendingRequestIntent.remove(intent);
+					restartType=RESTART_WITH_OUT_INITIALYZE;
 				}
 			}
-		} else {
-			if (isAutoStartRequested(mPendingRequestIntent)) {
-				commonDlg.showCommonDialog(false, "W", "", 
-						mContext.getString(R.string.msgs_application_already_started), null);
-				util.addLogMsg("W",mContext.getString(R.string.msgs_application_already_started));
-			}
 		}
-
 	};
-
+	
 	@Override
 	protected void onRestart() {
 		super.onRestart();
@@ -851,6 +787,7 @@ public class SMBSyncMain extends ActionBarActivity {
 		if (prefs.getString(SMBSYNC_PROFILE_CONFIRM_COPY_DELETE, SMBSYNC_PROFILE_CONFIRM_COPY_DELETE_REQUIRED)
 				.equals(SMBSYNC_PROFILE_CONFIRM_COPY_DELETE_REQUIRED)) {
 			prefs.edit().putString(SMBSYNC_PROFILE_CONFIRM_COPY_DELETE, SMBSYNC_PROFILE_CONFIRM_COPY_DELETE_NOT_REQUIRED).commit();
+			prefs.edit().putString(SMBSYNC_PROFILE_2_CONFIRM_COPY_DELETE, SMBSYNC_PROFILE_2_CONFIRM_COPY_DELETE_NOT_REQUIRED).commit();
 			String c_prof="";
 			String c_sep="";
 			for(int i=0;i<mGp.profileAdapter.getCount();i++) {
@@ -885,6 +822,46 @@ public class SMBSyncMain extends ActionBarActivity {
 			} else {
 				result=true;
 			}
+		} else if (prefs.getString(SMBSYNC_PROFILE_2_CONFIRM_COPY_DELETE, SMBSYNC_PROFILE_2_CONFIRM_COPY_DELETE_REQUIRED)
+				.equals(SMBSYNC_PROFILE_2_CONFIRM_COPY_DELETE_REQUIRED)) {
+			prefs.edit().putString(SMBSYNC_PROFILE_2_CONFIRM_COPY_DELETE, SMBSYNC_PROFILE_2_CONFIRM_COPY_DELETE_NOT_REQUIRED).commit();
+			String c_prof="";
+			String c_sep="";
+			for(int i=0;i<mGp.profileAdapter.getCount();i++) {
+				ProfileListItem pfli=mGp.profileAdapter.getItem(i);
+				if (pfli.getType().equals(SMBSYNC_PROF_TYPE_SYNC) && 
+						pfli.getMasterType().equals(SMBSYNC_PROF_TYPE_LOCAL) &&
+						pfli.getTargetType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
+					if (!pfli.isConfirmRequired())  {
+						pfli.setConfirmRequired(true);
+						c_prof+=c_sep+pfli.getName();
+						c_sep=", ";
+					}
+				}
+			}
+			if (!c_prof.equals("")) {
+				profUtil.saveProfileToFile(false, "", "", mGp.profileAdapter, false);
+				String m_txt=mContext.getString(R.string.msgs_set_profile_2_confirm_delete);
+				mGp.supressAutoStart=true;
+				NotifyEvent ntfy=new NotifyEvent(mContext);
+				ntfy.setListener(new NotifyEventListener(){
+					@Override
+					public void positiveResponse(Context c, Object[] o) {
+						mGp.supressAutoStart=false;
+					}
+					@Override
+					public void negativeResponse(Context c, Object[] o) {
+						mGp.supressAutoStart=false;
+					}
+					
+				});
+				util.addLogMsg("W",m_txt+"\n"+c_prof);
+				commonDlg.showCommonDialog(false, "W", m_txt+"\n"+c_prof, "", ntfy);
+				result=false;
+			} else {
+				result=true;
+			}
+
 		} else {
 			result=true;
 		}
@@ -991,7 +968,7 @@ public class SMBSyncMain extends ActionBarActivity {
 		tabSpec= tabHost.newTabSpec("hst").setIndicator(mTabChildviewHist).setContent(R.id.history_view);
 		tabHost.addTab(tabSpec);
 
-		if (restartType==RESTART_NORMAL) tabHost.setCurrentTab(0);
+		if (restartType==NORMAL_START) tabHost.setCurrentTab(0);
 		tabHost.setOnTabChangedListener(new OnTabChange());
 		
 		mGp.msgListView = (ListView) findViewById(R.id.message_view_list);
@@ -2416,8 +2393,12 @@ public class SMBSyncMain extends ActionBarActivity {
 						String result_fp=mGp.syncHistoryAdapter.getItem(i).sync_result_file_path;
 						if (!result_fp.equals("")) {
 							File lf=new File(result_fp);
-							if (lf.exists()) lf.delete();
+							if (lf.exists()) {
+								lf.delete();
+								util.addDebugLogMsg(1,"I","Sync history log file deleted, fp="+result_fp);
+							}
 						}
+						util.addDebugLogMsg(1,"I","Sync history item deleted, item="+mGp.syncHistoryAdapter.getItem(i).sync_prof);
 						mGp.syncHistoryAdapter.remove(mGp.syncHistoryAdapter.getItem(i));
 					}
 				}
@@ -3079,8 +3060,21 @@ public class SMBSyncMain extends ActionBarActivity {
         else mContextProfileViewSync.setVisibility(ImageButton.GONE);
 
         if (!util.isRemoteDisable()) {
-    		mContextProfileButtonSync.setImageResource(R.drawable.ic_32_sync);
-    		mContextProfileButtonSync.setEnabled(true);
+        	boolean is_sync_profile_existed=false;
+        	for(int i=0;i<mGp.profileAdapter.getCount();i++) {
+        		ProfileListItem pli=mGp.profileAdapter.getItem(i);
+        		if (pli.isActive() && pli.getType().equals(SMBSYNC_PROF_TYPE_SYNC)) {
+        			is_sync_profile_existed=true;
+        			break;
+        		}
+        	}
+        	if (is_sync_profile_existed) {
+        		mContextProfileButtonSync.setImageResource(R.drawable.ic_32_sync);
+        		mContextProfileButtonSync.setEnabled(true);
+        	} else {
+            	mContextProfileButtonSync.setImageResource(R.drawable.ic_32_sync_disabled);
+            	mContextProfileButtonSync.setEnabled(false);
+        	}
         } else {
         	mContextProfileButtonSync.setImageResource(R.drawable.ic_32_sync_disabled);
         	mContextProfileButtonSync.setEnabled(false);
@@ -3222,7 +3216,7 @@ public class SMBSyncMain extends ActionBarActivity {
 		} else {
 			util.addLogMsg("I",mContext.getString(R.string.msgs_sync_selected_profiles));
 			util.addLogMsg("I",mContext.getString(R.string.msgs_sync_prof_name_list)+
-					"\n"+"   "+sync_list);
+					"\n"+sync_list);
 			tabHost.setCurrentTab(1);
 			startMirrorTask(alp);
 		}
@@ -3250,7 +3244,7 @@ public class SMBSyncMain extends ActionBarActivity {
 		} else {
 			util.addLogMsg("I",mContext.getString(R.string.msgs_sync_all_active_profiles));
 			util.addLogMsg("I",mContext.getString(R.string.msgs_sync_prof_name_list)+
-					"\n"+"   "+sync_list);
+					"\n"+sync_list);
 			tabHost.setCurrentTab(1);
 			startMirrorTask(alp);
 		}

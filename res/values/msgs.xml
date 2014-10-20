@@ -189,5 +189,6 @@
 	<string name="msgs_extra_data_sync_profile_type_error">Canceled the synchronization, because StartupParms not String array.</string>
 			
 	<string name="msgs_set_profile_confirm_delete">Below the sync profile to enable &#8220;confirm before override copy or delete&#8221; due to upgrade of application. Please disable the &#8220;confirm before override copy or delete&#8221; to the sync profile if there is no problem to sync.</string>
+	<string name="msgs_set_profile_2_confirm_delete">Below the sync profile to enable &#8220;confirm before override copy or delete&#8221; due to upgrade of application. Please disable the &#8220;confirm before override copy or delete&#8221; to the sync profile if there is no problem to sync.</string>
 	<string name="msgs_main_auto_start_ignored_by_other_msg">Ignore the sync start request because the important message is being displayed.</string>
 </resources>
