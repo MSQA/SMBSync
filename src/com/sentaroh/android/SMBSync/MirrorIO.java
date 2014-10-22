@@ -23,8 +23,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_CONFIRM_FOR_COPY;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_CONFIRM_FOR_DELETE;
+import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_CONFIRM_REQUEST_COPY;
+import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_CONFIRM_REQUEST_DELETE;
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_CONFIRM_RESP_NOALL;
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_CONFIRM_RESP_YESALL;
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROF_TYPE_LOCAL;
@@ -2011,7 +2011,7 @@ public class MirrorIO implements Runnable {
 					confirmDeleteResult!=SMBSYNC_CONFIRM_RESP_NOALL) {
 				try {
 					tcConfirm.initThreadCtrl();
-					callBackStub.cbShowConfirm(url, SMBSYNC_CONFIRM_FOR_DELETE);
+					callBackStub.cbShowConfirm(url, SMBSYNC_CONFIRM_REQUEST_DELETE);
 					synchronized(tcConfirm) {
 						tcConfirm.wait();//Posted by SMBSyncService#aidlConfirmResponse()
 					}
@@ -2055,7 +2055,7 @@ public class MirrorIO implements Runnable {
 				if (file_exists) {
 					try {
 						tcConfirm.initThreadCtrl();
-						callBackStub.cbShowConfirm(url, SMBSYNC_CONFIRM_FOR_COPY);
+						callBackStub.cbShowConfirm(url, SMBSYNC_CONFIRM_REQUEST_COPY);
 						synchronized(tcConfirm) {
 							tcConfirm.wait();//Posted by SMBSyncService#aidlConfirmResponse()
 						}

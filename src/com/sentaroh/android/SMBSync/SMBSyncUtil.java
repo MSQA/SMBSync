@@ -277,7 +277,7 @@ public class SMBSyncUtil {
 	private StringBuilder mSbForsendMsgToActivity=new StringBuilder(256);
 	final public void sendMsgToActivity(final String log_cat, final String msgflag, final String sync_prof,
 			final String date, final String time, final String tag, final String debug_flag, final String fp, final String msg_text) {
-		mGp.uiHandler.post(new Runnable(){
+		mGp.activityUiHandler.post(new Runnable(){
 			@Override
 			public void run() {
 				if (msgflag.equals("0")) {

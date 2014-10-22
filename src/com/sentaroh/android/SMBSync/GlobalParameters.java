@@ -66,7 +66,7 @@ public class GlobalParameters extends Application{
 	
 	public boolean supressAutoStart=false;
 	
-	public Handler uiHandler=null;
+	public Handler activityUiHandler=null;
 	
 	public TextView mainViewScheduleInfo=null;
 	

@@ -32,8 +32,8 @@ public class Constants {
 	
 	public final static boolean BUILD_FOR_AMAZON=false;
 	
-	public static final String SMBSYNC_CONFIRM_FOR_COPY="Copy";
-	public static final String SMBSYNC_CONFIRM_FOR_DELETE="Delete";
+	public static final String SMBSYNC_CONFIRM_REQUEST_COPY="Copy";
+	public static final String SMBSYNC_CONFIRM_REQUEST_DELETE="Delete";
 	public static final int SMBSYNC_CONFIRM_RESP_YES = 1;
 	public static final int SMBSYNC_CONFIRM_RESP_YESALL = 2;
 	public static final int SMBSYNC_CONFIRM_RESP_NO = -1;

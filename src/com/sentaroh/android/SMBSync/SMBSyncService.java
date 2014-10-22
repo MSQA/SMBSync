@@ -252,8 +252,7 @@ public class SMBSyncService extends Service {
 				}
 			}
 			@Override
-			public void negativeResponse(Context c, Object[] o) {
-			} 
+			public void negativeResponse(Context c, Object[] o) {} 
 		});
 		
 		Thread tm = new Thread(new MirrorIO(mGp, ntfy, tcMirror, tcConfirm, callBackStub)); 

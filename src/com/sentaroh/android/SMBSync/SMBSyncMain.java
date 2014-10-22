@@ -113,8 +113,8 @@ public class SMBSyncMain extends ActionBarActivity {
 	
 	private String packageVersionName="Not found"; 
 
-	private TabHost tabHost;
-	private Context mContext;
+	private TabHost tabHost=null;
+	private Context mContext=null;
 	
 	private static GlobalParameters mGp=null;
 	private ProfileUtility profUtil=null;
@@ -182,7 +182,7 @@ public class SMBSyncMain extends ActionBarActivity {
 		mContext=this;
 		mGp=(GlobalParameters) getApplication();
 //		mGp.enableMainUi=true;
-		mGp.uiHandler=new Handler();
+		mGp.activityUiHandler=new Handler();
 		mGp.SMBSync_External_Root_Dir=LocalMountPoint.getExternalStorageDir();
 
 		mActionBar = getSupportActionBar();
@@ -288,7 +288,7 @@ public class SMBSyncMain extends ActionBarActivity {
 		if (restartType==RESTART_WITH_OUT_INITIALYZE) {
 			SchedulerMain.setSchedulerInfo(mGp, mContext,null);
 			if (!mGp.freezeMessageViewScroll) {
-				mGp.uiHandler.post(new Runnable(){
+				mGp.activityUiHandler.post(new Runnable(){
 					@Override
 					public void run() {
 						mGp.msgListView.setSelection(mGp.msgListAdapter.getCount()-1);
@@ -3751,7 +3751,7 @@ public class SMBSyncMain extends ActionBarActivity {
 		mGp.confirmTitle.setText(mContext.getString(R.string.msgs_common_dialog_warning));
 		mGp.confirmTitle.setTextColor(Color.YELLOW);
 		String msg_text="";
-		if (method.equals(SMBSYNC_CONFIRM_FOR_COPY)) {
+		if (method.equals(SMBSYNC_CONFIRM_REQUEST_COPY)) {
 			msg_text=String.format(getString(R.string.msgs_mirror_confirm_copy_confirm),fp);
 		} else {
 			msg_text=String.format(getString(R.string.msgs_mirror_confirm_delete_confirm),fp);
@@ -3760,7 +3760,7 @@ public class SMBSyncMain extends ActionBarActivity {
 		
 		showNotificationMsg(msg_text);
 		
-		if (method.equals(SMBSYNC_CONFIRM_FOR_COPY)) mGp.confirmMsg.setText(
+		if (method.equals(SMBSYNC_CONFIRM_REQUEST_COPY)) mGp.confirmMsg.setText(
 				String.format(getString(R.string.msgs_mirror_confirm_copy_confirm),fp));
 		else mGp.confirmMsg.setText(String.format(getString(R.string.msgs_mirror_confirm_delete_confirm),fp));
 		
