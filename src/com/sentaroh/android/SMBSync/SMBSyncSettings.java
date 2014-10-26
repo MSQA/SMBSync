@@ -190,6 +190,18 @@ public class SMBSyncSettings extends PreferenceActivity{
         }
     };
  
+//    @Override
+//    protected boolean isValidFragment (String fragmentName) {
+//    	boolean result=false;
+//        if(fragmentName.startsWith(SMBSyncSettings.class.getName())) {         
+//             result=true; 
+//        } else {
+//        	result=false;
+//        }
+//        if (DEBUG_ENABLE) Log.v(APPLICATION_TAG,"SettingsActivity isValidFragment entered, result="+result);
+//        return result;
+//    };
+
     @Override
     public void onBuildHeaders(List<Header> target) {
     	if (DEBUG_ENABLE) Log.v(APPLICATION_TAG,"SettingsActivity onBuildHeaders entered");

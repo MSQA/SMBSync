@@ -2074,7 +2074,8 @@ public class SMBSyncMain extends ActionBarActivity {
 	
 	private void invokeSettingsActivity() {
 		util.addDebugLogMsg(1,"I","Invoke Settings.");
-		Intent intent = new Intent(this, SMBSyncSettings.class);
+		Intent intent=null;
+		intent = new Intent(this, SMBSyncSettings.class);
 		startActivityForResult(intent,0);
 	};
 	
@@ -2488,7 +2489,7 @@ public class SMBSyncMain extends ActionBarActivity {
 		mGp.profileListView
 			.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 			@Override
-			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+			public boolean onItemLongClick(final AdapterView<?> list_view, final View item_view,
 					int pos, long arg3) {
 				if (mGp.profileAdapter.isEmptyAdapter()) return true;
 				
