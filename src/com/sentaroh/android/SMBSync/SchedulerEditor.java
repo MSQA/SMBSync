@@ -16,7 +16,9 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.util.SparseBooleanArray;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.AdapterView;
@@ -36,6 +38,7 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.sentaroh.android.SMBSync.SchedulerAdapterSyncList.ViewHolder;
 import com.sentaroh.android.Utilities.DateUtil;
 import com.sentaroh.android.Utilities.NotifyEvent;
 import com.sentaroh.android.Utilities.NotifyEvent.NotifyEventListener;
@@ -44,7 +47,7 @@ import com.sentaroh.android.Utilities.Dialog.CommonDialog;
 import com.sentaroh.android.Utilities.Widget.CustomSpinnerAdapter;
 
 @SuppressWarnings("unused")
-public class SchedulerMain {
+public class SchedulerEditor {
 	private CommonDialog commonDlg=null;
 	
 	private GlobalParameters mGp=null;
@@ -55,7 +58,7 @@ public class SchedulerMain {
 	
 	private SchedulerParms mSched=null;
 	
-	SchedulerMain (SMBSyncUtil mu, Context c,  
+	SchedulerEditor (SMBSyncUtil mu, Context c,  
 			CommonDialog cd, CustomContextMenu ccm, GlobalParameters gp) {
 		mContext=c;
 		mGp=gp;
@@ -321,8 +324,8 @@ public class SchedulerMain {
 		
 		final ListView lv_sync_list=(ListView)dialog.findViewById(R.id.scheduler_edit_synclist_dlg_sync_prof_list);
 	
-		final AdapterScheduleSyncList adapter=
-				new AdapterScheduleSyncList(mContext,android.R.layout.simple_list_item_checked);
+		final SchedulerAdapterSyncList adapter=
+				new SchedulerAdapterSyncList(mContext,android.R.layout.simple_list_item_checked);
 		
 		btn_ok.setEnabled(setSyncProfListView(true, prof_list, lv_sync_list, adapter));
 		
@@ -387,7 +390,7 @@ public class SchedulerMain {
 	};
 
 	private boolean setSyncProfListView(boolean active,
-			String prof_list, ListView lv, AdapterScheduleSyncList adapter) {
+			String prof_list, ListView lv, SchedulerAdapterSyncList adapter) {
 		adapter.clear();
 
 		for (int i=0;i<mGp.profileAdapter.getCount();i++) {
@@ -435,7 +438,7 @@ public class SchedulerMain {
 		return selected;
 	};
 	
-	private void setSelectedSyncList(String sel, ListView lv, AdapterScheduleSyncList adapter) {
+	private void setSelectedSyncList(String sel, ListView lv, SchedulerAdapterSyncList adapter) {
 		boolean found=false;
 		for(int i=0;i<adapter.getCount();i++) {
 			String prof_name=adapter.getItem(i).substring(1);
@@ -640,3 +643,45 @@ public class SchedulerMain {
     };
 
 }
+
+class SchedulerAdapterSyncList extends ArrayAdapter<String>{
+	private int layout_id=0;
+	private Context context=null;
+	private int text_color=0;
+	public SchedulerAdapterSyncList(Context c, int textViewResourceId) {
+		super(c, textViewResourceId);
+		layout_id=textViewResourceId;
+		context=c;
+	}
+	
+	@Override
+	public View getView(final int position, View convertView, final ViewGroup parent) {
+		final ViewHolder holder;
+		final String o = getItem(position);
+        View v = convertView;
+        if (v == null) {
+            LayoutInflater vi = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            v = vi.inflate(layout_id, null);
+            holder=new ViewHolder();
+            holder.tv_name=(TextView)v.findViewById(android.R.id.text1);
+            text_color=holder.tv_name.getCurrentTextColor();
+            v.setTag(holder);
+        } else {
+        	holder= (ViewHolder)v.getTag();
+        }
+        if (o != null) {
+        	holder.tv_name.setText(o.substring(1));
+        	if (o.substring(0, 1).equals(SMBSYNC_PROF_ACTIVE)) {
+        		holder.tv_name.setTextColor(text_color);
+        	} else {
+        		holder.tv_name.setTextColor(Color.DKGRAY);
+        	}
+        }
+        return v;
+	
+	}
+	class ViewHolder {
+		TextView tv_name;
+	};
+}
+

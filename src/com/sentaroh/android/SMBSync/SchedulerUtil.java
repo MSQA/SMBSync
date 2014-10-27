@@ -1,16 +1,6 @@
 package com.sentaroh.android.SMBSync;
 
 import static com.sentaroh.android.SMBSync.SchedulerConstants.*;
-import static com.sentaroh.android.SMBSync.SchedulerConstants.SCHEDULER_SCHEDULE_HOURS_KEY;
-import static com.sentaroh.android.SMBSync.SchedulerConstants.SCHEDULER_SCHEDULE_MINUTES_KEY;
-import static com.sentaroh.android.SMBSync.SchedulerConstants.SCHEDULER_SCHEDULE_TYPE_DAY_OF_THE_WEEK;
-import static com.sentaroh.android.SMBSync.SchedulerConstants.SCHEDULER_SCHEDULE_TYPE_EVERY_DAY;
-import static com.sentaroh.android.SMBSync.SchedulerConstants.SCHEDULER_SCHEDULE_TYPE_EVERY_HOURS;
-import static com.sentaroh.android.SMBSync.SchedulerConstants.SCHEDULER_SCHEDULE_TYPE_KEY;
-import static com.sentaroh.android.SMBSync.SchedulerConstants.SCHEDULER_SYNC_OPTION_AUTOSTART_KEY;
-import static com.sentaroh.android.SMBSync.SchedulerConstants.SCHEDULER_SYNC_OPTION_AUTOTERM_KEY;
-import static com.sentaroh.android.SMBSync.SchedulerConstants.SCHEDULER_SYNC_OPTION_BGEXEC_KEY;
-import static com.sentaroh.android.SMBSync.SchedulerConstants.SCHEDULER_SYNC_PROFILE_KEY;
 
 import java.util.Calendar;
 

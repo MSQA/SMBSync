@@ -12,6 +12,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.wifi.WifiManager;
+import android.net.wifi.WifiManager.WifiLock;
+import android.os.Handler;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.os.SystemClock;
@@ -27,18 +29,18 @@ public class SchedulerReceiver extends BroadcastReceiver{
 	
 	@SuppressLint("Wakelock")
 	@Override
-	final public void onReceive(Context context, Intent arg1) {
+	final public void onReceive(Context c, Intent arg1) {
 		if (mWakeLock==null) mWakeLock=
-   	    		((PowerManager)context.getSystemService(Context.POWER_SERVICE))
+   	    		((PowerManager)c.getSystemService(Context.POWER_SERVICE))
     			.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK    					
     				| PowerManager.ON_AFTER_RELEASE, "SMBSync-Receiver");
 		if (!mWakeLock.isHeld()) mWakeLock.acquire(1000);
 		if (mSched==null) mSched=new SchedulerParms();
-		mContext=context;
+		mContext=c;
+		
+		loadScheduleData();
 		String action=arg1.getAction();
 		if (mSched.debugLevel>0) addDebugMsg(1,"I", "Receiver action="+action);
-//		mWakeLock.acquire(100);
-		loadScheduleData();
 		if (action!=null) {
 			if (action.equals(Intent.ACTION_BOOT_COMPLETED) || 
 					action.equals(Intent.ACTION_DATE_CHANGED) || 
@@ -92,7 +94,6 @@ public class SchedulerReceiver extends BroadcastReceiver{
 			wm.setWifiEnabled(true);
 			addDebugMsg(1,"I", "setWifiEnabled(true) issued");
 			addDebugMsg(1,"I", "Sync start delayed "+mSched.syncDelayedSecondForWifiOn+"Seconds");
-			SystemClock.sleep(mSched.syncDelayedSecondForWifiOn*1000);
 		} else {
 			addDebugMsg(1,"I", "setWifiEnabled(true) not issued, because Wifi is already enabled");
 		}
@@ -100,24 +101,50 @@ public class SchedulerReceiver extends BroadcastReceiver{
 	};
 
 	static private void startSync() {
+		final Handler hndl=new Handler();
 		Thread th=new Thread(){
 			@Override
 			public void run(){
-				if (mSched.syncWifiOnBeforeSyncStart) setWifiOn();
-		    	Intent in=new Intent(mContext,SMBSyncMain.class);
-		    	in.putExtra(SMBSYNC_SCHEDULER_ID,"SMBSync Scheduler");
-		    	String[] prof=mSched.syncProfile.split(",");
-		    	in.putExtra(SMBSYNC_EXTRA_PARM_SYNC_PROFILE, prof);
-		    	in.putExtra(SMBSYNC_EXTRA_PARM_AUTO_START, true);
-		    	in.putExtra(SMBSYNC_EXTRA_PARM_AUTO_TERM, mSched.syncOptionAutoterm);
-		    	in.putExtra(SMBSYNC_EXTRA_PARM_BACKGROUND_EXECUTION, mSched.syncOptionBgExec);
-		    	in.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		    	mContext.startActivity(in);
+				final WakeLock wl=
+					((PowerManager)mContext.getSystemService(Context.POWER_SERVICE))
+		    			.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK    					
+		    				| PowerManager.ON_AFTER_RELEASE, "SMBSync-Receiver");
+				final WifiLock wifi_lock=
+					((WifiManager)mContext.getSystemService(Context.WIFI_SERVICE))
+	    				.createWifiLock(WifiManager.WIFI_MODE_FULL, "SMBSync-Receiver");
+				try {
+					wl.acquire();
+					if (mSched.syncWifiOnBeforeSyncStart) {
+						setWifiOn();
+						wifi_lock.acquire();
+						SystemClock.sleep(mSched.syncDelayedSecondForWifiOn*1000);
+					} else {
+						wifi_lock.acquire();
+					}
+			    	Intent in=new Intent(mContext,SMBSyncMain.class);
+			    	in.putExtra(SMBSYNC_SCHEDULER_ID,"SMBSync Scheduler");
+			    	String[] prof=mSched.syncProfile.split(",");
+			    	in.putExtra(SMBSYNC_EXTRA_PARM_SYNC_PROFILE, prof);
+			    	in.putExtra(SMBSYNC_EXTRA_PARM_AUTO_START, true);
+			    	in.putExtra(SMBSYNC_EXTRA_PARM_AUTO_TERM, mSched.syncOptionAutoterm);
+			    	in.putExtra(SMBSYNC_EXTRA_PARM_BACKGROUND_EXECUTION, mSched.syncOptionBgExec);
+			    	in.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			    	mContext.startActivity(in);
+				} finally {
+					hndl.postDelayed(new Runnable(){
+						@Override
+						public void run() {
+							addDebugMsg(1,"I", "WakeLock and WifiLock released");
+					    	wl.release();
+					    	wifi_lock.release();
+						}
+					}, 2000);
+				}
 			}
 		};
 		th.start();
 	};
-	
+
     static private void setTimer() {
     	if (mSched.debugLevel>0) addDebugMsg(1,"I", "setTimer entered");
     	cancelTimer();

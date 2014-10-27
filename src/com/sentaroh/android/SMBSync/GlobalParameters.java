@@ -29,6 +29,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 
 import com.sentaroh.android.SMBSync.SMBSyncMain.ViewSaveArea;
+import com.sentaroh.android.Utilities.LocalMountPoint;
 
 import android.app.Application;
 import android.app.Notification;
@@ -36,9 +37,11 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.wifi.WifiManager;
 import android.os.Handler;
 import android.os.PowerManager.WakeLock;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat.BigTextStyle;
 import android.support.v4.app.NotificationCompat.Builder;
 import android.util.Log;
@@ -203,13 +206,83 @@ public class GlobalParameters extends Application{
 		super.onCreate();
 		Log.v("SMBSyncGP","onCreate entered");
 		onLowMemory=false;
+		SMBSync_External_Root_Dir=LocalMountPoint.getExternalStorageDir();
+		
+		loadSettingsParm();
 	};
 	
 	@Override
 	public void onLowMemory() {
 		Log.v("SMBSyncGP","onLowMemory entered");
 		onLowMemory=true;
-	}
+	};
+	
+	public void loadSettingsParm() {
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+		debugLevel=
+			Integer.parseInt(prefs.getString(getString(R.string.settings_log_level), "0")); 
+//			Integer.parseInt(prefs.getString(getString(R.string.settings_log_level), "1"));//for debug
+
+		settiingLogGeneration=Integer.valueOf(
+				prefs.getString(getString(R.string.settings_log_generation), "10"));
+		
+		settingLogMsgDir=
+				prefs.getString(getString(R.string.settings_log_dir),
+						SMBSync_External_Root_Dir+"/SMBSync/");
+		
+		settingAutoStart=
+				prefs.getBoolean(getString(R.string.settings_auto_start), false);
+		settingDebugMsgDisplay=
+				prefs.getBoolean(getString(R.string.settings_debug_msg_diplay), false);
+		
+		settingLogOption=
+				prefs.getString(getString(R.string.settings_log_option), "0"); 
+//				prefs.getString(getString(R.string.settings_log_option), "1"); //for debug
+
+		settingAutoTerm=
+				prefs.getBoolean(getString(R.string.settings_auto_term), false);
+		settingWifiOption=
+				prefs.getString(getString(R.string.settings_network_wifi_option), 
+						SMBSYNC_SYNC_WIFI_OPTION_CONNECTED_ANY_AP);
+		settingErrorOption=
+				prefs.getBoolean(getString(R.string.settings_error_option), false);
+		settingBackgroundExecution=
+				prefs.getBoolean(getString(R.string.settings_backgroound_execution), false);
+		settingBgTermNotifyMsg=
+				prefs.getString(getString(R.string.settings_background_termination_notification), "0");
+
+		settingVibrateWhenSyncEnded=
+				prefs.getString(getString(R.string.settings_vibrate_when_sync_ended), "0");
+		settingRingtoneWhenSyncEnded=
+				prefs.getString(getString(R.string.settings_playback_ringtone_when_sync_ended), "0");
+
+		settingMenuItemSyncShowed=
+				prefs.getBoolean(getString(R.string.settings_show_sync_on_action_bar), false);
+		
+		settingScreenOnOption=
+				prefs.getString(getString(R.string.settings_keep_screen_on), GlobalParameters.KEEP_SCREEN_ON_WHEN_SCREEN_UNLOCKED);
+
+		settingWifiLockRequired=
+				prefs.getBoolean(getString(R.string.settings_wifi_lock), false);
+
+		settingRemoteFileCopyByRename=
+				prefs.getBoolean(getString(R.string.settings_remote_file_copy_by_rename), false);
+		settingLocalFileCopyByRename=
+				prefs.getBoolean(getString(R.string.settings_local_file_copy_by_rename), false);
+		
+		settingMediaFiles=
+				prefs.getBoolean(getString(R.string.settings_media_scanner_non_media_files_scan), true);
+		settingScanExternalStorage=
+				prefs.getBoolean(getString(R.string.settings_media_scanner_scan_extstg), true);
+		
+		settingExitClean=
+				prefs.getBoolean(getString(R.string.settings_exit_clean), true);
+		settingExportedProfileEncryptRequired=
+				prefs.getBoolean(getString(R.string.settings_exported_profile_encryption), true);
+		
+		if (!settingAutoStart) settingAutoTerm=false;
+	};
 
 }
 

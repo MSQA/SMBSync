@@ -322,8 +322,10 @@ public class SMBSyncUtil {
 
 	final public void addLogMsg(String cat, String logmsg) {
 		addMsgToMsglistAdapter(mGp,
-			  		 new MsgListItem(cat,sdfDate.format(System.currentTimeMillis()),
-					 sdfTime.format(System.currentTimeMillis()),"MAIN",logmsg));
+			  		 new MsgListItem(cat,
+			  				 sdfDate.format(System.currentTimeMillis()),
+			  				 sdfTime.format(System.currentTimeMillis()),
+			  				 "MAIN",logmsg));
 		if (mGp.logWriter!=null) {
 				writeLog(mGp, "M "+cat+" "+
 					sdfDate.format(System.currentTimeMillis())+" "+

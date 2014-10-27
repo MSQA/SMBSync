@@ -68,6 +68,7 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.text.ClipboardManager;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -176,27 +177,27 @@ public class SMBSyncMain extends ActionBarActivity {
 		super.onCreate(savedInstanceState);
 //		requestWindowFeature(Window.FEATURE_NO_TITLE);
 
+		Log.v("","oncreate1");
+		
 		mCurrentLocale=getResources().getConfiguration().locale;
 		
 		setContentView(R.layout.main);
 		mContext=this;
 		mGp=(GlobalParameters) getApplication();
+
 //		mGp.enableMainUi=true;
 		mGp.activityUiHandler=new Handler();
-		mGp.SMBSync_External_Root_Dir=LocalMountPoint.getExternalStorageDir();
 
 		mActionBar = getSupportActionBar();
 		mActionBar.setHomeButtonEnabled(false);
 
-		
 		checkExternalStorage();
 		mGp.SMBSync_Internal_Root_Dir=getFilesDir().toString();
-
+		
 		util=new SMBSyncUtil(this.getApplicationContext(),"Main", mGp);
 		util.setActivityIsForeground(true);
-
+		
 		initSettingsParms();
-		applySettingParms();
 
 		util.openLogFile();
 		
@@ -209,7 +210,6 @@ public class SMBSyncMain extends ActionBarActivity {
 
 		ccMenu = new CustomContextMenu(getResources(),getSupportFragmentManager());
 		commonDlg=new CommonDialog(mContext, getSupportFragmentManager());
-
 
 		profUtil=new ProfileUtility(util,this, commonDlg,ccMenu, mGp,getSupportFragmentManager());
 		
@@ -245,7 +245,7 @@ public class SMBSyncMain extends ActionBarActivity {
 		
 		getApplVersionName();
 		
-		SchedulerMain.sendTimerRequest(mContext, SCHEDULER_INTENT_SET_TIMER_IF_NOT_SET);
+		SchedulerEditor.sendTimerRequest(mContext, SCHEDULER_INTENT_SET_TIMER_IF_NOT_SET);
 //		if (Build.VERSION.SDK_INT >= 19) {
 //		    File[] extDirs = getExternalFilesDirs(Environment.DIRECTORY_DOWNLOADS);
 //		    for (int i=0;i<extDirs.length;i++)
@@ -286,7 +286,7 @@ public class SMBSyncMain extends ActionBarActivity {
 		util.setActivityIsForeground(true);
 		
 		if (restartType==RESTART_WITH_OUT_INITIALYZE) {
-			SchedulerMain.setSchedulerInfo(mGp, mContext,null);
+			SchedulerEditor.setSchedulerInfo(mGp, mContext,null);
 			if (!mGp.freezeMessageViewScroll) {
 				mGp.activityUiHandler.post(new Runnable(){
 					@Override
@@ -339,7 +339,7 @@ public class SMBSyncMain extends ActionBarActivity {
 					
 					deleteTaskData();
 					processAutoStartIntent();
-					SchedulerMain.setSchedulerInfo(mGp, mContext,null);
+					SchedulerEditor.setSchedulerInfo(mGp, mContext,null);
 					restartType=RESTART_WITH_OUT_INITIALYZE;
 				}
 				@Override
@@ -950,22 +950,22 @@ public class SMBSyncMain extends ActionBarActivity {
 		}
 	};
 	
-	private CustomTabContentView mTabChildviewProf=null, 
-			mTabChildviewMsg=null, mTabChildviewHist=null;
+//	private CustomTabContentView mTabChildviewProf=null, 
+//			mTabChildviewMsg=null, mTabChildviewHist=null;
 	private void createTabView() {
 		tabHost=(TabHost)findViewById(android.R.id.tabhost);
 		tabHost.setup();
 
-		mTabChildviewProf = new CustomTabContentView(this,getString(R.string.msgs_tab_name_prof));
-		TabHost.TabSpec tabSpec= tabHost.newTabSpec("prof").setIndicator(mTabChildviewProf).setContent(R.id.profile_view);
+		CustomTabContentView tabViewProf = new CustomTabContentView(this,getString(R.string.msgs_tab_name_prof));
+		TabHost.TabSpec tabSpec= tabHost.newTabSpec("prof").setIndicator(tabViewProf).setContent(R.id.profile_view);
 		tabHost.addTab(tabSpec);
 		
-		mTabChildviewMsg = new CustomTabContentView(this,getString(R.string.msgs_tab_name_msg));
-		tabSpec= tabHost.newTabSpec("msg").setIndicator(mTabChildviewMsg).setContent(R.id.message_view);
+		CustomTabContentView tabViewMsg = new CustomTabContentView(this,getString(R.string.msgs_tab_name_msg));
+		tabSpec= tabHost.newTabSpec("msg").setIndicator(tabViewMsg).setContent(R.id.message_view);
 		tabHost.addTab(tabSpec);
 
-		mTabChildviewHist = new CustomTabContentView(this,getString(R.string.msgs_tab_name_history));
-		tabSpec= tabHost.newTabSpec("hst").setIndicator(mTabChildviewHist).setContent(R.id.history_view);
+		CustomTabContentView tabViewHist = new CustomTabContentView(this,getString(R.string.msgs_tab_name_history));
+		tabSpec= tabHost.newTabSpec("hst").setIndicator(tabViewHist).setContent(R.id.history_view);
 		tabHost.addTab(tabSpec);
 
 		if (restartType==NORMAL_START) tabHost.setCurrentTab(0);
@@ -1103,8 +1103,6 @@ public class SMBSyncMain extends ActionBarActivity {
         return super.onPrepareOptionsMenu(menu);
 	};
 
-	@SuppressWarnings("unused")
-	private long mToastNextIssuedTimeSyncOption=0l;
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
@@ -1163,7 +1161,7 @@ public class SMBSyncMain extends ActionBarActivity {
 				setContextButtonNormalMode();
 				return true;
 			case R.id.menu_top_scheduler:
-				SchedulerMain sm=new SchedulerMain(util, mContext, commonDlg, ccMenu, mGp);
+				SchedulerEditor sm=new SchedulerEditor(util, mContext, commonDlg, ccMenu, mGp);
 				sm.initDialog();
 				setContextButtonNormalMode();
 				return true;
@@ -1371,17 +1369,16 @@ public class SMBSyncMain extends ActionBarActivity {
 			public void positiveResponse(Context c, Object[] o) {
 				boolean[] parm=(boolean[]) o[0];
 				if (parm[0]) {
-					applySettingParms();
+					reloadSettingParms();
 					checkJcifsOptionChanged();
-					SchedulerMain.sendTimerRequest(mContext, SCHEDULER_INTENT_SET_TIMER);
+					SchedulerEditor.sendTimerRequest(mContext, SCHEDULER_INTENT_SET_TIMER);
 					if (mGp.profileAdapter!=null) {
 						if (ProfileUtility.isAnyProfileSelected(mGp.profileAdapter, SMBSYNC_PROF_GROUP_DEFAULT)) setProfileContextButtonSelectMode();
 						else setProfileContextButtonNormalMode();
 					}
-
 				}
 				if (parm[1]) {
-					SchedulerMain.setSchedulerInfo(mGp, mContext, null);
+					SchedulerEditor.setSchedulerInfo(mGp, mContext, null);
 				}
 				setProfileContextButtonNormalMode();
 				mGp.profileAdapter.setShowCheckBox(false);
@@ -1643,7 +1640,7 @@ public class SMBSyncMain extends ActionBarActivity {
 //		}
 	};
 	
-	private void applySettingParms() {
+	private void reloadSettingParms() {
 		
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -1651,106 +1648,23 @@ public class SMBSyncMain extends ActionBarActivity {
 			Integer.parseInt(prefs.getString(getString(R.string.settings_log_level), "0")); 
 //			Integer.parseInt(prefs.getString(getString(R.string.settings_log_level), "1"));//for debug
 
-		util.addDebugLogMsg(1, "I", "applySettingParms entered");
+		util.addDebugLogMsg(1, "I", "reloadSettingParms entered");
 
-		mGp.settiingLogGeneration=Integer.valueOf(
-				prefs.getString(getString(R.string.settings_log_generation), "10"));
+		String p_dir = mGp.settingLogMsgDir;
+		String p_opt=mGp.settingLogOption;
 		
-		String t_dir =
-				prefs.getString(getString(R.string.settings_log_dir),
-						mGp.SMBSync_External_Root_Dir+"/SMBSync/");
-		if (t_dir.equals("")) {
-			t_dir=mGp.SMBSync_External_Root_Dir+"/SMBSync/";
-			prefs.edit().putString(getString(R.string.settings_log_dir),
-					mGp.SMBSync_External_Root_Dir+"/SMBSync/").commit();
-		} else {
-			if (!t_dir.endsWith("/")) {
-				t_dir+="/";
-				prefs.edit().putString(getString(R.string.settings_log_dir),t_dir).commit();
-			} 
-		}
-		
-		if (!mGp.settingLogMsgDir.equals(t_dir)) {// option was changed
-			mGp.settingLogMsgDir=t_dir;
+		if (!mGp.settingLogMsgDir.equals(p_dir)) {// option was changed
 			if (!mGp.settingLogOption.equals("0")) {
 				util.closeLogFile();
 				util.openLogFile();
 			}
 		}
 		
-		mGp.settingAutoStart=
-				prefs.getBoolean(getString(R.string.settings_auto_start), false);
-		mGp.settingDebugMsgDisplay=
-				prefs.getBoolean(getString(R.string.settings_debug_msg_diplay), false);
-		
-		String p_opt=mGp.settingLogOption;
-		mGp.settingLogOption=
-				prefs.getString(getString(R.string.settings_log_option), "0"); 
-//				prefs.getString(getString(R.string.settings_log_option), "1"); //for debug
-
 		if (!mGp.settingLogOption.equals(p_opt)) {
 			if (mGp.settingLogOption.equals("0")) util.closeLogFile();
 			else util.openLogFile();
 		}
-//		Log.v("","p="+p_opt+", n="+glblParms.settingLogOption);
-//		if (!glblParms.settingLogOption.equals(t_lo) ) {// option was changed
-//			commonDlg.showCommonDialog(false,"W",msgs_setting_log_opt_chg,"",null);
-//		}
-		mGp.settingAutoTerm=
-				prefs.getBoolean(getString(R.string.settings_auto_term), false);
-		mGp.settingWifiOption=
-				prefs.getString(getString(R.string.settings_network_wifi_option), 
-						SMBSYNC_SYNC_WIFI_OPTION_CONNECTED_ANY_AP);
-		mGp.settingErrorOption=
-				prefs.getBoolean(getString(R.string.settings_error_option), false);
-		mGp.settingBackgroundExecution=
-				prefs.getBoolean(getString(R.string.settings_backgroound_execution), false);
-		mGp.settingBgTermNotifyMsg=
-				prefs.getString(getString(R.string.settings_background_termination_notification), "0");
 
-		mGp.settingVibrateWhenSyncEnded=
-				prefs.getString(getString(R.string.settings_vibrate_when_sync_ended), "0");
-		mGp.settingRingtoneWhenSyncEnded=
-				prefs.getString(getString(R.string.settings_playback_ringtone_when_sync_ended), "0");
-
-		mGp.settingMenuItemSyncShowed=
-				prefs.getBoolean(getString(R.string.settings_show_sync_on_action_bar), false);
-		
-		mGp.settingScreenOnOption=
-				prefs.getString(getString(R.string.settings_keep_screen_on), GlobalParameters.KEEP_SCREEN_ON_WHEN_SCREEN_UNLOCKED);
-
-		mGp.settingWifiLockRequired=
-				prefs.getBoolean(getString(R.string.settings_wifi_lock), false);
-
-		mGp.settingRemoteFileCopyByRename=
-				prefs.getBoolean(getString(R.string.settings_remote_file_copy_by_rename), false);
-		mGp.settingLocalFileCopyByRename=
-				prefs.getBoolean(getString(R.string.settings_local_file_copy_by_rename), false);
-		
-//		mGp.settingAltUiEnabled=
-//				prefs.getBoolean(getString(R.string.settings_ui_alternate_ui), false);
-
-		mGp.settingMediaFiles=
-				prefs.getBoolean(getString(R.string.settings_media_scanner_non_media_files_scan), true);
-		mGp.settingScanExternalStorage=
-				prefs.getBoolean(getString(R.string.settings_media_scanner_scan_extstg), true);
-		
-		mGp.settingExitClean=
-				prefs.getBoolean(getString(R.string.settings_exit_clean), true);
-		mGp.settingExportedProfileEncryptRequired=
-				prefs.getBoolean(getString(R.string.settings_exported_profile_encryption), true);
-		
-		if (!mGp.settingAutoStart) mGp.settingAutoTerm=false;
-		
-
-//		if (isJcifsOptionChanged() && restartStatus!=0) {
-//			commonDlg.showCommonDialog(false,"W",
-//					"",mContext.getString(R.string.msgs_smbsync_main_settings_jcifs_changed_restart),null);
-//		}
-		if (mGp.profileAdapter!=null && mContextProfileViewSync!=null) {
-			if (mGp.profileAdapter.isShowCheckBox()) setProfileContextButtonSelectMode();
-			else setProfileContextButtonNormalMode();
-		}
 	};
 
 	private boolean isCheckWifiOffRequired=false;
@@ -1798,7 +1712,7 @@ public class SMBSyncMain extends ActionBarActivity {
 			SchedulerParms sp=new SchedulerParms();
 			SchedulerUtil.loadScheduleData(sp, mContext);
 			if (sp.syncWifiOnBeforeSyncStart && sp.syncWifiOffAfterSyncEnd) {
-				SchedulerMain.sendTimerRequest(mContext, SCHEDULER_INTENT_WIFI_OFF);
+				SchedulerEditor.sendTimerRequest(mContext, SCHEDULER_INTENT_WIFI_OFF);
 			}
 		}
 		isCheckWifiOffRequired=false;
@@ -2084,10 +1998,12 @@ public class SMBSyncMain extends ActionBarActivity {
 		if (requestCode==0) {
 			util.addDebugLogMsg(1,"I","Return from Settings.");
 			util.setActivityIsForeground(true);
-			applySettingParms();
+			reloadSettingParms();
 			checkJcifsOptionChanged();
 			listSMBSyncOption();
 			enableProfileConfirmCopyDeleteIfRequired();
+			if (mGp.profileAdapter.isShowCheckBox()) setProfileContextButtonSelectMode();
+			else setProfileContextButtonNormalMode();
 		} else if (requestCode==1) {
 			util.addDebugLogMsg(1,"I","Return from browse log file.");
 			util.setActivityIsForeground(true);
@@ -2241,8 +2157,9 @@ public class SMBSyncMain extends ActionBarActivity {
         });
         ContextButtonUtil.setButtonLabelListener(mContext, mContextHistoryButtonDeleteHistory,mContext.getString(R.string.msgs_hist_cont_label_delete));
         
-        mContextHistiryButtonHistiryCopyClipboard.setOnClickListener(new OnClickListener(){
-        	private long next_issued_time=0;
+        final Toast toast=Toast.makeText(mContext, mContext.getString(R.string.msgs_sync_history_copy_completed), 
+				Toast.LENGTH_SHORT);
+        mContextHistoryButtonHistiryCopyClipboard.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
 				 ClipboardManager cm = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
@@ -2270,15 +2187,11 @@ public class SMBSyncMain extends ActionBarActivity {
 					 }
 				 }
 				 if (out.length()>0) cm.setText(out);
-				 if (next_issued_time<System.currentTimeMillis()) {
-					 Toast.makeText(mContext, mContext.getString(R.string.msgs_sync_history_copy_completed), 
-								Toast.LENGTH_SHORT)
-								.show();
-					 next_issued_time=System.currentTimeMillis()+2000;
-				 }
+				 toast.cancel();
+				 toast.show();
 			}
         });
-        ContextButtonUtil.setButtonLabelListener(mContext, mContextHistiryButtonHistiryCopyClipboard,mContext.getString(R.string.msgs_hist_cont_label_copy));
+        ContextButtonUtil.setButtonLabelListener(mContext, mContextHistoryButtonHistiryCopyClipboard,mContext.getString(R.string.msgs_hist_cont_label_copy));
         
         mContextHistiryButtonSelectAll.setOnClickListener(new OnClickListener(){
 			@Override
@@ -2581,7 +2494,7 @@ public class SMBSyncMain extends ActionBarActivity {
     private ImageButton mContextHistoryButtonMoveTop=null;
     private ImageButton mContextHistoryButtonMoveBottom=null;
     private ImageButton mContextHistoryButtonDeleteHistory=null;
-    private ImageButton mContextHistiryButtonHistiryCopyClipboard=null;
+    private ImageButton mContextHistoryButtonHistiryCopyClipboard=null;
     private ImageButton mContextHistiryButtonSelectAll=null;
     private ImageButton mContextHistiryButtonUnselectAll=null;
 
@@ -2619,7 +2532,7 @@ public class SMBSyncMain extends ActionBarActivity {
     	releaseImageBtnRes(mContextHistoryButtonMoveTop);
     	releaseImageBtnRes(mContextHistoryButtonMoveBottom);
     	releaseImageBtnRes(mContextHistoryButtonDeleteHistory);
-    	releaseImageBtnRes(mContextHistiryButtonHistiryCopyClipboard);
+    	releaseImageBtnRes(mContextHistoryButtonHistiryCopyClipboard);
     	releaseImageBtnRes(mContextHistiryButtonSelectAll);
     	releaseImageBtnRes(mContextHistiryButtonUnselectAll);
 
@@ -2699,7 +2612,7 @@ public class SMBSyncMain extends ActionBarActivity {
         mContextHistoryButtonMoveTop=(ImageButton)ll_hist.findViewById(R.id.context_button_move_to_top);
         mContextHistoryButtonMoveBottom=(ImageButton)ll_hist.findViewById(R.id.context_button_move_to_bottom);
         mContextHistoryButtonDeleteHistory=(ImageButton)ll_hist.findViewById(R.id.context_button_delete);
-        mContextHistiryButtonHistiryCopyClipboard=(ImageButton)ll_hist.findViewById(R.id.context_button_copy_to_clipboard);
+        mContextHistoryButtonHistiryCopyClipboard=(ImageButton)ll_hist.findViewById(R.id.context_button_copy_to_clipboard);
         mContextHistiryButtonSelectAll=(ImageButton)ll_hist.findViewById(R.id.context_button_select_all);
         mContextHistiryButtonUnselectAll=(ImageButton)ll_hist.findViewById(R.id.context_button_unselect_all);
 
@@ -3282,18 +3195,14 @@ public class SMBSyncMain extends ActionBarActivity {
 //		mTabChildviewMsg.setViewAlpha(0.4f);
 //		mTabChildviewHist.setEnabled(false);
 //		mTabChildviewHist.setViewAlpha(0.4f);
-		
+		final Toast toast=Toast.makeText(mContext, 
+				mContext.getString(R.string.msgs_dlg_hardkey_back_button), 
+				Toast.LENGTH_SHORT);
 		setOnKeyCallBackListener(new CallBackListener() {
-			private long next_issued_time=0;
 			@Override
 			public boolean onCallBack(Context c, Object o1, Object[] o2) {
-				if (next_issued_time<System.currentTimeMillis()) {
-					Toast.makeText(mContext, 
-						mContext.getString(R.string.msgs_dlg_hardkey_back_button), 
-						Toast.LENGTH_SHORT)
-						.show();
-					next_issued_time=System.currentTimeMillis()+2000;
-				}
+				toast.cancel();
+				toast.show();
 				return true;
 			}
 		});
