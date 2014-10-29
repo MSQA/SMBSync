@@ -2071,7 +2071,7 @@ public class SMBSyncMain extends ActionBarActivity {
 		});
 		mGp.syncHistoryAdapter.setNotifyCheckBoxEventHandler(ntfy);
 	};
-
+	
 	private void setHistoryViewLongClickListener() {
 		mGp.syncHistoryListView
 			.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -2668,7 +2668,7 @@ public class SMBSyncMain extends ActionBarActivity {
 			}
         });
         ContextButtonUtil.setButtonLabelListener(mContext, mContextProfileButtonInactivete,mContext.getString(R.string.msgs_prof_cont_label_inactivate));
-        
+      
         mContextProfileButtonAddLocal.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
