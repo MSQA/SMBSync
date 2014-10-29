@@ -23,6 +23,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
+import static com.sentaroh.android.SMBSync.SchedulerConstants.*;
+import static com.sentaroh.android.SMBSync.Constants.*;
 import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -30,11 +32,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.wifi.WifiManager;
+import android.net.wifi.WifiManager.WifiLock;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.os.RemoteException;
-
+import android.os.SystemClock;
 import com.sentaroh.android.Utilities.NotifyEvent;
 import com.sentaroh.android.Utilities.NotifyEvent.NotifyEventListener;
 import com.sentaroh.android.Utilities.ThreadCtrl;
@@ -52,6 +56,8 @@ public class SMBSyncService extends Service {
 	private ISvcCallback callBackStub=null;
 
 	private WifiManager mWifiMgr=null;
+	@SuppressWarnings("unused")
+	private WifiLock mWifiLock=null;
 	
 	private WifiReceiver mWifiReceiver=new WifiReceiver();
 	
@@ -66,6 +72,7 @@ public class SMBSyncService extends Service {
 		mUtil.addDebugLogMsg(1,"I","onCreate entered");
 
 		mWifiMgr=(WifiManager)getSystemService(Context.WIFI_SERVICE);
+		mWifiLock=mWifiMgr.createWifiLock(WifiManager.WIFI_MODE_FULL, "SMBSync-Service");
 		
 		initWifiStatus();
 		
@@ -99,9 +106,102 @@ public class SMBSyncService extends Service {
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		super.onStartCommand(intent, flags, startId);
-		mUtil.addDebugLogMsg(1,"I","onStartCommand entered");
+		String action="";
+		if (intent!=null) if (intent.getAction()!=null) action=intent.getAction();
+		mUtil.addDebugLogMsg(1,"I","onStartCommand entered, action="+action);
+		if (action.equals(SCHEDULER_INTENT_TIMER_EXPIRED)) {
+			startSyncActivity();
+		} else if (action.equals(SCHEDULER_INTENT_WIFI_OFF)) {
+			setWifiOff();
+		}
 		return START_STICKY;
 	};
+	
+	private void setWifiOn() {
+		if (!mWifiMgr.isWifiEnabled()) {
+			mWifiMgr.setWifiEnabled(true);
+			mUtil.addDebugLogMsg(1,"I", "setWifiEnabled(true) issued");
+		} else {
+			mUtil.addDebugLogMsg(1,"I", "setWifiEnabled(true) not issued, because Wifi is already enabled");
+		}
+	};
+
+	private void setWifiOff() {
+		if (mWifiMgr.isWifiEnabled()) {
+			mWifiMgr.setWifiEnabled(false);
+			mUtil.addDebugLogMsg(1,"I", "setWifiEnabled(false) issued");
+		} else {
+			mUtil.addDebugLogMsg(1,"I", "setWifiEnabled(false) not issued, because Wifi is already disabled");
+		}
+	};
+
+	private void startSyncActivity() {
+		final Handler hndl=new Handler();
+		Thread th=new Thread() {
+			@Override
+			public void run() {
+				final WakeLock wake_lock=((PowerManager)getSystemService(Context.POWER_SERVICE))
+		    			.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK
+			    				| PowerManager.ACQUIRE_CAUSES_WAKEUP
+			    				, "SMBSync-startSync");
+				final WifiLock wifi_lock=mWifiMgr.createWifiLock(WifiManager.WIFI_MODE_FULL, "SMBSync-startSync");
+				wake_lock.acquire();
+				SchedulerParms sp=new SchedulerParms();
+				SchedulerUtil.loadScheduleData(sp, mGp.svcContext);
+				if (sp.syncWifiOnBeforeSyncStart) {
+					setWifiOn();
+					wifi_lock.acquire();
+					if (sp.syncDelayedSecondForWifiOn==0) {
+//						if (mGp.settingWifiOption.equals(SMBSYNC_SYNC_WIFI_OPTION_ADAPTER_OFF)) {
+//							
+//						} else if (mGp.settingWifiOption.equals(SMBSYNC_SYNC_WIFI_OPTION_ADAPTER_ON)) {
+//							SystemClock.sleep(sp.syncDelayedSecondForWifiOn*1000);
+//							while(!mWifiMgr.isWifiEnabled()) {
+//								SystemClock.sleep(sp.syncDelayedSecondForWifiOn*1000);
+//							}
+//						} else if (mGp.settingWifiOption.equals(SMBSYNC_SYNC_WIFI_OPTION_CONNECTED_ANY_AP)) {
+//							SystemClock.sleep(sp.syncDelayedSecondForWifiOn*1000);
+//							int wc=100;
+//							while(wc>0) {
+//								SystemClock.sleep(sp.syncDelayedSecondForWifiOn*300);
+//								String ssid=mWifiMgr.getConnectionInfo().getSSID();
+//								if (ssid!=null && !ssid.equals("0x") && !ssid.equals("") && 
+//										!ssid.equals("<unknown ssid>")) {
+//									break;
+//								} else {
+//									wc--;
+//								}
+//							}
+//						} else if (mGp.settingWifiOption.equals(SMBSYNC_SYNC_WIFI_OPTION_CONNECTED_SPEC_AP)) {
+//						}
+					} else {
+						mUtil.addDebugLogMsg(1,"I", "Sync start delayed "+sp.syncDelayedSecondForWifiOn+"Seconds");
+						SystemClock.sleep(sp.syncDelayedSecondForWifiOn*1000);
+					}
+				}
+
+		    	Intent in=new Intent(mGp.svcContext,SMBSyncMain.class);
+		    	in.putExtra(SMBSYNC_SCHEDULER_ID,"SMBSync Scheduler");
+		    	String[] prof=sp.syncProfile.split(",");
+		    	in.putExtra(SMBSYNC_EXTRA_PARM_SYNC_PROFILE, prof);
+		    	in.putExtra(SMBSYNC_EXTRA_PARM_AUTO_START, true);
+		    	in.putExtra(SMBSYNC_EXTRA_PARM_AUTO_TERM, sp.syncOptionAutoterm);
+		    	in.putExtra(SMBSYNC_EXTRA_PARM_BACKGROUND_EXECUTION, sp.syncOptionBgExec);
+		    	in.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		    	mGp.svcContext.startActivity(in);
+		    	
+		    	hndl.postDelayed(new Runnable(){
+					@Override
+					public void run() {
+						mUtil.addDebugLogMsg(1,"I", "Wakelock and Wifilock released");
+						if (wake_lock.isHeld()) wake_lock.release();
+						if (wifi_lock.isHeld()) wifi_lock.release();
+					}
+		    	}, 1000);
+			}
+		};
+		th.start();
+	}
 	
 	@Override
 	public IBinder onBind(Intent arg0) {

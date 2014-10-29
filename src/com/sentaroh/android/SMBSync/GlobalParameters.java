@@ -126,7 +126,7 @@ public class GlobalParameters extends Application{
 	public static final String KEEP_SCREEN_ON_WHEN_SCREEN_UNLOCKED="2";
 	public boolean settingWifiLockRequired=true;
 	public String settingWifiOption=SMBSYNC_SYNC_WIFI_OPTION_CONNECTED_ANY_AP;
-	public boolean settingMenuItemSyncShowed=false;
+	public boolean settingShowSyncButtonOnMenuItem=false;
 	public boolean settingShowSyncDetailMessage=true;
 	public boolean settingShowRemotePortOption=true;
 	public String settingLogOption="0";
@@ -257,7 +257,7 @@ public class GlobalParameters extends Application{
 		settingRingtoneWhenSyncEnded=
 				prefs.getString(getString(R.string.settings_playback_ringtone_when_sync_ended), "0");
 
-		settingMenuItemSyncShowed=
+		settingShowSyncButtonOnMenuItem=
 				prefs.getBoolean(getString(R.string.settings_show_sync_on_action_bar), false);
 		
 		settingScreenOnOption=

@@ -242,6 +242,7 @@ public class SMBSyncMain extends ActionBarActivity {
 		initAdapterAndView();
 		
 		initJcifsOption();
+		listSMBSyncOption();
 		
 		getApplVersionName();
 		
@@ -303,7 +304,6 @@ public class SMBSyncMain extends ActionBarActivity {
 				public void positiveResponse(Context c, Object[] o) {
 					svcStartForeground();
 					setCallbackListener();
-					listSMBSyncOption();
 					
 					if (restartType==NORMAL_START) {
 						setUiEnabled();
@@ -1062,7 +1062,7 @@ public class SMBSyncMain extends ActionBarActivity {
 				menu.findItem(R.id.menu_top_last_mod_list).setEnabled(true);
 				menu.findItem(R.id.menu_top_log_management).setEnabled(true);
 			}
-			if (mGp.settingMenuItemSyncShowed) {
+			if (mGp.settingShowSyncButtonOnMenuItem) {
 				if (mContextProfileButtonSync.isEnabled()) {
 					menu.findItem(R.id.menu_top_sync).setEnabled(true);
 					menu.findItem(R.id.menu_top_sync).setIcon(R.drawable.ic_32_sync);
@@ -1076,7 +1076,7 @@ public class SMBSyncMain extends ActionBarActivity {
 			if (!LocalFileLastModified.isLastModifiedWasUsed(mGp.profileAdapter))
 				menu.findItem(R.id.menu_top_last_mod_list).setEnabled(false);
 		} else {
-			if (mGp.settingMenuItemSyncShowed) {
+			if (mGp.settingShowSyncButtonOnMenuItem) {
 				menu.findItem(R.id.menu_top_sync).setEnabled(false);
 				menu.findItem(R.id.menu_top_sync).setIcon(R.drawable.ic_32_sync_disabled);
 			} else {
@@ -1370,7 +1370,6 @@ public class SMBSyncMain extends ActionBarActivity {
 				boolean[] parm=(boolean[]) o[0];
 				if (parm[0]) {
 					reloadSettingParms();
-					checkJcifsOptionChanged();
 					SchedulerEditor.sendTimerRequest(mContext, SCHEDULER_INTENT_SET_TIMER);
 					if (mGp.profileAdapter!=null) {
 						if (ProfileUtility.isAnyProfileSelected(mGp.profileAdapter, SMBSYNC_PROF_GROUP_DEFAULT)) setProfileContextButtonSelectMode();
@@ -1650,8 +1649,10 @@ public class SMBSyncMain extends ActionBarActivity {
 
 		util.addDebugLogMsg(1, "I", "reloadSettingParms entered");
 
-		String p_dir = mGp.settingLogMsgDir;
+		String p_dir= mGp.settingLogMsgDir;
 		String p_opt=mGp.settingLogOption;
+		
+		mGp.loadSettingsParm();
 		
 		if (!mGp.settingLogMsgDir.equals(p_dir)) {// option was changed
 			if (!mGp.settingLogOption.equals("0")) {
@@ -1664,6 +1665,8 @@ public class SMBSyncMain extends ActionBarActivity {
 			if (mGp.settingLogOption.equals("0")) util.closeLogFile();
 			else util.openLogFile();
 		}
+
+		checkJcifsOptionChanged();
 
 	};
 
@@ -1999,8 +2002,6 @@ public class SMBSyncMain extends ActionBarActivity {
 			util.addDebugLogMsg(1,"I","Return from Settings.");
 			util.setActivityIsForeground(true);
 			reloadSettingParms();
-			checkJcifsOptionChanged();
-			listSMBSyncOption();
 			enableProfileConfirmCopyDeleteIfRequired();
 			if (mGp.profileAdapter.isShowCheckBox()) setProfileContextButtonSelectMode();
 			else setProfileContextButtonNormalMode();
@@ -2159,7 +2160,9 @@ public class SMBSyncMain extends ActionBarActivity {
         
         final Toast toast=Toast.makeText(mContext, mContext.getString(R.string.msgs_sync_history_copy_completed), 
 				Toast.LENGTH_SHORT);
+        toast.setDuration(1500);
         mContextHistoryButtonHistiryCopyClipboard.setOnClickListener(new OnClickListener(){
+        	private long last_show_time=0;
 			@Override
 			public void onClick(View v) {
 				 ClipboardManager cm = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
@@ -2187,8 +2190,10 @@ public class SMBSyncMain extends ActionBarActivity {
 					 }
 				 }
 				 if (out.length()>0) cm.setText(out);
-				 toast.cancel();
-				 toast.show();
+				 if ((last_show_time+1500)<System.currentTimeMillis()) {
+					 toast.show();
+					 last_show_time=System.currentTimeMillis();
+				 }
 			}
         });
         ContextButtonUtil.setButtonLabelListener(mContext, mContextHistoryButtonHistiryCopyClipboard,mContext.getString(R.string.msgs_hist_cont_label_copy));
@@ -2868,7 +2873,7 @@ public class SMBSyncMain extends ActionBarActivity {
 		
         boolean any_selected=ProfileUtility.isAnyProfileSelected(mGp.profileAdapter, SMBSYNC_PROF_GROUP_DEFAULT);
 
-        if (!mGp.settingMenuItemSyncShowed) mContextProfileViewSync.setVisibility(ImageButton.VISIBLE);
+        if (!mGp.settingShowSyncButtonOnMenuItem) mContextProfileViewSync.setVisibility(ImageButton.VISIBLE);
         else mContextProfileViewSync.setVisibility(ImageButton.GONE);
 
         if (!util.isRemoteDisable()) {
@@ -2970,7 +2975,7 @@ public class SMBSyncMain extends ActionBarActivity {
 		mGp.profileAdapter.setShowCheckBox(false);
 		mGp.profileAdapter.notifyDataSetChanged();
 
-        if (!mGp.settingMenuItemSyncShowed) mContextProfileViewSync.setVisibility(ImageButton.VISIBLE);
+        if (!mGp.settingShowSyncButtonOnMenuItem) mContextProfileViewSync.setVisibility(ImageButton.VISIBLE);
         else mContextProfileViewSync.setVisibility(ImageButton.GONE);
 
         if (!util.isRemoteDisable()) {
@@ -3022,14 +3027,12 @@ public class SMBSyncMain extends ActionBarActivity {
 				mGp.freezeMessageViewScroll=!mGp.freezeMessageViewScroll;
 				if (mGp.freezeMessageViewScroll) {
 					mContextMessageButtonPinned.setImageResource(R.drawable.context_button_pinned_active);
-					toast_inactive.cancel();
 					toast_active.show();
 					ContextButtonUtil.setButtonLabelListener(mContext, mContextMessageButtonPinned,
 							mContext.getString(R.string.msgs_msg_cont_label_pinned_active));
 				} else {
 					mContextMessageButtonPinned.setImageResource(R.drawable.context_button_pinned_inactive);
 					mGp.msgListView.setSelection(mGp.msgListView.getCount()-1);
-					toast_active.cancel();
 					toast_inactive.show();
 					ContextButtonUtil.setButtonLabelListener(mContext, mContextMessageButtonPinned,
 							mContext.getString(R.string.msgs_msg_cont_label_pinned_inactive));
@@ -3198,11 +3201,15 @@ public class SMBSyncMain extends ActionBarActivity {
 		final Toast toast=Toast.makeText(mContext, 
 				mContext.getString(R.string.msgs_dlg_hardkey_back_button), 
 				Toast.LENGTH_SHORT);
+		toast.setDuration(1500);
 		setOnKeyCallBackListener(new CallBackListener() {
+			private long last_show_time=0;
 			@Override
 			public boolean onCallBack(Context c, Object o1, Object[] o2) {
-				toast.cancel();
-				toast.show();
+				if ((last_show_time+1500)<System.currentTimeMillis()) {
+					toast.show();
+					last_show_time=System.currentTimeMillis();
+				}
 				return true;
 			}
 		});
@@ -4171,6 +4178,7 @@ public class SMBSyncMain extends ActionBarActivity {
 			}
 		}
 		if (changed) {
+			listSMBSyncOption();
 			commonDlg.showCommonDialog(false,"W",
 					"",mContext.getString(R.string.msgs_smbsync_main_settings_jcifs_changed_restart),null);
 		}

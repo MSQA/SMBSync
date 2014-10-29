@@ -11,12 +11,8 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.net.wifi.WifiManager;
-import android.net.wifi.WifiManager.WifiLock;
-import android.os.Handler;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
-import android.os.SystemClock;
 import android.util.Log;
 
 public class SchedulerReceiver extends BroadcastReceiver{
@@ -53,10 +49,16 @@ public class SchedulerReceiver extends BroadcastReceiver{
 			} else if (action.equals(SCHEDULER_INTENT_SET_TIMER_IF_NOT_SET)) {
 				if (!isTimerScheduled()) setTimer();
 			} else if (action.equals(SCHEDULER_INTENT_TIMER_EXPIRED)) {
-				startSync();
+				Intent in=new Intent(mContext,SMBSyncService.class);
+				in.setAction(SCHEDULER_INTENT_TIMER_EXPIRED);
+				mContext.startService(in);
+//				startSync();
 				setTimer();
 			} else if (action.equals(SCHEDULER_INTENT_WIFI_OFF)) {
-				setWifiOff();
+				Intent in=new Intent(mContext,SMBSyncService.class);
+				in.setAction(SCHEDULER_INTENT_WIFI_OFF);
+				mContext.startService(in);
+//				setWifiOff();
 			}
 		}
 	};
@@ -76,73 +78,6 @@ public class SchedulerReceiver extends BroadcastReceiver{
 				", Wifi Off="+mSched.syncWifiOffAfterSyncEnd+
 				", Wifi On dlayed="+mSched.syncDelayedSecondForWifiOn
 				);
-	};
-
-	static private void setWifiOff() {
-		WifiManager wm=(WifiManager)mContext.getSystemService(Context.WIFI_SERVICE);
-		if (wm.isWifiEnabled()) {
-			wm.setWifiEnabled(false);
-			addDebugMsg(1,"I", "setWifiEnabled(false) issued");
-		} else {
-			addDebugMsg(1,"I", "setWifiEnabled(false) not issued, because Wifi is already disabled");
-		}
-	};
-	
-	static private boolean setWifiOn() {
-		WifiManager wm=(WifiManager)mContext.getSystemService(Context.WIFI_SERVICE);
-		if (!wm.isWifiEnabled()) {
-			wm.setWifiEnabled(true);
-			addDebugMsg(1,"I", "setWifiEnabled(true) issued");
-			addDebugMsg(1,"I", "Sync start delayed "+mSched.syncDelayedSecondForWifiOn+"Seconds");
-		} else {
-			addDebugMsg(1,"I", "setWifiEnabled(true) not issued, because Wifi is already enabled");
-		}
-		return true;
-	};
-
-	static private void startSync() {
-		final Handler hndl=new Handler();
-		Thread th=new Thread(){
-			@Override
-			public void run(){
-				final WakeLock wl=
-					((PowerManager)mContext.getSystemService(Context.POWER_SERVICE))
-		    			.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK    					
-		    				| PowerManager.ON_AFTER_RELEASE, "SMBSync-Receiver");
-				final WifiLock wifi_lock=
-					((WifiManager)mContext.getSystemService(Context.WIFI_SERVICE))
-	    				.createWifiLock(WifiManager.WIFI_MODE_FULL, "SMBSync-Receiver");
-				try {
-					wl.acquire();
-					if (mSched.syncWifiOnBeforeSyncStart) {
-						setWifiOn();
-						wifi_lock.acquire();
-						SystemClock.sleep(mSched.syncDelayedSecondForWifiOn*1000);
-					} else {
-						wifi_lock.acquire();
-					}
-			    	Intent in=new Intent(mContext,SMBSyncMain.class);
-			    	in.putExtra(SMBSYNC_SCHEDULER_ID,"SMBSync Scheduler");
-			    	String[] prof=mSched.syncProfile.split(",");
-			    	in.putExtra(SMBSYNC_EXTRA_PARM_SYNC_PROFILE, prof);
-			    	in.putExtra(SMBSYNC_EXTRA_PARM_AUTO_START, true);
-			    	in.putExtra(SMBSYNC_EXTRA_PARM_AUTO_TERM, mSched.syncOptionAutoterm);
-			    	in.putExtra(SMBSYNC_EXTRA_PARM_BACKGROUND_EXECUTION, mSched.syncOptionBgExec);
-			    	in.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			    	mContext.startActivity(in);
-				} finally {
-					hndl.postDelayed(new Runnable(){
-						@Override
-						public void run() {
-							addDebugMsg(1,"I", "WakeLock and WifiLock released");
-					    	wl.release();
-					    	wifi_lock.release();
-						}
-					}, 2000);
-				}
-			}
-		};
-		th.start();
 	};
 
     static private void setTimer() {
