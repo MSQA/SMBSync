@@ -1007,6 +1007,7 @@ public class SMBSyncMain extends ActionBarActivity {
 		@Override
 		public void onTabChanged(String tabId){
 			util.addDebugLogMsg(2,"I","onTabchanged entered. tab="+tabId+",v="+currentViewType);
+			
 			mActionBar.setIcon(R.drawable.smbsync);
 			mActionBar.setHomeButtonEnabled(false);
 			mActionBar.setTitle(R.string.app_name);

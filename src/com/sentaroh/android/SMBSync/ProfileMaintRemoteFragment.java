@@ -459,25 +459,27 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 			public void onTextChanged(CharSequence s, int start, int before, int count) {}
 			@Override
 			public void afterTextChanged(Editable s) {
+				boolean enable_ok=true;
 				if (!mProfUtil.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,SMBSYNC_PROF_TYPE_REMOTE, s.toString())) {
 					String audit_msg="";
 					if (mProfUtil.hasInvalidChar(s.toString(),new String[]{"\t"})) {
 						audit_msg=String.format(
 								mContext.getString(R.string.msgs_audit_msgs_profilename1),mProfUtil.getInvalidCharMsg());
-						btn_ok.setEnabled(false);
+						enable_ok=false;
 					} else if (s.toString().length()==0) {
 						audit_msg=mContext.getString(R.string.msgs_audit_msgs_profilename2);
 						editname.requestFocus();
-						btn_ok.setEnabled(false);
+						enable_ok=false;
 					} else {
-						btn_ok.setEnabled(true);
+						enable_ok=true;
 					}
 					dlg_msg.setText(audit_msg);
 				} else {
 					dlg_msg.setText(mContext.getString(R.string.msgs_duplicate_profile));
-					btn_ok.setEnabled(false);
+					enable_ok=false;
 				}
-				setRemoteProfileOkBtnEnabled(mDialog);
+				if (enable_ok) setRemoteProfileOkBtnEnabled(mDialog);
+				else btn_ok.setEnabled(false);
 			}
 		});
 		
