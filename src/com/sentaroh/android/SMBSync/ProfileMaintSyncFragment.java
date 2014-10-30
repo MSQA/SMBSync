@@ -355,11 +355,29 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 //		dlg_title.setText(mContext.getString(R.string.msgs_copy_sync_profile));
 		final TextView dlg_msg=(TextView) mDialog.findViewById(R.id.sync_profile_dlg_msg);
 		final TextView dlg_file_filter=(TextView) mDialog.findViewById(R.id.sync_profile_file_filter);
-		dlg_file_filter.setText(R.string.msgs_filter_list_dlg_not_specified);
 		final TextView dlg_dir_filter=(TextView) mDialog.findViewById(R.id.sync_profile_dir_filter);
-		dlg_dir_filter.setText(R.string.msgs_filter_list_dlg_not_specified);
 		final EditText editname = (EditText)mDialog.findViewById(R.id.sync_profile_name);
 		editname.setText(pfli.getName());
+		
+		String f_fl="", d_fl="";
+		if (pfli.getFileFilter()!=null) {
+			String cn="";
+			for (int i=0;i<pfli.getFileFilter().size();i++) {
+				f_fl+=cn+pfli.getFileFilter().get(i).substring(1,pfli.getFileFilter().get(i).length());
+				cn=",";
+			}
+		} 
+		if (f_fl.length()==0) f_fl=mContext.getString(R.string.msgs_filter_list_dlg_not_specified);
+		if (pfli.getDirFilter()!=null) {
+			String cn="";
+			for (int i=0;i<pfli.getDirFilter().size();i++) {
+				d_fl+=cn+pfli.getDirFilter().get(i).substring(1,pfli.getDirFilter().get(i).length());
+				cn=",";
+			}
+		}
+		if (d_fl.length()==0)  d_fl=mContext.getString(R.string.msgs_filter_list_dlg_not_specified);
+		dlg_file_filter.setText(f_fl);
+		dlg_dir_filter.setText(d_fl);
 
 		final Spinner spinnerSyncOption=(Spinner)mDialog.findViewById(R.id.sync_profile_sync_option);
 		ProfileUtility.setSyncOptionSpinner(mContext, spinnerSyncOption, pfli.getSyncType()); 
@@ -425,9 +443,10 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 		
 		final Spinner spinner_master=(Spinner)mDialog.findViewById(R.id.sync_profile_master_spinner);
 		final Spinner spinner_target=(Spinner)mDialog.findViewById(R.id.sync_profile_target_spinner);
-		ProfileUtility.setSyncMasterProfileSpinner(mGp, mContext, spinner_master,"");
+		ProfileUtility.setSyncMasterProfileSpinner(mGp, mContext, spinner_master,pfli.getMasterName());
 		if (spinner_master.getCount()>0) {
-			ProfileUtility.setSyncTargetProfileSpinner(mGp, mContext, spinner_target,spinner_master.getSelectedItem().toString().substring(2),"");
+			if (pfli.getTargetName().equals("")) ProfileUtility.setSyncTargetProfileSpinner(mGp, mContext, spinner_target,spinner_master.getSelectedItem().toString().substring(2),"");
+			else ProfileUtility.setSyncTargetProfileSpinner(mGp, mContext, spinner_target,pfli.getMasterName(),pfli.getTargetName());
 		} else {
 			ProfileUtility.setSyncTargetProfileSpinner(mGp, mContext, spinner_target,"","");
 		}

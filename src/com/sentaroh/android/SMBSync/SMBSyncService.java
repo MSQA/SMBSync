@@ -148,7 +148,7 @@ public class SMBSyncService extends Service {
 				wake_lock.acquire();
 				SchedulerParms sp=new SchedulerParms();
 				SchedulerUtil.loadScheduleData(sp, mGp.svcContext);
-				if (sp.syncWifiOnBeforeSyncStart) {
+				if (sp.syncWifiOnBeforeSyncStart && !mWifiMgr.isWifiEnabled()) {
 					setWifiOn();
 					wifi_lock.acquire();
 					if (sp.syncDelayedSecondForWifiOn==0) {

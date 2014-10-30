@@ -18,7 +18,7 @@
 	<string name="msgs_scheduler_main_dlg_hdr_minute">Minute</string>
 	<string name="msgs_scheduler_main_dlg_hdr_schedule_type">Schedule Type</string>
 	
-	<string name="msgs_scheduler_main_dlg_hdr_wifi_on">To turn on the Wi-Fi when sync started</string>
+	<string name="msgs_scheduler_main_dlg_hdr_wifi_on">To turn on the Wi-Fi If Wi-Fi is turned off before sync has start</string>
 	<string name="msgs_scheduler_main_dlg_hdr_wifi_on_delayed_time">Wait time to perform sync after Wi-Fi turn on</string>
 	<string name="msgs_scheduler_main_dlg_hdr_wifi_on_delayed_1">5 Sec</string>
 	<string name="msgs_scheduler_main_dlg_hdr_wifi_on_delayed_2">10 Sec</string>

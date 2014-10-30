@@ -404,7 +404,7 @@ class ProfileListItem implements Serializable,Comparable<ProfileListItem>{
 	public ProfileListItem(String pfg, String pft,String pfn, String pfa,
 			String pf_synctype,String pf_master_type,String pf_master_name,
 			String pf_target_type,String pf_target_name,
-			ArrayList<String> ff, ArrayList<String> df, boolean pd, boolean cnf, 
+			ArrayList<String> ff, ArrayList<String> df, boolean master_dir_file_process, boolean confirm, 
 			boolean jlm, boolean nulm_remote, String retry_count, boolean sync_empty_dir, 
 			boolean sync_hidden_dir, boolean sync_hidden_file, boolean sync_sub_dir, boolean ic)
 	{
@@ -419,8 +419,8 @@ class ProfileListItem implements Serializable,Comparable<ProfileListItem>{
 		profileTargetName=pf_target_name;
 		profileFileFilter=ff;
 		profileDirFilter=df;
-		profileMasterDirFileProcess=pd;
-		profileConfirm=cnf;
+		profileMasterDirFileProcess=master_dir_file_process;
+		profileConfirm=confirm;
 		profileForceLastModifiedUseSmbsync=jlm;
 		profileChk = ic;
 		profileNotUsedLastModifiedForRemote=nulm_remote;

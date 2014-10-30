@@ -1392,14 +1392,26 @@ public class ProfileUtility {
 
 	public void copyProfile(ProfileListItem pli) {
 		if (pli.getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
-			  ProfileMaintLocalFragment pmlp=ProfileMaintLocalFragment.newInstance();
-			  pmlp.showDialog(mFragMgr, pmlp, "COPY",pli, 0, this, util, commonDlg,null);
+			ProfileMaintLocalFragment pmlp=ProfileMaintLocalFragment.newInstance();
+			pmlp.showDialog(mFragMgr, pmlp, "COPY",pli, 0, this, util, commonDlg,null);
 		} else if (pli.getType().equals(SMBSYNC_PROF_TYPE_REMOTE)) {
-			  ProfileMaintRemoteFragment pmrp=ProfileMaintRemoteFragment.newInstance();
-			  pmrp.showDialog(mFragMgr, pmrp, "COPY",pli, 0, this, util, commonDlg,null);
+			ProfileMaintRemoteFragment pmrp=ProfileMaintRemoteFragment.newInstance();
+			pmrp.showDialog(mFragMgr, pmrp, "COPY",pli, 0, this, util, commonDlg,null);
 		} else if (pli.getType().equals(SMBSYNC_PROF_TYPE_SYNC)) {
-			  ProfileMaintSyncFragment pmsp=ProfileMaintSyncFragment.newInstance();
-			  pmsp.showDialog(mFragMgr, pmsp, "COPY",pli, this, util, commonDlg,null);
+			ArrayList<String>ff=new ArrayList<String>();
+			ff.addAll(pli.getFileFilter());
+			ArrayList<String>df=new ArrayList<String>();
+			df.addAll(pli.getDirFilter());
+			ProfileListItem npfli=new ProfileListItem(pli.getGroup(), pli.getType(), 
+					pli.getName(), pli.getActive(),
+					pli.getSyncType(), pli.getMasterType(), pli.getMasterName(),
+					pli.getTargetType(), pli.getTargetName(),
+					ff, df, pli.isMasterDirFileProcess(), pli.isConfirmRequired(), 
+					pli.isForceLastModifiedUseSmbsync(), pli.isNotUseLastModifiedForRemote(), 
+					pli.getRetryCount(), pli.isSyncEmptyDirectory(), 
+					pli.isSyncSubDirectory(), pli.isSyncHiddenFile(), pli.isSyncSubDirectory(), false);
+			ProfileMaintSyncFragment pmsp=ProfileMaintSyncFragment.newInstance();
+			pmsp.showDialog(mFragMgr, pmsp, "COPY",npfli, this, util, commonDlg,null);
 		}
 	};
 

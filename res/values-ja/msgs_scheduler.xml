@@ -17,7 +17,7 @@
 	<string name="msgs_scheduler_main_dlg_hdr_minute">分</string>
 	<string name="msgs_scheduler_main_dlg_hdr_schedule_type">スケジュール方法</string>	
 	
-	<string name="msgs_scheduler_main_dlg_hdr_wifi_on">同期開始前にWi-Fiをオンにする</string>
+	<string name="msgs_scheduler_main_dlg_hdr_wifi_on">同期開始時にWi-FiがオフのときはWi-Fiをオンにする</string>
 	<string name="msgs_scheduler_main_dlg_hdr_wifi_on_delayed_time">Wi-Fiオンから同期するまでの待ち時間</string>
 	<string name="msgs_scheduler_main_dlg_hdr_wifi_on_delayed_1">5秒</string>
 	<string name="msgs_scheduler_main_dlg_hdr_wifi_on_delayed_2">10秒</string>
