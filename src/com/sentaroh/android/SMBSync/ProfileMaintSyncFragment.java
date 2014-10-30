@@ -454,7 +454,7 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 		final Button swap_master_target = (Button)mDialog.findViewById(R.id.sync_profile_edit_change_master_and_target);
 		if (spinner_master.getCount()>0 && spinner_target.getCount()>0) swap_master_target.setEnabled(true);
 		else swap_master_target.setEnabled(false);
-		swap_master_target .setOnClickListener(new OnClickListener(){
+		swap_master_target.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View arg0) {
 				String mst=spinner_target.getSelectedItem().toString().substring(2);
