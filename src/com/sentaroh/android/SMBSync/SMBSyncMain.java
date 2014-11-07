@@ -68,7 +68,6 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.text.ClipboardManager;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -177,8 +176,6 @@ public class SMBSyncMain extends ActionBarActivity {
 		super.onCreate(savedInstanceState);
 //		requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-		Log.v("","oncreate1");
-		
 		mCurrentLocale=getResources().getConfiguration().locale;
 		
 		setContentView(R.layout.main);

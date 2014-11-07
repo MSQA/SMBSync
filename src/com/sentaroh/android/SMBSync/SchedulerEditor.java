@@ -167,11 +167,11 @@ public class SchedulerEditor {
 			ctv_wifi_off.setEnabled(false);//setVisibility(CheckBox.GONE);
 		}
 		
-		if (mSched.syncDelayedSecondForWifiOn==5) {
+		if (mSched.syncStartDelayTimeAfterWifiOn==5) {
 			rg_wifi_on_delay_time.check(R.id.scheduler_main_dlg_wifi_on_delay_time_rg_1);
-		} else if (mSched.syncDelayedSecondForWifiOn==10) {
+		} else if (mSched.syncStartDelayTimeAfterWifiOn==10) {
 			rg_wifi_on_delay_time.check(R.id.scheduler_main_dlg_wifi_on_delay_time_rg_2);
-		} else if (mSched.syncDelayedSecondForWifiOn==30) {
+		} else if (mSched.syncStartDelayTimeAfterWifiOn==30) {
 			rg_wifi_on_delay_time.check(R.id.scheduler_main_dlg_wifi_on_delay_time_rg_3);
 		}
 		
@@ -232,13 +232,13 @@ public class SchedulerEditor {
 		    	mSched.syncWifiOnBeforeSyncStart=ctv_wifi_on.isChecked();
 		    	
 		    	if (rg_wifi_on_delay_time.getCheckedRadioButtonId()==R.id.scheduler_main_dlg_wifi_on_delay_time_rg_1) {
-		    		mSched.syncDelayedSecondForWifiOn=5;
+		    		mSched.syncStartDelayTimeAfterWifiOn=5;
 		    	} else if (rg_wifi_on_delay_time.getCheckedRadioButtonId()==R.id.scheduler_main_dlg_wifi_on_delay_time_rg_2) {
-		    		mSched.syncDelayedSecondForWifiOn=10;
+		    		mSched.syncStartDelayTimeAfterWifiOn=10;
 		    	} else if (rg_wifi_on_delay_time.getCheckedRadioButtonId()==R.id.scheduler_main_dlg_wifi_on_delay_time_rg_3) {
-		    		mSched.syncDelayedSecondForWifiOn=30;
+		    		mSched.syncStartDelayTimeAfterWifiOn=30;
 		    	} else {
-		    		mSched.syncDelayedSecondForWifiOn=5;
+		    		mSched.syncStartDelayTimeAfterWifiOn=5;
 		    	}
 		
 		    	if (ctv_wifi_on.isChecked()) mSched.syncWifiOffAfterSyncEnd=ctv_wifi_off.isChecked();
@@ -638,7 +638,7 @@ public class SchedulerEditor {
 				", bg_exec="+mSched.syncOptionBgExec+
 				", Wifi On="+mSched.syncWifiOnBeforeSyncStart+
 				", Wifi Off="+mSched.syncWifiOffAfterSyncEnd+
-				", Wifi On dlayed="+mSched.syncDelayedSecondForWifiOn
+				", Wifi On dlayed="+mSched.syncStartDelayTimeAfterWifiOn
     			);
     };
 

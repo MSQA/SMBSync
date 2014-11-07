@@ -305,6 +305,8 @@ public class LocalFileLastModified {
 						ProfileUtility.getProfile(syncprof_item.getTargetName(), profile_adapter);
 				if (lclprof_item!=null) {
 					String lmp=lclprof_item.getLocalMountPoint();
+					if (!lclprof_item.getDir().equals("")) lmp+="/"+lclprof_item.getDir();
+//					Log.v("","lmp="+lmp);
 					if (!lmp.equals("/")&&!lmp.equals("")) {
 						if (!isSetLastModifiedFunctional(lmp) ||
 								syncprof_item.isForceLastModifiedUseSmbsync()) {
@@ -396,6 +398,8 @@ public class LocalFileLastModified {
 						ProfileUtility.getProfile(syncprof_item.getTargetName(), profile_adapter);
 				if (lclprof_item!=null) {
 					String lmp=lclprof_item.getLocalMountPoint();
+					if (!lclprof_item.getDir().equals("")) lmp+="/"+lclprof_item.getDir();
+//					Log.v("","lmp="+lmp);
 					if (!lmp.equals("/")&&!lmp.equals("")) {
 						if (!isSetLastModifiedFunctional(lmp) ||
 								syncprof_item.isForceLastModifiedUseSmbsync()) {

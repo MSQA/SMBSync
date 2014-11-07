@@ -136,22 +136,23 @@ public class SMBSyncService extends Service {
 	};
 
 	private void startSyncActivity() {
+		mUtil.addDebugLogMsg(1,"I", "startSyncActivity entered");
 		final Handler hndl=new Handler();
+		final WakeLock wake_lock=((PowerManager)getSystemService(Context.POWER_SERVICE))
+    			.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK
+	    				| PowerManager.ACQUIRE_CAUSES_WAKEUP
+	    				, "SMBSync-startSync");
+		final WifiLock wifi_lock=mWifiMgr.createWifiLock(WifiManager.WIFI_MODE_FULL, "SMBSync-startSync");
+		wake_lock.acquire();
+		wifi_lock.acquire();
 		Thread th=new Thread() {
 			@Override
 			public void run() {
-				final WakeLock wake_lock=((PowerManager)getSystemService(Context.POWER_SERVICE))
-		    			.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK
-			    				| PowerManager.ACQUIRE_CAUSES_WAKEUP
-			    				, "SMBSync-startSync");
-				final WifiLock wifi_lock=mWifiMgr.createWifiLock(WifiManager.WIFI_MODE_FULL, "SMBSync-startSync");
-				wake_lock.acquire();
 				SchedulerParms sp=new SchedulerParms();
 				SchedulerUtil.loadScheduleData(sp, mGp.svcContext);
 				if (sp.syncWifiOnBeforeSyncStart && !mWifiMgr.isWifiEnabled()) {
 					setWifiOn();
-					wifi_lock.acquire();
-					if (sp.syncDelayedSecondForWifiOn==0) {
+					if (sp.syncStartDelayTimeAfterWifiOn==0) {
 //						if (mGp.settingWifiOption.equals(SMBSYNC_SYNC_WIFI_OPTION_ADAPTER_OFF)) {
 //							
 //						} else if (mGp.settingWifiOption.equals(SMBSYNC_SYNC_WIFI_OPTION_ADAPTER_ON)) {
@@ -175,8 +176,8 @@ public class SMBSyncService extends Service {
 //						} else if (mGp.settingWifiOption.equals(SMBSYNC_SYNC_WIFI_OPTION_CONNECTED_SPEC_AP)) {
 //						}
 					} else {
-						mUtil.addDebugLogMsg(1,"I", "Sync start delayed "+sp.syncDelayedSecondForWifiOn+"Seconds");
-						SystemClock.sleep(sp.syncDelayedSecondForWifiOn*1000);
+						mUtil.addDebugLogMsg(1,"I", "Sync start delayed "+sp.syncStartDelayTimeAfterWifiOn+"Seconds");
+						SystemClock.sleep(sp.syncStartDelayTimeAfterWifiOn*1000);
 					}
 				}
 

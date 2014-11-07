@@ -556,7 +556,15 @@ public class MirrorIO implements Runnable {
 		else syncRemoteAddr = mipl.getHostName();
 		
 		if (mipl.isForceLastModifiedUseSmbsync()) syncProfileUseJavaLastModified=false;
-		else syncProfileUseJavaLastModified=isSetLastModifiedFunctional(mipl.getLocalMountPoint());
+		else {
+			if (syncMasterProfType.equals("L") && syncTargetProfType.equals("L")) {
+				if (mipl.getLocalDir().equals("")) syncProfileUseJavaLastModified=isSetLastModifiedFunctional(mipl.getLocalMountPoint());
+				else syncProfileUseJavaLastModified=isSetLastModifiedFunctional(mipl.getLocalMountPoint()+"/"+mipl.getLocalDir());
+			} else {
+				if (mipl.getLocalDir().equals("")) syncProfileUseJavaLastModified=isSetLastModifiedFunctional(mipl.getLocalMountPoint());
+				else syncProfileUseJavaLastModified=isSetLastModifiedFunctional(mipl.getLocalDir());
+			}
+		}
 
 		syncProfileNotUseLastModifiedForRemote=mipl.isNotUseLastModifiedForRemote();
 		
@@ -604,28 +612,32 @@ public class MirrorIO implements Runnable {
 
 // Check local directory access		
 		if (syncMasterProfType.equals("L") && syncTargetProfType.equals("L")) {
-			File m_lf=new File(mipl.getMasterLocalMountPoint());
+			String mlmp=mipl.getMasterLocalMountPoint();
+			if (!mipl.getMasterLocalDir().equals("")) mlmp+="/"+mipl.getMasterLocalDir();
+			File m_lf=new File(mlmp);
 			boolean ex=m_lf.exists();
 			boolean cr=m_lf.canRead();
 			if (!ex || (ex && !cr)) {
-				addLogMsg("E",mipl.getMasterLocalMountPoint(),msgs_mirror_master_local_mount_point_not_readable);
-				tcMirror.setThreadMessage(msgs_mirror_master_local_mount_point_not_readable+" "+mipl.getMasterLocalMountPoint());
+				addLogMsg("E",mlmp,msgs_mirror_master_local_mount_point_not_readable);
+				tcMirror.setThreadMessage(msgs_mirror_master_local_mount_point_not_readable+" "+mlmp);
 				isSyncParmError=true;
 			}
-					
-			File t_lf=new File(mipl.getTargetLocalMountPoint());
+
+			String tlmp=mipl.getTargetLocalMountPoint();
+			if (!mipl.getTargetLocalDir().equals("")) tlmp+="/"+mipl.getTargetLocalDir();
+			File t_lf=new File(tlmp);
 			ex=t_lf.exists();
 			boolean cw=t_lf.canWrite();
 			if (!ex || (ex && !cw)) {
-				addLogMsg("E",mipl.getTargetLocalMountPoint(),msgs_mirror_target_local_mount_point_not_writable);
-				tcMirror.setThreadMessage(msgs_mirror_target_local_mount_point_not_writable+" "+mipl.getTargetLocalMountPoint());
+				addLogMsg("E",tlmp,msgs_mirror_target_local_mount_point_not_writable);
+				tcMirror.setThreadMessage(msgs_mirror_target_local_mount_point_not_writable+" "+tlmp);
 				isSyncParmError=true;
 			}
 			try {
-				File t_out=new File(mipl.getTargetLocalMountPoint()+"/SMBSync.work.tmp");
+				File t_out=new File(tlmp+"/SMBSync.work.tmp");
 				if (t_out.exists()) t_out.delete();
 				if (t_out.createNewFile()) {
-					File m_out=new File(mipl.getMasterLocalMountPoint()+"/SMBSync.work.tmp");
+					File m_out=new File(mlmp+"/SMBSync.work.tmp");
 					if (m_out.lastModified()==t_out.lastModified()) {
 						//Same physical dir
 						if (mipl.getMasterLocalDir().equals(mipl.getTargetLocalDir())) {
@@ -639,35 +651,41 @@ public class MirrorIO implements Runnable {
 					t_out.delete();
 				} else {
 					//Create error
-					String msg=String.format(msgs_mirror_physcal_access_check_create_error,mipl.getTargetLocalMountPoint());
+					String msg=String.format(msgs_mirror_physcal_access_check_create_error,tlmp);
 					addLogMsg("E",mipl.getLocalMountPoint(),msg);
 					tcMirror.setThreadMessage(msg);
 					isSyncParmError=true;
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
-				String msg=String.format(msgs_mirror_physcal_access_check_create_error,mipl.getTargetLocalMountPoint());
+				String msg=String.format(msgs_mirror_physcal_access_check_create_error,tlmp);
 				addLogMsg("E",mipl.getLocalMountPoint(),msg+"\n"+e.getMessage());
 				tcMirror.setThreadMessage(msg+"\n"+e.getMessage());
 				isSyncParmError=true;
 			}
 		} else {
 			if (syncMasterProfType.equals("L")) {
-				File lf=new File(mipl.getLocalMountPoint());
+//				Log.v("","d1="+mipl.getLocalDir());
+				String mlmp=mipl.getLocalMountPoint();
+				if (!mipl.getLocalDir().equals("")) mlmp=mipl.getLocalDir();
+				File lf=new File(mlmp);
 				boolean ex=lf.exists();
 				boolean cr=lf.canRead();
 				if (!ex || (ex && !cr)) {
 					addLogMsg("E",mipl.getLocalMountPoint(),msgs_mirror_master_local_mount_point_not_readable);
-					tcMirror.setThreadMessage(msgs_mirror_master_local_mount_point_not_readable+" "+mipl.getLocalMountPoint());
+					tcMirror.setThreadMessage(msgs_mirror_master_local_mount_point_not_readable+" "+mlmp);
 					isSyncParmError=true;
 				}
 			} else {
-				File lf=new File(mipl.getLocalMountPoint());
+//				Log.v("","d2="+mipl.getLocalDir());
+				String tlmp=mipl.getLocalMountPoint();
+				if (!mipl.getLocalDir().equals("")) tlmp=mipl.getLocalDir();
+				File lf=new File(tlmp);
 				boolean ex=lf.exists();
 				boolean cw=lf.canWrite();
 				if (!ex || (ex && !cw)) {
 					addLogMsg("E",mipl.getLocalMountPoint(),msgs_mirror_target_local_mount_point_not_writable);
-					tcMirror.setThreadMessage(msgs_mirror_target_local_mount_point_not_writable+" "+mipl.getLocalMountPoint());
+					tcMirror.setThreadMessage(msgs_mirror_target_local_mount_point_not_writable+" "+tlmp);
 					isSyncParmError=true;
 				}
 			}

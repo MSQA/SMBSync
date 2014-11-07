@@ -76,7 +76,7 @@ public class SchedulerReceiver extends BroadcastReceiver{
 				", bg_exec="+mSched.syncOptionBgExec+
 				", Wifi On="+mSched.syncWifiOnBeforeSyncStart+
 				", Wifi Off="+mSched.syncWifiOffAfterSyncEnd+
-				", Wifi On dlayed="+mSched.syncDelayedSecondForWifiOn
+				", Wifi On dlayed="+mSched.syncStartDelayTimeAfterWifiOn
 				);
 	};
 

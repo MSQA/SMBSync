@@ -44,7 +44,6 @@ import android.os.PowerManager.WakeLock;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat.BigTextStyle;
 import android.support.v4.app.NotificationCompat.Builder;
-import android.util.Log;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -204,7 +203,7 @@ public class GlobalParameters extends Application{
 	@Override
 	public void  onCreate() {
 		super.onCreate();
-		Log.v("SMBSyncGP","onCreate entered");
+//		Log.v("SMBSyncGP","onCreate entered");
 		onLowMemory=false;
 		SMBSync_External_Root_Dir=LocalMountPoint.getExternalStorageDir();
 		
@@ -213,7 +212,7 @@ public class GlobalParameters extends Application{
 	
 	@Override
 	public void onLowMemory() {
-		Log.v("SMBSyncGP","onLowMemory entered");
+//		Log.v("SMBSyncGP","onLowMemory entered");
 		onLowMemory=true;
 	};
 	

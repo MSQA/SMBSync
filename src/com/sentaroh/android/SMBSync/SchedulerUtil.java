@@ -27,7 +27,7 @@ public class SchedulerUtil {
     	sp.syncWifiOnBeforeSyncStart=prefs.getBoolean(SCHEDULER_SYNC_WIFI_ON_BEFORE_SYNC_START_KEY, false);
     	sp.syncWifiOffAfterSyncEnd=prefs.getBoolean(SCHEDULER_SYNC_WIFI_OFF_AFTER_SYNC_END_KEY, false);
 
-    	sp.syncDelayedSecondForWifiOn=Integer.parseInt(
+    	sp.syncStartDelayTimeAfterWifiOn=Integer.parseInt(
     			prefs.getString(SCHEDULER_SYNC_DELAYED_TIME_FOR_WIFI_ON_KEY, 
     					SCHEDULER_SYNC_DELAYED_TIME_FOR_WIFI_ON_DEFAULT_VALUE));
     	
@@ -50,7 +50,7 @@ public class SchedulerUtil {
     	prefs.edit().putBoolean(SCHEDULER_SYNC_WIFI_OFF_AFTER_SYNC_END_KEY, sp.syncWifiOffAfterSyncEnd).commit();
     	
     	prefs.edit().putString(SCHEDULER_SYNC_DELAYED_TIME_FOR_WIFI_ON_KEY, 
-    			String.valueOf(sp.syncDelayedSecondForWifiOn)).commit();
+    			String.valueOf(sp.syncStartDelayTimeAfterWifiOn)).commit();
     };
 
     final static public long getNextSchedule(SchedulerParms sp) {
@@ -169,5 +169,5 @@ class SchedulerParms {
     
     public boolean syncWifiOnBeforeSyncStart=false;
     public boolean syncWifiOffAfterSyncEnd=false;
-    public int syncDelayedSecondForWifiOn=10;
+    public int syncStartDelayTimeAfterWifiOn=10;
 }
