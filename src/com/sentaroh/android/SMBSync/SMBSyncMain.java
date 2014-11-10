@@ -244,19 +244,9 @@ public class SMBSyncMain extends ActionBarActivity {
 		getApplVersionName();
 		
 		SchedulerEditor.sendTimerRequest(mContext, SCHEDULER_INTENT_SET_TIMER_IF_NOT_SET);
-//		if (Build.VERSION.SDK_INT >= 19) {
-//		    File[] extDirs = getExternalFilesDirs(Environment.DIRECTORY_DOWNLOADS);
-//		    for (int i=0;i<extDirs.length;i++)
-//				try {
-//					Log.v("", "i="+i+", path="+extDirs[i].getPath()+
-//							", absolute path="+extDirs[i].getAbsolutePath()+
-//							", canonical path="+extDirs[i].getCanonicalPath()+
-//							", "+extDirs[extDirs.length-1].toString());
-//				} catch (IOException e) {
-//					e.printStackTrace();
-//				}
-//		}
 		setProfileContextButtonHide();
+		
+		util.initAppSpecificExternalDirectory(mContext);
 	};
 	
 	@Override
@@ -317,8 +307,10 @@ public class SMBSyncMain extends ActionBarActivity {
 						showNotificationMsg(mContext.getString(R.string.msgs_smbsync_main_restart_by_killed)+" Version "+packageVersionName);
 						tabHost.setCurrentTab(1);
 					} else if (restartType==RESTART_BY_DESTROYED) {
-						util.addLogMsg("W",mContext.getString(R.string.msgs_smbsync_main_restart_by_destroyed)+" Version "+packageVersionName);
-						showNotificationMsg(mContext.getString(R.string.msgs_smbsync_main_restart_by_destroyed)+" Version "+packageVersionName);
+						if (mGp.changedConfiguration==0) {
+							util.addLogMsg("W",mContext.getString(R.string.msgs_smbsync_main_restart_by_destroyed)+" Version "+packageVersionName);
+							showNotificationMsg(mContext.getString(R.string.msgs_smbsync_main_restart_by_destroyed)+" Version "+packageVersionName);
+						}
 						restoreViewAndTabData();
 					}
 					setMessageContextButtonListener();
@@ -473,6 +465,7 @@ public class SMBSyncMain extends ActionBarActivity {
 		} else {
 			mGp.isApplicationIsRestartRequested=true;
 			mGp.mainViewSaveArea=saveViewContent();
+			mGp.changedConfiguration=getChangingConfigurations();
 //			unsetCallbackListener();
 			//closeService();
     		//mSvcClient=null;

@@ -1806,7 +1806,8 @@ public class ProfileUtility {
 	};
 	
 	@SuppressLint("SdCardPath")
-	public static void setLocalMountPointSpinner(Context c, Spinner spinner, String prof_lmp) {
+	public static void setLocalMountPointSpinner(GlobalParameters gp,
+			Context c, Spinner spinner, String prof_lmp) {
 //		Local mount pointの設定
 		AdapterLocalMountPoint adapter = 
         		new AdapterLocalMountPoint(c,
@@ -1817,29 +1818,28 @@ public class ProfileUtility {
         spinner.setPrompt(c.getString(R.string.msgs_local_profile_dlg_local_mount_point));
         spinner.setAdapter(adapter);
 
-        int a_no=0;
-        ArrayList<String>ml=LocalMountPoint.buildLocalMountPointList();
-        if (ml.size()==0) {
-        	adapter.add("/sdcard");
-        	spinner.setEnabled(false);
-        } else {
-        	spinner.setEnabled(true);
-        	boolean found=false;
-	        for (int i=0;i<ml.size();i++) { 
-					adapter.add(ml.get(i));
-					if (ml.get(i).equals(prof_lmp)) {
-				        spinner.setSelection(a_no);
-				        found=true;
-					}
-					a_no++;
-			}
-	        if (!found) {
-	        	if (!prof_lmp.equals("")) {
-		        	adapter.add(prof_lmp);
-		        	spinner.setSelection(a_no+1);
-	        	}
-	        }
+        ArrayList<String>ml=LocalMountPoint.buildLocalMountPointList(c);
+        if (ml.size()==0) ml.add("/sdcard");
+
+        if (!prof_lmp.equals("")) {
+            boolean add_lmp=false;
+            for(int i=0;i<ml.size();i++) {
+            	if (ml.get(i).equals(prof_lmp)) {
+            		add_lmp=true;
+            		break;
+            	}
+            }
+            if (!add_lmp) {
+            	ml.add(prof_lmp);
+            }
         }
+    	Collections.sort(ml);
+        
+        for (int i=0;i<ml.size();i++) {
+			adapter.add(ml.get(i));
+			if (ml.get(i).equals(prof_lmp)) spinner.setSelection(i);
+		}
+        adapter.notifyDataSetChanged();
 	};
 	
 	public void setSyncDialogIcon(String prof, ImageView iv) {

@@ -557,7 +557,7 @@ public class LocalFileLastModified {
 				lf.delete();
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+//			e.printStackTrace();
 		}
 //		Log.v("","result="+result+", lmp="+lmp);
 		return result;

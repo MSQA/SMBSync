@@ -194,6 +194,7 @@ public class GlobalParameters extends Application{
 	public WifiManager.WifiLock mWifiLock=null;
 
 	public boolean isApplicationIsRestartRequested=false;
+	public int changedConfiguration=0;
 	public ViewSaveArea mainViewSaveArea=null;
 	public boolean confirmDialogShowed=false;
 	public String confirmDialogFilePath="", confirmDialogMethod="";

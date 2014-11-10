@@ -91,14 +91,14 @@ public class ProfileCreationWizard {
 	private Context mContext=null;
 	private ProfileUtility profUtil=null;
 	private AdapterProfileList profileAdapter=null;
-	private GlobalParameters glblParms=null;
+	private GlobalParameters mGp=null;
 	private CommonDialog mCommonDlg=null;
 	
 	private NotifyEvent mNotifyComplete=null;
 	
 	public ProfileCreationWizard(GlobalParameters gp, Context c, SMBSyncUtil su, 
 			ProfileUtility pm, CommonDialog cd, AdapterProfileList pa, NotifyEvent ntfy) {
-		glblParms=gp;
+		mGp=gp;
 		util=su;
 		mContext=c;
 		profUtil=pm;
@@ -490,7 +490,7 @@ public class ProfileCreationWizard {
 		ll_remote.setVisibility(LinearLayout.GONE);
 		ll_sync.setVisibility(LinearLayout.GONE);
 
-		ProfileUtility.setLocalMountPointSpinner(mContext, spinnerLmp, LocalMountPoint.getExternalStorageDir());
+		ProfileUtility.setLocalMountPointSpinner(mGp, mContext, spinnerLmp, LocalMountPoint.getExternalStorageDir());
 //		et_local_dir.setText(mWizData.prof_node[node_pos].local_dir_name);
 		if (node_pos==1 &&
 				mWizData.master_type.equals("L") && mWizData.target_type.equals("L") &&
@@ -556,7 +556,7 @@ public class ProfileCreationWizard {
 		});
 		
 		// LocalDirボタンの指定
-		if (!glblParms.externalStorageIsMounted) btn_local_dir.setEnabled(false);
+		if (!mGp.externalStorageIsMounted) btn_local_dir.setEnabled(false);
 		btn_local_dir.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				String url=(String)spinnerLmp.getSelectedItem();

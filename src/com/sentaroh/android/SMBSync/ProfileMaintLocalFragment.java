@@ -307,7 +307,7 @@ public class ProfileMaintLocalFragment extends DialogFragment{
 		final Spinner spinner=(Spinner) mDialog.findViewById(R.id.local_profile_lmp_btn);
 		spinner.setVisibility(Spinner.VISIBLE);
 
-		ProfileUtility.setLocalMountPointSpinner(mContext, spinner, pfli.getLocalMountPoint());
+		ProfileUtility.setLocalMountPointSpinner(mGp, mContext, spinner, pfli.getLocalMountPoint());
 		
 		CommonDialog.setDlgBoxSizeLimit(mDialog,true);
 		
@@ -502,7 +502,7 @@ public class ProfileMaintLocalFragment extends DialogFragment{
 		final Spinner spinner=(Spinner) mDialog.findViewById(R.id.local_profile_lmp_btn);
 		spinner.setVisibility(Spinner.VISIBLE);
 		
-		ProfileUtility.setLocalMountPointSpinner(mContext, spinner, pfli.getLocalMountPoint());
+		ProfileUtility.setLocalMountPointSpinner(mGp, mContext, spinner, pfli.getLocalMountPoint());
 		
 		CommonDialog.setDlgBoxSizeLimit(mDialog,true);
 		

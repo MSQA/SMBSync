@@ -28,6 +28,7 @@ import java.util.Collections;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -38,36 +39,38 @@ import com.sentaroh.android.Utilities.Widget.CustomSpinnerAdapter;
 @SuppressLint("ViewConstructor")
 public class AdapterLocalMountPoint extends CustomSpinnerAdapter {
 
-	ArrayList<String>mpl;
+	private ArrayList<String>mpl;
 
 	public AdapterLocalMountPoint(Context context, int textViewResourceId) {
 		super(context, textViewResourceId);
-		mpl=LocalMountPoint.buildLocalMountPointList();
+		mpl=LocalMountPoint.buildLocalMountPointList(context);
 	}
 
-	@Override
-	public boolean isEnabled(int p) {
-		return isMountPointAvailable(getItem(p));
-	}
+//	@Override
+//	public boolean isEnabled(int p) {
+//		return isMountPointAvailable(getItem(p));
+//	}
+	
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
         TextView view;
         view=(TextView)super.getView(position,convertView,parent);
-
         return view;
 	}
+	
 	@Override
 	public View getDropDownView(int position, View convertView, ViewGroup parent) {
         TextView text;
         text=(TextView)super.getDropDownView(position, convertView, parent);
         
 		if (isMountPointAvailable(getItem(position))) {
-			text.setEnabled(true);
-//			v.setBackgroundColor(Color.WHITE);
+//			text.setEnabled(true);
+			text.setTextColor(Color.WHITE);
 		} else {
-			text.setEnabled(false);
-//			v.setBackgroundColor(Color.GRAY);
+//			text.setEnabled(false);
+			text.setTextColor(Color.GRAY);
 		}
+		text.setEnabled(true);
 //		text.setBackgroundColor(Color.LTGRAY);
         return text;
 	}
@@ -75,7 +78,11 @@ public class AdapterLocalMountPoint extends CustomSpinnerAdapter {
 	private boolean isMountPointAvailable(String lurl) {
 		boolean result=false;
 		if (Collections.binarySearch(mpl, lurl)>=0) result=true;
+//		Log.v("","size="+mpl.size()+", lu="+lurl+", result="+result);
 		return result;
 	};
 
+//	public void sort() {
+//		Collections.sort(mpl);
+//	}
 }

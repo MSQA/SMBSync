@@ -51,6 +51,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.wifi.WifiManager;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -110,6 +111,10 @@ public class SMBSyncUtil {
 				", WifiConnected="+ws+", result="+ret);
 		
 		return ret;
+	};
+	
+	public void initAppSpecificExternalDirectory(Context c) {
+		ContextCompat.getExternalFilesDirs(c, null);
 	};
 	
 	public boolean isWifiActive() { 

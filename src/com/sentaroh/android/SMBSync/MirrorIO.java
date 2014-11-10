@@ -249,6 +249,8 @@ public class MirrorIO implements Runnable {
 		
 //		syncHistoryList=mUtil.loadHistoryList();
 		mGp.addedSyncHistoryList=new ArrayList<SyncHistoryListItem>();
+		
+		mUtil.initAppSpecificExternalDirectory(mGp.svcContext);
 	};
 
 	@SuppressWarnings("unused")
@@ -377,7 +379,7 @@ public class MirrorIO implements Runnable {
 					loadLocalFileLastModifiedList(syncList.get(i).getLocalMountPoint());
 					setJcifsAuthParm();
 					//sync 開始
-					if (LocalMountPoint.isMountPointAvailable(localUrl)) {
+					if (isMountPointAvailable(localUrl)) {
 						if (syncType.equals(SMBSYNC_SYNC_TYPE_MIRROR)) { // mirror
 							doSyncMirror(syncList.get(i));
 						} else if (syncType.equals(SMBSYNC_SYNC_TYPE_COPY)) { // copy
@@ -482,6 +484,12 @@ public class MirrorIO implements Runnable {
 		tcMirror.setDisabled();
 	};
 
+	private boolean isMountPointAvailable(String fp) {
+		boolean result=false;
+		result=LocalMountPoint.isMountPointAvailable(mGp.svcContext, fp);
+		return result;
+	};
+	
 	final private void openSyncResultLog() {
 		mSyncHistroryResultFilepath=mUtil.createSyncResultFilePath(syncProfName);
 		if (mSyncHistoryPrintWriter!=null) closeSyncResultLog();
@@ -554,17 +562,6 @@ public class MirrorIO implements Runnable {
 //		else syncRemoteAddr = resolveHostName(mipl.getHostName());
 		if (mipl.getHostName().equals("")) syncRemoteAddr = mipl.getRemoteAddr();
 		else syncRemoteAddr = mipl.getHostName();
-		
-		if (mipl.isForceLastModifiedUseSmbsync()) syncProfileUseJavaLastModified=false;
-		else {
-			if (syncMasterProfType.equals("L") && syncTargetProfType.equals("L")) {
-				if (mipl.getLocalDir().equals("")) syncProfileUseJavaLastModified=isSetLastModifiedFunctional(mipl.getLocalMountPoint());
-				else syncProfileUseJavaLastModified=isSetLastModifiedFunctional(mipl.getLocalMountPoint()+"/"+mipl.getLocalDir());
-			} else {
-				if (mipl.getLocalDir().equals("")) syncProfileUseJavaLastModified=isSetLastModifiedFunctional(mipl.getLocalMountPoint());
-				else syncProfileUseJavaLastModified=isSetLastModifiedFunctional(mipl.getLocalDir());
-			}
-		}
 
 		syncProfileNotUseLastModifiedForRemote=mipl.isNotUseLastModifiedForRemote();
 		
@@ -624,26 +621,34 @@ public class MirrorIO implements Runnable {
 			}
 
 			String tlmp=mipl.getTargetLocalMountPoint();
-			if (!mipl.getTargetLocalDir().equals("")) tlmp+="/"+mipl.getTargetLocalDir();
+			if (!mipl.getTargetLocalDir().equals("")) {
+				tlmp+="/"+mipl.getTargetLocalDir();
+			}
 			File t_lf=new File(tlmp);
 			ex=t_lf.exists();
+			if (!ex) {
+				boolean c_dir=t_lf.mkdirs();
+				addDebugLogMsg(1,"W","Directory was created "+tlmp+", result="+c_dir);
+			}
 			boolean cw=t_lf.canWrite();
-			if (!ex || (ex && !cw)) {
+			if ((ex && !cw)) {
 				addLogMsg("E",tlmp,msgs_mirror_target_local_mount_point_not_writable);
 				tcMirror.setThreadMessage(msgs_mirror_target_local_mount_point_not_writable+" "+tlmp);
 				isSyncParmError=true;
-			}
+			} 
 			try {
-				File t_out=new File(tlmp+"/SMBSync.work.tmp");
+				File t_out=new File(tlmp+"/SMBSyncWk.tmp");
 				if (t_out.exists()) t_out.delete();
 				if (t_out.createNewFile()) {
-					File m_out=new File(mlmp+"/SMBSync.work.tmp");
+					File m_out=new File(mlmp+"/SMBSyncWk.tmp");
 					if (m_out.lastModified()==t_out.lastModified()) {
 						//Same physical dir
 						if (mipl.getMasterLocalDir().equals(mipl.getTargetLocalDir())) {
 							String msg=String.format(msgs_mirror_physcal_access_to_same_dir, mipl.getMasterLocalMountPoint(),
 									mipl.getTargetLocalMountPoint());
 							addLogMsg("E",mipl.getLocalMountPoint(),msg);
+/*debug*/					addLogMsg("E",mipl.getLocalMountPoint(),"tlmp="+tlmp+", mlmp="+mlmp+", ex="+ex+", cw="+cw);
+							printMpList();
 							tcMirror.setThreadMessage(msg);
 							isSyncParmError=true;
 						}
@@ -651,15 +656,20 @@ public class MirrorIO implements Runnable {
 					t_out.delete();
 				} else {
 					//Create error
-					String msg=String.format(msgs_mirror_physcal_access_check_create_error,tlmp);
+					String msg=String.format(msgs_mirror_physcal_access_check_create_error,tlmp+"/SMBSyncWk.tmp");
 					addLogMsg("E",mipl.getLocalMountPoint(),msg);
+/*debug*/			addLogMsg("E",mipl.getLocalMountPoint(),"tlmp="+tlmp+", mlmp="+mlmp+", ex="+ex+", cw="+cw);
+					printMpList();
 					tcMirror.setThreadMessage(msg);
 					isSyncParmError=true;
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
-				String msg=String.format(msgs_mirror_physcal_access_check_create_error,tlmp);
+				String msg=String.format(msgs_mirror_physcal_access_check_create_error,tlmp+"/SMBSyncWk.tmp");
 				addLogMsg("E",mipl.getLocalMountPoint(),msg+"\n"+e.getMessage());
+/*debug*/		addLogMsg("E",mipl.getLocalMountPoint(),"tlmp="+tlmp+", mlmp="+mlmp+", ex="+ex+", cw="+cw);
+				printMpList();
+				printStackTraceElement(e.getStackTrace());
 				tcMirror.setThreadMessage(msg+"\n"+e.getMessage());
 				isSyncParmError=true;
 			}
@@ -733,6 +743,17 @@ public class MirrorIO implements Runnable {
 			}
 		}
 
+		if (mipl.isForceLastModifiedUseSmbsync()) syncProfileUseJavaLastModified=false;
+		else {
+			if (syncMasterProfType.equals("L") && syncTargetProfType.equals("L")) {
+				if (mipl.getLocalDir().equals("")) syncProfileUseJavaLastModified=isSetLastModifiedFunctional(mipl.getLocalMountPoint());
+				else syncProfileUseJavaLastModified=isSetLastModifiedFunctional(mipl.getLocalDir());
+			} else {
+				if (mipl.getLocalDir().equals("")) syncProfileUseJavaLastModified=isSetLastModifiedFunctional(mipl.getLocalMountPoint());
+				else syncProfileUseJavaLastModified=isSetLastModifiedFunctional(mipl.getLocalDir());
+			}
+		}
+
 		if (mGp.debugLevel>=1) {
 			addDebugLogMsg(1,"I","Sync parameters: " +
 				"syncLocalToLocal="+syncLocalToLocal+
@@ -760,6 +781,13 @@ public class MirrorIO implements Runnable {
  			addDebugLogMsg(9,"I","syncRemoteUserid=" + syncRemoteUserid+", syncRemotePassword=" + syncRemotePassword);
 		}
 	};
+	
+	private void printMpList() {
+		ArrayList<String>ml=LocalMountPoint.buildLocalMountPointList(mGp.svcContext);
+		if (ml!=null) {
+			for (int i=0;i<ml.size();i++) addLogMsg("E","","mp="+ml.get(i));
+		}
+	}
 	
 	private String mRemoteHostName="", mRemoteHostAddress="";
 	private int mRemoteHostPort=-1;
@@ -1091,7 +1119,7 @@ public class MirrorIO implements Runnable {
 
 	final private void scanMediaStoreLibrary(String fp) {
 //		defaultSettingScanExternalStorage
-		if (LocalMountPoint.isExternalMountPoint(fp) && !defaultSettingScanExternalStorage) {
+		if (LocalMountPoint.isExternalMountPoint(mGp.svcContext, fp) && !defaultSettingScanExternalStorage) {
 			if (mGp.debugLevel>=1) 
 				addDebugLogMsg(1,"I",
 					"scanMediaStoreLibrary scan external storage disabled, " ,
@@ -2361,7 +2389,7 @@ public class MirrorIO implements Runnable {
 //		target_dir=target_dir.substring(0,target_dir.lastIndexOf("/"))+"/";
 //		String target_fn=tmp_wu.replace(target_dir, "");
 //		target_fn=target_fn.substring(0,(target_fn.length()-1));
-//		String tmp_target=target_dir+"SMBSync.work.tmp"+last_sep;
+//		String tmp_target=target_dir+"SMBSyncWk.tmp"+last_sep;
 		String tmp_target=tmp_wu+".SMBSync.work"+last_sep;
 //		Log.v("","tmp="+tmp_target+", to="+targetUrl);
 		return tmp_target;
