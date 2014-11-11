@@ -51,8 +51,11 @@
     <string name="settings_debug_msg_diplay_title">デバッグメッセージの表示</string>
 	<string name="settings_debug_msg_diplay_summary_ena">メッセージタブに表示する</string>
 
-	<string name="settings_suppress_warning_mixed_mp_title">警告メッセージ抑止</string>
-    <string name="settings_suppress_warning_mixed_mp_summary_ena">ローカルマウントポイント混在を抑止する</string>
+	<string name="settings_suppress_warning_mixed_mp_title">ローカルマウントポイント混在警告</string>
+    <string name="settings_suppress_warning_mixed_mp_summary_ena">ローカルマウントポイント混在警告を表示しない</string>
+    
+	<string name="settings_suppress_warning_app_specific_dir_title">アプリケーション固有ディレクトリ警告</string>
+    <string name="settings_suppress_warning_app_specific_dir_summary_ena">アプリケーション固有ディレクトリ警告を表示しない</string>
 			
     <string name="settings_error_option_title">エラー時のオプション</string>
 	<string name="settings_error_option_summary_ena">エラーを無視して次の同期を実行</string>

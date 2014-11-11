@@ -548,6 +548,7 @@ public class ProfileCreationWizard {
 				} else {
 					btn_next.setEnabled(true);
 				}
+				if (node_pos==1) checkAppSpecificDir(spinnerLmp.getSelectedItem().toString(), et_local_dir.getText().toString());
 			}
 
 			@Override
@@ -601,6 +602,7 @@ public class ProfileCreationWizard {
 						btn_next.setEnabled(true);
 						setLocalProfileViewVisibility(dialog);
 					}
+					if (node_pos==1) checkAppSpecificDir(spinnerLmp.getSelectedItem().toString(), et_local_dir.getText().toString());
 				}
 			}
 			@Override
@@ -710,6 +712,14 @@ public class ProfileCreationWizard {
 		dialog.show();
 	};
 	
+    private void checkAppSpecificDir(String lmp, String dir) {
+    	if (LocalMountPoint.isAppSpecificDirectory(mContext, lmp, dir)) {
+    		mCommonDlg.showCommonDialog(false, "W", 
+    				mContext.getString(R.string.msgs_local_mount_point_app_specific_dir_used_title), 
+    				mContext.getString(R.string.msgs_local_mount_point_app_specific_dir_used_msg), null);
+    	}
+    };
+
 	private void setLocalProfileViewDisabled(Dialog dialog) {
 //		final Button btn_ok=(Button)dialog.findViewById(R.id.sync_wizard_dlg_ok);
 //		final Button btn_back=(Button)dialog.findViewById(R.id.sync_wizard_dlg_back);

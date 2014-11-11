@@ -149,6 +149,11 @@ Files should not be copied and originally specified in the same mount point to a
    	<string name="msgs_local_file_modified_maint_delete_msg">Delete last modified time holder files?</string>
    	<string name="msgs_local_file_modified_maint_mixed_old_new_msg">Please be consistent with old and new mount point (/ sdcard, and / mnt / sdcard / storage/sdcard0) are mixed, the name of the mount point of the one with your local profile.</string>
    	<string name="msgs_local_file_modified_maint_mixed_old_new_title">Mixed old and new mount point name</string>
-   	<string name="msgs_local_file_modified_maint_mixed_old_new_suppress">Suppress this warning message</string>
+   	<string name="msgs_local_file_modified_maint_mixed_old_new_suppress">Do not show from the next time to this warning (You can re show the user interface settings)</string>
+   	
+    <string name="msgs_local_mount_point_app_specific_dir_used_msg">Application specific directory has been set As the storage location of the file. This directory is deleted when the application is uninstalled, the data you have saved will be deleted. Please be careful in your use.</string>
+   	<string name="msgs_local_mount_point_app_specific_dir_used_title">Warning about the application specific directory use</string>
+   	<string name="msgs_local_mount_point_app_specific_dir_used_suppress">Do not show from the next time to this warning (You can re show the user interface settings)</string>
+   	<string name="msgs_local_mount_point_app_specific_dir_used_ok">Sync</string>
    	
 </resources>

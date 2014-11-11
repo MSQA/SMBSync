@@ -72,10 +72,14 @@
 	<string name="settings_debug_msg_diplay_summary_ena">Show debug message to message tab</string>
 	<string name="settings_debug_msg_diplay">settings_debug_msg_diplay</string>
 
-	<string name="settings_suppress_warning_mixed_mp_title">Suppress mixed mount point name</string>
-    <string name="settings_suppress_warning_mixed_mp_summary_ena">Suppress mixed mount point name</string>
+	<string name="settings_suppress_warning_mixed_mp_title">Mixed mount point name</string>
+    <string name="settings_suppress_warning_mixed_mp_summary_ena">Do not show the warning of mixed mount point name used</string>
 	<string name="settings_suppress_warning_mixed_mp">settings_suppress_warning_mixed_mp</string>	
-			
+
+	<string name="settings_suppress_warning_app_specific_dir_title">Application specific directory use</string>
+    <string name="settings_suppress_warning_app_specific_dir_summary_ena">Do not show the warning of application specific directory use</string>
+	<string name="settings_suppress_warning_app_specific_dir">settings_suppress_warning_app_specific_dir</string>	
+					
     <string name="settings_error_option_title">Error process option</string>
 	<string name="settings_error_option_summary_ena">Ignore error, processing continued</string>
 	<string name="settings_error_option">settings_error_option</string>

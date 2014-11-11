@@ -692,8 +692,13 @@ public class MirrorIO implements Runnable {
 				if (!mipl.getLocalDir().equals("")) tlmp=mipl.getLocalDir();
 				File lf=new File(tlmp);
 				boolean ex=lf.exists();
+				
+				if (!ex) {
+					boolean c_dir=lf.mkdirs();
+					addDebugLogMsg(1,"W","Directory was created "+tlmp+", result="+c_dir);
+				}
 				boolean cw=lf.canWrite();
-				if (!ex || (ex && !cw)) {
+				if ((ex && !cw)) {
 					addLogMsg("E",mipl.getLocalMountPoint(),msgs_mirror_target_local_mount_point_not_writable);
 					tcMirror.setThreadMessage(msgs_mirror_target_local_mount_point_not_writable+" "+tlmp);
 					isSyncParmError=true;
@@ -3920,6 +3925,8 @@ class MirrorIoParmList {
 	private boolean mp_sync_hidden_file=false;
 	private boolean mp_sync_sub_dir=false;
 	
+	private boolean mp_sync_target_dir_app_specific=false;
+	
 	public MirrorIoParmList (
 			String profname,
 			String master_type,
@@ -3997,6 +4004,9 @@ class MirrorIoParmList {
 	public boolean isForceLastModifiedUseSmbsync() {return mp_force_last_modified_use_smbsync;}
 	public boolean isNotUseLastModifiedForRemote() {return mp_not_use_last_modified_for_remote;}
 	public void setNotUseLastModifiedForRemote(boolean p) {mp_not_use_last_modified_for_remote=p;}
+	
+	public boolean isSyncTargetDirIsAppSpecific() {return mp_sync_target_dir_app_specific;}
+	public void setSyncTargetDirIsAppSpecific(boolean p) {mp_sync_target_dir_app_specific=p;}
 	
 	public void setProfname(String p) { mp_profname=p;}
 	public void setMasterType(String p) { mp_master_type=p;}

@@ -9,6 +9,10 @@
 			android:key="@string/settings_suppress_warning_mixed_mp"
 			android:title="@string/settings_suppress_warning_mixed_mp_title"
 			android:summary="@string/settings_suppress_warning_mixed_mp_summary_ena" />
+	    <CheckBoxPreference
+			android:key="@string/settings_suppress_warning_app_specific_dir"
+			android:title="@string/settings_suppress_warning_app_specific_dir_title"
+			android:summary="@string/settings_suppress_warning_app_specific_dir_summary_ena" />
   	    <ListPreference
 			android:key="@string/settings_background_termination_notification"
 			android:title="@string/settings_background_termination_notification_title"

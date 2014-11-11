@@ -28,7 +28,6 @@ import java.util.Collections;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -46,10 +45,10 @@ public class AdapterLocalMountPoint extends CustomSpinnerAdapter {
 		mpl=LocalMountPoint.buildLocalMountPointList(context);
 	}
 
-//	@Override
-//	public boolean isEnabled(int p) {
-//		return isMountPointAvailable(getItem(p));
-//	}
+	@Override
+	public boolean isEnabled(int p) {
+		return isMountPointAvailable(getItem(p));
+	}
 	
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
@@ -63,14 +62,14 @@ public class AdapterLocalMountPoint extends CustomSpinnerAdapter {
         TextView text;
         text=(TextView)super.getDropDownView(position, convertView, parent);
         
-		if (isMountPointAvailable(getItem(position))) {
-//			text.setEnabled(true);
-			text.setTextColor(Color.WHITE);
-		} else {
-//			text.setEnabled(false);
-			text.setTextColor(Color.GRAY);
-		}
-		text.setEnabled(true);
+//		if (isMountPointAvailable(getItem(position))) {
+////			text.setEnabled(true);
+//			text.setTextColor(Color.WHITE);
+//		} else {
+////			text.setEnabled(false);
+//			text.setTextColor(Color.GRAY);
+//		}
+//		text.setEnabled(true);
 //		text.setBackgroundColor(Color.LTGRAY);
         return text;
 	}

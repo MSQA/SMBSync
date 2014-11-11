@@ -115,6 +115,7 @@ public class SMBSyncSettings extends PreferenceActivity{
 		initSettingValueBeforeHc(shared_pref,getString(R.string.settings_log_level));
 
 		initSettingValueBeforeHc(shared_pref,getString(R.string.settings_suppress_warning_mixed_mp));
+		initSettingValueBeforeHc(shared_pref,getString(R.string.settings_suppress_warning_app_specific_dir));
 		initSettingValueBeforeHc(shared_pref,getString(R.string.settings_background_termination_notification));
 
 		initSettingValueBeforeHc(shared_pref,getString(R.string.settings_playback_ringtone_when_sync_ended));
@@ -329,6 +330,8 @@ public class SMBSyncSettings extends PreferenceActivity{
 		boolean isChecked = false;
 		
 		if (key_string.equals(c.getString(R.string.settings_suppress_warning_mixed_mp))) {
+			isChecked=true;
+		} else if (key_string.equals(c.getString(R.string.settings_suppress_warning_app_specific_dir))) {
 			isChecked=true;
 		} else if (key_string.equals(c.getString(R.string.settings_background_termination_notification))) {
 			isChecked=true;
@@ -814,6 +817,7 @@ public class SMBSyncSettings extends PreferenceActivity{
     		
     		initSettingValueAfterHc(shared_pref,getString(R.string.settings_debug_msg_diplay));
     		initSettingValueAfterHc(shared_pref,getString(R.string.settings_suppress_warning_mixed_mp));
+    		initSettingValueAfterHc(shared_pref,getString(R.string.settings_suppress_warning_app_specific_dir));
     		initSettingValueAfterHc(shared_pref,getString(R.string.settings_background_termination_notification));
     		
     		initSettingValueAfterHc(shared_pref,getString(R.string.settings_playback_ringtone_when_sync_ended));

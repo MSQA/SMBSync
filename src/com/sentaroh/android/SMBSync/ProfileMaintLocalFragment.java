@@ -4,6 +4,8 @@ import static com.sentaroh.android.SMBSync.Constants.*;
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROF_GROUP_DEFAULT;
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROF_INACTIVE;
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROF_TYPE_LOCAL;
+
+import com.sentaroh.android.Utilities.LocalMountPoint;
 import com.sentaroh.android.Utilities.NotifyEvent;
 import com.sentaroh.android.Utilities.Dialog.CommonDialog;
 import com.sentaroh.android.Utilities.NotifyEvent.NotifyEventListener;
@@ -29,6 +31,8 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
 import android.widget.CheckedTextView;
 import android.widget.EditText;
@@ -311,6 +315,17 @@ public class ProfileMaintLocalFragment extends DialogFragment{
 		
 		CommonDialog.setDlgBoxSizeLimit(mDialog,true);
 		
+		spinner.setOnItemSelectedListener(new OnItemSelectedListener(){
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+				checkAppSpecificDir(spinner.getSelectedItem().toString(), editdir.getText().toString());
+			}
+			@Override
+			public void onNothingSelected(AdapterView<?> parent) {
+			}
+			
+		});
+		
 		ctv_active.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
@@ -408,6 +423,7 @@ public class ProfileMaintLocalFragment extends DialogFragment{
 					audit_msg=String.format(mContext.getString(R.string.msgs_audit_msgs_local_dir),mProfUtil.getInvalidCharMsg());
 				}
 				dlg_msg.setText(audit_msg);
+				checkAppSpecificDir(spinner.getSelectedItem().toString(), editdir.getText().toString());
 			}
 		});
 
@@ -475,6 +491,14 @@ public class ProfileMaintLocalFragment extends DialogFragment{
 
     };
     
+    private void checkAppSpecificDir(String lmp, String dir) {
+    	if (LocalMountPoint.isAppSpecificDirectory(mContext, lmp, dir)) {
+    		mCommonDlg.showCommonDialog(false, "W", 
+    				mContext.getString(R.string.msgs_local_mount_point_app_specific_dir_used_title), 
+    				mContext.getString(R.string.msgs_local_mount_point_app_specific_dir_used_msg), null);
+    	}
+    };
+    
 	private void editProfile(final ProfileListItem pfli) {
 		mDialog.setContentView(R.layout.edit_profile_local);
 		
@@ -503,7 +527,18 @@ public class ProfileMaintLocalFragment extends DialogFragment{
 		spinner.setVisibility(Spinner.VISIBLE);
 		
 		ProfileUtility.setLocalMountPointSpinner(mGp, mContext, spinner, pfli.getLocalMountPoint());
-		
+
+		spinner.setOnItemSelectedListener(new OnItemSelectedListener(){
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+				checkAppSpecificDir(spinner.getSelectedItem().toString(), editdir.getText().toString());
+			}
+			@Override
+			public void onNothingSelected(AdapterView<?> parent) {
+			}
+			
+		});
+
 		CommonDialog.setDlgBoxSizeLimit(mDialog,true);
 		
 		// GET_btn1ボタンの指定
@@ -531,7 +566,23 @@ public class ProfileMaintLocalFragment extends DialogFragment{
 				mProfUtil.selectLocalDirDlg(url,"",p_dir,ntfy);
 			}
 		});
-		
+
+		editdir.addTextChangedListener(new TextWatcher(){
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,	int after) {}
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {}
+			@Override
+			public void afterTextChanged(Editable s) {
+				String audit_msg="";
+				if (mProfUtil.hasInvalidChar(s.toString(),new String[]{"\t"})) {
+					audit_msg=String.format(mContext.getString(R.string.msgs_audit_msgs_local_dir),mProfUtil.getInvalidCharMsg());
+				}
+				dlg_msg.setText(audit_msg);
+				checkAppSpecificDir(spinner.getSelectedItem().toString(), editdir.getText().toString());
+			}
+		});
+
 		// CANCELボタンの指定
 		final Button btn_cancel = (Button) mDialog.findViewById(R.id.local_profile_cancel);
 		btn_cancel.setOnClickListener(new View.OnClickListener() {

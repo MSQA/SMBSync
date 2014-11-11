@@ -44,8 +44,6 @@ public class Constants {
 	public final static String SMBSYNC_SYNC_WIFI_OPTION_CONNECTED_ANY_AP="2";
 	public final static String SMBSYNC_SYNC_WIFI_OPTION_CONNECTED_SPEC_AP="3";
 	
-	public final static String SMBSYNC_SUPPRESS_WARNING_MIXED_MP="settings_suppress_warning_mixed_mp";
-	
 	public final static String SMBSYNC_PROFILE_FILE_NAME_V0="profile.txt";
 	public final static String SMBSYNC_PROFILE_FILE_NAME_V1="profile_v1.txt";
 	public final static String SMBSYNC_PROFILE_FILE_NAME_V2="profile_v2.txt";

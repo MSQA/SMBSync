@@ -150,5 +150,11 @@
         一つのマウントポイント名に統一してください。\n最終更新時刻の判定はマウントポイントを基準にしているため、
 同じディレクトリを違うマウントポイントで指定すると本来はコピーされないはずのファイルがコピーされます。</string>
    	<string name="msgs_local_file_modified_maint_mixed_old_new_title">新旧マウントポイント名の混在</string>
-   	<string name="msgs_local_file_modified_maint_mixed_old_new_suppress">この警告を次回以降表示しない</string>
+   	<string name="msgs_local_file_modified_maint_mixed_old_new_suppress">この警告を次回以降表示しない （ユーザーインターフェース設定で再表示できます）</string>
+
+   	
+    <string name="msgs_local_mount_point_app_specific_dir_used_msg">アプリケーション固有ディレクトリがファイルの保存先に使用されています。このディレクトリはアプリケーションがアンインストールされると削除され、保存しているデータも削除されます。ご注意ください。</string>
+   	<string name="msgs_local_mount_point_app_specific_dir_used_title">アプリケーション固有ディレクトリ使用についての警告</string>
+   	<string name="msgs_local_mount_point_app_specific_dir_used_suppress">この警告を次回以降表示しない （ユーザーインターフェース設定で再表示できます）</string>
+   	<string name="msgs_local_mount_point_app_specific_dir_used_ok">同期する</string>
 </resources>
