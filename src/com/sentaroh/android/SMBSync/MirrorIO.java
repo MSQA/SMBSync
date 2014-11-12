@@ -3403,8 +3403,8 @@ public class MirrorIO implements Runnable {
 		
 		if (!syncMasterDirFileProcess) {//「root直下のファイルは処理しないオプション」が有郊
 			String tmp_d="";
-			if (mirrorIoRootDir.endsWith("/")) url.replace(mirrorIoRootDir, "");
-			else url.replace(mirrorIoRootDir+"/", "");
+			if (mirrorIoRootDir.endsWith("/")) tmp_d=url.replace(mirrorIoRootDir, "");
+			else tmp_d=url.replace(mirrorIoRootDir+"/", "");
 //			Log.v("","tmp_d="+tmp_d+", r="+mirrorIoRootDir);
 			if (tmp_d.indexOf("/")<0) {
 				//root直下なので処理しない
