@@ -247,6 +247,9 @@ public class SMBSyncMain extends ActionBarActivity {
 		setProfileContextButtonHide();
 		
 		util.initAppSpecificExternalDirectory(mContext);
+		
+//		File[] fl=getExternalMediaDirs();
+//		for (int i=0;i<fl.length;i++) Log.v("","dl="+fl[i].getPath());
 	};
 	
 	@Override

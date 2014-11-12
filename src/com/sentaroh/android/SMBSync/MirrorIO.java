@@ -595,8 +595,13 @@ public class MirrorIO implements Runnable {
 		if (syncMasterProfType.equals("L") && syncTargetProfType.equals("L")) {
 			syncLocalToLocal=true;
 			localUrl=syncLocalDir=mipl.getTargetLocalMountPoint();
-			syncMasterLocalDir=mipl.getMasterLocalMountPoint()+"/"+mipl.getMasterLocalDir();
-			syncTargetLocalDir=mipl.getTargetLocalMountPoint()+"/"+mipl.getTargetLocalDir();
+			
+			if (mipl.getMasterLocalDir().equals("")) syncMasterLocalDir=mipl.getMasterLocalMountPoint();
+			else syncMasterLocalDir=mipl.getMasterLocalMountPoint()+"/"+mipl.getMasterLocalDir();
+			
+			if (mipl.getTargetLocalDir().equals("")) syncTargetLocalDir=mipl.getTargetLocalMountPoint();
+			else syncTargetLocalDir=mipl.getTargetLocalMountPoint()+"/"+mipl.getTargetLocalDir();
+			
 			syncProfileRetryCount=0;
 		} else {
 			syncLocalToLocal=false;
@@ -1730,6 +1735,7 @@ public class MirrorIO implements Runnable {
 
 									if (mGp.settingLocalFileCopyByRename) {
 										tmp_target=makeTempFilePath(targetUrl);
+//										tmp_target=makeLocalTempFilePath(targetUrl);
 									}
 									copyFileLocalToLocal(mf,tf,file_byte,t_fn,masterUrl, tmp_target);
 									if (checkErrorStatus()!=0) return checkErrorStatus();
@@ -2399,7 +2405,13 @@ public class MirrorIO implements Runnable {
 //		Log.v("","tmp="+tmp_target+", to="+targetUrl);
 		return tmp_target;
 	};
-	
+
+//	private String makeLocalTempFilePath(String  targetUrl) {
+//		String tmp_target="/sdcard/Android/data/com.sentaroh.android.SMBSync/files/SMBSync.work";
+////		Log.v("","tmp="+tmp_target+", to="+targetUrl);
+//		return tmp_target;
+//	};
+
 	final private int mirrorMoveLocalToRemote(boolean allcopy, String masterUrl,
 			String targetUrl, ArrayList<String> moved_dirs) {
 		SmbFile hf=null;
@@ -2898,6 +2910,7 @@ public class MirrorIO implements Runnable {
 		out.close();
 		
 		if (tmp_out!=null) {
+			tmp_out.setLastModified(in_file.lastModified());
 			if (out_file.exists()) out_file.delete();
 			tmp_out.renameTo(out_file);
 		}
@@ -3389,7 +3402,10 @@ public class MirrorIO implements Runnable {
 		Matcher mt;
 		
 		if (!syncMasterDirFileProcess) {//「root直下のファイルは処理しないオプション」が有郊
-			String tmp_d=url.replace(mirrorIoRootDir+"/", "");
+			String tmp_d="";
+			if (mirrorIoRootDir.endsWith("/")) url.replace(mirrorIoRootDir, "");
+			else url.replace(mirrorIoRootDir+"/", "");
+//			Log.v("","tmp_d="+tmp_d+", r="+mirrorIoRootDir);
 			if (tmp_d.indexOf("/")<0) {
 				//root直下なので処理しない
 				if (mGp.debugLevel>=3) 
