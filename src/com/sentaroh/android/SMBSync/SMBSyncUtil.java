@@ -51,6 +51,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
@@ -113,7 +114,12 @@ public class SMBSyncUtil {
 		return ret;
 	};
 	
+//	@SuppressLint("NewApi")
 	public void initAppSpecificExternalDirectory(Context c) {
+//		if (Build.VERSION.SDK_INT>=19) {
+//			c.getExternalFilesDirs(null);
+//		} else {
+//		}
 		ContextCompat.getExternalFilesDirs(c, null);
 	};
 	

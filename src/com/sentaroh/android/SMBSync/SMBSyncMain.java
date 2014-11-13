@@ -246,8 +246,15 @@ public class SMBSyncMain extends ActionBarActivity {
 		SchedulerEditor.sendTimerRequest(mContext, SCHEDULER_INTENT_SET_TIMER_IF_NOT_SET);
 		setProfileContextButtonHide();
 		
-		util.initAppSpecificExternalDirectory(mContext);
-		
+		Thread th=new Thread(){
+			@Override
+			public void run() {
+				util.addDebugLogMsg(1,"I","Initialyze application specific directory started");
+				util.initAppSpecificExternalDirectory(mContext);
+				util.addDebugLogMsg(1,"I","Initialyze application specific directory ended");
+			}
+		};
+		th.start();
 //		File[] fl=getExternalMediaDirs();
 //		for (int i=0;i<fl.length;i++) Log.v("","dl="+fl[i].getPath());
 	};
