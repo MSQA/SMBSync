@@ -51,7 +51,6 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.wifi.WifiManager;
-import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
