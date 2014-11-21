@@ -31,6 +31,10 @@ public class SchedulerReceiver extends BroadcastReceiver{
     			.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK    					
     				| PowerManager.ON_AFTER_RELEASE, "SMBSync-Receiver");
 		if (!mWakeLock.isHeld()) mWakeLock.acquire(1000);
+		else {
+			mWakeLock.release();
+			mWakeLock.acquire(1000);
+		}
 		if (mSched==null) mSched=new SchedulerParms();
 		mContext=c;
 		
