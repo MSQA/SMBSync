@@ -144,7 +144,6 @@ public class SMBSyncService extends Service {
 	    				, "SMBSync-startSync");
 		final WifiLock wifi_lock=mWifiMgr.createWifiLock(WifiManager.WIFI_MODE_FULL, "SMBSync-startSync");
 		wake_lock.acquire();
-		wifi_lock.acquire();
 		Thread th=new Thread() {
 			@Override
 			public void run() {
@@ -152,6 +151,7 @@ public class SMBSyncService extends Service {
 				SchedulerUtil.loadScheduleData(sp, mGp.svcContext);
 				if (sp.syncWifiOnBeforeSyncStart && !mWifiMgr.isWifiEnabled()) {
 					setWifiOn();
+					wifi_lock.acquire();
 					if (sp.syncStartDelayTimeAfterWifiOn==0) {
 //						if (mGp.settingWifiOption.equals(SMBSYNC_SYNC_WIFI_OPTION_ADAPTER_OFF)) {
 //							

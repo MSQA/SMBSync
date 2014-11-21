@@ -1108,6 +1108,7 @@ public class SMBSyncMain extends ActionBarActivity {
         return super.onPrepareOptionsMenu(menu);
 	};
 
+	private boolean mScheduleEditorAvailable=true;
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
@@ -1166,9 +1167,18 @@ public class SMBSyncMain extends ActionBarActivity {
 				setContextButtonNormalMode();
 				return true;
 			case R.id.menu_top_scheduler:
-				SchedulerEditor sm=new SchedulerEditor(util, mContext, commonDlg, ccMenu, mGp);
-				sm.initDialog();
-				setContextButtonNormalMode();
+				if (mScheduleEditorAvailable) {
+					mScheduleEditorAvailable=false;
+					SchedulerEditor sm=new SchedulerEditor(util, mContext, commonDlg, ccMenu, mGp);
+					sm.initDialog();
+					setContextButtonNormalMode();
+					mUiHandler.postDelayed(new Runnable(){
+						@Override
+						public void run() {
+							mScheduleEditorAvailable=true;
+						}
+					}, 1000);
+				}
 				return true;
 			case R.id.menu_top_about:
 				aboutSMBSync();
@@ -2645,6 +2655,19 @@ public class SMBSyncMain extends ActionBarActivity {
         mContextMessageViewClear=(LinearLayout)ll_msg.findViewById(R.id.context_button_clear_view);
     };
 
+    private void setProfileContextButtonEnabled(final ImageButton btn, boolean enabled) {
+    	if (enabled) {
+        	mUiHandler.postDelayed(new Runnable(){
+    			@Override
+    			public void run() {
+    				btn.setEnabled(true);
+    			}
+        	}, 1000);
+    	} else {
+    		btn.setEnabled(false);
+    	}
+    };
+    
 	private void setProfileContextButtonListener() {
         final NotifyEvent ntfy=new NotifyEvent(mContext);
         ntfy.setListener(new NotifyEventListener(){
@@ -2677,11 +2700,13 @@ public class SMBSyncMain extends ActionBarActivity {
         mContextProfileButtonAddLocal.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
+				setProfileContextButtonEnabled(mContextProfileButtonAddLocal,false);
 				ProfileListItem pfli=new ProfileListItem();
 				pfli.setActive(SMBSYNC_PROF_ACTIVE);
 				ProfileMaintLocalFragment pmsp=ProfileMaintLocalFragment.newInstance();
 				pmsp.showDialog(getSupportFragmentManager(), pmsp, "ADD", new ProfileListItem(), 
 						0, profUtil, util, commonDlg, ntfy);
+				setProfileContextButtonEnabled(mContextProfileButtonAddLocal,true);
 			}
         });
         ContextButtonUtil.setButtonLabelListener(mContext, mContextProfileButtonAddLocal,mContext.getString(R.string.msgs_prof_cont_label_add_local));
@@ -2689,6 +2714,7 @@ public class SMBSyncMain extends ActionBarActivity {
         mContextProfileButtonAddRemote.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
+				setProfileContextButtonEnabled(mContextProfileButtonAddRemote,false);
 				String c_ip=SMBSyncUtil.getLocalIpAddress();
 				ProfileListItem pfli=new ProfileListItem();
 				pfli.setAddr(c_ip);
@@ -2696,6 +2722,7 @@ public class SMBSyncMain extends ActionBarActivity {
 				ProfileMaintRemoteFragment pmsp=ProfileMaintRemoteFragment.newInstance();
 				pmsp.showDialog(getSupportFragmentManager(), pmsp, "ADD", pfli, 
 						0, profUtil, util, commonDlg, ntfy);
+				setProfileContextButtonEnabled(mContextProfileButtonAddRemote,true);
 			}
         });
         ContextButtonUtil.setButtonLabelListener(mContext, mContextProfileButtonAddRemote,mContext.getString(R.string.msgs_prof_cont_label_add_remote));
@@ -2703,12 +2730,14 @@ public class SMBSyncMain extends ActionBarActivity {
         mContextProfileButtonAddSync.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
+				setProfileContextButtonEnabled(mContextProfileButtonAddSync,false);
 				ProfileListItem pfli=new ProfileListItem();
 				pfli.setActive(SMBSYNC_PROF_ACTIVE);
 				pfli.setForceLastModifiedUseSmbsync(false);
 				ProfileMaintSyncFragment pmsp=ProfileMaintSyncFragment.newInstance();
 				pmsp.showDialog(getSupportFragmentManager(), pmsp, "ADD", pfli, 
 						profUtil, util, commonDlg, ntfy);
+				setProfileContextButtonEnabled(mContextProfileButtonAddSync,true);
 			}
         });
         ContextButtonUtil.setButtonLabelListener(mContext, mContextProfileButtonAddSync,mContext.getString(R.string.msgs_prof_cont_label_add_sync));
@@ -2716,9 +2745,11 @@ public class SMBSyncMain extends ActionBarActivity {
         mContextProfileButtonStartWizard.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
+				setProfileContextButtonEnabled(mContextProfileButtonStartWizard,false);
 				ProfileCreationWizard sw=new ProfileCreationWizard(mGp, mContext, 
 						util, profUtil, commonDlg, mGp.profileAdapter, ntfy);
 				sw.wizardMain();
+				setProfileContextButtonEnabled(mContextProfileButtonStartWizard,true);
 			}
         });
         ContextButtonUtil.setButtonLabelListener(mContext, mContextProfileButtonStartWizard,mContext.getString(R.string.msgs_prof_cont_label_start_wizard));
@@ -2726,6 +2757,7 @@ public class SMBSyncMain extends ActionBarActivity {
         mContextProfileButtonCopyProfile.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
+				setProfileContextButtonEnabled(mContextProfileButtonCopyProfile,false);
 				for(int i=0;i<mGp.profileAdapter.getCount();i++) {
 					ProfileListItem item=mGp.profileAdapter.getItem(i);
 					if (item.isChecked()) {
@@ -2733,6 +2765,7 @@ public class SMBSyncMain extends ActionBarActivity {
 						break;
 					}
 				}
+				setProfileContextButtonEnabled(mContextProfileButtonCopyProfile,true);
 			}
         });
         ContextButtonUtil.setButtonLabelListener(mContext, mContextProfileButtonCopyProfile,mContext.getString(R.string.msgs_prof_cont_label_copy));
@@ -2740,7 +2773,9 @@ public class SMBSyncMain extends ActionBarActivity {
         mContextProfileButtonDeleteProfile.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
+				setProfileContextButtonEnabled(mContextProfileButtonDeleteProfile,false);
 				profUtil.deleteProfile(ntfy);
+				setProfileContextButtonEnabled(mContextProfileButtonDeleteProfile,true);
 			}
         });
         ContextButtonUtil.setButtonLabelListener(mContext, mContextProfileButtonDeleteProfile,mContext.getString(R.string.msgs_prof_cont_label_delete));
@@ -2759,6 +2794,7 @@ public class SMBSyncMain extends ActionBarActivity {
         mContextProfileButtonRenameProfile.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
+				setProfileContextButtonEnabled(mContextProfileButtonRenameProfile,false);
 				for(int i=0;i<mGp.profileAdapter.getCount();i++) {
 					ProfileListItem item=mGp.profileAdapter.getItem(i);
 					if (item.isChecked()) {
@@ -2766,6 +2802,7 @@ public class SMBSyncMain extends ActionBarActivity {
 						break;
 					}
 				}
+				setProfileContextButtonEnabled(mContextProfileButtonRenameProfile,true);
 			}
         });
         ContextButtonUtil.setButtonLabelListener(mContext, mContextProfileButtonRenameProfile,mContext.getString(R.string.msgs_prof_cont_label_rename));
@@ -2773,6 +2810,7 @@ public class SMBSyncMain extends ActionBarActivity {
         mContextProfileButtonSync.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
+				setProfileContextButtonEnabled(mContextProfileButtonSync,false);
 				if (ProfileUtility.getSyncProfileSelectedItemCount(mGp.profileAdapter, SMBSYNC_PROF_GROUP_DEFAULT)>0) {
 					syncSelectedProfile();
 					Toast.makeText(mContext, 
@@ -2788,6 +2826,7 @@ public class SMBSyncMain extends ActionBarActivity {
 				}
 				ProfileUtility.setAllProfileToUnchecked(true, mGp.profileAdapter);
 				setProfileContextButtonNormalMode();
+				setProfileContextButtonEnabled(mContextProfileButtonSync,true);
 			}
         });
         ContextButtonUtil.setButtonLabelListener(mContext, mContextProfileButtonSync,mContext.getString(R.string.msgs_prof_cont_label_sync));
@@ -2795,12 +2834,14 @@ public class SMBSyncMain extends ActionBarActivity {
         mContextProfileButtonSelectAll.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
+				setProfileContextButtonEnabled(mContextProfileButtonSelectAll,false);
 				for (int i=0;i<mGp.profileAdapter.getCount();i++) {
 					ProfileUtility.setProfileToChecked(true, mGp.profileAdapter, i);
 				}
 				mGp.profileAdapter.notifyDataSetChanged();
 				mGp.profileAdapter.setShowCheckBox(true);
 				setProfileContextButtonSelectMode();
+				setProfileContextButtonEnabled(mContextProfileButtonSelectAll,true);
 			}
         });
         ContextButtonUtil.setButtonLabelListener(mContext, mContextProfileButtonSelectAll,mContext.getString(R.string.msgs_prof_cont_label_select_all));
@@ -2808,12 +2849,14 @@ public class SMBSyncMain extends ActionBarActivity {
         mContextProfileButtonUnselectAll.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
+				setProfileContextButtonEnabled(mContextProfileButtonUnselectAll,false);
 				ProfileUtility.setAllProfileToUnchecked(false, mGp.profileAdapter);
 //				for (int i=0;i<mGp.profileAdapter.getCount();i++) {
 //					ProfileUtility.setProfileToChecked(false, mGp.profileAdapter, i);
 //				}
 				mGp.profileAdapter.notifyDataSetChanged();
 				setProfileContextButtonSelectMode();
+				setProfileContextButtonEnabled(mContextProfileButtonUnselectAll,true);
 			}
         });
         ContextButtonUtil.setButtonLabelListener(mContext, mContextProfileButtonUnselectAll,mContext.getString(R.string.msgs_prof_cont_label_unselect_all));

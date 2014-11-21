@@ -17,8 +17,6 @@ import android.util.Log;
 
 public class SchedulerReceiver extends BroadcastReceiver{
 
-	private static WakeLock mWakeLock=null;
-	
 	private static Context mContext =null;
 	
 	private static SchedulerParms mSched=null;
@@ -26,15 +24,11 @@ public class SchedulerReceiver extends BroadcastReceiver{
 	@SuppressLint("Wakelock")
 	@Override
 	final public void onReceive(Context c, Intent arg1) {
-		if (mWakeLock==null) mWakeLock=
+		WakeLock wl=
    	    		((PowerManager)c.getSystemService(Context.POWER_SERVICE))
     			.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK    					
     				| PowerManager.ON_AFTER_RELEASE, "SMBSync-Receiver");
-		if (!mWakeLock.isHeld()) mWakeLock.acquire(1000);
-		else {
-			mWakeLock.release();
-			mWakeLock.acquire(1000);
-		}
+		wl.acquire(1000);
 		if (mSched==null) mSched=new SchedulerParms();
 		mContext=c;
 		

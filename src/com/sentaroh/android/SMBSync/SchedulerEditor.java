@@ -9,6 +9,8 @@ import java.util.Collections;
 import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -201,6 +203,55 @@ public class SchedulerEditor {
 			}
 		});
 
+		ctv_sync_all_prof.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				ctv_sync_all_prof.toggle();
+				boolean isChecked=ctv_sync_all_prof.isChecked();
+				if (isChecked) {
+					btn_edit.setVisibility(Button.GONE);//.setEnabled(false);
+					tv_sync_prof.setVisibility(TextView.GONE);//.setEnabled(false);
+					btn_ok.setEnabled(true);
+					tv_msg.setText("");
+				} else {
+					btn_edit.setVisibility(Button.VISIBLE);//.setEnabled(true);
+					tv_sync_prof.setVisibility(TextView.VISIBLE);//.setEnabled(true);
+					if (tv_sync_prof.getText().equals("")) {
+						btn_ok.setEnabled(false);
+						tv_msg.setText(mContext.getString(R.string.msgs_scheduler_edit_sync_prof_list_not_specified));
+					} else {
+						btn_ok.setEnabled(true);
+						tv_msg.setText("");
+					}
+				}
+			}
+		});
+
+		btn_edit.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				NotifyEvent ntfy=new NotifyEvent(mContext);
+				ntfy.setListener(new NotifyEventListener(){
+					@Override
+					public void positiveResponse(Context c, Object[] o) {
+						String prof_list=(String)o[0];
+						tv_sync_prof.setText(prof_list);
+						if (prof_list.equals("")) {
+							btn_ok.setEnabled(false);
+							tv_msg.setText(mContext.getString(R.string.msgs_scheduler_edit_sync_prof_list_not_specified));
+						} else {
+							btn_ok.setEnabled(true);
+							tv_msg.setText("");
+						}
+					}
+					@Override
+					public void negativeResponse(Context c, Object[] o) {
+					}
+				});
+				editSyncProfileList(tv_sync_prof.getText().toString(), ntfy);
+			}
+		});
+		
 		btn_ok.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
@@ -252,60 +303,17 @@ public class SchedulerEditor {
 			}
 		});
 
-		ctv_sync_all_prof.setOnClickListener(new OnClickListener(){
-			@Override
-			public void onClick(View v) {
-				ctv_sync_all_prof.toggle();
-				boolean isChecked=ctv_sync_all_prof.isChecked();
-				if (isChecked) {
-					btn_edit.setVisibility(Button.GONE);//.setEnabled(false);
-					tv_sync_prof.setVisibility(TextView.GONE);//.setEnabled(false);
-					btn_ok.setEnabled(true);
-					tv_msg.setText("");
-				} else {
-					btn_edit.setVisibility(Button.VISIBLE);//.setEnabled(true);
-					tv_sync_prof.setVisibility(TextView.VISIBLE);//.setEnabled(true);
-					if (tv_sync_prof.getText().equals("")) {
-						btn_ok.setEnabled(false);
-						tv_msg.setText(mContext.getString(R.string.msgs_scheduler_edit_sync_prof_list_not_specified));
-					} else {
-						btn_ok.setEnabled(true);
-						tv_msg.setText("");
-					}
-				}
-			}
-		});
-
-
-		btn_edit.setOnClickListener(new OnClickListener(){
-			@Override
-			public void onClick(View v) {
-				NotifyEvent ntfy=new NotifyEvent(mContext);
-				ntfy.setListener(new NotifyEventListener(){
-					@Override
-					public void positiveResponse(Context c, Object[] o) {
-						String prof_list=(String)o[0];
-						tv_sync_prof.setText(prof_list);
-						if (prof_list.equals("")) {
-							btn_ok.setEnabled(false);
-							tv_msg.setText(mContext.getString(R.string.msgs_scheduler_edit_sync_prof_list_not_specified));
-						} else {
-							btn_ok.setEnabled(true);
-							tv_msg.setText("");
-						}
-					}
-					@Override
-					public void negativeResponse(Context c, Object[] o) {
-					}
-				});
-				editSyncProfileList(tv_sync_prof.getText().toString(), ntfy);
-			}
-		});
-		
 		btn_cancel.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
 				dialog.dismiss();
+			}
+		});
+
+		dialog.setOnCancelListener(new OnCancelListener(){
+			@Override
+			public void onCancel(DialogInterface dialog) {
+				btn_cancel.performClick();
 			}
 		});
 
@@ -385,7 +393,6 @@ public class SchedulerEditor {
 				p_ntfy.notifyToListener(false, null);
 			}
 		});
-
 		dialog.show();
 	};
 
