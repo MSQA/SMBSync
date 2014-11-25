@@ -69,6 +69,7 @@ import android.os.Build;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.webkit.MimeTypeMap;
 
 import com.sentaroh.android.Utilities.DateUtil;
@@ -861,6 +862,7 @@ public class MirrorIO implements Runnable {
 					mirrorCopyRemoteToLocal(false, remoteUrl, localUrl);
 					if (!checkRetry()) break;
 				}
+				Log.v("","exec="+isExceptionOccured+", parm="+isSyncParmError);
 				if (!isExceptionOccured && !isSyncParmError) {
 					exceptionRetryCount=0;
 					while(true) {
@@ -1594,7 +1596,7 @@ public class MirrorIO implements Runnable {
 			if (hf.isDirectory()) t_dir=hf.getPath();
 				else t_dir=hf.getParent();
 			if (!isDirExcluded(t_dir.replace(remoteUrl, "")) && 
-					!isHiddenDirectory(hf, hf.isHidden()) &&
+//					!isHiddenDirectory(hf, hf.isHidden()) &&
 					isDirToBeProcessed(t_dir.replace(remoteUrl, ""))
 					){ 
 				if (hf.isDirectory()) { // Directory Delete
@@ -2144,9 +2146,7 @@ public class MirrorIO implements Runnable {
 		SmbFile hf;
 		File lf;
 
-		if (mGp.debugLevel>=2) 
-			addDebugLogMsg(2,"I","mirrorDeleteLocalFile master=", masterUrl,
-						", target=", targetUrl);
+		if (mGp.debugLevel>=2) addDebugLogMsg(2,"I","mirrorDeleteLocalFile master=", masterUrl, ", target=", targetUrl);
 		if (checkErrorStatus()!=0) return checkErrorStatus();
 
 		try {
@@ -2155,7 +2155,7 @@ public class MirrorIO implements Runnable {
 			if (lf.isDirectory()) t_dir=lf.getPath();
 				else t_dir=lf.getParent();
 			if (!isDirExcluded(t_dir.replace(localUrl, "")+"/") && 
-					!isHiddenDirectory(lf) &&
+//					!isHiddenDirectory(lf) &&
 //					isDirectoryToBeProcessed(t_dir.replace(localUrl, "")+"/")
 					isDirToBeProcessed(t_dir.replace(localUrl, ""))
 					){ 
@@ -3517,8 +3517,7 @@ public class MirrorIO implements Runnable {
 				result=true;
 			}
 		}
-		if (mGp.debugLevel>=2) 
-			addDebugLogMsg(2,"I","isDirExcluded result:"+result);
+		if (mGp.debugLevel>=2) addDebugLogMsg(2,"I","isDirExcluded result:"+result);
 		
 		return result;
 	}
