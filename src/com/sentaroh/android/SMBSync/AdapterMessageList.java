@@ -88,13 +88,15 @@ public class AdapterMessageList extends ArrayAdapter<MsgListItem> {
 	private int id;
 	private ArrayList<MsgListItem>items;
 	private boolean msgDataChanged=false;
+	private boolean themeIsLight=false;
 	
 	public AdapterMessageList(Context context, int textViewResourceId,
-			ArrayList<MsgListItem> objects) {
+			ArrayList<MsgListItem> objects, boolean themeIsLight) {
 		super(context, textViewResourceId, objects);
 		c = context;
 		id = textViewResourceId;
 		items = objects;
+		this.themeIsLight=themeIsLight;
 	}
 	
 	final public void remove(int i) {
@@ -166,8 +168,13 @@ public class AdapterMessageList extends ArrayAdapter<MsgListItem> {
 //        	else holder.tv_row_time.setVisibility(TextView.GONE);
 
         	if (o.getCat().equals("W")) {
-        		holder.tv_row_time.setTextColor(Color.YELLOW);
-        		holder.tv_row_msg.setTextColor(Color.YELLOW);
+        		if (themeIsLight) {
+            		holder.tv_row_time.setTextColor(Color.argb(255, 192, 128, 0));
+            		holder.tv_row_msg.setTextColor(Color.argb(255, 192, 128, 0));
+        		} else {
+            		holder.tv_row_time.setTextColor(Color.WHITE);
+            		holder.tv_row_msg.setTextColor(Color.WHITE);
+        		}
             	holder.tv_row_time.setText(o.getMtime());
             	holder.tv_row_msg.setText(o.getMsg());
         	} else if (o.getCat().equals("E")) {
@@ -176,8 +183,13 @@ public class AdapterMessageList extends ArrayAdapter<MsgListItem> {
         		holder.tv_row_time.setText(o.getMtime());
             	holder.tv_row_msg.setText(o.getMsg());
         	} else {
-        		holder.tv_row_time.setTextColor(Color.WHITE);
-        		holder.tv_row_msg.setTextColor(Color.WHITE);
+        		if (themeIsLight) {
+            		holder.tv_row_time.setTextColor(Color.BLACK);
+            		holder.tv_row_msg.setTextColor(Color.BLACK);
+        		} else {
+            		holder.tv_row_time.setTextColor(Color.WHITE);
+            		holder.tv_row_msg.setTextColor(Color.WHITE);
+        		}
         		holder.tv_row_time.setText(o.getMtime());
 
             	holder.tv_row_msg.setText(o.getMsg());

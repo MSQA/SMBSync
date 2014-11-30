@@ -43,14 +43,16 @@ public class AdapterSyncHistory extends ArrayAdapter<SyncHistoryListItem> {
 	private Context c;
 	private int id;
 	private ArrayList<SyncHistoryListItem> items;
+	private boolean themeIsLight=false;
 	
 	public AdapterSyncHistory(Context context, int textViewResourceId,
-			ArrayList<SyncHistoryListItem> objects) {
+			ArrayList<SyncHistoryListItem> objects, boolean themeIsLight) {
 		super(context, textViewResourceId, objects);
 		c=context;
 		id=textViewResourceId;
 		items=objects;
         vi=(LayoutInflater)c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.themeIsLight=themeIsLight;
 	}
 
 	@Override
@@ -152,13 +154,15 @@ public class AdapterSyncHistory extends ArrayAdapter<SyncHistoryListItem> {
             	String st_text="";
             	if (o.sync_status==SyncHistoryListItem.SYNC_STATUS_SUCCESS) {
             		st_text=c.getString(R.string.msgs_sync_history_status_success);
-            		holder.tv_status.setTextColor(Color.LTGRAY);
+            		if (themeIsLight) holder.tv_status.setTextColor(Color.BLACK);
+            		else holder.tv_status.setTextColor(Color.LTGRAY);
             	} else if (o.sync_status==SyncHistoryListItem.SYNC_STATUS_ERROR) {
             		st_text=c.getString(R.string.msgs_sync_history_status_fail);
             		holder.tv_status.setTextColor(Color.RED);
             	} else if (o.sync_status==SyncHistoryListItem.SYNC_STATUS_CANCELLED) {
             		st_text=c.getString(R.string.msgs_sync_history_status_cancel);
-            		holder.tv_status.setTextColor(Color.YELLOW);
+            		if (themeIsLight) holder.tv_status.setTextColor(Color.argb(255, 192, 128, 0));
+            		else holder.tv_status.setTextColor(Color.YELLOW);
             	}
             	holder.tv_status.setText(st_text);
             	holder.tv_cnt_copied.setText(Integer.toString(o.sync_result_no_of_copied));

@@ -68,6 +68,9 @@ public class GlobalParameters extends Application{
 	
 	public boolean supressAutoStart=false;
 	
+	public boolean themeIsLight=true;
+	public int applicationTheme=-1;
+	
 	public Handler activityUiHandler=null;
 	
 	public TextView mainViewScheduleInfo=null;
@@ -282,6 +285,12 @@ public class GlobalParameters extends Application{
 				prefs.getBoolean(getString(R.string.settings_exported_profile_encryption), true);
 		
 		if (!settingAutoStart) settingAutoTerm=false;
+		
+		themeIsLight=
+				prefs.getBoolean(getString(R.string.settings_theme_is_light), false);
+		if (themeIsLight) applicationTheme=R.style.Theme_AppCompat_Light_DarkActionBar;
+		else applicationTheme=R.style.Theme_AppCompat;
+		
 	};
 
 }

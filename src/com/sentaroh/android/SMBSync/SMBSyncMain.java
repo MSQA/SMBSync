@@ -173,14 +173,17 @@ public class SMBSyncMain extends ActionBarActivity {
 //		setTheme(android.R.style.Theme_Dialog);
 //		setTheme(android.R.style.Theme_Holo_Light);
 //		setTheme(android.R.style.Theme_Light);
+//		Theme tm=getTheme();
+//		setTheme(R.style.Theme_AppCompat);
 		super.onCreate(savedInstanceState);
 //		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		mGp=(GlobalParameters) getApplication();
+		setTheme(mGp.applicationTheme);
 
 		mCurrentLocale=getResources().getConfiguration().locale;
 		
 		setContentView(R.layout.main);
 		mContext=this;
-		mGp=(GlobalParameters) getApplication();
 
 //		mGp.enableMainUi=true;
 		mGp.activityUiHandler=new Handler();
@@ -222,14 +225,14 @@ public class SMBSyncMain extends ActionBarActivity {
     				.createWifiLock(WifiManager.WIFI_MODE_FULL, "SMBSync-wifi");
            	
 			ArrayList<MsgListItem> tml =new ArrayList<MsgListItem>();
-			mGp.msgListAdapter = new AdapterMessageList(this,R.layout.msg_list_item_view,tml);
+			mGp.msgListAdapter = new AdapterMessageList(this,R.layout.msg_list_item_view,tml,mGp.themeIsLight);
 
 			mGp.profileAdapter=profUtil.createProfileList(false,"");
 			
 			mGp.syncHistoryList=util.loadHistoryList();
 			util.housekeepHistoryList();
 			mGp.syncHistoryAdapter=new AdapterSyncHistory(mContext, R.layout.sync_history_list_item_view, 
-					mGp.syncHistoryList);
+					mGp.syncHistoryList,mGp.themeIsLight);
 			currentViewType="P";
         }
         mGp.initialyzeCompleted=true;
@@ -257,6 +260,11 @@ public class SMBSyncMain extends ActionBarActivity {
 		th.start();
 //		File[] fl=getExternalMediaDirs();
 //		for (int i=0;i<fl.length;i++) Log.v("","dl="+fl[i].getPath());
+		
+//		AlertDialog.Builder adb=new AlertDialog.Builder(this);
+//		adb.setMessage("test msg");
+//		adb.setTitle("test title");
+//		adb.show();
 	};
 	
 	@Override
@@ -356,7 +364,7 @@ public class SMBSyncMain extends ActionBarActivity {
 		mGp.profileAdapter.setShowCheckBox(mGp.mainViewSaveArea.prof_adapter_show_cb);
 		mGp.profileAdapter.notifyDataSetChanged();
 		
-		mGp.syncHistoryAdapter=new AdapterSyncHistory(mContext, R.layout.sync_history_list_item_view, mGp.syncHistoryList);
+		mGp.syncHistoryAdapter=new AdapterSyncHistory(mContext, R.layout.sync_history_list_item_view, mGp.syncHistoryList,mGp.themeIsLight);
 		mGp.syncHistoryAdapter.setShowCheckBox(mGp.mainViewSaveArea.sync_adapter_show_cb);
 		mGp.syncHistoryAdapter.notifyDataSetChanged();
 		tabHost.setOnTabChangedListener(null);
@@ -592,7 +600,7 @@ public class SMBSyncMain extends ActionBarActivity {
 			mGp.profileAdapter.notifyDataSetChanged();
 			
 			mGp.syncHistoryAdapter=new AdapterSyncHistory(mContext, R.layout.sync_history_list_item_view, 
-					mGp.syncHistoryList);
+					mGp.syncHistoryList,mGp.themeIsLight);
 			mGp.syncHistoryAdapter.setShowCheckBox(vsa.sync_adapter_show_cb);
 			mGp.syncHistoryAdapter.notifyDataSetChanged();
 
@@ -640,7 +648,7 @@ public class SMBSyncMain extends ActionBarActivity {
 
 		    mGp.syncHistoryListView.setAdapter(null);
 			mGp.syncHistoryAdapter=
-				new AdapterSyncHistory(mContext, R.layout.sync_history_list_item_view, mGp.syncHistoryList);
+				new AdapterSyncHistory(mContext, R.layout.sync_history_list_item_view, mGp.syncHistoryList,mGp.themeIsLight);
 			mGp.syncHistoryAdapter.setShowCheckBox(show_cb);
 			
 			mGp.syncHistoryListView.setAdapter(mGp.syncHistoryAdapter);

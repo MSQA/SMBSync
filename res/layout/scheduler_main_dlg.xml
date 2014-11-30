@@ -16,6 +16,13 @@
 
     <include layout="@layout/divider_line1_turquoise" />
 
+    <TextView
+        android:id="@+id/scheduler_main_dlg_msg"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#ffff0000" />
+
     <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="0dp"
@@ -28,14 +35,6 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:orientation="vertical" >
-
-		    <TextView
-		        android:id="@+id/scheduler_main_dlg_msg"
-		        android:layout_width="fill_parent"
-		        android:layout_height="wrap_content"
-		        android:text=""
-		        android:textColor="#ffff0000"
-		        android:textAppearance="?android:attr/textAppearanceMedium" />
             
 		    <CheckedTextView
 		        android:id="@+id/scheduler_main_dlg_ctv_enabled"
