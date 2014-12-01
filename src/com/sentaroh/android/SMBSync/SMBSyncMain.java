@@ -736,18 +736,18 @@ public class SMBSyncMain extends ActionBarActivity {
 
 		if (vsa.prog_bar_view_visibility!=LinearLayout.GONE) {
 			mGp.progressBarView.bringToFront();
-			mGp.progressBarView.setBackgroundColor(Color.BLACK);
+			mGp.progressBarView.setBackgroundColor(mGp.dialogViewBackGroundColor);
 			mGp.progressBarView.setVisibility(LinearLayout.VISIBLE);
 		} else mGp.progressBarView.setVisibility(LinearLayout.GONE);
 
 		if (vsa.prog_spin_view_visibility!=LinearLayout.GONE) {
 			mGp.progressSpinView.bringToFront();
-			mGp.progressSpinView.setBackgroundColor(Color.BLACK);
+			mGp.progressSpinView.setBackgroundColor(mGp.dialogViewBackGroundColor);
 			mGp.progressSpinView.setVisibility(LinearLayout.VISIBLE);
 		} else mGp.progressSpinView.setVisibility(LinearLayout.GONE);
 		
 		if (vsa.confirm_view_visibility!=LinearLayout.GONE) {
-			mGp.confirmView.setBackgroundColor(Color.BLACK);
+			mGp.confirmView.setBackgroundColor(mGp.dialogViewBackGroundColor);
 			mGp.confirmView.setVisibility(LinearLayout.VISIBLE);
 			mGp.confirmView.bringToFront();
 		} else {
@@ -990,6 +990,7 @@ public class SMBSyncMain extends ActionBarActivity {
 		mGp.mainViewScheduleInfo=(TextView)findViewById(R.id.schedule_info);
 		
 		mGp.confirmView=(LinearLayout)findViewById(R.id.profile_confirm);
+		mGp.confirmView.setVisibility(LinearLayout.GONE);
 		mGp.confirmTitle=(TextView)findViewById(R.id.copy_delete_confirm_title);
 		mGp.confirmMsg=(TextView)findViewById(R.id.copy_delete_confirm_msg);
 		mGp.confirmCancel=(Button)findViewById(R.id.copy_delete_confirm_task_cancel);
@@ -999,6 +1000,7 @@ public class SMBSyncMain extends ActionBarActivity {
 	    mGp.confirmNoAll=(Button)findViewById(R.id.copy_delete_confirm_noall);
 
 	    mGp.progressBarView=(LinearLayout)findViewById(R.id.profile_progress_bar);
+	    mGp.progressBarView.setVisibility(LinearLayout.GONE);
 	    mGp.progressBarMsg=(TextView)findViewById(R.id.profile_progress_bar_msg);
 	    mGp.progressBarPb = (ProgressBar)findViewById(R.id.profile_progress_bar_progress);
 
@@ -1006,7 +1008,7 @@ public class SMBSyncMain extends ActionBarActivity {
 	    mGp.progressBarImmed=(Button)findViewById(R.id.profile_progress_bar_btn_immediate);
 
 	    mGp.progressSpinView=(LinearLayout)findViewById(R.id.profile_progress_spin);
-
+	    mGp.progressSpinView.setVisibility(LinearLayout.GONE);
 	    mGp.progressSpinSyncprof=(TextView)findViewById(R.id.profile_progress_spin_syncprof);
 	    mGp.progressSpinFilePath=(TextView)findViewById(R.id.profile_progress_spin_filepath);
 	    mGp.progressSpinStatus=(TextView)findViewById(R.id.profile_progress_spin_status);
@@ -3384,7 +3386,7 @@ public class SMBSyncMain extends ActionBarActivity {
 
 	private void startMirrorTask(ArrayList<MirrorIoParmList> alp) {
 		mGp.progressSpinView.setVisibility(LinearLayout.VISIBLE);
-		mGp.progressSpinView.setBackgroundColor(Color.BLACK);
+		mGp.progressSpinView.setBackgroundColor(mGp.dialogViewBackGroundColor);
 		mGp.progressSpinView.bringToFront();
 
 		mGp.progressSpinCancel.setText(getString(R.string.msgs_progress_spin_dlg_sync_cancel));
@@ -3816,7 +3818,7 @@ public class SMBSyncMain extends ActionBarActivity {
 		});
 		
 		mGp.confirmView.setVisibility(LinearLayout.VISIBLE);
-		mGp.confirmView.setBackgroundColor(Color.BLACK);
+		mGp.confirmView.setBackgroundColor(mGp.dialogViewBackGroundColor);
 		mGp.confirmView.bringToFront();
 		mGp.confirmTitle.setText(mContext.getString(R.string.msgs_common_dialog_warning));
 		mGp.confirmTitle.setTextColor(Color.YELLOW);
@@ -3888,7 +3890,7 @@ public class SMBSyncMain extends ActionBarActivity {
 		mThreadCtlAutoStart.setEnabled();//enableAsyncTask();
 
 		mGp.progressBarView.setVisibility(LinearLayout.VISIBLE);
-		mGp.progressBarView.setBackgroundColor(Color.BLACK);
+		mGp.progressBarView.setBackgroundColor(mGp.dialogViewBackGroundColor);
 		mGp.progressBarView.bringToFront();
 
 		mGp.progressBarMsg.setText(getString(R.string.msgs_progress_bar_dlg_astart_starting));
@@ -3965,7 +3967,7 @@ public class SMBSyncMain extends ActionBarActivity {
 		threadCtl.setEnabled();//enableAsyncTask();
 
 		mGp.progressBarView.setVisibility(LinearLayout.VISIBLE);
-		mGp.progressBarView.setBackgroundColor(Color.BLACK);
+		mGp.progressBarView.setBackgroundColor(mGp.dialogViewBackGroundColor);
 		mGp.progressBarView.bringToFront();
 
 		mGp.progressBarMsg.setText("");

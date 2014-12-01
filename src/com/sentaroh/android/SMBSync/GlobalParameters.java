@@ -38,6 +38,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.net.wifi.WifiManager;
 import android.os.Handler;
 import android.os.PowerManager.WakeLock;
@@ -159,6 +160,7 @@ public class GlobalParameters extends Application{
 	public boolean settingRemoteFileCopyByRename=false;
 	public boolean settingLocalFileCopyByRename=true;
 	
+	public int dialogViewBackGroundColor=Color.BLACK;
     public LinearLayout confirmView=null;
     public TextView confirmTitle=null;
     public TextView confirmMsg=null;
@@ -290,6 +292,7 @@ public class GlobalParameters extends Application{
 				prefs.getBoolean(getString(R.string.settings_theme_is_light), false);
 		if (themeIsLight) applicationTheme=R.style.Theme_AppCompat_Light_DarkActionBar;
 		else applicationTheme=R.style.Theme_AppCompat;
+//		if (Build.VERSION.SDK_INT>=21) dialogViewBackGroundColor=0xff333333;
 		
 	};
 
