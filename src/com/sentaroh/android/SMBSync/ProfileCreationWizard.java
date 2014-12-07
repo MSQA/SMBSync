@@ -1503,7 +1503,7 @@ public class ProfileCreationWizard {
 			public void onClick(View v) {
 				ArrayList<ProfileListItem>pl=new ArrayList<ProfileListItem>();
 				AdapterProfileList t_prof=new AdapterProfileList(mContext, 
-							R.layout.profile_list_item_view, pl);
+							R.layout.profile_list_item_view, pl, mGp.themeIsLight);
 				syncWizardCreateProfile(t_prof);
 				NotifyEvent ntfy=new NotifyEvent(mContext);
 				//Listen setRemoteShare response 
@@ -1582,7 +1582,7 @@ public class ProfileCreationWizard {
 						if (profileAdapter.getItem(0).getType().equals("")) profileAdapter.remove(0);
 						
 						profileAdapter.notifyDataSetChanged();
-						profUtil.saveProfileToFile(false,"","",profileAdapter,false);
+						ProfileUtility.saveProfileToFile(mGp, mContext, util, false,"","",profileAdapter,false);
 						
 						mCommonDlg.showCommonDialog(false, "I", 
 								mContext.getString(R.string.msgs_sync_wizard_confirm_profile_created), "", null);
@@ -1769,7 +1769,9 @@ public class ProfileCreationWizard {
 						prof_name,
 						SMBSYNC_PROF_ACTIVE,
 						mWizData.prof_node[i].local_mount_point_name, 
-						mWizData.prof_node[i].local_dir_name, false);
+						mWizData.prof_node[i].local_dir_name, 
+						"",0,0,
+						false);
 				t_prof.add(l_pli);
 			} else {
 				ProfileListItem r_pli=new ProfileListItem(SMBSYNC_PROF_GROUP_DEFAULT, 
@@ -1782,7 +1784,9 @@ public class ProfileCreationWizard {
 						mWizData.prof_node[i].remote_host_name,
 						mWizData.prof_node[i].remote_port,
 						mWizData.prof_node[i].remote_share_name,
-						mWizData.prof_node[i].remote_dir_name,false);
+						mWizData.prof_node[i].remote_dir_name,
+						"",0,0,
+						false);
 				t_prof.add(r_pli);
 			}
 		}
@@ -1811,6 +1815,7 @@ public class ProfileCreationWizard {
 				mWizData.sync_hidden_directory,
 				mWizData.sync_hidden_file,
 				mWizData.sync_sub_dir,
+				"",0,0,"",0,
 				false);
 		t_prof.add(s_pli);
 	};

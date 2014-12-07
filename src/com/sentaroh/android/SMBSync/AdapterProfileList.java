@@ -41,6 +41,9 @@ import com.sentaroh.android.Utilities.NotifyEvent;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,13 +60,28 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
 		private Context c;
 		private int id;
 		private ArrayList<ProfileListItem>items;
+		@SuppressWarnings("unused")
+		private String tv_active_active,tv_active_inact, tv_no_sync, tv_status_running;
+		private String tv_status_success, tv_status_error, tv_status_cancel;
+		private boolean themeIsLight=false;
 		
 		public AdapterProfileList(Context context, int textViewResourceId,
-				ArrayList<ProfileListItem> objects) {
+				ArrayList<ProfileListItem> objects, boolean themeIsLight) {
 			super(context, textViewResourceId, objects);
 			c = context;
 			id = textViewResourceId;
 			items = objects;
+			
+            tv_active_active=c.getString(R.string.msgs_sync_list_array_activ_activ);
+            tv_active_inact=c.getString(R.string.msgs_sync_list_array_activ_inact);
+            tv_no_sync=c.getString(R.string.msgs_sync_list_array_no_last_sync_time);
+            tv_status_running=c.getString(R.string.msgs_sync_history_status_running);
+            tv_status_success=c.getString(R.string.msgs_sync_history_status_success);
+            tv_status_error=c.getString(R.string.msgs_sync_history_status_error);
+            tv_status_cancel=c.getString(R.string.msgs_sync_history_status_cancel);
+            
+            this.themeIsLight=themeIsLight;
+
 		}
 		public ProfileListItem getItem(int i) {
 			return items.get(i);
@@ -142,8 +160,10 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
 //			 return getItem(idx).getActive().equals("A");
 //		}
 
+		private ColorStateList cs_list=null;
+		private Drawable ll_default=null;
 		
-		
+		@SuppressWarnings("deprecation")
 		@Override
 	    final public View getView(int position, View convertView, ViewGroup parent) {
 			ViewHolder holder;
@@ -157,10 +177,6 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
                 holder.tv_row_name= (TextView) v.findViewById(R.id.profile_list_name);
                 holder.tv_row_active= (TextView) v.findViewById(R.id.profile_list_active);
                 holder.cbv_row_cb1=(CheckBox) v.findViewById(R.id.profile_list_checkbox1);
-                holder.tv_active_active=
-                		c.getString(R.string.msgs_sync_list_array_activ_activ);
-                holder.tv_active_inact=
-                		c.getString(R.string.msgs_sync_list_array_activ_inact);
                 
                 holder.tv_row_master= (TextView) v.findViewById(R.id.profile_list_master_name);
                 holder.tv_row_target= (TextView) v.findViewById(R.id.profile_list_target_name);
@@ -174,8 +190,16 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
                 
                 holder.ll_sync=(LinearLayout) v.findViewById(R.id.profile_list_sync_layout);
                 holder.ll_entry=(LinearLayout) v.findViewById(R.id.profile_list_entry_layout);
+                holder.ll_view=(LinearLayout) v.findViewById(R.id.profile_list_view);
+                if (ll_default!=null) ll_default=holder.ll_view.getBackground();
+                
+                holder.tv_last_sync_time=(TextView) v.findViewById(R.id.profile_list_last_sync_time);
+                holder.tv_last_sync_result=(TextView) v.findViewById(R.id.profile_list_last_sync_result);
+                holder.ll_last_sync=(LinearLayout) v.findViewById(R.id.profile_list_last_sync_time_view);
                 
                 holder.tv_dir_name=(TextView) v.findViewById(R.id.profile_list_dir_name);
+                
+                if (cs_list==null) cs_list=holder.tv_dir_name.getTextColors();
                 
                 v.setTag(holder);
             } else {
@@ -191,22 +215,23 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
             		holder.iv_row_icon.setImageResource(R.drawable.ic_32_mobile);
             		
             	String act="";
-            	if (o.isActive()) act=holder.tv_active_active;
-            	else act=holder.tv_active_inact;
+            	if (o.isActive()) act=tv_active_active;
+            	else act=tv_active_inact;
             	holder.tv_row_active.setText(act);
             	holder.tv_row_name.setText(o.getName());
                 
-//                if (!getItem(position).getActive().equals("A")) {
-//              	   holder.tv_row_name.setEnabled(false);
-//              	   holder.tv_row_active.setEnabled(false);
-//                } else {
-//               	   holder.tv_row_name.setEnabled(true);
-//               	   holder.tv_row_active.setEnabled(true);
-//                }
+                if (!getItem(position).getActive().equals("A")) {
+              	   holder.tv_row_name.setEnabled(false);
+              	   holder.tv_row_active.setEnabled(false);
+                } else {
+               	   holder.tv_row_name.setEnabled(true);
+               	   holder.tv_row_active.setEnabled(true);
+                }
                
                 if (o.getType().equals("S")) {//Sync profile
                 	holder.tv_dir_name.setVisibility(LinearLayout.GONE);
                 	holder.ll_sync.setVisibility(LinearLayout.VISIBLE);
+                	holder.ll_last_sync.setVisibility(LinearLayout.VISIBLE);
                 	holder.iv_row_icon.setVisibility(LinearLayout.VISIBLE);
                     holder.tv_row_active.setVisibility(LinearLayout.VISIBLE);
                     holder.cbv_row_cb1.setVisibility(LinearLayout.VISIBLE);
@@ -260,20 +285,59 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
                     }
                     holder.tv_row_synctype.setText(synctp);
                     
+                    if (!o.getLastSyncTime().equals("")) {
+                    	String result="";
+                    	holder.tv_last_sync_result.setTextColor(cs_list);
+                    	holder.ll_view.setBackgroundDrawable(ll_default);
+	        			if (o.isSyncRunning()) {
+	        				result=tv_status_running;
+                    		if (themeIsLight) holder.ll_view.setBackgroundColor(Color.GRAY);
+                    		else holder.ll_view.setBackgroundColor(Color.DKGRAY);
+	        			} else {
+	            			if (o.getLastSyncResult()==SyncHistoryListItem.SYNC_STATUS_SUCCESS) {
+	            				result=tv_status_success;
+	            				if (getItem(position).isActive()) {
+	                        		if (themeIsLight) holder.tv_last_sync_result.setTextColor(Color.BLACK);
+	                        		else holder.tv_last_sync_result.setTextColor(Color.LTGRAY);
+	            				}
+	            			} else if (o.getLastSyncResult()==SyncHistoryListItem.SYNC_STATUS_CANCEL) {
+	            				result=tv_status_cancel;
+	                        	if (getItem(position).isActive()) {
+	                        		if (themeIsLight) holder.tv_last_sync_result.setTextColor(Color.argb(255, 192, 128, 0));
+	                        		else holder.tv_last_sync_result.setTextColor(Color.YELLOW);
+	                        	}
+	            			} else if (o.getLastSyncResult()==SyncHistoryListItem.SYNC_STATUS_ERROR) {
+	            				result=tv_status_error;
+	                        	if (getItem(position).isActive()) {
+	                				holder.tv_last_sync_result.setTextColor(Color.RED);
+	                        	}
+	            			}
+	        			}
+                        holder.tv_last_sync_time.setText(o.getLastSyncTime());
+                        holder.tv_last_sync_result.setText(result);
+
+                    } else {
+                    	holder.ll_last_sync.setVisibility(LinearLayout.GONE);
+//                    	holder.tv_last_sync_time.setText(tv_no_sync);
+                    }
+                    
                     if (!getItem(position).isActive()) {
                     	holder.tv_row_master.setEnabled(false);
                     	holder.tv_row_target.setEnabled(false);
                     	holder.iv_row_sync_dir_image.setImageResource(R.drawable.arrow_right_disabled); 
                     	holder.tv_row_synctype.setEnabled(false);
+                    	for(int i=0;i<holder.ll_last_sync.getChildCount();i++) holder.ll_last_sync.getChildAt(i).setEnabled(false);
                     } else {
                     	holder.tv_row_master.setEnabled(true);
                     	holder.tv_row_target.setEnabled(true);
                     	holder.iv_row_sync_dir_image.setImageResource(R.drawable.arrow_right_enabled); 
                     	holder.tv_row_synctype.setEnabled(true);
+                    	for(int i=0;i<holder.ll_last_sync.getChildCount();i++) holder.ll_last_sync.getChildAt(i).setEnabled(true);
                     }
                 } else if (o.getType().equals("R") || o.getType().equals("L")) {//Remote or Local profile
                 	holder.tv_dir_name.setVisibility(LinearLayout.VISIBLE);
                 	holder.ll_sync.setVisibility(LinearLayout.GONE);
+                	holder.ll_last_sync.setVisibility(LinearLayout.GONE);
                 	holder.iv_row_icon.setVisibility(LinearLayout.VISIBLE);
                     holder.tv_row_active.setVisibility(LinearLayout.VISIBLE);
                     holder.cbv_row_cb1.setVisibility(LinearLayout.VISIBLE);
@@ -323,7 +387,6 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
 			TextView tv_row_name,tv_row_active;
 			ImageView iv_row_icon;
 			CheckBox cbv_row_cb1;
-			String tv_active_active,tv_active_inact;
 			
 			TextView tv_row_synctype, tv_row_master, tv_row_target;
 			ImageView iv_row_sync_dir_image;
@@ -332,7 +395,8 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
 			
 			TextView tv_dir_name, tv_dir_const;
 			
-			LinearLayout ll_sync, ll_entry;
+			TextView tv_last_sync_time, tv_last_sync_result;
+			LinearLayout ll_sync, ll_entry, ll_last_sync, ll_view;
 		}
 }
 
@@ -369,10 +433,27 @@ class ProfileListItem implements Serializable,Comparable<ProfileListItem>{
 	private boolean profileSyncHiddenDir=true;
 	private boolean profileSyncSubDir=true;
 	
+	private String profileLastSyncTime="";
+	private int profileLastSyncResult=0;
+	static public final int SYNC_STATUS_SUCCESS=SyncHistoryListItem.SYNC_STATUS_SUCCESS;
+	static public final int SYNC_STATUS_CANCEL=SyncHistoryListItem.SYNC_STATUS_CANCEL;
+	static public final int SYNC_STATUS_ERROR=SyncHistoryListItem.SYNC_STATUS_ERROR;
+	
+	private String profileLocalZipFileName="";
+	private int profileLocalZipEncMethod=0, profileLocalZipAesStrength=256;
+	private String profileRemoteZipFileName="";
+	private int profileRemoteZipEncMethod=0, profileRemoteZipAesStrength=256;
+	private String profileSyncZipFileName="";
+	private int profileSyncZipEncMethod=0, profileSyncZipAesStrength=256;
+
+	//Not save variables
+	private boolean profileSyncRunning=false;
 	
 	// constructor for local profile
 	public ProfileListItem(String pfg, String pft,String pfn, 
-			String pfa, String pf_mp, String pf_dir, boolean ic)
+			String pfa, String pf_mp, String pf_dir, 
+			String zip_file_name, int zip_enc_method, int zip_enc_key_length,
+			boolean ic)
 	{
 		profileGroup=pfg;
 		profileType = pft;
@@ -380,12 +461,17 @@ class ProfileListItem implements Serializable,Comparable<ProfileListItem>{
 		profileActive=pfa;
 		profileLocalMountPoint=pf_mp;
 		profileDir=pf_dir;
+		profileLocalZipFileName=zip_file_name;
+		profileLocalZipEncMethod=zip_enc_method;
+		profileLocalZipAesStrength=zip_enc_key_length;
 		profileChk = ic;
 	};
 	// constructor for remote profile
 	public ProfileListItem(String pfg, String pft,String pfn, String pfa, 
 			String pf_user,String pf_pass,String pf_addr, String pf_hostname, 
-			String pf_port, String pf_share, String pf_dir, boolean ic)
+			String pf_port, String pf_share, String pf_dir,
+			String zip_file_name, int zip_enc_method, int zip_enc_key_length,
+			boolean ic)
 	{
 		profileGroup=pfg;
 		profileType = pft;
@@ -398,6 +484,10 @@ class ProfileListItem implements Serializable,Comparable<ProfileListItem>{
 		profileAddr=pf_addr;
 		profilePort=pf_port;
 		profileHostname=pf_hostname;
+		profileRemoteZipFileName=zip_file_name;
+		profileRemoteZipEncMethod=zip_enc_method;
+		profileRemoteZipAesStrength=zip_enc_key_length;
+
 		profileChk = ic;
 	};
 	// constructor for sync profile
@@ -406,7 +496,10 @@ class ProfileListItem implements Serializable,Comparable<ProfileListItem>{
 			String pf_target_type,String pf_target_name,
 			ArrayList<String> ff, ArrayList<String> df, boolean master_dir_file_process, boolean confirm, 
 			boolean jlm, boolean nulm_remote, String retry_count, boolean sync_empty_dir, 
-			boolean sync_hidden_dir, boolean sync_hidden_file, boolean sync_sub_dir, boolean ic)
+			boolean sync_hidden_dir, boolean sync_hidden_file, boolean sync_sub_dir,
+			String zip_file_name, int zip_enc_method, int zip_enc_key_length,
+			String last_sync_time, int last_sync_result,
+			boolean ic)
 	{
 		profileGroup=pfg;
 		profileType = pft;
@@ -429,6 +522,12 @@ class ProfileListItem implements Serializable,Comparable<ProfileListItem>{
 		profileSyncHiddenFile=sync_hidden_file;
 		profileSyncHiddenDir=sync_hidden_dir;
 		profileSyncSubDir=sync_sub_dir;
+		profileSyncZipFileName=zip_file_name;
+		profileSyncZipEncMethod=zip_enc_method;
+		profileSyncZipAesStrength=zip_enc_key_length;
+
+		profileLastSyncTime=last_sync_time;
+		profileLastSyncResult=last_sync_result;
 	};
 
 	public ProfileListItem() {}
@@ -498,6 +597,35 @@ class ProfileListItem implements Serializable,Comparable<ProfileListItem>{
 	
 	public boolean isSyncSubDirectory() {return profileSyncSubDir;}
 	public void setSyncSubDirectory(boolean p) {profileSyncSubDir=p;}
+	
+	public void setLastSyncTime(String p) {profileLastSyncTime=p;} 
+	public void setLastSyncResult(int p) {profileLastSyncResult=p;}
+	public String getLastSyncTime() {return profileLastSyncTime;} 
+	public int getLastSyncResult() {return profileLastSyncResult;}
+
+	public void setLocalZipFileName(String p) {profileLocalZipFileName=p;}
+	public void setLocalZipEncMethod(int p) {profileLocalZipEncMethod=p;}
+	public void setLocalZipAesKeyLength(int p) {profileLocalZipAesStrength=p;}
+	public String getLocalZipFileName() {return profileLocalZipFileName;}
+	public int getLocalZipEncMethod() {return profileLocalZipEncMethod;}
+	public int getLocalZipAesKeyLength() {return profileLocalZipAesStrength;}
+
+	public void setRemoteZipFileName(String p) {profileRemoteZipFileName=p;}
+	public void setRemoteZipEncMethod(int p) {profileRemoteZipEncMethod=p;}
+	public void setRemoteZipAesKeyLength(int p) {profileRemoteZipAesStrength=p;}
+	public String getRemoteZipFileName() {return profileRemoteZipFileName;}
+	public int getRemoteZipEncMethod() {return profileRemoteZipEncMethod;}
+	public int getRemoteZipAesKeyLength() {return profileRemoteZipAesStrength;}
+
+	public void setSyncZipFileName(String p) {profileSyncZipFileName=p;}
+	public void setSyncZipEncMethod(int p) {profileSyncZipEncMethod=p;}
+	public void setSyncZipAesKeyLength(int p) {profileSyncZipAesStrength=p;}
+	public String getSyncZipFileName() {return profileSyncZipFileName;}
+	public int getSyncZipEncMethod() {return profileSyncZipEncMethod;}
+	public int getSyncZipAesKeyLength() {return profileSyncZipAesStrength;}
+
+	public void setSyncRunning(boolean p) {profileSyncRunning=p;}
+	public boolean isSyncRunning() {return profileSyncRunning;}
 	
 	@SuppressLint("DefaultLocale")
 	@Override

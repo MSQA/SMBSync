@@ -31,9 +31,13 @@
     <string name="msgs_sync_list_array_activ_activ">ACTIV</string>
     <string name="msgs_sync_list_array_activ_inact">INACT</string>
     
-    <string name="msgs_sync_history_status_fail">Fail</string>
+    <string name="msgs_sync_list_array_last_sync_time">Last sync : </string>
+    <string name="msgs_sync_list_array_no_last_sync_time">Sync has not been performed.</string>
+    
+    <string name="msgs_sync_history_status_error">Fail</string>
     <string name="msgs_sync_history_status_cancel">Cancel</string>
     <string name="msgs_sync_history_status_success">Successful</string>
+    <string name="msgs_sync_history_status_running">Running</string>
 	<string name="msgs_sync_history_count_files">Files</string>    
     <string name="msgs_sync_history_count_copied">Copied:</string>
     <string name="msgs_sync_history_count_deleted">Deleted:</string>

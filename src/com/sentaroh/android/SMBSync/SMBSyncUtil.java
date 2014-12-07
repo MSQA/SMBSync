@@ -727,6 +727,7 @@ public class SMBSyncUtil {
 	};
 	
 	public void housekeepHistoryList() {
+//		final Handler hndl=new Handler();
 		Thread th=new Thread() {
 			@Override
 			public void run() {
@@ -738,8 +739,8 @@ public class SMBSyncUtil {
 						for(int i=0;i<fl.length;i++) {
 							String fp=fl[i].getPath();
 							boolean found=false;
-							for (int j=0;j<mGp.syncHistoryList.size();j++) {
-								if (mGp.syncHistoryList.get(j).sync_result_file_path.equals(fp)) {
+							for (int j=0;j<mGp.syncHistoryAdapter.getCount();j++) {
+								if (mGp.syncHistoryAdapter.getItem(j).sync_result_file_path.equals(fp)) {
 									found=true;
 									break;
 								}
@@ -856,11 +857,11 @@ public class SMBSyncUtil {
 //		return result;
 //	};
 	
-	public void addHistoryList(ArrayList<SyncHistoryListItem> hl, SyncHistoryListItem item) {
-		if (hl.size()==1) {
-			if (hl.get(0).sync_prof.equals("")) hl.remove(0);
+	public void addHistoryList(AdapterSyncHistory ha, SyncHistoryListItem item) {
+		if (ha.getCount()==1) {
+			if (ha.getItem(0).sync_prof.equals("")) ha.remove(0);
 		}
-		hl.add(0,item);
+		ha.insert(item,0);
 	};
 //	public void removeHistoryList(ArrayList<SyncHistoryListItem> hl, int pos) {
 //		String result_fp=hl.get(pos).sync_result_file_path;

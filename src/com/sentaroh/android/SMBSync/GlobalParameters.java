@@ -65,6 +65,8 @@ public class GlobalParameters extends Application{
 	
 	public boolean enableMainUi=true;
 	
+	public Handler uiHandler=null;
+	
 	public boolean mirrorThreadActive=false;
 	
 	public boolean supressAutoStart=false;
@@ -106,8 +108,8 @@ public class GlobalParameters extends Application{
 	
 	public ListView syncHistoryListView=null;
 	public AdapterSyncHistory syncHistoryAdapter=null;
-	public ArrayList<SyncHistoryListItem> syncHistoryList=null;
-	public ArrayList<SyncHistoryListItem> addedSyncHistoryList=null;
+//	public ArrayList<SyncHistoryListItem> syncHistoryList=null;
+//	public ArrayList<SyncHistoryListItem> addedSyncHistoryList=null;
 	
 	//Message view
 	public boolean freezeMessageViewScroll=false;

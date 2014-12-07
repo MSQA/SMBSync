@@ -182,6 +182,8 @@ public class MirrorIO implements Runnable {
 	private PrintWriter mSyncHistoryPrintWriter=null;
 	private String mSyncHistroryResultFilepath=null;
 	
+//	private ArrayList<SyncHistoryListItem> mAddedSyncHistoryList=null;
+	
 	public MirrorIO(GlobalParameters gwa, NotifyEvent ne, ThreadCtrl ac, ThreadCtrl tw,
 			ISvcCallback cb) {
 		mGp=gwa;
@@ -249,7 +251,7 @@ public class MirrorIO implements Runnable {
 		newFileLastModifiedList=new ArrayList<FileLastModifiedEntryItem>();
 		
 //		syncHistoryList=mUtil.loadHistoryList();
-		mGp.addedSyncHistoryList=new ArrayList<SyncHistoryListItem>();
+//		mAddedSyncHistoryList=new ArrayList<SyncHistoryListItem>();
 		
 		mUtil.initAppSpecificExternalDirectory(mGp.svcContext);
 	};
@@ -380,6 +382,7 @@ public class MirrorIO implements Runnable {
 					loadLocalFileLastModifiedList(syncList.get(i).getLocalMountPoint());
 					setJcifsAuthParm();
 					//sync 開始
+					setSyncExecuting();
 					if (isMountPointAvailable(localUrl)) {
 						if (syncType.equals(SMBSYNC_SYNC_TYPE_MIRROR)) { // mirror
 							doSyncMirror(syncList.get(i));
@@ -425,14 +428,16 @@ public class MirrorIO implements Runnable {
 						addLogMsg("I","",msgs_mirror_prof_success_end);
 						addHistoryList(SyncHistoryListItem.SYNC_STATUS_SUCCESS,
 								copyCount,deleteCount,ignoreCount, retryCount, "");
-						mUtil.saveHistoryList(mGp.syncHistoryList);
+						mUtil.saveHistoryList(mGp.syncHistoryAdapter.getSyncHistoryList());
 						closeSyncResultLog();
+						ProfileUtility.saveProfileToFile(mGp, mGp.svcContext, mUtil, false, "", "", mGp.profileAdapter, false);
 					} else { 
 						addLogMsg("E","",msgs_mirror_prof_was_failed);
 						addHistoryList(SyncHistoryListItem.SYNC_STATUS_ERROR,
 								copyCount,deleteCount,ignoreCount,  retryCount,
 								tcMirror.getThreadMessage());
-						mUtil.saveHistoryList(mGp.syncHistoryList);
+						mUtil.saveHistoryList(mGp.syncHistoryAdapter.getSyncHistoryList());
+						ProfileUtility.saveProfileToFile(mGp, mGp.svcContext, mUtil, false, "", "", mGp.profileAdapter, false);
 						closeSyncResultLog();
 						tcMirror.setExtraDataInt(1);//Indicate error occured
 						if (!mGp.settingErrorOption) {
@@ -443,9 +448,10 @@ public class MirrorIO implements Runnable {
 					}
 				} else {
 					addLogMsg("W","",msgs_mirror_prof_was_cancelled);
-					addHistoryList(SyncHistoryListItem.SYNC_STATUS_CANCELLED,
+					addHistoryList(SyncHistoryListItem.SYNC_STATUS_CANCEL,
 							copyCount,deleteCount, ignoreCount, retryCount, "");
-					mUtil.saveHistoryList(mGp.syncHistoryList);
+					mUtil.saveHistoryList(mGp.syncHistoryAdapter.getSyncHistoryList());
+					ProfileUtility.saveProfileToFile(mGp, mGp.svcContext, mUtil, false, "", "", mGp.profileAdapter, false);
 					closeSyncResultLog();
 					isSyncParmError=true;
 					break;
@@ -527,7 +533,7 @@ public class MirrorIO implements Runnable {
 		String date_time=DateUtil.convDateTimeTo_YearMonthDayHourMinSec(System.currentTimeMillis());
 		String date=date_time.substring(0,10);
 		String time=date_time.substring(11);
-		SyncHistoryListItem hli=new SyncHistoryListItem();
+		final SyncHistoryListItem hli=new SyncHistoryListItem();
 		hli.sync_date=date;
 		hli.sync_time=time;
 		hli.sync_prof=syncProfName;
@@ -541,10 +547,40 @@ public class MirrorIO implements Runnable {
 //		hli.sync_log_file_path=mGp.currentLogFilePath;
 		hli.sync_result_file_path=mSyncHistroryResultFilepath;
 		
-		mUtil.addHistoryList(mGp.syncHistoryList, hli);
-		mGp.addedSyncHistoryList.add(hli);
+		ProfileListItem pfli=ProfileUtility.getProfile(syncProfName, mGp.profileAdapter);
+		if (pfli!=null) {
+			pfli.setLastSyncTime(date+" "+time);
+			pfli.setSyncRunning(false);
+		}
+		mGp.uiHandler.post(new Runnable(){
+			@Override
+			public void run() {
+				mGp.profileAdapter.notifyDataSetChanged();
+				mUtil.addHistoryList(mGp.syncHistoryAdapter, hli);
+				mGp.syncHistoryAdapter.notifyDataSetChanged();
+			}
+		});
+//		mAddedSyncHistoryList.add(hli);
 	};
 	
+	private void setSyncExecuting() {
+		String date_time=DateUtil.convDateTimeTo_YearMonthDayHourMinSec(System.currentTimeMillis());
+		String date=date_time.substring(0,10);
+		String time=date_time.substring(11);
+		
+		ProfileListItem pfli=ProfileUtility.getProfile(syncProfName, mGp.profileAdapter);
+		if (pfli!=null) {
+			pfli.setLastSyncTime(date+" "+time);
+			pfli.setSyncRunning(true);
+		}
+		mGp.uiHandler.post(new Runnable(){
+			@Override
+			public void run() {
+				mGp.profileAdapter.notifyDataSetChanged();
+			}
+		});
+	};
+
 	final private void initSyncParm(MirrorIoParmList mipl) {
 		syncMasterProfType = mipl.getMasterType();
 		String syncTargetProfType = mipl.getTargetType();

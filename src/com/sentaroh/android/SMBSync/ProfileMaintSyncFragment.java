@@ -590,7 +590,7 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 		// OKボタンの指定
 		btn_ok.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				if (saveSyncProfile(mDialog, pfli.getFileFilter(), pfli.getDirFilter(),0)) {
+				if (saveSyncProfile(mDialog, pfli.getFileFilter(), pfli.getDirFilter(), pfli, 0)) {
 					mFragment.dismiss();
 					ProfileUtility.setAllProfileToUnchecked(true, mGp.profileAdapter);
 					if (mNotifyComplete!=null) mNotifyComplete.notifyToListener(true, null);
@@ -602,6 +602,7 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 	private boolean saveSyncProfile(Dialog dialog,
 			final ArrayList<String> prof_file_filter, 
 			final ArrayList<String> prof_dir_filter,
+			final ProfileListItem prev_pfli,
 			int prof_pos) {
 		
 //		final TextView dlg_title=(TextView) dialog.findViewById(R.id.sync_profile_dlg_title);
@@ -677,10 +678,12 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 					ctvNotUseLastModRem.isChecked(),retry_count,
 					ctvSyncEmptyDir.isChecked(),
 					ctvSyncHiddenDir.isChecked(),ctvSyncHiddenFile.isChecked(),ctvSyncSubDir.isChecked(),
+					prev_pfli.getSyncZipFileName(), prev_pfli.getSyncZipEncMethod(), prev_pfli.getSyncZipAesKeyLength(),
+					prev_pfli.getLastSyncTime(), prev_pfli.getLastSyncResult(),
 					false,prof_pos);
 			mGp.profileAdapter.sort();
 			mGp.profileAdapter.notifyDataSetChanged();
-			mProfUtil.saveProfileToFile(false,"","",mGp.profileAdapter,false);
+			ProfileUtility.saveProfileToFile(mGp, mContext, mUtil, false,"","",mGp.profileAdapter,false);
 		}
 		return profile_saved;
 	};
@@ -996,7 +999,7 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 		btn_ok.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				int prof_num=ProfileUtility.getProfilePos(pfli.getName(), mGp.profileAdapter);
-				if (saveSyncProfile(mDialog, n_file_filter, n_dir_filter,prof_num)) {
+				if (saveSyncProfile(mDialog, n_file_filter, n_dir_filter, pfli, prof_num)) {
 					mFragment.dismiss();
 					if (mNotifyComplete!=null) mNotifyComplete.notifyToListener(true, null);
 				}

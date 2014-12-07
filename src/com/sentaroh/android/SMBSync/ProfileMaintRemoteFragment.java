@@ -513,11 +513,13 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 						mGp.profileAdapter.remove(0);
 					ProfileUtility.updateRemoteProfileAdapter(mGp, true, prof_name, prof_act,prof_dir,
 							prof_user,prof_pass,prof_share,prof_addr,prof_host,
-							remote_port, false,0);
+							remote_port, 
+							"",0,0,
+							false,0);
 					mGp.profileAdapter.sort();
 					ProfileUtility.setAllProfileToUnchecked(true, mGp.profileAdapter);
 //					mGp.profileAdapter.notifyDataSetChanged();
-					mProfUtil.saveProfileToFile(false,"","",mGp.profileAdapter,false);
+					ProfileUtility.saveProfileToFile(mGp, mContext, mUtil, false,"","",mGp.profileAdapter,false);
 					if (mNotifyComplete!=null) mNotifyComplete.notifyToListener(true, null);
 				} else {
 					((TextView) mDialog.findViewById(R.id.remote_profile_dlg_msg))
@@ -1101,9 +1103,10 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 						ProfileUtility.updateRemoteProfileAdapter(mGp, false,prof_name,prof_act,prof_dir,
 								remote_user, remote_pass,remote_share,
 								remote_addr,remote_host,remote_port,
+								"",0,0,
 								false,mProfileItemPos);
 						ProfileUtility.resolveSyncProfileRelation(mGp);
-						mProfUtil.saveProfileToFile(false,"","",mGp.profileAdapter,false);
+						ProfileUtility.saveProfileToFile(mGp, mContext, mUtil, false,"","",mGp.profileAdapter,false);
 						mGp.profileAdapter.notifyDataSetChanged();
 //						AdapterProfileList tfl= createProfileList(false,"");
 //						replaceglblParms.profileAdapterContent(tfl);

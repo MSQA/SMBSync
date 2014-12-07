@@ -31,9 +31,13 @@
     <string name="msgs_sync_list_array_activ_activ">有効</string>
     <string name="msgs_sync_list_array_activ_inact">無効</string>
     
-    <string name="msgs_sync_history_status_fail">失敗</string>
+	<string name="msgs_sync_list_array_last_sync_time">最終同期 : </string>
+	<string name="msgs_sync_list_array_no_last_sync_time">同期は実行されていません</string>
+    
+    <string name="msgs_sync_history_status_error">失敗</string>
     <string name="msgs_sync_history_status_cancel">中止</string>
     <string name="msgs_sync_history_status_success">正常終了</string>
+    <string name="msgs_sync_history_status_running">同期中</string>
     <string name="msgs_sync_history_count_files">ファイル数</string>
     <string name="msgs_sync_history_count_copied">コピー:</string>
     <string name="msgs_sync_history_count_deleted">削除:</string>

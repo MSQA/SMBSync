@@ -268,7 +268,6 @@ public class ProfileMaintLocalFragment extends DialogFragment{
 	private String mOpType="";
 	private ProfileListItem mCurrentProfileListItem;
 	private int mProfileItemPos=-1;
-	@SuppressWarnings("unused")
 	private SMBSyncUtil mUtil=null;
 	private NotifyEvent mNotifyComplete=null;
     public void showDialog(FragmentManager fm, Fragment frag,
@@ -471,9 +470,11 @@ public class ProfileMaintLocalFragment extends DialogFragment{
 						if (mGp.profileAdapter.getItem(0).getType().equals(""))
 							mGp.profileAdapter.remove(0);
 						ProfileUtility.updateLocalProfileAdapter(mGp, true,prof_name,prof_act,
-								prof_lmp, prof_dir,false,0);
+								prof_lmp, prof_dir,
+								"",0,0,
+								false,0);
 						mGp.profileAdapter.sort();
-						mProfUtil.saveProfileToFile(false,"","",mGp.profileAdapter,false);
+						ProfileUtility.saveProfileToFile(mGp, mContext, mUtil, false,"","",mGp.profileAdapter,false);
 //						AdapterProfileList tfl= createProfileList(false,"");
 //						replaceglblParms.profileAdapterContent(tfl);
 //						glblParms.profileListView.setSelectionFromTop(pos,posTop);
@@ -655,9 +656,11 @@ public class ProfileMaintLocalFragment extends DialogFragment{
 							public void positiveResponse(Context c,Object[] o) {
 								mDialog.dismiss();
 								ProfileUtility.updateLocalProfileAdapter(mGp, false,t_prof_name,t_prof_act,
-										t_prof_lmp, t_prof_dir,false, mProfileItemPos);
+										t_prof_lmp, t_prof_dir,
+										"",0,0,
+										false, mProfileItemPos);
 								ProfileUtility.resolveSyncProfileRelation(mGp);
-								mProfUtil.saveProfileToFile(false,"","",mGp.profileAdapter,false);
+								ProfileUtility.saveProfileToFile(mGp, mContext, mUtil, false,"","",mGp.profileAdapter,false);
 								mGp.profileAdapter.notifyDataSetChanged();
 								if (mNotifyComplete!=null) mNotifyComplete.notifyToListener(true, null);
 //								AdapterProfileList tfl= createProfileList(false,"");

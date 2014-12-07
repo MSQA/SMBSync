@@ -157,9 +157,9 @@ public class AdapterSyncHistory extends ArrayAdapter<SyncHistoryListItem> {
             		if (themeIsLight) holder.tv_status.setTextColor(Color.BLACK);
             		else holder.tv_status.setTextColor(Color.LTGRAY);
             	} else if (o.sync_status==SyncHistoryListItem.SYNC_STATUS_ERROR) {
-            		st_text=c.getString(R.string.msgs_sync_history_status_fail);
+            		st_text=c.getString(R.string.msgs_sync_history_status_error);
             		holder.tv_status.setTextColor(Color.RED);
-            	} else if (o.sync_status==SyncHistoryListItem.SYNC_STATUS_CANCELLED) {
+            	} else if (o.sync_status==SyncHistoryListItem.SYNC_STATUS_CANCEL) {
             		st_text=c.getString(R.string.msgs_sync_history_status_cancel);
             		if (themeIsLight) holder.tv_status.setTextColor(Color.argb(255, 192, 128, 0));
             		else holder.tv_status.setTextColor(Color.YELLOW);
@@ -222,8 +222,9 @@ class SyncHistoryListItem {
 	public String sync_time=null;
 	public String sync_prof="";
 	public int sync_status=0;
+	public final static int SYNC_STATUS_RUNNING=10;
 	public final static int SYNC_STATUS_SUCCESS=0;
-	public final static int SYNC_STATUS_CANCELLED=1;
+	public final static int SYNC_STATUS_CANCEL=1;
 	public final static int SYNC_STATUS_ERROR=2;
 	
 	public int sync_result_no_of_copied=0;
