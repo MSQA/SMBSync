@@ -69,7 +69,6 @@ import android.os.Build;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.webkit.MimeTypeMap;
 
 import com.sentaroh.android.Utilities.DateUtil;
@@ -550,6 +549,7 @@ public class MirrorIO implements Runnable {
 		ProfileListItem pfli=ProfileUtility.getProfile(syncProfName, mGp.profileAdapter);
 		if (pfli!=null) {
 			pfli.setLastSyncTime(date+" "+time);
+			pfli.setLastSyncResult(status);
 			pfli.setSyncRunning(false);
 		}
 		mGp.uiHandler.post(new Runnable(){
@@ -577,6 +577,18 @@ public class MirrorIO implements Runnable {
 			@Override
 			public void run() {
 				mGp.profileAdapter.notifyDataSetChanged();
+				for(int i=0;i<mGp.profileAdapter.getCount();i++) {
+					if (mGp.profileAdapter.getItem(i).getName().equals(syncProfName)) {
+						final int pos=i;
+						mGp.profileListView.post(new Runnable(){
+							@Override
+							public void run() {
+								mGp.profileListView.setSelection(pos);
+							}
+						});
+						break;
+					}
+				}
 			}
 		});
 	};
@@ -898,7 +910,7 @@ public class MirrorIO implements Runnable {
 					mirrorCopyRemoteToLocal(false, remoteUrl, localUrl);
 					if (!checkRetry()) break;
 				}
-				Log.v("","exec="+isExceptionOccured+", parm="+isSyncParmError);
+//				Log.v("","exec="+isExceptionOccured+", parm="+isSyncParmError);
 				if (!isExceptionOccured && !isSyncParmError) {
 					exceptionRetryCount=0;
 					while(true) {

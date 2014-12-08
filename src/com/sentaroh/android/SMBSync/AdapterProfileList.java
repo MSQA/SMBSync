@@ -207,6 +207,8 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
             }
             final ProfileListItem o = getItem(position);
             if (o != null) {
+            	holder.ll_view.setBackgroundDrawable(ll_default);
+            	
             	if (o.getType().equals(SMBSYNC_PROF_TYPE_SYNC)) 
             		holder.iv_row_icon.setImageResource(R.drawable.ic_32_sync);
             	else if (o.getType().equals(SMBSYNC_PROF_TYPE_REMOTE)) 
@@ -288,7 +290,6 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
                     if (!o.getLastSyncTime().equals("")) {
                     	String result="";
                     	holder.tv_last_sync_result.setTextColor(cs_list);
-                    	holder.ll_view.setBackgroundDrawable(ll_default);
 	        			if (o.isSyncRunning()) {
 	        				result=tv_status_running;
                     		if (themeIsLight) holder.ll_view.setBackgroundColor(Color.GRAY);

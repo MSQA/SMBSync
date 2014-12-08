@@ -184,10 +184,8 @@ public class SMBSyncMain extends ActionBarActivity {
 		setContentView(R.layout.main);
 		mContext=this;
 		
-		mGp.uiHandler=new Handler();
-
 //		mGp.enableMainUi=true;
-		mGp.activityUiHandler=new Handler();
+		mGp.uiHandler=new Handler();
 
 		mActionBar = getSupportActionBar();
 		mActionBar.setHomeButtonEnabled(false);
@@ -294,7 +292,7 @@ public class SMBSyncMain extends ActionBarActivity {
 		if (restartType==RESTART_WITH_OUT_INITIALYZE) {
 			SchedulerEditor.setSchedulerInfo(mGp, mContext,null);
 			if (!mGp.freezeMessageViewScroll) {
-				mGp.activityUiHandler.post(new Runnable(){
+				mGp.uiHandler.post(new Runnable(){
 					@Override
 					public void run() {
 						mGp.msgListView.setSelection(mGp.msgListAdapter.getCount()-1);
@@ -901,6 +899,11 @@ public class SMBSyncMain extends ActionBarActivity {
 		if (isUiEnabled()) setFastScrollListener(mGp.msgListView);
 		
 		mGp.profileListView.setAdapter(mGp.profileAdapter);
+		mGp.profileListView.setDrawingCacheEnabled(true);
+		mGp.profileListView.setClickable(true);
+		mGp.profileListView.setFocusable(true);
+		mGp.profileListView.setFocusableInTouchMode(true);
+		mGp.profileListView.setSelected(true);
 		
 		mGp.syncHistoryListView.setAdapter(mGp.syncHistoryAdapter);
 		mGp.syncHistoryAdapter.notifyDataSetChanged();

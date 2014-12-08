@@ -222,7 +222,6 @@ class SyncHistoryListItem {
 	public String sync_time=null;
 	public String sync_prof="";
 	public int sync_status=0;
-	public final static int SYNC_STATUS_RUNNING=10;
 	public final static int SYNC_STATUS_SUCCESS=0;
 	public final static int SYNC_STATUS_CANCEL=1;
 	public final static int SYNC_STATUS_ERROR=2;

@@ -65,8 +65,6 @@ public class GlobalParameters extends Application{
 	
 	public boolean enableMainUi=true;
 	
-	public Handler uiHandler=null;
-	
 	public boolean mirrorThreadActive=false;
 	
 	public boolean supressAutoStart=false;
@@ -74,7 +72,7 @@ public class GlobalParameters extends Application{
 	public boolean themeIsLight=true;
 	public int applicationTheme=-1;
 	
-	public Handler activityUiHandler=null;
+	public Handler uiHandler=null;
 	
 	public TextView mainViewScheduleInfo=null;
 	
