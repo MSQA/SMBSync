@@ -1579,7 +1579,7 @@ public class ProfileCreationWizard {
 						syncWizardCreateProfile(profileAdapter);
 						profileAdapter.sort();
 						
-						if (profileAdapter.getItem(0).getType().equals("")) profileAdapter.remove(0);
+						if (profileAdapter.getItem(0).getProfileType().equals("")) profileAdapter.remove(0);
 						
 						profileAdapter.notifyDataSetChanged();
 						ProfileUtility.saveProfileToFile(mGp, mContext, util, false,"","",profileAdapter,false);

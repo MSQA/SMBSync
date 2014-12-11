@@ -357,7 +357,7 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 		final TextView dlg_file_filter=(TextView) mDialog.findViewById(R.id.sync_profile_file_filter);
 		final TextView dlg_dir_filter=(TextView) mDialog.findViewById(R.id.sync_profile_dir_filter);
 		final EditText editname = (EditText)mDialog.findViewById(R.id.sync_profile_name);
-		editname.setText(pfli.getName());
+		editname.setText(pfli.getProfileName());
 		
 		String f_fl="", d_fl="";
 		if (pfli.getFileFilter()!=null) {
@@ -437,7 +437,7 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 
 		final CheckedTextView ctv_active = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_active);
 		SMBSyncUtil.setCheckedTextView(ctv_active);
-		if (pfli.isActive()) ctv_active.setChecked(true);
+		if (pfli.isProfileActive()) ctv_active.setChecked(true);
 			else ctv_active.setChecked(false);
 
 		
@@ -495,11 +495,11 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 					String m_name=spinner_master.getSelectedItem().toString().substring(2);
 					ProfileListItem m_pli=ProfileUtility.getProfile(mGp, mContext, SMBSYNC_PROF_GROUP_DEFAULT,m_name);
 					if (m_pli!=null) {
-						if (m_pli.getType().equals(SMBSYNC_PROF_TYPE_REMOTE)) {
+						if (m_pli.getProfileType().equals(SMBSYNC_PROF_TYPE_REMOTE)) {
 							  ProfileMaintLocalFragment pmlp=ProfileMaintLocalFragment.newInstance();
 							  pmlp.showDialog(mFragmentMgr, pmlp, "EDIT",m_pli, 0, mProfUtil, mUtil, mCommonDlg,null);
 
-						} else if (m_pli.getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
+						} else if (m_pli.getProfileType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
 							  ProfileMaintRemoteFragment pmrp=ProfileMaintRemoteFragment.newInstance();
 							  pmrp.showDialog(mFragmentMgr, pmrp, "EDIT",m_pli, 0, mProfUtil, mUtil, mCommonDlg,null);
 						}
@@ -515,10 +515,10 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 					String t_name=spinner_target.getSelectedItem().toString().substring(2);;
 					ProfileListItem m_pli=ProfileUtility.getProfile(mGp, mContext, SMBSYNC_PROF_GROUP_DEFAULT, t_name);
 					if (m_pli!=null) {
-						if (m_pli.getType().equals(SMBSYNC_PROF_TYPE_REMOTE)) {
+						if (m_pli.getProfileType().equals(SMBSYNC_PROF_TYPE_REMOTE)) {
 							  ProfileMaintRemoteFragment pmrp=ProfileMaintRemoteFragment.newInstance();
 							  pmrp.showDialog(mFragmentMgr, pmrp, "EDIT",m_pli, 0, mProfUtil, mUtil, mCommonDlg,null);
-						} else if (m_pli.getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
+						} else if (m_pli.getProfileType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
 							  ProfileMaintLocalFragment pmlp=ProfileMaintLocalFragment.newInstance();
 							  pmlp.showDialog(mFragmentMgr, pmlp, "EDIT",m_pli, 0, mProfUtil, mUtil, mCommonDlg,null);
 						}
@@ -664,7 +664,7 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 		if (!profile_saved) {
 			dlg_msg.setText(audit_msg);
 		} else {
-			if (mGp.profileAdapter.getItem(0).getType().equals(""))
+			if (mGp.profileAdapter.getItem(0).getProfileType().equals(""))
 				mGp.profileAdapter.remove(0);
 			String m_typ=ProfileUtility.getProfileType(prof_master,mGp.profileAdapter);
 			String t_typ=ProfileUtility.getProfileType(prof_target,mGp.profileAdapter);
@@ -768,7 +768,7 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 		final TextView dlg_title=(TextView) mDialog.findViewById(R.id.sync_profile_dlg_title);
 		dlg_title.setText(mContext.getString(R.string.msgs_edit_sync_profile));
 		final TextView dlg_title_sub=(TextView) mDialog.findViewById(R.id.sync_profile_dlg_title_sub);
-		dlg_title_sub.setText(" ("+pfli.getName()+")");
+		dlg_title_sub.setText(" ("+pfli.getProfileName()+")");
 
 		
 //		final TextView dlg_msg=(TextView) mDialog.findViewById(R.id.sync_profile_dlg_msg);
@@ -779,7 +779,7 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 		dlg_dir_filter.setText(d_fl);
 	
 		final EditText editname = (EditText) mDialog.findViewById(R.id.sync_profile_name);
-		editname.setText(pfli.getName());
+		editname.setText(pfli.getProfileName());
 		editname.setTextColor(Color.LTGRAY);
 		editname.setEnabled(false);
 		editname.setVisibility(EditText.GONE);
@@ -787,7 +787,7 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 		final CheckedTextView ctvmpd = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_sync_master_root_dir_file);
 		final CheckedTextView ctv_active = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_active);
 		SMBSyncUtil.setCheckedTextView(ctv_active);
-		ctv_active.setChecked(pfli.isActive());
+		ctv_active.setChecked(pfli.isProfileActive());
 		final CheckedTextView ctvConf = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_confirm);
 		SMBSyncUtil.setCheckedTextView(ctvConf);
 		final CheckedTextView ctvLastMod = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_last_modified);
@@ -882,12 +882,12 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 				String m_name=spinner_master.getSelectedItem().toString().substring(2);
 				ProfileListItem m_pli=ProfileUtility.getProfile(mGp, mContext, SMBSYNC_PROF_GROUP_DEFAULT,m_name);
 				if (m_pli!=null) {
-					if (m_pli.getType().equals(SMBSYNC_PROF_TYPE_REMOTE)) {
+					if (m_pli.getProfileType().equals(SMBSYNC_PROF_TYPE_REMOTE)) {
 						  int pos=ProfileUtility.getProfilePos(m_name,mGp.profileAdapter);
 						  ProfileMaintRemoteFragment pmp=ProfileMaintRemoteFragment.newInstance();
 						  pmp.showDialog(mFragmentMgr, pmp, "EDIT", m_pli, 
 								  pos, mProfUtil, mUtil, mCommonDlg,null);
-					} else if (m_pli.getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
+					} else if (m_pli.getProfileType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
 						  int pos=ProfileUtility.getProfilePos(m_name,mGp.profileAdapter);
 						  ProfileMaintLocalFragment pmp=ProfileMaintLocalFragment.newInstance();
 						  pmp.showDialog(mFragmentMgr, pmp, "EDIT", m_pli, 
@@ -920,12 +920,12 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 				ProfileListItem m_pli=
 						ProfileUtility.getProfile(mGp, mContext, SMBSYNC_PROF_GROUP_DEFAULT, t_name);
 				if (m_pli!=null) {
-					if (m_pli.getType().equals(SMBSYNC_PROF_TYPE_REMOTE)) {
+					if (m_pli.getProfileType().equals(SMBSYNC_PROF_TYPE_REMOTE)) {
 						  int pos=ProfileUtility.getProfilePos(t_name,mGp.profileAdapter);
 						  ProfileMaintRemoteFragment pmp=ProfileMaintRemoteFragment.newInstance();
 						  pmp.showDialog(mFragmentMgr, pmp, "EDIT", m_pli, 
 								  pos, mProfUtil, mUtil, mCommonDlg,null);
-					} else if (m_pli.getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
+					} else if (m_pli.getProfileType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
 						  int pos=ProfileUtility.getProfilePos(t_name,mGp.profileAdapter);
 						  ProfileMaintLocalFragment pmp=ProfileMaintLocalFragment.newInstance();
 						  pmp.showDialog(mFragmentMgr, pmp, "EDIT", m_pli, 
@@ -998,7 +998,7 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 		Button btn_ok = (Button) mDialog.findViewById(R.id.sync_profile_ok);
 		btn_ok.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				int prof_num=ProfileUtility.getProfilePos(pfli.getName(), mGp.profileAdapter);
+				int prof_num=ProfileUtility.getProfilePos(pfli.getProfileName(), mGp.profileAdapter);
 				if (saveSyncProfile(mDialog, n_file_filter, n_dir_filter, pfli, prof_num)) {
 					mFragment.dismiss();
 					if (mNotifyComplete!=null) mNotifyComplete.notifyToListener(true, null);

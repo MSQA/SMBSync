@@ -113,7 +113,7 @@ public class SchedulerReceiver extends BroadcastReceiver{
 	    am.cancel(pi);
     };
     
-	private static String log_id="SCHEDULER    ";
+	private static String log_id="ScheduleRecv ";
 	  
 	final static public void addDebugMsg(int lvl, String cat, String... msg) {
 			StringBuilder print_msg=new StringBuilder("D ");

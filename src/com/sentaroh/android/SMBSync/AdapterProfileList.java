@@ -111,7 +111,7 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
 		public boolean isEmptyAdapter() {
 			boolean result=false;
 			if (items!=null) {
-				if (items.size()==0 || items.get(0).getType().equals("")) result=true;
+				if (items.size()==0 || items.get(0).getProfileType().equals("")) result=true;
 			} else {
 				result=true;
 			}
@@ -135,17 +135,17 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
 					String l_t,l_n,l_g;
 					String r_t,r_n,r_g;
 					
-					l_g=litem.getGroup();
-					if (litem.getType().equals(SMBSYNC_PROF_TYPE_SYNC)) l_t="0";
-					else if (litem.getType().equals(SMBSYNC_PROF_TYPE_REMOTE)) l_t="1";
+					l_g=litem.getProfileGroup();
+					if (litem.getProfileType().equals(SMBSYNC_PROF_TYPE_SYNC)) l_t="0";
+					else if (litem.getProfileType().equals(SMBSYNC_PROF_TYPE_REMOTE)) l_t="1";
 					else l_t="2";
-					l_n=litem.getName();
+					l_n=litem.getProfileName();
 					
-					r_g=ritem.getGroup();
-					if (ritem.getType().equals(SMBSYNC_PROF_TYPE_SYNC)) r_t="0";
-					else if (ritem.getType().equals(SMBSYNC_PROF_TYPE_REMOTE)) r_t="1";
+					r_g=ritem.getProfileGroup();
+					if (ritem.getProfileType().equals(SMBSYNC_PROF_TYPE_SYNC)) r_t="0";
+					else if (ritem.getProfileType().equals(SMBSYNC_PROF_TYPE_REMOTE)) r_t="1";
 					else r_t="2";
-					r_n=ritem.getName();
+					r_n=ritem.getProfileName();
 					
 					if (!l_g.equalsIgnoreCase(r_g)) return l_g.compareToIgnoreCase(r_g);
 					else if (!l_t.equalsIgnoreCase(r_t)) return l_t.compareToIgnoreCase(r_t);
@@ -209,20 +209,20 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
             if (o != null) {
             	holder.ll_view.setBackgroundDrawable(ll_default);
             	
-            	if (o.getType().equals(SMBSYNC_PROF_TYPE_SYNC)) 
+            	if (o.getProfileType().equals(SMBSYNC_PROF_TYPE_SYNC)) 
             		holder.iv_row_icon.setImageResource(R.drawable.ic_32_sync);
-            	else if (o.getType().equals(SMBSYNC_PROF_TYPE_REMOTE)) 
+            	else if (o.getProfileType().equals(SMBSYNC_PROF_TYPE_REMOTE)) 
             		holder.iv_row_icon.setImageResource(R.drawable.ic_32_server);
-            	else if (o.getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) 
+            	else if (o.getProfileType().equals(SMBSYNC_PROF_TYPE_LOCAL)) 
             		holder.iv_row_icon.setImageResource(R.drawable.ic_32_mobile);
             		
             	String act="";
-            	if (o.isActive()) act=tv_active_active;
+            	if (o.isProfileActive()) act=tv_active_active;
             	else act=tv_active_inact;
             	holder.tv_row_active.setText(act);
-            	holder.tv_row_name.setText(o.getName());
+            	holder.tv_row_name.setText(o.getProfileName());
                 
-                if (!getItem(position).getActive().equals("A")) {
+                if (!getItem(position).getProfileActive().equals("A")) {
               	   holder.tv_row_name.setEnabled(false);
               	   holder.tv_row_active.setEnabled(false);
                 } else {
@@ -230,7 +230,7 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
                	   holder.tv_row_active.setEnabled(true);
                 }
                
-                if (o.getType().equals("S")) {//Sync profile
+                if (o.getProfileType().equals("S")) {//Sync profile
                 	holder.tv_dir_name.setVisibility(LinearLayout.GONE);
                 	holder.ll_sync.setVisibility(LinearLayout.VISIBLE);
                 	holder.ll_last_sync.setVisibility(LinearLayout.VISIBLE);
@@ -260,28 +260,28 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
                     ProfileListItem pfli_master=ProfileUtility.getProfile(o.getMasterName(), items);
                     ProfileListItem pfli_target=ProfileUtility.getProfile(o.getTargetName(), items);
                     if (pfli_master!=null) {
-                    	if (pfli_master.getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
-                            holder.tv_row_master.setText(pfli_master.getLocalMountPoint()+"/"+pfli_master.getDir());
-                    	} if (pfli_master.getType().equals(SMBSYNC_PROF_TYPE_REMOTE)) {
-                    		if (!pfli_master.getAddr().equals("")) {
-                    			holder.tv_row_master.setText("//"+pfli_master.getAddr()+"/"+
-                    					pfli_master.getShare()+"/"+pfli_master.getDir());
-                    		} else if (!pfli_master.getHostname().equals("")) {
-                    			holder.tv_row_master.setText("//"+pfli_master.getHostname()+"/"+
-                    					pfli_master.getShare()+"/"+pfli_master.getDir());
+                    	if (pfli_master.getProfileType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
+                            holder.tv_row_master.setText(pfli_master.getLocalMountPoint()+"/"+pfli_master.getDirectoryName());
+                    	} if (pfli_master.getProfileType().equals(SMBSYNC_PROF_TYPE_REMOTE)) {
+                    		if (!pfli_master.getRemoteAddr().equals("")) {
+                    			holder.tv_row_master.setText("//"+pfli_master.getRemoteAddr()+"/"+
+                    					pfli_master.getRemoteShareName()+"/"+pfli_master.getDirectoryName());
+                    		} else if (!pfli_master.getRemoteHostname().equals("")) {
+                    			holder.tv_row_master.setText("//"+pfli_master.getRemoteHostname()+"/"+
+                    					pfli_master.getRemoteShareName()+"/"+pfli_master.getDirectoryName());
                     		}
                     	}
                     }
                     if (pfli_target!=null) {
-                    	if (pfli_target.getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
-                            holder.tv_row_target.setText(pfli_target.getLocalMountPoint()+"/"+pfli_target.getDir());
-                    	} if (pfli_target.getType().equals(SMBSYNC_PROF_TYPE_REMOTE)) {
-                    		if (!pfli_target.getAddr().equals("")) {
-                    			holder.tv_row_target.setText("//"+pfli_target.getAddr()+"/"+
-                    					pfli_target.getShare()+"/"+pfli_target.getDir());
-                    		} else if (!pfli_target.getHostname().equals("")) {
-                    			holder.tv_row_target.setText("//"+pfli_target.getHostname()+"/"+
-                    					pfli_target.getShare()+"/"+pfli_target.getDir());
+                    	if (pfli_target.getProfileType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
+                            holder.tv_row_target.setText(pfli_target.getLocalMountPoint()+"/"+pfli_target.getDirectoryName());
+                    	} if (pfli_target.getProfileType().equals(SMBSYNC_PROF_TYPE_REMOTE)) {
+                    		if (!pfli_target.getRemoteAddr().equals("")) {
+                    			holder.tv_row_target.setText("//"+pfli_target.getRemoteAddr()+"/"+
+                    					pfli_target.getRemoteShareName()+"/"+pfli_target.getDirectoryName());
+                    		} else if (!pfli_target.getRemoteHostname().equals("")) {
+                    			holder.tv_row_target.setText("//"+pfli_target.getRemoteHostname()+"/"+
+                    					pfli_target.getRemoteShareName()+"/"+pfli_target.getDirectoryName());
                     		}
                     	}
                     }
@@ -297,19 +297,19 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
 	        			} else {
 	            			if (o.getLastSyncResult()==SyncHistoryListItem.SYNC_STATUS_SUCCESS) {
 	            				result=tv_status_success;
-	            				if (getItem(position).isActive()) {
+	            				if (getItem(position).isProfileActive()) {
 	                        		if (themeIsLight) holder.tv_last_sync_result.setTextColor(Color.BLACK);
 	                        		else holder.tv_last_sync_result.setTextColor(Color.LTGRAY);
 	            				}
 	            			} else if (o.getLastSyncResult()==SyncHistoryListItem.SYNC_STATUS_CANCEL) {
 	            				result=tv_status_cancel;
-	                        	if (getItem(position).isActive()) {
+	                        	if (getItem(position).isProfileActive()) {
 	                        		if (themeIsLight) holder.tv_last_sync_result.setTextColor(Color.argb(255, 192, 128, 0));
 	                        		else holder.tv_last_sync_result.setTextColor(Color.YELLOW);
 	                        	}
 	            			} else if (o.getLastSyncResult()==SyncHistoryListItem.SYNC_STATUS_ERROR) {
 	            				result=tv_status_error;
-	                        	if (getItem(position).isActive()) {
+	                        	if (getItem(position).isProfileActive()) {
 	                				holder.tv_last_sync_result.setTextColor(Color.RED);
 	                        	}
 	            			}
@@ -322,7 +322,7 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
 //                    	holder.tv_last_sync_time.setText(tv_no_sync);
                     }
                     
-                    if (!getItem(position).isActive()) {
+                    if (!getItem(position).isProfileActive()) {
                     	holder.tv_row_master.setEnabled(false);
                     	holder.tv_row_target.setEnabled(false);
                     	holder.iv_row_sync_dir_image.setImageResource(R.drawable.arrow_right_disabled); 
@@ -335,24 +335,24 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
                     	holder.tv_row_synctype.setEnabled(true);
                     	for(int i=0;i<holder.ll_last_sync.getChildCount();i++) holder.ll_last_sync.getChildAt(i).setEnabled(true);
                     }
-                } else if (o.getType().equals("R") || o.getType().equals("L")) {//Remote or Local profile
+                } else if (o.getProfileType().equals("R") || o.getProfileType().equals("L")) {//Remote or Local profile
                 	holder.tv_dir_name.setVisibility(LinearLayout.VISIBLE);
                 	holder.ll_sync.setVisibility(LinearLayout.GONE);
                 	holder.ll_last_sync.setVisibility(LinearLayout.GONE);
                 	holder.iv_row_icon.setVisibility(LinearLayout.VISIBLE);
                     holder.tv_row_active.setVisibility(LinearLayout.VISIBLE);
                     holder.cbv_row_cb1.setVisibility(LinearLayout.VISIBLE);
-                    if (o.getType().equals("L")) {
-                    	holder.tv_dir_name.setText(o.getLocalMountPoint()+"/"+o.getDir());
+                    if (o.getProfileType().equals("L")) {
+                    	holder.tv_dir_name.setText(o.getLocalMountPoint()+"/"+o.getDirectoryName());
                     } else {
-                    	if (!o.getAddr().equals("")) {
-                        	holder.tv_dir_name.setText("//"+o.getAddr()+"/"+o.getShare()+"/"+o.getDir());
+                    	if (!o.getRemoteAddr().equals("")) {
+                        	holder.tv_dir_name.setText("//"+o.getRemoteAddr()+"/"+o.getRemoteShareName()+"/"+o.getDirectoryName());
                     	} else {
-                    		holder.tv_dir_name.setText("//"+o.getHostname()+"/"+o.getShare()+"/"+o.getDir());
+                    		holder.tv_dir_name.setText("//"+o.getRemoteHostname()+"/"+o.getRemoteShareName()+"/"+o.getDirectoryName());
                     	}
                     }
                 	
-                	if (!getItem(position).isActive()) {
+                	if (!getItem(position).isProfileActive()) {
                     	holder.tv_dir_name.setEnabled(false);
                     } else {
                     	holder.tv_dir_name.setEnabled(true);
@@ -372,7 +372,7 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
              	holder.cbv_row_cb1.setOnCheckedChangeListener(new OnCheckedChangeListener() {
      				@Override
      				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-     					if (o.getType().equals("")) return;
+     					if (o.getProfileType().equals("")) return;
      					o.setChecked(isChecked);
 	     				items.set(p, o);
 	     				if (mNotifyCheckBoxEvent!=null && isShowCheckBox) 
@@ -533,18 +533,18 @@ class ProfileListItem implements Serializable,Comparable<ProfileListItem>{
 
 	public ProfileListItem() {}
 	
-	public String getGroup()	{return profileGroup;}
-	public String getName()		{return profileName;}
-	public String getType()		{return profileType;}
-	public String getActive()	{return profileActive;}
-	public boolean isActive()   {return profileActive.equals(SMBSYNC_PROF_ACTIVE) ? true:false;}
-	public String getUser()		{return profileUser;}
-	public String getPass()		{return profilePass;}
-	public String getShare()	{return profileShare;}
-	public String getDir()		{return profileDir;}
-	public String getAddr()		{return profileAddr;}
-	public String getPort()		{return profilePort;}
-	public String getHostname()	{return profileHostname;}
+	public String getProfileGroup()	{return profileGroup;}
+	public String getProfileName()		{return profileName;}
+	public String getProfileType()		{return profileType;}
+	public String getProfileActive()	{return profileActive;}
+	public boolean isProfileActive()   {return profileActive.equals(SMBSYNC_PROF_ACTIVE) ? true:false;}
+	public String getRemoteUserID()	{return profileUser;}
+	public String getRemotePassword() {return profilePass;}
+	public String getRemoteShareName() {return profileShare;}
+	public String getDirectoryName()		{return profileDir;}
+	public String getRemoteAddr() {return profileAddr;}
+	public String getRemotePort() {return profilePort;}
+	public String getRemoteHostname() {return profileHostname;}
 	public String getSyncType()	{return profileSyncType;}
 	public String getMasterType(){return profileMasterType;}
 	public String getMasterName(){return profileMasterName;}
@@ -559,17 +559,17 @@ class ProfileListItem implements Serializable,Comparable<ProfileListItem>{
 	public boolean isNotUseLastModifiedForRemote() {return profileNotUsedLastModifiedForRemote;}
 	public void setNotUseLastModifiedForRemote(boolean p) {profileNotUsedLastModifiedForRemote=p;}
 	
-	public void setGroup(String p)		{profileGroup=p;}
-	public void setName(String p)		{profileName=p;}
-	public void setType(String p)		{profileType=p;}
-	public void setActive(String p)	    {profileActive=p;}
-	public void setUser(String p)		{profileUser=p;}
-	public void setPass(String p)		{profilePass=p;}
-	public void setShare(String p)	    {profileShare=p;}
-	public void setDir(String p)		{profileDir=p;}
-	public void setAddr(String p)		{profileAddr=p;}
-	public void setPort(String p)		{profilePort=p;}
-	public void setHostname(String p)	{profileHostname=p;}
+	public void setProfileGroup(String p)		{profileGroup=p;}
+	public void setProfileName(String p)		{profileName=p;}
+	public void setProfileType(String p)		{profileType=p;}
+	public void setProfileActive(String p)	    {profileActive=p;}
+	public void setRemoteUserID(String p)		{profileUser=p;}
+	public void setRemotePassword(String p)		{profilePass=p;}
+	public void setRemoteShareName(String p)	    {profileShare=p;}
+	public void setDirectoryName(String p)		{profileDir=p;}
+	public void setRemoteAddr(String p)	{profileAddr=p;}
+	public void setRemotePort(String p)	{profilePort=p;}
+	public void setRemoteHostname(String p)	{profileHostname=p;}
 	public void setSyncType(String p)	{profileSyncType=p;}
 	public void setMasterType(String p) {profileMasterType=p;}
 	public void setMasterName(String p) {profileMasterName=p;}
@@ -632,7 +632,7 @@ class ProfileListItem implements Serializable,Comparable<ProfileListItem>{
 	@Override
 	public int compareTo(ProfileListItem o) {
 		if(this.profileName != null)
-			return this.profileName.toLowerCase(Locale.getDefault()).compareTo(o.getName().toLowerCase()) ; 
+			return this.profileName.toLowerCase(Locale.getDefault()).compareTo(o.getProfileName().toLowerCase()) ; 
 //				return this.filename.toLowerCase().compareTo(o.getName().toLowerCase()) * (-1);
 		else 
 			throw new IllegalArgumentException();

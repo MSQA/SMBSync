@@ -355,7 +355,7 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 		ctv_active.setChecked(true);
 		
 		edithost.setVisibility(EditText.VISIBLE);
-		if (pfli.getUser().equals("") && pfli.getPass().equals("")) {
+		if (pfli.getRemoteUserID().equals("") && pfli.getRemotePassword().equals("")) {
 			ctv_use_user_pass.setChecked(false);
 			edituser.setEnabled(false);
 			editpass.setEnabled(false);
@@ -367,9 +367,9 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 
 		
 		final EditText editport = (EditText) mDialog.findViewById(R.id.remote_profile_port);
-		if (!pfli.getPort().equals("")) {
+		if (!pfli.getRemotePort().equals("")) {
 			ctv_use_port_number.setChecked(true);
-			editport.setText(pfli.getPort());
+			editport.setText(pfli.getRemotePort());
 		} else {
 			editport.setText("");
 			editport.setEnabled(false);
@@ -377,13 +377,13 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 		
 		CommonDialog.setDlgBoxSizeLimit(mDialog,true);
 		
-		editname.setText(pfli.getName());
-		edituser.setText(pfli.getUser());
-		if (!pfli.getAddr().equals("")) edithost.setText(pfli.getAddr()); 
-		else edithost.setText(pfli.getHostname());
-		editpass.setText(pfli.getPass());
-		editshare.setText(pfli.getShare());
-		editdir.setText(pfli.getDir());
+		editname.setText(pfli.getProfileName());
+		edituser.setText(pfli.getRemoteUserID());
+		if (!pfli.getRemoteAddr().equals("")) edithost.setText(pfli.getRemoteAddr()); 
+		else edithost.setText(pfli.getRemoteHostname());
+		editpass.setText(pfli.getRemotePassword());
+		editshare.setText(pfli.getRemoteShareName());
+		editdir.setText(pfli.getDirectoryName());
 		
 		// IpAddressScanボタンの指定
 		if (mUtil.isRemoteDisable()) btnAddr.setEnabled(false);
@@ -509,7 +509,7 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 					mFragment.dismiss();
 					String remote_port="";
 					if (ctv_use_port_number.isChecked()) remote_port=editport.getText().toString();
-					if (mGp.profileAdapter.getItem(0).getType().equals(""))
+					if (mGp.profileAdapter.getItem(0).getProfileType().equals(""))
 						mGp.profileAdapter.remove(0);
 					ProfileUtility.updateRemoteProfileAdapter(mGp, true, prof_name, prof_act,prof_dir,
 							prof_user,prof_pass,prof_share,prof_addr,prof_host,
@@ -938,11 +938,11 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 
 		final CheckedTextView ctv_active = (CheckedTextView) mDialog.findViewById(R.id.remote_profile_ctv_active);
 		SMBSyncUtil.setCheckedTextView(ctv_active);
-		ctv_active.setChecked(pfli.isActive());
+		ctv_active.setChecked(pfli.isProfileActive());
 		final TextView dlg_title=(TextView) mDialog.findViewById(R.id.remote_profile_dlg_title);
 		dlg_title.setText(mContext.getString(R.string.msgs_edit_remote_profile));
 		final TextView dlg_title_sub=(TextView) mDialog.findViewById(R.id.remote_profile_dlg_title_sub);
-		dlg_title_sub.setText(" ("+pfli.getName()+")");
+		dlg_title_sub.setText(" ("+pfli.getProfileName()+")");
 
 		
 //		final TextView dlg_msg=(TextView) mDialog.findViewById(R.id.remote_profile_dlg_msg);
@@ -950,25 +950,25 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 		final EditText edithost = (EditText) mDialog.findViewById(R.id.remote_profile_remote_server);
 		
 		final EditText edituser = (EditText) mDialog.findViewById(R.id.remote_profile_user);
-		if (pfli.getUser().length()!=0) edituser.setText(pfli.getUser());
+		if (pfli.getRemoteUserID().length()!=0) edituser.setText(pfli.getRemoteUserID());
 		final EditText editpass = (EditText) mDialog.findViewById(R.id.remote_profile_pass);
-		if (pfli.getPass().length()!=0) editpass.setText(pfli.getPass());
+		if (pfli.getRemotePassword().length()!=0) editpass.setText(pfli.getRemotePassword());
 		final EditText editshare = (EditText) mDialog.findViewById(R.id.remote_profile_share);
-		if (pfli.getShare().length()!=0) editshare.setText(pfli.getShare());
+		if (pfli.getRemoteShareName().length()!=0) editshare.setText(pfli.getRemoteShareName());
 		final EditText editdir = (EditText) mDialog.findViewById(R.id.remote_profile_dir);
-		if (pfli.getDir().length()!=0) editdir.setText(pfli.getDir());
+		if (pfli.getDirectoryName().length()!=0) editdir.setText(pfli.getDirectoryName());
 		final EditText editname = (EditText) mDialog.findViewById(R.id.remote_profile_name);
-		editname.setText(pfli.getName());
+		editname.setText(pfli.getProfileName());
 		editname.setTextColor(Color.LTGRAY);
 		editname.setEnabled(false);
 		editname.setVisibility(EditText.GONE);
 
 		final CheckedTextView ctv_use_user_pass = (CheckedTextView) mDialog.findViewById(R.id.remote_profile_ctv_use_user_pass);
 		
-		if (pfli.getAddr().length()!=0) edithost.setText(pfli.getAddr());
-		else edithost.setText(pfli.getHostname());
+		if (pfli.getRemoteAddr().length()!=0) edithost.setText(pfli.getRemoteAddr());
+		else edithost.setText(pfli.getRemoteHostname());
 		
-		if (pfli.getUser().equals("") && pfli.getPass().equals("")) {
+		if (pfli.getRemoteUserID().equals("") && pfli.getRemotePassword().equals("")) {
 			ctv_use_user_pass.setChecked(false);
 			edituser.setEnabled(false);
 			editpass.setEnabled(false);
@@ -980,9 +980,9 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 		
 		final CheckedTextView ctv_use_port_number = (CheckedTextView) mDialog.findViewById(R.id.remote_profile_ctv_use_port_number);
 		final EditText editport = (EditText) mDialog.findViewById(R.id.remote_profile_port);
-		if (!pfli.getPort().equals("")) {
+		if (!pfli.getRemotePort().equals("")) {
 			ctv_use_port_number.setChecked(true);
-			editport.setText(pfli.getPort());
+			editport.setText(pfli.getRemotePort());
 		} else {
 			editport.setText("");
 			editport.setEnabled(false);
@@ -1084,8 +1084,8 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 //					return;
 //				} else {
 					ProfileListItem item = mGp.profileAdapter.getItem(mProfileItemPos);
-					if (prof_name.equals(item.getName())||
-							(!prof_name.equals(item.getName()) &&
+					if (prof_name.equals(item.getProfileName())||
+							(!prof_name.equals(item.getProfileName()) &&
 							 !mProfUtil.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,
 									 SMBSYNC_PROF_TYPE_REMOTE, prof_name))) {
 						mFragment.dismiss();

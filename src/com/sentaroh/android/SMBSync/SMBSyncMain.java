@@ -61,6 +61,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
 import android.os.RemoteException;
 import android.os.SystemClock;
 import android.os.Vibrator;
@@ -146,21 +147,22 @@ public class SMBSyncMain extends ActionBarActivity {
 	
 	private ActionBar mActionBar=null;
 	
-	private String currentViewType="P";
 	private ArrayList<Intent> mPendingRequestIntent=new ArrayList<Intent>();
+	
+	private WakeLock mStartupWakeLock=null;
 	
 	@Override  
 	protected void onSaveInstanceState(Bundle out) {  
 		super.onSaveInstanceState(out);
 		util.addDebugLogMsg(1, "I", "onSaveInstanceState entered.");
-		out.putString("currentViewType", currentViewType);
+		out.putString("currentTab", mGp.currentTab);
 	};  
 
 	@Override  
 	protected void onRestoreInstanceState(Bundle in) {  
 		super.onRestoreInstanceState(in);
 		util.addDebugLogMsg(1, "I", "onRestoreInstanceState entered.");
-		currentViewType=in.getString("currentViewType");
+		mGp.currentTab=in.getString("currentTab");
 		if (mGp.isApplicationIsRestartRequested) restartType=RESTART_BY_DESTROYED;
 		else restartType=RESTART_BY_KILLED;
 	};
@@ -231,9 +233,14 @@ public class SMBSyncMain extends ActionBarActivity {
 			mGp.syncHistoryAdapter=new AdapterSyncHistory(mContext, R.layout.sync_history_list_item_view, 
 					util.loadHistoryList(),mGp.themeIsLight);
 			util.housekeepHistoryList();
-			currentViewType="P";
+			mGp.currentTab=SMBSYNC_TAB_NAME_PROF;
         }
         mGp.initialyzeCompleted=true;
+        
+        mStartupWakeLock=((PowerManager)getSystemService(Context.POWER_SERVICE))
+    			.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK
+	    				, "SMBSync-Startup-Wakelock");
+        mStartupWakeLock.acquire(1000*10);
         
 		createTabView() ;
 		
@@ -321,7 +328,7 @@ public class SMBSyncMain extends ActionBarActivity {
 						restoreTaskData();
 						util.addLogMsg("W",mContext.getString(R.string.msgs_smbsync_main_restart_by_killed)+" Version "+packageVersionName);
 						showNotificationMsg(mContext.getString(R.string.msgs_smbsync_main_restart_by_killed)+" Version "+packageVersionName);
-						tabHost.setCurrentTabByTag(TAB_TAG_MSG);
+						tabHost.setCurrentTabByTag(SMBSYNC_TAB_NAME_MSG);
 					} else if (restartType==RESTART_BY_DESTROYED) {
 						if (mGp.changedConfiguration==0) {
 							if (mGp.debugLevel>0) {
@@ -369,7 +376,7 @@ public class SMBSyncMain extends ActionBarActivity {
 		tabHost.setOnTabChangedListener(null);
 		initAdapterAndView();
 		restoreViewContent(mGp.mainViewSaveArea);
-		tabHost.setCurrentTabByTag(TAB_TAG_MSG);
+		tabHost.setCurrentTabByTag(SMBSYNC_TAB_NAME_MSG);
 		tabHost.setOnTabChangedListener(new OnTabChange());
 		
 		if (mGp.confirmDialogShowed)
@@ -422,7 +429,7 @@ public class SMBSyncMain extends ActionBarActivity {
 									isExtraSpecAutoStart=isExtraSpecAutoTerm=isExtraSpecBgExec=false;
 									checkAutoStart(intent);
 								} else {
-									tabHost.setCurrentTabByTag(TAB_TAG_MSG);
+									tabHost.setCurrentTabByTag(SMBSYNC_TAB_NAME_MSG);
 									util.addLogMsg("W",
 											mContext.getString(R.string.msgs_main_auto_start_ignored_by_other_msg));
 								}
@@ -446,7 +453,7 @@ public class SMBSyncMain extends ActionBarActivity {
 	@Override
 	protected void onPause() {
 		super.onPause();
-		util.addDebugLogMsg(1,"I","onPause entered "+",currentView="+currentViewType+
+		util.addDebugLogMsg(1,"I","onPause entered "+",currentView="+mGp.currentTab+
 				", getChangingConfigurations="+String.format("0x%08x", getChangingConfigurations())+
 				", isActivityForeground="+util.isActivityForeground());
 		util.setActivityIsForeground(false);
@@ -622,13 +629,13 @@ public class SMBSyncMain extends ActionBarActivity {
 			setHistoryViewItemClickListener();
 			setHistoryViewLongClickListener();
 
-			if (currentViewType.equals("P")) {
+			if (mGp.currentTab.equals(SMBSYNC_TAB_NAME_PROF)) {
 				if (mGp.syncHistoryAdapter.isShowCheckBox()) setHistoryContextButtonSelectMode();
 				else setHistoryContextButtonNormalMode();
 				
 				if (mGp.profileAdapter.isShowCheckBox()) setProfileContextButtonSelectMode();
 				else setProfileContextButtonNormalMode();
-			} else if (currentViewType.equals("H")) {
+			} else if (mGp.currentTab.equals(SMBSYNC_TAB_NAME_HIST)) {
 				if (mGp.profileAdapter.isShowCheckBox()) setProfileContextButtonSelectMode();
 				else setProfileContextButtonNormalMode();
 
@@ -811,10 +818,10 @@ public class SMBSyncMain extends ActionBarActivity {
 			String c_sep="";
 			for(int i=0;i<mGp.profileAdapter.getCount();i++) {
 				ProfileListItem pfli=mGp.profileAdapter.getItem(i);
-				if (pfli.getType().equals(SMBSYNC_PROF_TYPE_SYNC)) {
+				if (pfli.getProfileType().equals(SMBSYNC_PROF_TYPE_SYNC)) {
 					if (!pfli.isConfirmRequired())  {
 						pfli.setConfirmRequired(true);
-						c_prof+=c_sep+pfli.getName();
+						c_prof+=c_sep+pfli.getProfileName();
 						c_sep=", ";
 					}
 				}
@@ -848,12 +855,12 @@ public class SMBSyncMain extends ActionBarActivity {
 			String c_sep="";
 			for(int i=0;i<mGp.profileAdapter.getCount();i++) {
 				ProfileListItem pfli=mGp.profileAdapter.getItem(i);
-				if (pfli.getType().equals(SMBSYNC_PROF_TYPE_SYNC) && 
+				if (pfli.getProfileType().equals(SMBSYNC_PROF_TYPE_SYNC) && 
 						pfli.getMasterType().equals(SMBSYNC_PROF_TYPE_LOCAL) &&
 						pfli.getTargetType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
 					if (!pfli.isConfirmRequired())  {
 						pfli.setConfirmRequired(true);
-						c_prof+=c_sep+pfli.getName();
+						c_prof+=c_sep+pfli.getProfileName();
 						c_sep=", ";
 					}
 				}
@@ -976,25 +983,24 @@ public class SMBSyncMain extends ActionBarActivity {
 	
 //	private CustomTabContentView mTabChildviewProf=null, 
 //			mTabChildviewMsg=null, mTabChildviewHist=null;
-	private final String TAB_TAG_PROF="prof", TAB_TAG_MSG="msg", TAB_TAG_HIST="hist";
 	
 	private void createTabView() {
 		tabHost=(TabHost)findViewById(android.R.id.tabhost);
 		tabHost.setup();
 
 		CustomTabContentView tabViewProf = new CustomTabContentView(this,getString(R.string.msgs_tab_name_prof));
-		TabHost.TabSpec tabSpec= tabHost.newTabSpec(TAB_TAG_PROF).setIndicator(tabViewProf).setContent(R.id.profile_view);
+		TabHost.TabSpec tabSpec= tabHost.newTabSpec(SMBSYNC_TAB_NAME_PROF).setIndicator(tabViewProf).setContent(R.id.profile_view);
 		tabHost.addTab(tabSpec);
 		
 		CustomTabContentView tabViewHist = new CustomTabContentView(this,getString(R.string.msgs_tab_name_history));
-		tabSpec= tabHost.newTabSpec(TAB_TAG_HIST).setIndicator(tabViewHist).setContent(R.id.history_view);
+		tabSpec= tabHost.newTabSpec(SMBSYNC_TAB_NAME_HIST).setIndicator(tabViewHist).setContent(R.id.history_view);
 		tabHost.addTab(tabSpec);
 
 		CustomTabContentView tabViewMsg = new CustomTabContentView(this,getString(R.string.msgs_tab_name_msg));
-		tabSpec= tabHost.newTabSpec(TAB_TAG_MSG).setIndicator(tabViewMsg).setContent(R.id.message_view);
+		tabSpec= tabHost.newTabSpec(SMBSYNC_TAB_NAME_MSG).setIndicator(tabViewMsg).setContent(R.id.message_view);
 		tabHost.addTab(tabSpec);
 
-		if (restartType==NORMAL_START) tabHost.setCurrentTabByTag(TAB_TAG_PROF);
+		if (restartType==NORMAL_START) tabHost.setCurrentTabByTag(SMBSYNC_TAB_NAME_PROF);
 		tabHost.setOnTabChangedListener(new OnTabChange());
 		
 		mGp.msgListView = (ListView) findViewById(R.id.message_view_list);
@@ -1034,7 +1040,7 @@ public class SMBSyncMain extends ActionBarActivity {
 	class OnTabChange implements OnTabChangeListener {
 		@Override
 		public void onTabChanged(String tabId){
-			util.addDebugLogMsg(2,"I","onTabchanged entered. tab="+tabId+",v="+currentViewType);
+			util.addDebugLogMsg(2,"I","onTabchanged entered. tab="+tabId+",v="+mGp.currentTab);
 			
 			mActionBar.setIcon(R.drawable.smbsync);
 			mActionBar.setHomeButtonEnabled(false);
@@ -1049,15 +1055,26 @@ public class SMBSyncMain extends ActionBarActivity {
 			mGp.syncHistoryAdapter.setAllItemChecked(false);
 			mGp.syncHistoryAdapter.notifyDataSetChanged();
 			setHistoryContextButtonNormalMode();
-
-			if (tabId.equals(TAB_TAG_PROF)) {
-				currentViewType="P";
-//				glblParms.profileListView.setSelection(posglblParms.profileListView);
-			} else if (tabId.equals(TAB_TAG_MSG)) {
-				currentViewType="M";
-			} else if (tabId.equals(TAB_TAG_HIST)) {
-				currentViewType="H";
+			
+			if (tabId.equals(SMBSYNC_TAB_NAME_PROF) && mGp.newProfileListViewPos!=-1) {
+				mGp.profileListView.post(new Runnable(){
+					@Override
+					public void run() {
+						mGp.profileListView.setSelection(mGp.newProfileListViewPos);
+						mGp.newProfileListViewPos=-1;
+					}
+				});
+			} else if (tabId.equals(SMBSYNC_TAB_NAME_MSG)) {
+				if (!mGp.freezeMessageViewScroll) {
+					mGp.uiHandler.post(new Runnable(){
+						@Override
+						public void run() {
+							mGp.msgListView.setSelection(mGp.msgListAdapter.getCount()-1);
+						}
+					});
+				}
 			}
+			mGp.currentTab=tabId;
 		};
 	};
 	
@@ -1092,7 +1109,7 @@ public class SMBSyncMain extends ActionBarActivity {
 				menu.findItem(R.id.menu_top_log_management).setEnabled(true);
 			}
 			if (mGp.settingShowSyncButtonOnMenuItem) {
-				if (currentViewType.equals("P")) {
+				if (mGp.currentTab.equals(SMBSYNC_TAB_NAME_PROF)) {
 					menu.findItem(R.id.menu_top_sync).setVisible(true);
 					if (mContextProfileButtonSync.isEnabled()) {
 						menu.findItem(R.id.menu_top_sync).setEnabled(true);
@@ -1244,15 +1261,15 @@ public class SMBSyncMain extends ActionBarActivity {
 	};
 	
 	private void processHomeButtonPress() {
-		if (currentViewType.equals("P")) {
+		if (mGp.currentTab.equals(SMBSYNC_TAB_NAME_PROF)) {
 			if (mGp.profileAdapter.isShowCheckBox()) {
 				mGp.profileAdapter.setShowCheckBox(false);
 				mGp.profileAdapter.notifyDataSetChanged();
 
 				setProfileContextButtonNormalMode();
 			}
-		} else if (currentViewType.equals("M")) {
-		} else if (currentViewType.equals("H")) {
+		} else if (mGp.currentTab.equals(SMBSYNC_TAB_NAME_MSG)) {
+		} else if (mGp.currentTab.equals(SMBSYNC_TAB_NAME_HIST)) {
 			if (mGp.syncHistoryAdapter.isShowCheckBox()) {
 				mGp.syncHistoryAdapter.setShowCheckBox(false);
 				mGp.syncHistoryAdapter.notifyDataSetChanged();
@@ -1293,8 +1310,8 @@ public class SMBSyncMain extends ActionBarActivity {
 	private ProfileListItem getProfileListItem(String type, String name) {
 		ProfileListItem pli=null;
 		for (int i=0;i<mGp.profileAdapter.getCount();i++) {
-			if (mGp.profileAdapter.getItem(i).getType().equals(type) &&
-					mGp.profileAdapter.getItem(i).getName().equals(name)) {
+			if (mGp.profileAdapter.getItem(i).getProfileType().equals(type) &&
+					mGp.profileAdapter.getItem(i).getProfileName().equals(name)) {
 				pli=mGp.profileAdapter.getItem(i);
 				break;
 			}
@@ -1309,7 +1326,7 @@ public class SMBSyncMain extends ActionBarActivity {
 			String mp_name=null;
 			for (int i=0;i<mGp.profileAdapter.getCount();i++) {
 				ProfileListItem s_pli=mGp.profileAdapter.getItem(i);
-				if (s_pli.getType().equals(SMBSYNC_PROF_TYPE_SYNC) && s_pli.isActive()) {
+				if (s_pli.getProfileType().equals(SMBSYNC_PROF_TYPE_SYNC) && s_pli.isProfileActive()) {
 					ProfileListItem o_pli=null;
 					if (s_pli.getMasterType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
 						o_pli=getProfileListItem(SMBSYNC_PROF_TYPE_LOCAL,s_pli.getMasterName());
@@ -1792,7 +1809,7 @@ public class SMBSyncMain extends ActionBarActivity {
 	private void loadExtraDataParms(Intent in) {
 		Bundle bundle=in.getExtras();
 		if (bundle!=null) {
-			tabHost.setCurrentTabByTag(TAB_TAG_MSG);
+			tabHost.setCurrentTabByTag(SMBSYNC_TAB_NAME_MSG);
 			String sid="External Application";
 			if (bundle.containsKey(SMBSYNC_SCHEDULER_ID)) {
 				if (bundle.get(SMBSYNC_SCHEDULER_ID).getClass().getSimpleName().equals("String")) {
@@ -1952,10 +1969,10 @@ public class SMBSyncMain extends ActionBarActivity {
 				if (!sync_profile[sidx].equals("")) {
 					boolean selected=false;
 					for (int pidx=0;pidx<mGp.profileAdapter.getCount();pidx++) {
-						if (mGp.profileAdapter.getItem(pidx).getType().equals(SMBSYNC_PROF_TYPE_SYNC) && 
-								mGp.profileAdapter.getItem(pidx).getName().equals(sync_profile[sidx])) {
+						if (mGp.profileAdapter.getItem(pidx).getProfileType().equals(SMBSYNC_PROF_TYPE_SYNC) && 
+								mGp.profileAdapter.getItem(pidx).getProfileName().equals(sync_profile[sidx])) {
 							selected=true;
-							if (mGp.profileAdapter.getItem(pidx).isActive()) {
+							if (mGp.profileAdapter.getItem(pidx).isProfileActive()) {
 								mGp.profileAdapter.getItem(pidx).setChecked(true);
 								util.addLogMsg("I","  "+mContext.getString(R.string.msgs_extra_data_profile_selected)+sync_profile[sidx]);
 								prof_selected=true;
@@ -2427,7 +2444,7 @@ public class SMBSyncMain extends ActionBarActivity {
 					mGp.profileListView.setEnabled(false);
 					ProfileListItem item = mGp.profileAdapter.getItem(position);
 					if (!mGp.profileAdapter.isShowCheckBox()) {
-						editProfile(item.getName(),item.getType(),item.getActive(),position);
+						editProfile(item.getProfileName(),item.getProfileType(),item.getProfileActive(),position);
 						mUiHandler.postDelayed(new Runnable(){
 							@Override
 							public void run() {
@@ -2747,7 +2764,7 @@ public class SMBSyncMain extends ActionBarActivity {
 				if (mGp.enableMainUi) {
 					setProfileContextButtonEnabled(mContextProfileButtonAddLocal,false);
 					ProfileListItem pfli=new ProfileListItem();
-					pfli.setActive(SMBSYNC_PROF_ACTIVE);
+					pfli.setProfileActive(SMBSYNC_PROF_ACTIVE);
 					ProfileMaintLocalFragment pmsp=ProfileMaintLocalFragment.newInstance();
 					pmsp.showDialog(getSupportFragmentManager(), pmsp, "ADD", new ProfileListItem(), 
 							0, profUtil, util, commonDlg, ntfy);
@@ -2764,8 +2781,8 @@ public class SMBSyncMain extends ActionBarActivity {
 					setProfileContextButtonEnabled(mContextProfileButtonAddRemote,false);
 					String c_ip=SMBSyncUtil.getLocalIpAddress();
 					ProfileListItem pfli=new ProfileListItem();
-					pfli.setAddr(c_ip);
-					pfli.setActive(SMBSYNC_PROF_ACTIVE);
+					pfli.setRemoteAddr(c_ip);
+					pfli.setProfileActive(SMBSYNC_PROF_ACTIVE);
 					ProfileMaintRemoteFragment pmsp=ProfileMaintRemoteFragment.newInstance();
 					pmsp.showDialog(getSupportFragmentManager(), pmsp, "ADD", pfli, 
 							0, profUtil, util, commonDlg, ntfy);
@@ -2781,7 +2798,7 @@ public class SMBSyncMain extends ActionBarActivity {
 				if (mGp.enableMainUi) {
 					setProfileContextButtonEnabled(mContextProfileButtonAddSync,false);
 					ProfileListItem pfli=new ProfileListItem();
-					pfli.setActive(SMBSYNC_PROF_ACTIVE);
+					pfli.setProfileActive(SMBSYNC_PROF_ACTIVE);
 					pfli.setForceLastModifiedUseSmbsync(false);
 					ProfileMaintSyncFragment pmsp=ProfileMaintSyncFragment.newInstance();
 					pmsp.showDialog(getSupportFragmentManager(), pmsp, "ADD", pfli, 
@@ -2931,8 +2948,8 @@ public class SMBSyncMain extends ActionBarActivity {
 		String msg=mContext.getString(R.string.msgs_prof_cont_to_activate_profile)+"\n";
 //		String sep="";
 		for(int i=0;i<pa.getCount();i++) {
-			if (pa.getItem(i).isChecked() && !pa.getItem(i).isActive()) {
-				msg+=pa.getItem(i).getName()+"\n";
+			if (pa.getItem(i).isChecked() && !pa.getItem(i).isProfileActive()) {
+				msg+=pa.getItem(i).getProfileName()+"\n";
 			}
 		}
 //		msg+="\n";
@@ -2955,8 +2972,8 @@ public class SMBSyncMain extends ActionBarActivity {
 		String msg=mContext.getString(R.string.msgs_prof_cont_to_inactivate_profile)+"\n";
 //		String sep="";
 		for(int i=0;i<pa.getCount();i++) {
-			if (pa.getItem(i).isChecked() && pa.getItem(i).isActive()) {
-				msg+=pa.getItem(i).getName()+"\n";
+			if (pa.getItem(i).isChecked() && pa.getItem(i).isProfileActive()) {
+				msg+=pa.getItem(i).getProfileName()+"\n";
 			}
 		}
 //		msg+="\n";
@@ -2980,8 +2997,8 @@ public class SMBSyncMain extends ActionBarActivity {
         	boolean act_sync_prof=false;
         	for(int i=0;i<tot_cnt;i++) {
         		if (mGp.profileAdapter.getItem(i).isChecked() &&
-        				mGp.profileAdapter.getItem(i).getType().equals(SMBSYNC_PROF_TYPE_SYNC) &&
-        				mGp.profileAdapter.getItem(i).isActive()) {
+        				mGp.profileAdapter.getItem(i).getProfileType().equals(SMBSYNC_PROF_TYPE_SYNC) &&
+        				mGp.profileAdapter.getItem(i).isProfileActive()) {
         			act_sync_prof=true;
         			break;
         		}
@@ -3002,7 +3019,7 @@ public class SMBSyncMain extends ActionBarActivity {
     	if (any_selected) {
         	for(int i=0;i<tot_cnt;i++) {
         		if (mGp.profileAdapter.getItem(i).isChecked()) {
-        			if (mGp.profileAdapter.getItem(i).isActive()) act_prof_selected=true;
+        			if (mGp.profileAdapter.getItem(i).isProfileActive()) act_prof_selected=true;
         			else inact_prof_selected=true;
         			if (act_prof_selected && inact_prof_selected) break;
         		}
@@ -3082,7 +3099,7 @@ public class SMBSyncMain extends ActionBarActivity {
         	boolean is_sync_profile_existed=false;
         	for(int i=0;i<mGp.profileAdapter.getCount();i++) {
         		ProfileListItem pli=mGp.profileAdapter.getItem(i);
-        		if (pli.isActive() && pli.getType().equals(SMBSYNC_PROF_TYPE_SYNC)) {
+        		if (pli.isProfileActive() && pli.getProfileType().equals(SMBSYNC_PROF_TYPE_SYNC)) {
         			is_sync_profile_existed=true;
         			break;
         		}
@@ -3216,12 +3233,12 @@ public class SMBSyncMain extends ActionBarActivity {
 		String sep="";
 		for (int i=0;i<mGp.profileAdapter.getCount();i++){
 			item=mGp.profileAdapter.getItem(i);
-			if (item.isChecked()&&item.isActive()) {
-				if (item.getType().equals(SMBSYNC_PROF_TYPE_SYNC)) {
+			if (item.isChecked()&&item.isProfileActive()) {
+				if (item.getProfileType().equals(SMBSYNC_PROF_TYPE_SYNC)) {
 					MirrorIoParmList alp_item =buildSyncParameter(item);
 					if (alp_item!=null) {
 						alp.add(alp_item);
-						sync_list_tmp+=sep+item.getName();
+						sync_list_tmp+=sep+item.getProfileName();
 						sep=",";
 					}
 				}
@@ -3329,11 +3346,11 @@ public class SMBSyncMain extends ActionBarActivity {
 		String sync_list_tmp="", sep="";
 		for (int i=0;i< mGp.profileAdapter.getCount();i++) {
 			item = mGp.profileAdapter.getItem(i);
-			if (item.isActive() && item.getType().equals(SMBSYNC_PROF_TYPE_SYNC)) {
+			if (item.isProfileActive() && item.getProfileType().equals(SMBSYNC_PROF_TYPE_SYNC)) {
 				MirrorIoParmList alp_item =buildSyncParameter(item);
 				if (alp_item!=null) {
 					alp.add(alp_item);			
-					sync_list_tmp+=sep+item.getName();
+					sync_list_tmp+=sep+item.getProfileName();
 					sep=",";
 				}
 			}
@@ -3966,7 +3983,7 @@ public class SMBSyncMain extends ActionBarActivity {
 					util.addDebugLogMsg(1,"I","Auto sync was invoked.");
 					boolean sel_prof=false;
 					for (int i=0;i<mGp.profileAdapter.getCount();i++) {
-						if (mGp.profileAdapter.getItem(i).getType().equals(SMBSYNC_PROF_TYPE_SYNC) && 
+						if (mGp.profileAdapter.getItem(i).getProfileType().equals(SMBSYNC_PROF_TYPE_SYNC) && 
 								mGp.profileAdapter.getItem(i).isChecked()) {
 							sel_prof=true;
 						}
@@ -3997,7 +4014,7 @@ public class SMBSyncMain extends ActionBarActivity {
 
 		showNotificationMsg(getString(R.string.msgs_astart_started));
 		util.addLogMsg("I",getString(R.string.msgs_astart_started));
-		tabHost.setCurrentTabByTag(TAB_TAG_MSG);
+		tabHost.setCurrentTabByTag(SMBSYNC_TAB_NAME_MSG);
 		if (extraValueAutoStart) {
 			mGp.progressBarView.setVisibility(LinearLayout.GONE);
 			at_ne.notifyToListener(true, null);
@@ -4209,7 +4226,7 @@ public class SMBSyncMain extends ActionBarActivity {
 		String master_local_dir="", master_local_mp="";
 		String target_local_dir="", target_local_mp="";
 		
-		mp_profname = item.getName();
+		mp_profname = item.getProfileName();
 		mp_master_name = item.getMasterName();
 		mp_target_name = item.getTargetName();
 		mirror_prof_type = item.getSyncType();
@@ -4220,21 +4237,21 @@ public class SMBSyncMain extends ActionBarActivity {
 		
 		for (int j = 0; j <= mGp.profileAdapter.getCount() - 1; j++) {
 			ProfileListItem item_master = mGp.profileAdapter.getItem(j);
-			if (item_master.getName().equals(mp_master_name)) {
-				if (item_master.getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
-					local_prof_dir = item_master.getDir();
+			if (item_master.getProfileName().equals(mp_master_name)) {
+				if (item_master.getProfileType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
+					local_prof_dir = item_master.getDirectoryName();
 					local_prof_lmp=item_master.getLocalMountPoint();
-					master_local_dir=item_master.getDir();
+					master_local_dir=item_master.getDirectoryName();
 					master_local_mp=item_master.getLocalMountPoint();
 					mirror_prof_master_type = "L";// Mirror local -> remote
 				} else {
-					remote_prof_addr = item_master.getAddr();
-					remote_host_name = item_master.getHostname();
-					remote_host_port = item_master.getPort();
-					remote_prof_share = item_master.getShare();
-					remote_prof_userid = item_master.getUser();
-					remote_prof_pass = item_master.getPass();
-					remote_prof_dir = item_master.getDir();
+					remote_prof_addr = item_master.getRemoteAddr();
+					remote_host_name = item_master.getRemoteHostname();
+					remote_host_port = item_master.getRemotePort();
+					remote_prof_share = item_master.getRemoteShareName();
+					remote_prof_userid = item_master.getRemoteUserID();
+					remote_prof_pass = item_master.getRemotePassword();
+					remote_prof_dir = item_master.getDirectoryName();
 					mirror_prof_master_type = "R";// Mirror remote -> local
 				}
 				build_success_master=true;
@@ -4243,22 +4260,22 @@ public class SMBSyncMain extends ActionBarActivity {
 
 		for (int k = 0; k <= mGp.profileAdapter.getCount() - 1; k++) {
 			ProfileListItem item_target = mGp.profileAdapter.getItem(k);
-			if (item_target.getName().equals(mp_target_name)) {
-				if (item_target.getType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
-					local_prof_dir = item_target.getDir();
+			if (item_target.getProfileName().equals(mp_target_name)) {
+				if (item_target.getProfileType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
+					local_prof_dir = item_target.getDirectoryName();
 					local_prof_lmp=item_target.getLocalMountPoint();
-					target_local_dir=item_target.getDir();
+					target_local_dir=item_target.getDirectoryName();
 					target_local_mp=item_target.getLocalMountPoint();
 					app_specific=LocalMountPoint.isAppSpecificDirectory(mContext, target_local_mp, target_local_dir);
 					mirror_prof_target_type = "L";
 				} else {
-					remote_prof_addr = item_target.getAddr();
-					remote_host_name = item_target.getHostname();
-					remote_host_port = item_target.getPort();
-					remote_prof_share = item_target.getShare();
-					remote_prof_userid = item_target.getUser();
-					remote_prof_pass = item_target.getPass();
-					remote_prof_dir = item_target.getDir();
+					remote_prof_addr = item_target.getRemoteAddr();
+					remote_host_name = item_target.getRemoteHostname();
+					remote_host_port = item_target.getRemotePort();
+					remote_prof_share = item_target.getRemoteShareName();
+					remote_prof_userid = item_target.getRemoteUserID();
+					remote_prof_pass = item_target.getRemotePassword();
+					remote_prof_dir = item_target.getDirectoryName();
 				}
 				if (mirror_prof_master_type.equals("R") && mirror_prof_target_type.equals("R")) {
 				} else {

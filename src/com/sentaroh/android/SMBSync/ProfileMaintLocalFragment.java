@@ -303,9 +303,9 @@ public class ProfileMaintLocalFragment extends DialogFragment{
 		final TextView dlg_msg=(TextView) mDialog.findViewById(R.id.local_profile_dlg_msg);
 		final CheckedTextView ctv_active = (CheckedTextView) mDialog.findViewById(R.id.local_profile_ctv_active);
 		final EditText editdir = (EditText) mDialog.findViewById(R.id.local_profile_dir);
-		editdir.setText(pfli.getDir());
+		editdir.setText(pfli.getDirectoryName());
 		final EditText editname = (EditText) mDialog.findViewById(R.id.local_profile_name);
-		editname.setText(pfli.getName());
+		editname.setText(pfli.getProfileName());
 
 		final Spinner spinner=(Spinner) mDialog.findViewById(R.id.local_profile_lmp_btn);
 		spinner.setVisibility(Spinner.VISIBLE);
@@ -467,7 +467,7 @@ public class ProfileMaintLocalFragment extends DialogFragment{
 						mDialog.dismiss();
 //						int pos=glblParms.profileListView.getFirstVisiblePosition();
 //						int posTop=glblParms.profileListView.getChildAt(0).getTop();
-						if (mGp.profileAdapter.getItem(0).getType().equals(""))
+						if (mGp.profileAdapter.getItem(0).getProfileType().equals(""))
 							mGp.profileAdapter.remove(0);
 						ProfileUtility.updateLocalProfileAdapter(mGp, true,prof_name,prof_act,
 								prof_lmp, prof_dir,
@@ -506,12 +506,12 @@ public class ProfileMaintLocalFragment extends DialogFragment{
 		final TextView dlg_title=(TextView) mDialog.findViewById(R.id.local_profile_dlg_title);
 		dlg_title.setText(mContext.getString(R.string.msgs_edit_local_profile));
 		final TextView dlg_title_sub=(TextView) mDialog.findViewById(R.id.local_profile_dlg_title_sub);
-		dlg_title_sub.setText(" ("+pfli.getName()+")");
+		dlg_title_sub.setText(" ("+pfli.getProfileName()+")");
 		final TextView dlg_msg=(TextView) mDialog.findViewById(R.id.local_profile_dlg_msg);
 		final EditText editdir = (EditText) mDialog.findViewById(R.id.local_profile_dir);
-		editdir.setText(pfli.getDir());
+		editdir.setText(pfli.getDirectoryName());
 		final EditText editname = (EditText) mDialog.findViewById(R.id.local_profile_name);
-		editname.setText(pfli.getName());
+		editname.setText(pfli.getProfileName());
 		editname.setTextColor(Color.LTGRAY);
 		editname.setEnabled(false);
 		editname.setVisibility(EditText.GONE);
@@ -522,7 +522,7 @@ public class ProfileMaintLocalFragment extends DialogFragment{
 				ctv_active.toggle();
 			}
 		});
-		ctv_active.setChecked(pfli.isActive());
+		ctv_active.setChecked(pfli.isProfileActive());
 		
 		final Spinner spinner=(Spinner) mDialog.findViewById(R.id.local_profile_lmp_btn);
 		spinner.setVisibility(Spinner.VISIBLE);
@@ -642,8 +642,8 @@ public class ProfileMaintLocalFragment extends DialogFragment{
 					if (!LocalFileLastModified.isSetLastModifiedFunctional(prof_lmp)) {
 						if (!item.getLocalMountPoint().equals(prof_lmp)) lmp_changed=true;
 					}
-					if (prof_name.equals(item.getName()) ||
-							(!prof_name.equals(item.getName()) &&
+					if (prof_name.equals(item.getProfileName()) ||
+							(!prof_name.equals(item.getProfileName()) &&
 							 !mProfUtil.isProfileExists(SMBSYNC_PROF_GROUP_DEFAULT,
 									 SMBSYNC_PROF_TYPE_LOCAL,prof_name))) {
 						final String t_prof_name=prof_name;

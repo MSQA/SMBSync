@@ -42,7 +42,7 @@ public class AdapterLocalMountPoint extends CustomSpinnerAdapter {
 
 	public AdapterLocalMountPoint(Context context, int textViewResourceId) {
 		super(context, textViewResourceId);
-		mpl=LocalMountPoint.buildLocalMountPointList(context);
+		mpl=LocalMountPoint.getLocalMountPointList(context);
 	}
 
 	@Override

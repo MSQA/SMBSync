@@ -299,13 +299,13 @@ public class LocalFileLastModified {
 		
 		for (int i=0;i<profile_adapter.getCount();i++) {
 			ProfileListItem syncprof_item =profile_adapter.getItem(i);
-			if (syncprof_item.getType().equals(SMBSYNC_PROF_TYPE_SYNC) &&
+			if (syncprof_item.getProfileType().equals(SMBSYNC_PROF_TYPE_SYNC) &&
 					syncprof_item.getTargetType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
 				ProfileListItem lclprof_item=
 						ProfileUtility.getProfile(syncprof_item.getTargetName(), profile_adapter);
 				if (lclprof_item!=null) {
 					String lmp=lclprof_item.getLocalMountPoint();
-					if (!lclprof_item.getDir().equals("")) lmp+="/"+lclprof_item.getDir();
+					if (!lclprof_item.getDirectoryName().equals("")) lmp+="/"+lclprof_item.getDirectoryName();
 //					Log.v("","lmp="+lmp);
 					if (!lmp.equals("/")&&!lmp.equals("")) {
 						if (!isSetLastModifiedFunctional(lmp) ||
@@ -392,13 +392,13 @@ public class LocalFileLastModified {
 		boolean usable=false;
 		for (int i=0;i<profile_adapter.getCount();i++) {
 			ProfileListItem syncprof_item =profile_adapter.getItem(i);
-			if (syncprof_item.getType().equals(SMBSYNC_PROF_TYPE_SYNC) &&
+			if (syncprof_item.getProfileType().equals(SMBSYNC_PROF_TYPE_SYNC) &&
 					syncprof_item.getTargetType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
 				ProfileListItem lclprof_item=
 						ProfileUtility.getProfile(syncprof_item.getTargetName(), profile_adapter);
 				if (lclprof_item!=null) {
 					String lmp=lclprof_item.getLocalMountPoint();
-					if (!lclprof_item.getDir().equals("")) lmp+="/"+lclprof_item.getDir();
+					if (!lclprof_item.getDirectoryName().equals("")) lmp+="/"+lclprof_item.getDirectoryName();
 //					Log.v("","lmp="+lmp);
 					if (!lmp.equals("/")&&!lmp.equals("")) {
 						if (!isSetLastModifiedFunctional(lmp) ||

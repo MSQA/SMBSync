@@ -23,7 +23,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_SYNC_WIFI_OPTION_CONNECTED_ANY_AP;
+import static com.sentaroh.android.SMBSync.Constants.*;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -65,6 +65,8 @@ public class GlobalParameters extends Application{
 	
 	public boolean enableMainUi=true;
 	
+	public String currentTab=SMBSYNC_TAB_NAME_PROF;
+	
 	public boolean mirrorThreadActive=false;
 	
 	public boolean supressAutoStart=false;
@@ -78,6 +80,7 @@ public class GlobalParameters extends Application{
 	
 	public AdapterProfileList profileAdapter=null;
 	public ListView profileListView=null;
+	public int newProfileListViewPos=-1;
 
 	public AdapterMessageList msgListAdapter=null;
 	public ListView msgListView=null;
@@ -89,13 +92,13 @@ public class GlobalParameters extends Application{
 	public String profilePassword="";
 	public final String profilePasswordPrefix="*SMBSync*";
 	
-	public NotificationManager notificationManager;
+	public NotificationManager notificationManager=null;
 	public int notificationIcon=R.drawable.ic_48_smbsync_wait;
-	public Notification notification;
-	public Builder notificationBuilder;
-	public BigTextStyle notificationBigTextStyle;
-	public Intent notificationIntent;
-	public PendingIntent notificationPendingIntent;
+	public Notification notification=null;
+	public Builder notificationBuilder=null;
+	public BigTextStyle notificationBigTextStyle=null;
+	public Intent notificationIntent=null;
+	public PendingIntent notificationPendingIntent=null;
 	public String notificationLastShowedMessage=null, notificationLastShowedTitle="";
 	public String notificationAppName="";
 //	public boolean notiifcationEnabled=false;

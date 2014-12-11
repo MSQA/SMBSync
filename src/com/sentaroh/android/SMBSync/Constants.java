@@ -32,6 +32,8 @@ public class Constants {
 	
 	public final static boolean BUILD_FOR_AMAZON=false;
 	
+	public final static String SMBSYNC_TAB_NAME_PROF="prof", SMBSYNC_TAB_NAME_MSG="msg", SMBSYNC_TAB_NAME_HIST="hist";
+	
 	public static final String SMBSYNC_CONFIRM_REQUEST_COPY="Copy";
 	public static final String SMBSYNC_CONFIRM_REQUEST_DELETE="Delete";
 	public static final int SMBSYNC_CONFIRM_RESP_YES = 1;

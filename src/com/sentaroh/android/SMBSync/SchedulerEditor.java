@@ -402,10 +402,10 @@ public class SchedulerEditor {
 
 		for (int i=0;i<mGp.profileAdapter.getCount();i++) {
 			ProfileListItem pfli=mGp.profileAdapter.getItem(i);
-			if (pfli.isActive() || !active) {
-				if (pfli.getType().equals(SMBSYNC_PROF_TYPE_SYNC)) {
-					String act=pfli.getActive();
-					adapter.add(act+pfli.getName());
+			if (pfli.isProfileActive() || !active) {
+				if (pfli.getProfileType().equals(SMBSYNC_PROF_TYPE_SYNC)) {
+					String act=pfli.getProfileActive();
+					adapter.add(act+pfli.getProfileName());
 				}
 			}
 		};

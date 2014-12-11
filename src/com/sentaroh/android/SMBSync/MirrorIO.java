@@ -23,7 +23,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_CONFIRM_REQUEST_COPY;
+import static com.sentaroh.android.SMBSync.Constants.*;
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_CONFIRM_REQUEST_DELETE;
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_CONFIRM_RESP_NOALL;
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_CONFIRM_RESP_YESALL;
@@ -578,14 +578,19 @@ public class MirrorIO implements Runnable {
 			public void run() {
 				mGp.profileAdapter.notifyDataSetChanged();
 				for(int i=0;i<mGp.profileAdapter.getCount();i++) {
-					if (mGp.profileAdapter.getItem(i).getName().equals(syncProfName)) {
+					if (mGp.profileAdapter.getItem(i).getProfileName().equals(syncProfName)) {
 						final int pos=i;
-						mGp.profileListView.post(new Runnable(){
-							@Override
-							public void run() {
-								mGp.profileListView.setSelection(pos);
-							}
-						});
+						if (mGp.currentTab.equals(SMBSYNC_TAB_NAME_PROF)) {
+							mGp.newProfileListViewPos=-1;
+							mGp.profileListView.post(new Runnable(){
+								@Override
+								public void run() {
+									mGp.profileListView.setSelection(pos);
+								}
+							});
+						} else {
+							mGp.newProfileListViewPos=i;
+						}
 						break;
 					}
 				}
@@ -842,7 +847,7 @@ public class MirrorIO implements Runnable {
 	};
 	
 	private void printMpList() {
-		ArrayList<String>ml=LocalMountPoint.buildLocalMountPointList(mGp.svcContext);
+		ArrayList<String>ml=LocalMountPoint.getLocalMountPointList(mGp.svcContext);
 		if (ml!=null) {
 			for (int i=0;i<ml.size();i++) addLogMsg("E","","mp="+ml.get(i));
 		}
