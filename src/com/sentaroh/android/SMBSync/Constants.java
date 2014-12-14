@@ -25,7 +25,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 public class Constants {
 
-	final static String APPLICATION_TAG="SMBSync";
+	public final static String APPLICATION_TAG="SMBSync";
 	
 //	final public static int MAX_DLG_BOX_SIZE_WIDTH=600; 
 //	final public static int MAX_DLG_BOX_SIZE_HEIGHT=800;
@@ -98,6 +98,7 @@ public class Constants {
 	public final static String SMBSYNC_SETTINGS_TYPE_STRING="S";
 	public final static String SMBSYNC_SETTINGS_TYPE_BOOLEAN="B";
 	public final static String SMBSYNC_SETTINGS_TYPE_INT="I";
+	public final static String SMBSYNC_SETTINGS_TYPE_LONG="L";
 	
 	public final static String SMBSYNC_PROF_FILTER_INCLUDE="I";
 	public final static String SMBSYNC_PROF_FILTER_EXCLUDE="E";
@@ -125,4 +126,6 @@ public class Constants {
 	public static final String SMBSYNC_PROFILE_2_CONFIRM_COPY_DELETE_REQUIRED = "REQUIRED";
 
 	public static final String SMBSYNC_PROFILE_RETRY_COUNT="3";
+	
+	public static final String SMBSYNC_LOG_WRITE="smbsync_log_write";
 }

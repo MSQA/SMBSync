@@ -38,21 +38,21 @@ public class NotificationUtil {
 	
 	@SuppressWarnings("deprecation")
 	static final public void initNotification(GlobalParameters gwa) {
-		gwa.notificationManager=(NotificationManager) gwa.svcContext.getSystemService(Context.NOTIFICATION_SERVICE);
+		gwa.notificationManager=(NotificationManager) gwa.appContext.getSystemService(Context.NOTIFICATION_SERVICE);
 		gwa.notification=new Notification(R.drawable.ic_32_smbsync,
-    			gwa.svcContext.getString(R.string.app_name),0);
+    			gwa.appContext.getString(R.string.app_name),0);
 
-		gwa.notificationAppName=gwa.svcContext.getString(R.string.app_name);
+		gwa.notificationAppName=gwa.appContext.getString(R.string.app_name);
 		
-		gwa.notificationIntent = new Intent(gwa.svcContext,SMBSyncMain.class);
+		gwa.notificationIntent = new Intent(gwa.appContext,SMBSyncMain.class);
 		gwa.notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
 		gwa.notificationIntent.setAction(Intent.ACTION_MAIN);
 		gwa.notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
 
-		gwa.notificationPendingIntent =PendingIntent.getActivity(gwa.svcContext, 0, gwa.notificationIntent,
+		gwa.notificationPendingIntent =PendingIntent.getActivity(gwa.appContext, 0, gwa.notificationIntent,
     					PendingIntent.FLAG_UPDATE_CURRENT);
 
-		gwa.notificationBuilder=new NotificationCompat.Builder(gwa.svcContext);
+		gwa.notificationBuilder=new NotificationCompat.Builder(gwa.appContext);
 		gwa.notificationBuilder.setContentIntent(gwa.notificationPendingIntent)
 //		   	.setTicker(gwa.notificationAppName)
 			.setOngoing(true)
@@ -151,13 +151,13 @@ public class NotificationUtil {
 			;
 
 		boolean valid_log_file_exists=false;
-		if (!gwa.currentLogFilePath.equals("") && !gwa.settingLogOption.equals("0")) {
-			File lf=new File(gwa.currentLogFilePath);
+		if (!LogUtil.getLogFilePath(gwa).equals("") && !gwa.settingLogOption.equals("0")) {
+			File lf=new File(LogUtil.getLogFilePath(gwa));
 			if (lf.exists()) valid_log_file_exists=true;
 		}
 		if (valid_log_file_exists) {
 			Intent br_log_intent = new Intent(android.content.Intent.ACTION_VIEW);
-			br_log_intent.setDataAndType(Uri.parse("file://"+gwa.currentLogFilePath), "text/plain");
+			br_log_intent.setDataAndType(Uri.parse("file://"+LogUtil.getLogFilePath(gwa)), "text/plain");
 			PendingIntent br_log_pi=PendingIntent.getActivity(context, 0, br_log_intent,
 					PendingIntent.FLAG_UPDATE_CURRENT);
 			builder.setContentIntent(br_log_pi);

@@ -4,6 +4,8 @@ import static com.sentaroh.android.SMBSync.SchedulerConstants.*;
 
 import java.util.Calendar;
 
+import com.sentaroh.android.Utilities.LocalMountPoint;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -13,11 +15,16 @@ public class SchedulerUtil {
     final static public void loadScheduleData(SchedulerParms sp, Context c) {
     	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
     	sp.debugLevel=Integer.parseInt(prefs.getString(c.getString(R.string.settings_log_level), "0"));
+    	sp.logDir=prefs.getString(c.getString(R.string.settings_log_dir),
+    			LocalMountPoint.getExternalStorageDir()+"/SMBSync/");
     	sp.scheduleEnabled=prefs.getBoolean(SCHEDULER_SCHEDULE_ENABLED_KEY, false);
     	sp.scheduleType=prefs.getString(SCHEDULER_SCHEDULE_TYPE_KEY, SCHEDULER_SCHEDULE_TYPE_EVERY_DAY);
     	sp.scheduleHours=prefs.getString(SCHEDULER_SCHEDULE_HOURS_KEY, "00");
     	sp.scheduleMinutes=prefs.getString(SCHEDULER_SCHEDULE_MINUTES_KEY, "00");
     	sp.scheduleDayOfTheWeek=prefs.getString(SCHEDULER_SCHEDULE_DAY_OF_THE_WEEK_KEY, "0000000");
+    	
+    	sp.scheduleLastExecTime=prefs.getLong(SCHEDULER_SCHEDULE_LAST_EXEC_TIME_KEY, -1);
+    	if (sp.scheduleLastExecTime==-1) saveScheduleLastExecTime(System.currentTimeMillis(), c);
     	
     	sp.syncProfile=prefs.getString(SCHEDULER_SYNC_PROFILE_KEY, "");
     	sp.syncOptionAutostart=prefs.getBoolean(SCHEDULER_SYNC_OPTION_AUTOSTART_KEY, false);
@@ -41,6 +48,8 @@ public class SchedulerUtil {
     	prefs.edit().putString(SCHEDULER_SCHEDULE_MINUTES_KEY, sp.scheduleMinutes).commit();
     	prefs.edit().putString(SCHEDULER_SCHEDULE_DAY_OF_THE_WEEK_KEY, sp.scheduleDayOfTheWeek).commit();
     	
+    	prefs.edit().putLong(SCHEDULER_SCHEDULE_LAST_EXEC_TIME_KEY, sp.scheduleLastExecTime).commit();
+    	
     	prefs.edit().putString(SCHEDULER_SYNC_PROFILE_KEY, sp.syncProfile).commit();
     	prefs.edit().putBoolean(SCHEDULER_SYNC_OPTION_AUTOSTART_KEY, sp.syncOptionAutostart).commit();
     	prefs.edit().putBoolean(SCHEDULER_SYNC_OPTION_AUTOTERM_KEY, sp.syncOptionAutoterm).commit();
@@ -51,6 +60,11 @@ public class SchedulerUtil {
     	
     	prefs.edit().putString(SCHEDULER_SYNC_DELAYED_TIME_FOR_WIFI_ON_KEY, 
     			String.valueOf(sp.syncStartDelayTimeAfterWifiOn)).commit();
+    };
+
+    final static public void saveScheduleLastExecTime(long last_exec_time, Context c) {
+    	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
+    	prefs.edit().putLong(SCHEDULER_SCHEDULE_LAST_EXEC_TIME_KEY, last_exec_time).commit();
     };
 
     final static public long getNextSchedule(SchedulerParms sp) {
@@ -76,9 +90,28 @@ public class SchedulerUtil {
 //    		cal.set(c_year, c_month, c_day, c_hr, c_mm, 0);
 //    		result=cal.getTimeInMillis()+(60*1000);
     	} else if (sp.scheduleType.equals(SCHEDULER_SCHEDULE_TYPE_EVERY_DAY)) {
+    		cal.clear();
     		cal.set(c_year, c_month, c_day, s_hrs, 0, 0);
     		if ((c_hr*100+c_mm)>=(s_hrs*100+s_min)) result=cal.getTimeInMillis()+(60*1000*60*24)+(60*1000*s_min);
     		else result=cal.getTimeInMillis()+(60*1000*s_min);
+    	} else if (sp.scheduleType.equals(SCHEDULER_SCHEDULE_TYPE_INTERVAL)) {
+//    		cal.clear();
+//    		cal.setTimeInMillis(sp.scheduleLastExecTime+s_min*(60*1000));
+//    		c_year=cal.get(Calendar.YEAR);
+//    		c_month=cal.get(Calendar.MONTH);
+//    		c_day=cal.get(Calendar.DAY_OF_MONTH);
+//    		c_hr=cal.get(Calendar.HOUR_OF_DAY);
+//    		c_mm=cal.get(Calendar.MINUTE);
+//    		int c_ss=cal.get(Calendar.SECOND);
+//    		cal.set(c_year, c_month, c_day, c_hr, c_mm, 0);
+//    		if (c_ss==0) result=cal.getTimeInMillis();
+//    		else result=cal.getTimeInMillis()+60*1000;
+    		
+    		result=sp.scheduleLastExecTime+s_min*(60*1000);
+    		
+//    		Log.v("","last="+DateUtil.convDateTimeTo_YearMonthDayHourMinSec(sp.scheduleLastExecTime));
+//    		Log.v("","c_year="+c_year+", c_month="+c_month+", c_day="+c_day+", c_hr="+c_hr+", c_mm="+c_mm+", c_ss="+c_ss);
+//    		Log.v("","new="+DateUtil.convDateTimeTo_YearMonthDayHourMinSec(result));
     	} else if (sp.scheduleType.equals(SCHEDULER_SCHEDULE_TYPE_DAY_OF_THE_WEEK)) {
     		boolean[] dwa=new boolean[]{false,false,false,false,false,false,false};
     		for (int i=0;i<sp.scheduleDayOfTheWeek.length();i++) {
@@ -148,20 +181,26 @@ public class SchedulerUtil {
     			}
         	}
 //    		Log.v("","s_dw="+s_dw);
+        	cal.clear();
     		cal.set(c_year, c_month, c_day, s_hrs, 0, 0);
     		result=cal.getTimeInMillis()+s_dw*(60*1000*60*24)+(60*1000*s_min);
     	}
+//		result=System.currentTimeMillis()+(1000*60*5);//SchedulerReceiverも修正（SCHEDULER_INTENT_SET_TIMER_IF_NOT_SET)
     	return result;
     };
 }
 
 class SchedulerParms {
 	public int debugLevel=0;
+	public String logDir="";
     public boolean scheduleEnabled=false;
     public String scheduleType="";
     public String scheduleHours="";
     public String scheduleMinutes="";
     public String scheduleDayOfTheWeek="";
+    
+    public long scheduleLastExecTime=0;
+    
     public String syncProfile="";
     public boolean syncOptionAutostart=false;
     public boolean syncOptionAutoterm=false;

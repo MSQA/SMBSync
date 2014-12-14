@@ -73,7 +73,7 @@ public class LogFileManagementFragment extends DialogFragment{
 	private LogFileManagementFragment mFragment=null;
 	private boolean terminateRequired=true;
 	private String mDialogTitle=null;
-	private GlobalParameters mGlblParms=null;
+	private GlobalParameters mGp=null;
 	
 	private Context mContext=null;
 
@@ -144,7 +144,7 @@ public class LogFileManagementFragment extends DialogFragment{
     	mContext=getActivity().getApplicationContext();
     	
     	if (!terminateRequired) 
-    		mLogFileList=SMBSyncUtil.createLogFileList(mGlblParms);
+    		mLogFileList=LogUtil.createLogFileList(mGp);
     };
     
 	@Override
@@ -248,7 +248,7 @@ public class LogFileManagementFragment extends DialogFragment{
     
     private void initViewWidget() {
     	if (DEBUG_ENABLE) Log.v(APPLICATION_TAG,"initViewWidget");
-    	if (mGlblParms==null) return;
+    	if (mGp==null) return;
     	
     	mDialog.setContentView(R.layout.log_management_dlg);
     	
@@ -498,7 +498,7 @@ public class LogFileManagementFragment extends DialogFragment{
 
     
     private void sendLogFile(final AdapterLogFileManagementList lfm_adapter) {
-		final String zip_file_name=mGlblParms.settingLogMsgDir+"log.zip";
+		final String zip_file_name=mGp.settingLogMsgDir+"log.zip";
 		
 		int no_of_files=0;
 		for (int i=0;i<lfm_adapter.getCount();i++) {
@@ -588,7 +588,7 @@ public class LogFileManagementFragment extends DialogFragment{
 				}
 				lfm_adapter.setAllItemChecked(false);
 				lfm_adapter.setShowCheckBox(false);
-				mLogFileList=SMBSyncUtil.createLogFileList(mGlblParms);
+				mLogFileList=LogUtil.createLogFileList(mGp);
 				lfm_adapter.replaceDataList(mLogFileList);
 				lfm_adapter.notifyDataSetChanged();
 				setContextButtonNormalMode(lfm_adapter);
@@ -606,7 +606,7 @@ public class LogFileManagementFragment extends DialogFragment{
     public void showDialog(FragmentManager fm, Fragment frag, GlobalParameters gp) {
     	if (DEBUG_ENABLE) Log.v(APPLICATION_TAG,"showDialog");
     	terminateRequired=false;
-    	mGlblParms=gp;
+    	mGp=gp;
 	    FragmentTransaction ft = fm.beginTransaction();
 	    ft.add(frag,null);
 	    ft.commitAllowingStateLoss();

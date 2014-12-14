@@ -25,7 +25,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 import static com.sentaroh.android.SMBSync.Constants.*;
 
-import java.io.PrintWriter;
 import java.util.ArrayList;
 
 import com.sentaroh.android.SMBSync.SMBSyncMain.ViewSaveArea;
@@ -45,6 +44,7 @@ import android.os.PowerManager.WakeLock;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat.BigTextStyle;
 import android.support.v4.app.NotificationCompat.Builder;
+import android.util.Log;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -55,11 +55,10 @@ import android.widget.TextView;
 public class GlobalParameters extends Application{
 	public boolean initialyzeCompleted=false;
 	
-	public Context svcContext=null;
+	public Context appContext=null;
 	
-	public PrintWriter logWriter=null;
 	public int logLineCount=0;
-	public String currentLogFilePath="";
+//	public String currentLogFilePath="";
 	
 	public boolean activityIsForeground=true;
 	
@@ -212,11 +211,11 @@ public class GlobalParameters extends Application{
 	@Override
 	public void  onCreate() {
 		super.onCreate();
-//		Log.v("SMBSyncGP","onCreate entered");
+		Log.v("SMBSyncGP","onCreate entered");
 		onLowMemory=false;
 		SMBSync_External_Root_Dir=LocalMountPoint.getExternalStorageDir();
 		
-		loadSettingsParm();
+		loadSettingsParm(this);
 	};
 	
 	@Override
@@ -225,74 +224,74 @@ public class GlobalParameters extends Application{
 		onLowMemory=true;
 	};
 	
-	public void loadSettingsParm() {
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+	public void loadSettingsParm(Context c) {
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
 
 		debugLevel=
-			Integer.parseInt(prefs.getString(getString(R.string.settings_log_level), "0")); 
+			Integer.parseInt(prefs.getString(c.getString(R.string.settings_log_level), "0")); 
 //			Integer.parseInt(prefs.getString(getString(R.string.settings_log_level), "1"));//for debug
 
 		settiingLogGeneration=Integer.valueOf(
-				prefs.getString(getString(R.string.settings_log_generation), "10"));
+				prefs.getString(c.getString(R.string.settings_log_generation), "10"));
 		
 		settingLogMsgDir=
-				prefs.getString(getString(R.string.settings_log_dir),
+				prefs.getString(c.getString(R.string.settings_log_dir),
 						SMBSync_External_Root_Dir+"/SMBSync/");
 		
 		settingAutoStart=
-				prefs.getBoolean(getString(R.string.settings_auto_start), false);
+				prefs.getBoolean(c.getString(R.string.settings_auto_start), false);
 		settingDebugMsgDisplay=
-				prefs.getBoolean(getString(R.string.settings_debug_msg_diplay), false);
+				prefs.getBoolean(c.getString(R.string.settings_debug_msg_diplay), false);
 		
 		settingLogOption=
-				prefs.getString(getString(R.string.settings_log_option), "0"); 
+				prefs.getString(c.getString(R.string.settings_log_option), "0"); 
 //				prefs.getString(getString(R.string.settings_log_option), "1"); //for debug
 
 		settingAutoTerm=
-				prefs.getBoolean(getString(R.string.settings_auto_term), false);
+				prefs.getBoolean(c.getString(R.string.settings_auto_term), false);
 		settingWifiOption=
-				prefs.getString(getString(R.string.settings_network_wifi_option), 
+				prefs.getString(c.getString(R.string.settings_network_wifi_option), 
 						SMBSYNC_SYNC_WIFI_OPTION_CONNECTED_ANY_AP);
 		settingErrorOption=
-				prefs.getBoolean(getString(R.string.settings_error_option), false);
+				prefs.getBoolean(c.getString(R.string.settings_error_option), false);
 		settingBackgroundExecution=
-				prefs.getBoolean(getString(R.string.settings_backgroound_execution), false);
+				prefs.getBoolean(c.getString(R.string.settings_backgroound_execution), false);
 		settingBgTermNotifyMsg=
-				prefs.getString(getString(R.string.settings_background_termination_notification), "0");
+				prefs.getString(c.getString(R.string.settings_background_termination_notification), "0");
 
 		settingVibrateWhenSyncEnded=
-				prefs.getString(getString(R.string.settings_vibrate_when_sync_ended), "0");
+				prefs.getString(c.getString(R.string.settings_vibrate_when_sync_ended), "0");
 		settingRingtoneWhenSyncEnded=
-				prefs.getString(getString(R.string.settings_playback_ringtone_when_sync_ended), "0");
+				prefs.getString(c.getString(R.string.settings_playback_ringtone_when_sync_ended), "0");
 
 		settingShowSyncButtonOnMenuItem=
-				prefs.getBoolean(getString(R.string.settings_show_sync_on_action_bar), false);
+				prefs.getBoolean(c.getString(R.string.settings_show_sync_on_action_bar), false);
 		
 		settingScreenOnOption=
-				prefs.getString(getString(R.string.settings_keep_screen_on), GlobalParameters.KEEP_SCREEN_ON_WHEN_SCREEN_UNLOCKED);
+				prefs.getString(c.getString(R.string.settings_keep_screen_on), GlobalParameters.KEEP_SCREEN_ON_WHEN_SCREEN_UNLOCKED);
 
 		settingWifiLockRequired=
-				prefs.getBoolean(getString(R.string.settings_wifi_lock), false);
+				prefs.getBoolean(c.getString(R.string.settings_wifi_lock), false);
 
 		settingRemoteFileCopyByRename=
-				prefs.getBoolean(getString(R.string.settings_remote_file_copy_by_rename), false);
+				prefs.getBoolean(c.getString(R.string.settings_remote_file_copy_by_rename), false);
 		settingLocalFileCopyByRename=
-				prefs.getBoolean(getString(R.string.settings_local_file_copy_by_rename), false);
+				prefs.getBoolean(c.getString(R.string.settings_local_file_copy_by_rename), false);
 		
 		settingMediaFiles=
-				prefs.getBoolean(getString(R.string.settings_media_scanner_non_media_files_scan), true);
+				prefs.getBoolean(c.getString(R.string.settings_media_scanner_non_media_files_scan), true);
 		settingScanExternalStorage=
-				prefs.getBoolean(getString(R.string.settings_media_scanner_scan_extstg), true);
+				prefs.getBoolean(c.getString(R.string.settings_media_scanner_scan_extstg), true);
 		
 		settingExitClean=
-				prefs.getBoolean(getString(R.string.settings_exit_clean), true);
+				prefs.getBoolean(c.getString(R.string.settings_exit_clean), true);
 		settingExportedProfileEncryptRequired=
-				prefs.getBoolean(getString(R.string.settings_exported_profile_encryption), true);
+				prefs.getBoolean(c.getString(R.string.settings_exported_profile_encryption), true);
 		
 		if (!settingAutoStart) settingAutoTerm=false;
 		
 		themeIsLight=
-				prefs.getBoolean(getString(R.string.settings_theme_is_light), false);
+				prefs.getBoolean(c.getString(R.string.settings_theme_is_light), false);
 		if (themeIsLight) applicationTheme=R.style.Theme_AppCompat_Light_DarkActionBar;
 		else applicationTheme=R.style.Theme_AppCompat;
 //		if (Build.VERSION.SDK_INT>=21) dialogViewBackGroundColor=0xff333333;

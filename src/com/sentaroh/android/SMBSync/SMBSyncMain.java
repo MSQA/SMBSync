@@ -92,6 +92,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sentaroh.android.Utilities.CallBackListener;
+import com.sentaroh.android.Utilities.DateUtil;
 import com.sentaroh.android.Utilities.LocalMountPoint;
 import com.sentaroh.android.Utilities.NotifyEvent;
 import com.sentaroh.android.Utilities.NotifyEvent.NotifyEventListener;
@@ -179,29 +180,30 @@ public class SMBSyncMain extends ActionBarActivity {
 		super.onCreate(savedInstanceState);
 //		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		mGp=(GlobalParameters) getApplication();
+		mGp.appContext=mContext=this;
+		mGp.uiHandler=new Handler();
+		mGp.SMBSync_Internal_Root_Dir=getFilesDir().toString();
+		
+		LogUtil.openLogFile(mGp);
+		
 		setTheme(mGp.applicationTheme);
 
 		mCurrentLocale=getResources().getConfiguration().locale;
 		
 		setContentView(R.layout.main);
-		mContext=this;
 		
 //		mGp.enableMainUi=true;
-		mGp.uiHandler=new Handler();
 
 		mActionBar = getSupportActionBar();
 		mActionBar.setHomeButtonEnabled(false);
 
 		checkExternalStorage();
-		mGp.SMBSync_Internal_Root_Dir=getFilesDir().toString();
 		
 		util=new SMBSyncUtil(this.getApplicationContext(),"Main", mGp);
 		util.setActivityIsForeground(true);
 		
 		initSettingsParms();
 
-		util.openLogFile();
-		
 		util.addDebugLogMsg(1,"I","onCreate entered, "+"resartStatus="+restartType+
 				", isActivityForeground="+util.isActivityForeground());
 
@@ -418,8 +420,9 @@ public class SMBSyncMain extends ActionBarActivity {
 							restartType==RESTART_BY_KILLED || restartType==RESTART_BY_DESTROYED) {
 						if (mGp.mirrorThreadActive) {
 							if (isAutoStartRequested(intent)) {
+								String ymd=DateUtil.convDateTimeTo_YearMonthDayHourMinSec(System.currentTimeMillis());
 								commonDlg.showCommonDialog(false, "W", "", 
-										mContext.getString(R.string.msgs_application_already_started), null);
+										mContext.getString(R.string.msgs_application_already_started)+" "+ymd, null);
 								util.addLogMsg("W",mContext.getString(R.string.msgs_application_already_started));
 							}
 						} else {
@@ -487,7 +490,7 @@ public class SMBSyncMain extends ActionBarActivity {
 			unsetCallbackListener();
 			deleteTaskData();
 			closeService();
-			util.flushLogFile();
+			LogUtil.flushLogFile(mGp);
 		} else {
 			mGp.isApplicationIsRestartRequested=true;
 			mGp.mainViewSaveArea=saveViewContent();
@@ -503,7 +506,7 @@ public class SMBSyncMain extends ActionBarActivity {
 						", changingConfigurations="+String.format("0x%08x", getChangingConfigurations())+
 						", onLowMemory="+mGp.onLowMemory);
 	    	}
-			util.flushLogFile();
+	    	LogUtil.flushLogFile(mGp);
 		}
 		//move to service
 //		if (mGp.settingExitClean) {
@@ -1101,7 +1104,7 @@ public class SMBSyncMain extends ActionBarActivity {
 				menu.findItem(R.id.menu_top_last_mod_list).setEnabled(false);
 				menu.findItem(R.id.menu_top_log_management).setEnabled(false);
 			} else {
-				if (mGp.logWriter==null) menu.findItem(R.id.menu_top_browse_log).setEnabled(false);
+				if (mGp.settingLogOption.equals("0")) menu.findItem(R.id.menu_top_browse_log).setEnabled(false);
 				else menu.findItem(R.id.menu_top_browse_log).setEnabled(true);
 				menu.findItem(R.id.menu_top_export).setEnabled(true);
 				menu.findItem(R.id.menu_top_import).setEnabled(true);
@@ -1138,7 +1141,7 @@ public class SMBSyncMain extends ActionBarActivity {
 			if (!mGp.externalStorageIsMounted) {
 				menu.findItem(R.id.menu_top_browse_log).setEnabled(false);
 			}
-			if (mGp.logWriter==null) {
+			if (mGp.settingLogOption.equals("0")) {
 				menu.findItem(R.id.menu_top_browse_log).setEnabled(false);
 			}
 //			Log.v("","ena="+menu.findItem(R.id.menu_top_browse_log).isEnabled());
@@ -1281,7 +1284,7 @@ public class SMBSyncMain extends ActionBarActivity {
 	};
 
 	private void invokeLogManagement() {
-		util.flushLogFile();
+		LogUtil.flushLogFile(mGp);
 		LogFileManagementFragment lfm=
 				LogFileManagementFragment.newInstance(getString(R.string.msgs_log_management_title));
 		lfm.showDialog(getSupportFragmentManager(), lfm, mGp);
@@ -1624,7 +1627,7 @@ public class SMBSyncMain extends ActionBarActivity {
 			public void positiveResponse(Context c,Object[] o) {
 //				terminateApplication();
 				deleteTaskData();
-				util.flushLogFile();
+				LogUtil.flushLogFile(mGp);
 				android.os.Process.killProcess(android.os.Process.myPid());
 			}
 			@Override
@@ -1713,18 +1716,16 @@ public class SMBSyncMain extends ActionBarActivity {
 		String p_dir= mGp.settingLogMsgDir;
 		String p_opt=mGp.settingLogOption;
 		
-		mGp.loadSettingsParm();
+		mGp.loadSettingsParm(mGp.appContext);
 		
 		if (!mGp.settingLogMsgDir.equals(p_dir)) {// option was changed
-			if (!mGp.settingLogOption.equals("0")) {
-				util.closeLogFile();
-				util.openLogFile();
-			}
+			LogUtil.closeLogFile();
+			LogUtil.openLogFile(mGp);
 		}
 		
 		if (!mGp.settingLogOption.equals(p_opt)) {
-			if (mGp.settingLogOption.equals("0")) util.closeLogFile();
-			else util.openLogFile();
+			LogUtil.closeLogFile();
+			LogUtil.openLogFile(mGp);
 		}
 
 		checkJcifsOptionChanged();
@@ -2029,17 +2030,17 @@ public class SMBSyncMain extends ActionBarActivity {
 	@SuppressLint("SdCardPath")
 	private void invokeLogFileBrowser() {
 		util.addDebugLogMsg(1,"I","Invoke log file browser.");
-		util.flushLogFile();
+		LogUtil.flushLogFile(mGp);
 //		enableBrowseLogFileMenu=false;
-		if (mGp.logWriter!=null) {
-			String t_fd="",fp="";
-			t_fd=mGp.settingLogMsgDir;
-			if (t_fd.lastIndexOf("/")==(t_fd.length()-1)) {//last is "/"
-				fp=t_fd+mGp.settingLogMsgFilename;
-			} else fp=t_fd+"/"+mGp.settingLogMsgFilename;
+		if (mGp.settingLogOption.equals("1")) {
+//			String t_fd="",fp="";
+//			t_fd=mGp.settingLogMsgDir;
+//			if (t_fd.lastIndexOf("/")==(t_fd.length()-1)) {//last is "/"
+//				fp=t_fd+mGp.settingLogMsgFilename;
+//			} else fp=t_fd+"/"+mGp.settingLogMsgFilename;
 
 			Intent intent = new Intent(android.content.Intent.ACTION_VIEW);
-			intent.setDataAndType(Uri.parse("file://"+fp), "text/plain");
+			intent.setDataAndType(Uri.parse("file://"+LogUtil.getLogFilePath(mGp)), "text/plain");
 			startActivityForResult(intent,1);
 		}
 		new Handler().postDelayed(new Runnable() {
@@ -2058,7 +2059,6 @@ public class SMBSyncMain extends ActionBarActivity {
 	};
 	
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (!mGp.settingLogOption.equals("0")) util.openLogFile();
 		if (requestCode==0) {
 			util.addDebugLogMsg(1,"I","Return from Settings.");
 			util.setActivityIsForeground(true);
@@ -3609,7 +3609,7 @@ public class SMBSyncMain extends ActionBarActivity {
 		mGp.msgListView.setFastScrollEnabled(true);
 		setFastScrollListener(mGp.msgListView);
 		
-		util.flushLogFile();
+		LogUtil.flushLogFile(mGp);
 		setWifiOff();
 		if ((!isExtraSpecAutoTerm && mGp.settingAutoStart && mGp.settingAutoTerm) || 
 				(isExtraSpecAutoTerm && extraValueAutoTerm)) {
@@ -3627,13 +3627,13 @@ public class SMBSyncMain extends ActionBarActivity {
 						saveTaskData();
 						mGp.mainViewSaveArea=saveViewContent();
 					}
-					util.rotateLogFile();
+//					util.rotateLogFile();
 					mGp.mirrorThreadActive=false;
 				}		
 			}
 		} else {
 			showMirrorThreadResult(result_code,result_msg);
-			util.rotateLogFile();
+//			util.rotateLogFile();
 			if (!util.isActivityForeground()) {
 				saveTaskData();
 				mGp.mainViewSaveArea=saveViewContent();
@@ -4078,7 +4078,7 @@ public class SMBSyncMain extends ActionBarActivity {
 								NotificationUtil.clearNotification(mGp);
 							}
 //							saveTaskData();
-							util.flushLogFile();
+							LogUtil.flushLogFile(mGp);
 							terminateApplication();
 						}
 					});
@@ -4088,7 +4088,7 @@ public class SMBSyncMain extends ActionBarActivity {
 			public void negativeResponse(Context c,Object[] o) {
 				util.addLogMsg("W",getString(R.string.msgs_aterm_cancelled));
 				showNotificationMsg(getString(R.string.msgs_aterm_cancelled));
-				util.rotateLogFile();
+//				util.rotateLogFile();
 				mGp.mirrorThreadActive=false;
 			}
 		});

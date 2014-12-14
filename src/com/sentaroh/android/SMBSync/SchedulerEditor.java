@@ -121,7 +121,7 @@ public class SchedulerEditor {
 		
 		setScheduleTypeSpinner(dialog, mSched.scheduleType);
 		setScheduleHoursSpinner(dialog, mSched.scheduleHours);
-		setScheduleMinutesSpinner(dialog, mSched.scheduleMinutes);
+		setScheduleMinutesSpinner(dialog, mSched.scheduleType, mSched.scheduleMinutes);
 		setDayOfTheWeekCb(dialog, mSched.scheduleDayOfTheWeek);
 		
 		setViewVisibility(dialog);
@@ -145,6 +145,8 @@ public class SchedulerEditor {
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view,
 					int position, long id) {
+				String sched_type=getScheduleTypeFromPosition(position);
+				setScheduleMinutesSpinner(dialog, sched_type, mSched.scheduleMinutes);
 				setViewVisibility(dialog);
 			}
 			@Override
@@ -268,10 +270,13 @@ public class SchedulerEditor {
 		    	if (sp_sched_type.getSelectedItemPosition()==0) mSched.scheduleType=SCHEDULER_SCHEDULE_TYPE_EVERY_HOURS;
 		    	else if (sp_sched_type.getSelectedItemPosition()==1) mSched.scheduleType=SCHEDULER_SCHEDULE_TYPE_EVERY_DAY;
 		    	else if (sp_sched_type.getSelectedItemPosition()==2) mSched.scheduleType=SCHEDULER_SCHEDULE_TYPE_DAY_OF_THE_WEEK;
+		    	else if (sp_sched_type.getSelectedItemPosition()==3) mSched.scheduleType=SCHEDULER_SCHEDULE_TYPE_INTERVAL;
 		    	
 		    	mSched.scheduleHours=sp_sched_hours.getSelectedItem().toString();
 		    	
 		    	mSched.scheduleMinutes=sp_sched_minutes.getSelectedItem().toString();
+		    	
+		    	mSched.scheduleLastExecTime=System.currentTimeMillis();
 
 		    	if (ctv_sync_all_prof.isChecked()) mSched.syncProfile="";
 		    	else mSched.syncProfile=tv_sync_prof.getText().toString();
@@ -525,6 +530,11 @@ public class SchedulerEditor {
 			ll_sched_hm.setVisibility(LinearLayout.VISIBLE);
 			ll_sched_hours.setVisibility(LinearLayout.VISIBLE);
 			ll_sched_minutes.setVisibility(LinearLayout.VISIBLE);
+		} else if (sp_sched_type.getSelectedItemPosition()==3) {
+			ll_sched_dw.setVisibility(LinearLayout.GONE);
+			ll_sched_hm.setVisibility(LinearLayout.VISIBLE);
+			ll_sched_hours.setVisibility(LinearLayout.GONE);
+			ll_sched_minutes.setVisibility(LinearLayout.VISIBLE);
 		}
 	};
 	
@@ -582,17 +592,30 @@ public class SchedulerEditor {
 		adapter.add(mContext.getString(R.string.msgs_scheduler_main_spinner_sched_type_every_hour));
 		adapter.add(mContext.getString(R.string.msgs_scheduler_main_spinner_sched_type_every_day));
 		adapter.add(mContext.getString(R.string.msgs_scheduler_main_spinner_sched_type_day_of_week));
+		adapter.add(mContext.getString(R.string.msgs_scheduler_main_spinner_sched_type_interval));
 		
 		if (!type.equals("")) {
 			int sel=-1;
 			if (type.equals(SCHEDULER_SCHEDULE_TYPE_EVERY_HOURS)) sel=0;
 			else if (type.equals(SCHEDULER_SCHEDULE_TYPE_EVERY_DAY)) sel=1;
 			else if (type.equals(SCHEDULER_SCHEDULE_TYPE_DAY_OF_THE_WEEK)) sel=2;
+			else if (type.equals(SCHEDULER_SCHEDULE_TYPE_INTERVAL)) sel=3;
 			sp_sched_type.setSelection(sel);
 		}
-		
 		adapter.notifyDataSetChanged();
-
+	};
+	
+	private String getScheduleTypeFromSpinner(Spinner spinner) {
+		return getScheduleTypeFromPosition(spinner.getSelectedItemPosition());
+	};
+	
+	private String getScheduleTypeFromPosition(int position) {
+		String sched_type="";
+		if (position==0) sched_type=SCHEDULER_SCHEDULE_TYPE_EVERY_HOURS;
+		else if (position==1) sched_type=SCHEDULER_SCHEDULE_TYPE_EVERY_DAY;
+		else if (position==2) sched_type=SCHEDULER_SCHEDULE_TYPE_DAY_OF_THE_WEEK;
+		else if (position==3) sched_type=SCHEDULER_SCHEDULE_TYPE_INTERVAL;
+		return sched_type;
 	};
 
 	private void setScheduleHoursSpinner(Dialog dialog, String hh) {
@@ -613,7 +636,7 @@ public class SchedulerEditor {
 		adapter.notifyDataSetChanged();
 	};
 
-	private void setScheduleMinutesSpinner(Dialog dialog, String mm) {
+	private void setScheduleMinutesSpinner(Dialog dialog, String sched_type, String mm) {
 		final Spinner sp_sched_minutes=(Spinner)dialog.findViewById(R.id.scheduler_main_dlg_exec_minutes);
 		final CustomSpinnerAdapter adapter=new CustomSpinnerAdapter(mContext, R.layout.custom_simple_spinner_item);
 		adapter.setTextColor(Color.BLACK);
@@ -621,17 +644,24 @@ public class SchedulerEditor {
 		sp_sched_minutes.setPrompt(mContext.getString(R.string.msgs_scheduler_main_spinner_sched_hours_prompt));
 		sp_sched_minutes.setAdapter(adapter);
 		
-		int sel=-1, s_hh=Integer.parseInt(mm);
-		for (int i=0;i<60;i++) {
-			if (i>=10) adapter.add(""+i);
-			else adapter.add("0"+i);
-			if (s_hh==i) sel=i;
+		int sel=-1, s_mm=Integer.parseInt(mm);
+		if (sched_type.equals(SCHEDULER_SCHEDULE_TYPE_INTERVAL)) {
+			for (int i=5;i<245;i+=5) {
+				if (i>=10) adapter.add(""+i);
+				else adapter.add("0"+i);
+				if (s_mm==i) sel=adapter.getCount()-1;
+			}
+		} else {
+			for (int i=0;i<60;i++) {
+				if (i>=10) adapter.add(""+i);
+				else adapter.add("0"+i);
+				if (s_mm==i) sel=i;
+			}
 		}
 		sp_sched_minutes.setSelection(sel);
 		adapter.notifyDataSetChanged();
 	};
 
-	
     private void loadScheduleData() {
     	SchedulerUtil.loadScheduleData(mSched, mContext);
 

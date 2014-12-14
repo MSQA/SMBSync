@@ -21,6 +21,8 @@ public class SchedulerReceiver extends BroadcastReceiver{
 	
 	private static SchedulerParms mSched=null;
 	
+	private static GlobalParameters mGp=null;
+	
 	@SuppressLint("Wakelock")
 	@Override
 	final public void onReceive(Context c, Intent arg1) {
@@ -31,6 +33,12 @@ public class SchedulerReceiver extends BroadcastReceiver{
 		wl.acquire(1000);
 		if (mSched==null) mSched=new SchedulerParms();
 		mContext=c;
+		if (mGp==null) {
+			mGp=new GlobalParameters();
+			mGp.appContext=c;
+		}
+		mGp.loadSettingsParm(c);
+		LogUtil.openLogFile(mGp);
 		
 		loadScheduleData();
 		String action=arg1.getAction();
@@ -41,6 +49,8 @@ public class SchedulerReceiver extends BroadcastReceiver{
 					action.equals(Intent.ACTION_TIMEZONE_CHANGED) || 
 					action.equals(Intent.ACTION_TIME_CHANGED) ||
 					action.equals(Intent.ACTION_PACKAGE_REPLACED)) {
+				mSched.scheduleLastExecTime=System.currentTimeMillis();
+				SchedulerUtil.saveScheduleLastExecTime(mSched.scheduleLastExecTime, mContext);
 				setTimer();
 			} else if (action.equals(SCHEDULER_INTENT_SET_TIMER)) {
 				setTimer();
@@ -50,6 +60,8 @@ public class SchedulerReceiver extends BroadcastReceiver{
 				Intent in=new Intent(mContext,SMBSyncService.class);
 				in.setAction(SCHEDULER_INTENT_TIMER_EXPIRED);
 				mContext.startService(in);
+				mSched.scheduleLastExecTime=System.currentTimeMillis();
+				SchedulerUtil.saveScheduleLastExecTime(mSched.scheduleLastExecTime, mContext);
 //				startSync();
 				setTimer();
 			} else if (action.equals(SCHEDULER_INTENT_WIFI_OFF)) {
@@ -114,6 +126,8 @@ public class SchedulerReceiver extends BroadcastReceiver{
     };
     
 	private static String log_id="ScheduleRecv ";
+	
+//	private static PrintWriter log_writer=null;
 	  
 	final static public void addDebugMsg(int lvl, String cat, String... msg) {
 			StringBuilder print_msg=new StringBuilder("D ");
@@ -121,6 +135,20 @@ public class SchedulerReceiver extends BroadcastReceiver{
 			StringBuilder log_msg=new StringBuilder(512);
 			for (int i=0;i<msg.length;i++) log_msg.append(msg[i]);
 			Log.v(APPLICATION_TAG,cat+" "+log_id+log_msg.toString());
+			
+			String dt=DateUtil.convDateTimeTo_YearMonthDayHourMinSec(System.currentTimeMillis());
+			String log_msg_dt="D "+cat+" "+dt.substring(0,10)+" "+dt.substring(11)+" "+log_id+log_msg.toString();
+			LogUtil.writeLog(log_msg_dt);
 	};
 
+//	final static public void putLogMsg(String cat, String log_msg) {
+//		
+//		String dt=DateUtil.convDateTimeTo_YearMonthDayHourMinSec(System.currentTimeMillis());
+//		String log_msg_dt="D "+cat+" "+dt.substring(0,10)+" "+dt.substring(11)+" "+log_id+log_msg.toString();
+//
+//		Intent in=new Intent(mContext,SMBSyncService.class);
+//		in.setAction(SMBSYNC_LOG_WRITE);
+//		in.putExtra("LOG", log_msg_dt);
+//		mContext.startService(in);
+//	};
 }

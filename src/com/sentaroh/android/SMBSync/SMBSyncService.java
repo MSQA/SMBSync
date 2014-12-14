@@ -65,7 +65,7 @@ public class SMBSyncService extends Service {
 	public void onCreate() {
 		super.onCreate();
 		mGp=(GlobalParameters) getApplication();
-		mGp.svcContext=this.getApplicationContext();
+		if (mGp.appContext==null) mGp.appContext=this.getApplicationContext();
 		NotificationUtil.initNotification(mGp);
 		mUtil=new SMBSyncUtil(getApplicationContext(), "Service", mGp);
 		
@@ -101,18 +101,23 @@ public class SMBSyncService extends Service {
 //		}           
 		tcMirror=new ThreadCtrl(); 
 		tcConfirm=new ThreadCtrl();
-	}
+	};
 	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		super.onStartCommand(intent, flags, startId);
 		String action="";
 		if (intent!=null) if (intent.getAction()!=null) action=intent.getAction();
-		mUtil.addDebugLogMsg(1,"I","onStartCommand entered, action="+action);
 		if (action.equals(SCHEDULER_INTENT_TIMER_EXPIRED)) {
+			mUtil.addDebugLogMsg(1,"I","onStartCommand entered, action="+action);
 			startSyncActivity();
 		} else if (action.equals(SCHEDULER_INTENT_WIFI_OFF)) {
+			mUtil.addDebugLogMsg(1,"I","onStartCommand entered, action="+action);
 			setWifiOff();
+		} else if (action.equals(SMBSYNC_LOG_WRITE)) {
+			mUtil.addLogMsg("I","Log received="+intent.getExtras().getString("LOG"));
+		} else {
+			mUtil.addDebugLogMsg(1,"I","onStartCommand entered, action="+action);
 		}
 		return START_STICKY;
 	};
@@ -148,7 +153,7 @@ public class SMBSyncService extends Service {
 			@Override
 			public void run() {
 				SchedulerParms sp=new SchedulerParms();
-				SchedulerUtil.loadScheduleData(sp, mGp.svcContext);
+				SchedulerUtil.loadScheduleData(sp, mGp.appContext);
 				if (sp.syncWifiOnBeforeSyncStart && !mWifiMgr.isWifiEnabled()) {
 					setWifiOn();
 					wifi_lock.acquire();
@@ -181,7 +186,7 @@ public class SMBSyncService extends Service {
 					}
 				}
 
-		    	Intent in=new Intent(mGp.svcContext,SMBSyncMain.class);
+		    	Intent in=new Intent(mGp.appContext,SMBSyncMain.class);
 		    	in.putExtra(SMBSYNC_SCHEDULER_ID,"SMBSync Scheduler");
 		    	String[] prof=sp.syncProfile.split(",");
 		    	in.putExtra(SMBSYNC_EXTRA_PARM_SYNC_PROFILE, prof);
@@ -189,7 +194,7 @@ public class SMBSyncService extends Service {
 		    	in.putExtra(SMBSYNC_EXTRA_PARM_AUTO_TERM, sp.syncOptionAutoterm);
 		    	in.putExtra(SMBSYNC_EXTRA_PARM_BACKGROUND_EXECUTION, sp.syncOptionBgExec);
 		    	in.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		    	mGp.svcContext.startActivity(in);
+		    	mGp.appContext.startActivity(in);
 		    	
 		    	hndl.postDelayed(new Runnable(){
 					@Override
@@ -223,8 +228,14 @@ public class SMBSyncService extends Service {
 		super.onDestroy();
 		mUtil.addDebugLogMsg(1,"I","onDestroy entered");
 		unregisterReceiver(mWifiReceiver);
-		mUtil.closeLogFile();
-		android.os.Process.killProcess(android.os.Process.myPid());
+		LogUtil.closeLogFile();
+		Handler hndl=new Handler();
+		hndl.postDelayed(new Runnable(){
+			@Override
+			public void run() {
+				android.os.Process.killProcess(android.os.Process.myPid());
+			}
+		}, 100);
 //		glblParms.logWriter.close();
 	};
     

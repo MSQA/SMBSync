@@ -789,6 +789,11 @@ public class ProfileUtility {
 			i_val = Integer.parseInt(pa.parms_value);;
 			pe.putInt(pa.parms_key,i_val);
 			util.addDebugLogMsg(2,"I","Restored parms="+pa.parms_key+"="+pa.parms_value);
+		} else if (pa.parms_type.equals(SMBSYNC_SETTINGS_TYPE_LONG)) {
+			long i_val = 0;
+			i_val = Long.parseLong(pa.parms_value);;
+			pe.putLong(pa.parms_key,i_val);
+			util.addDebugLogMsg(2,"I","Restored parms="+pa.parms_key+"="+pa.parms_value);
 		}
 	};
 	
@@ -5486,6 +5491,25 @@ public class ProfileUtility {
 			pw.println(CURRENT_SMBSYNC_PROFILE_VERSION+k_str);
 		}
 	};
+	static private void saveSettingsParmsToFileLong(Context c, String group, PrintWriter pw, long dflt,
+			boolean encrypt_required, final CipherParms cp, String key) {
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
+		String k_type;
+		long k_val;
+
+		k_val=prefs.getLong(key, dflt);
+		k_type=SMBSYNC_SETTINGS_TYPE_LONG;
+		String k_str=group+"\t"+
+				SMBSYNC_PROF_TYPE_SETTINGS+"\t"+key+"\t"+k_type+"\t"+k_val;
+		if (encrypt_required) {
+			String enc = Base64Compat.encodeToString(
+						EncryptUtil.encrypt(k_str,cp), 
+						Base64Compat.NO_WRAP);
+			pw.println(CURRENT_SMBSYNC_PROFILE_VERSION+enc);
+		} else {
+			pw.println(CURRENT_SMBSYNC_PROFILE_VERSION+k_str);
+		}
+	};
 	static private void saveSettingsParmsToFileBoolean(Context c, String group, PrintWriter pw, boolean dflt,
 			boolean encrypt_required, final CipherParms cp, String key) {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
@@ -5560,6 +5584,7 @@ public class ProfileUtility {
     	saveSettingsParmsToFileString(c, group, pw, "00",     encrypt_required,cp,SCHEDULER_SCHEDULE_HOURS_KEY);
     	saveSettingsParmsToFileString(c, group, pw, "00",     encrypt_required,cp,SCHEDULER_SCHEDULE_MINUTES_KEY);
     	saveSettingsParmsToFileString(c, group, pw, "0000000",encrypt_required,cp,SCHEDULER_SCHEDULE_DAY_OF_THE_WEEK_KEY);
+    	saveSettingsParmsToFileLong(c, group, pw, -1, encrypt_required,cp,SCHEDULER_SCHEDULE_LAST_EXEC_TIME_KEY);
     	saveSettingsParmsToFileString(c, group, pw, "",       encrypt_required,cp,SCHEDULER_SYNC_PROFILE_KEY);
     	saveSettingsParmsToFileBoolean(c, group, pw, false,   encrypt_required,cp,SCHEDULER_SYNC_OPTION_AUTOSTART_KEY);
     	saveSettingsParmsToFileBoolean(c, group, pw, false,   encrypt_required,cp,SCHEDULER_SYNC_OPTION_AUTOTERM_KEY);

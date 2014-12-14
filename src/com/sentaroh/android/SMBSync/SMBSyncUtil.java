@@ -34,13 +34,10 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
@@ -58,17 +55,12 @@ import android.view.View.OnClickListener;
 import android.widget.CheckedTextView;
 
 import com.sentaroh.android.Utilities.DateUtil;
-import com.sentaroh.android.Utilities.MiscUtil;
 import com.sentaroh.android.Utilities.NetworkUtil;
 
 @SuppressLint("SimpleDateFormat")
 public class SMBSyncUtil {
 	
-	private SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");
-	private SimpleDateFormat sdfTime = new SimpleDateFormat("HH:mm:ss");
-	
 	private GlobalParameters mGp=null;
-	
 	private Context mContext=null;
 	
 	public SMBSyncUtil (Context c, String lid, GlobalParameters gp) {
@@ -237,14 +229,14 @@ public class SMBSyncUtil {
 		else msgflag="0";
 		String dt=DateUtil.convDateTimeTo_YearMonthDayHourMinSec(System.currentTimeMillis());
 		sendMsgToActivity(log_cat,msgflag,syncProfName,dt.substring(0,10),
-				dt.substring(11),mLogId,"M",fp,log_msg);
+				dt.substring(11),mLogIdWithSep,"M",fp,log_msg);
 		if (!msgflag.equals("0")) 
 			writeLogMsgToFile(log_cat,syncProfName, fp,log_msg);
 		if (mGp.debugLevel>0) { 
 			if (mGp.debugLevel>0 && log) 
 				Log.v(APPLICATION_TAG,
 					buildLogCatString(mSbForaddMsgToProgDlg,
-							log_cat,mLogId,syncProfName,fp,log_msg));
+							log_cat,mLogIdWithSep,syncProfName,fp,log_msg));
 		}
 	};
 
@@ -252,18 +244,8 @@ public class SMBSyncUtil {
 	final private String writeLogMsgToFile(String cat, String prof, 
 			String fp, String msg) {
 		String result=null;
-		if (mGp.logWriter!=null) { 
-				result=formatLogMsg(cat,prof,fp,msg);
-				try {
-					writeLog(mGp,result);
-				} catch(Exception e) {
-					e.printStackTrace();
-				}
-//			if (logFileFlushCnt>1000) {
-//				flushLogFile();
-//				logFileFlushCnt=0;
-//			} else logFileFlushCnt++;
-		}
+		result=formatLogMsg(cat,prof,fp,msg);
+		writeLog(mGp,result);
 		return result;
 	};
 
@@ -274,7 +256,7 @@ public class SMBSyncUtil {
 		mSbForWriteLog.append(cat).append(" ")
 			.append(dt.substring(0,10)).append(" ")
 			.append(dt.substring(11)).append(" ")
-			.append(mLogId);
+			.append(mLogIdWithSep);
 		if (!prof.equals("")) {
 			mSbForWriteLog.append(prof).append(" ");
 		}
@@ -323,28 +305,21 @@ public class SMBSyncUtil {
 		String dt=DateUtil.convDateTimeTo_YearMonthDayHourMinSec(System.currentTimeMillis());
 		// flag=1 both, arg2=0 dialog only, arg2=2 msgview only
 		sendMsgToActivity(log_cat,"2",sync_prof,dt.substring(0,10), dt.substring(11),
-				mLogId,"M",fp,log_msg);
+				mLogIdWithSep,"M",fp,log_msg);
 		String wmsg=writeLogMsgToFile("M "+log_cat, sync_prof, fp, log_msg);
 		if (mGp.debugLevel>0)
 			Log.v(APPLICATION_TAG,
-					buildLogCatString(mSbForAddLogMsg, log_cat,mLogId,sync_prof,fp,log_msg));
+					buildLogCatString(mSbForAddLogMsg, log_cat,mLogIdWithSep,sync_prof,fp,log_msg));
 		return wmsg;
 	};
 
 	final public void addLogMsg(String cat, String logmsg) {
+		String dt=DateUtil.convDateTimeTo_YearMonthDayHourMinSec(System.currentTimeMillis());
 		addMsgToMsglistAdapter(mGp,
-			  		 new MsgListItem(cat,
-			  				 sdfDate.format(System.currentTimeMillis()),
-			  				 sdfTime.format(System.currentTimeMillis()),
-			  				 "MAIN",logmsg));
-		if (mGp.logWriter!=null) {
-				writeLog(mGp, "M "+cat+" "+
-					sdfDate.format(System.currentTimeMillis())+" "+
-					sdfTime.format(System.currentTimeMillis())+" "+
-					("MAIN"+"          ").substring(0,13)+logmsg);
-//				glblParms.logWriter.flush();
-		}
-		if (mGp.debugLevel>0) Log.v(APPLICATION_TAG,cat+" "+mLogId+logmsg);
+			  		 new MsgListItem(cat,dt.substring(0,10), dt.substring(11), mLogId,logmsg));
+		writeLog(mGp, "M "+cat+" "+dt.substring(0,10)+" "+dt.substring(11)+" "+
+				mLogIdWithSep+logmsg);
+		if (mGp.debugLevel>0) Log.v(APPLICATION_TAG,cat+" "+mLogIdWithSep+logmsg);
 	};
 	
 	final static public void addMsgToMsglistAdapter(
@@ -365,9 +340,10 @@ public class SMBSyncUtil {
 		addMsgToMsglistAdapter(mGp,mli);
 	};
 
-	private String mLogId="Util       ";
+	private String mLogIdWithSep="Util       ", mLogId="";
 	final public void setLogIdentifier(String lid) {
-		mLogId=(lid+"                        ").substring(0,13);
+		mLogIdWithSep=(lid+"                        ").substring(0,13);
+		mLogId=lid;
 	};
 	
 	final static private String buildLogCatString(
@@ -394,21 +370,18 @@ public class SMBSyncUtil {
 		if (mGp.debugLevel>=lvl) {
 			mSbForaddDebugLogMsg1.setLength(0);
 			for (int i=0;i<log_msg.length;i++) mSbForaddDebugLogMsg1.append(log_msg[i]);
-			if (mGp.logWriter!=null || mGp.settingDebugMsgDisplay) {
-				if (mGp.settingDebugMsgDisplay) {
-//					// flag=1 both, arg2=0 dialog only, arg2=2 msg view only
-					String dt=DateUtil.convDateTimeTo_YearMonthDayHourMinSec(System.currentTimeMillis());
-					sendMsgToActivity(log_cat,"2",syncProfName,dt.substring(0,10),
-							dt.substring(11),mLogId,"D","", 
-							mSbForaddDebugLogMsg1.toString());
-				}
-				writeLogMsgToFile("D "+log_cat,syncProfName, "", 
+			if (mGp.settingDebugMsgDisplay) {
+//				// flag=1 both, arg2=0 dialog only, arg2=2 msg view only
+				String dt=DateUtil.convDateTimeTo_YearMonthDayHourMinSec(System.currentTimeMillis());
+				sendMsgToActivity(log_cat,"2",syncProfName,dt.substring(0,10),
+						dt.substring(11),mLogIdWithSep,"D","", 
 						mSbForaddDebugLogMsg1.toString());
 			}			
+			writeLogMsgToFile("D "+log_cat,syncProfName, "", mSbForaddDebugLogMsg1.toString());
 			
-				Log.v(APPLICATION_TAG,
-					buildLogCatString(mSbForaddDebugLogMsg1,log_cat,mLogId,syncProfName,"",
-							mSbForaddDebugLogMsg1.toString()));
+			Log.v(APPLICATION_TAG,
+				buildLogCatString(mSbForaddDebugLogMsg1,log_cat,mLogIdWithSep,syncProfName,"",
+						mSbForaddDebugLogMsg1.toString()));
 		}
 	};
 
@@ -417,152 +390,29 @@ public class SMBSyncUtil {
 			int lvl, String cat, String logmsg) {
 		if (mGp.debugLevel>=lvl ) {
 			if (mGp.settingDebugMsgDisplay) {
+				String dt=DateUtil.convDateTimeTo_YearMonthDayHourMinSec(System.currentTimeMillis());
 				addMsgToMsglistAdapter(mGp,
-				    		 new MsgListItem(cat,sdfDate.format(System.currentTimeMillis()),
-								sdfTime.format(System.currentTimeMillis()),mLogId,logmsg));
+				    		 new MsgListItem(cat,dt.substring(0,10),
+				    				 dt.substring(11),mLogIdWithSep,logmsg));
 			}
-			if (mGp.logWriter!=null) {
-					String dt=DateUtil.convDateTimeTo_YearMonthDayHourMinSec(System.currentTimeMillis());
-					mSbForaddDebugLogMsg2.setLength(0);
-					mSbForaddDebugLogMsg2.append("D ")
-						.append(cat)
-						.append(" ")
-						.append(dt.substring(0,10))
-						.append(" ")
-						.append(dt.substring(11))
-						.append(" ")
-						.append(mLogId)
-						.append(logmsg);
-					writeLog(mGp,mSbForaddDebugLogMsg2.toString());
-			}
-			Log.v(APPLICATION_TAG,cat+" "+mLogId+logmsg);
+			String dt=DateUtil.convDateTimeTo_YearMonthDayHourMinSec(System.currentTimeMillis());
+			mSbForaddDebugLogMsg2.setLength(0);
+			mSbForaddDebugLogMsg2.append("D ")
+				.append(cat)
+				.append(" ")
+				.append(dt.substring(0,10))
+				.append(" ")
+				.append(dt.substring(11))
+				.append(" ")
+				.append(mLogIdWithSep)
+				.append(logmsg);
+			writeLog(mGp,mSbForaddDebugLogMsg2.toString());
+			Log.v(APPLICATION_TAG,cat+" "+mLogIdWithSep+logmsg);
 		}
 	};
 
-	public void flushLogFile() {
-		if (mGp.logWriter!=null) 
-			synchronized(mGp.logWriter) {
-				mGp.logWriter.flush();
-			}
-	};
-	
 	static public void writeLog(GlobalParameters gp, String msg) {
-		if (gp.logWriter!=null) 
-			synchronized(gp.logWriter) {
-				gp.logWriter.println(msg);
-				gp.logLineCount++;
-				if (gp.logLineCount>100) {
-					gp.logWriter.flush();
-					gp.logLineCount=0;
-				}
-			}
-	};
-	
-	final public void rotateLogFile() {
-//		if (!mGp.settingLogOption.equals("0")) {
-//			flushLogFile();
-//			closeLogFile();
-//			openLogFile();
-//			addLogMsg("I", mContext.getString(R.string.msgs_log_management_log_file_switched));
-//		}
-	};
-
-	@SuppressLint("SdCardPath")
-	public void openLogFile() {
-		addDebugLogMsg(2,"I","open log file entered. esm="+mGp.externalStorageIsMounted);
-//		Log.v("","lo="+mGp.settingLogOption+", lw="+mGp.logWriter);
-		if (!mGp.settingLogOption.equals("0") && mGp.logWriter==null) {
-			SimpleDateFormat df=null;
-			df = new SimpleDateFormat("yyyy-MM-dd");
-			mGp.settingLogMsgFilename="SMBSync_log_"+df.format(System.currentTimeMillis())+".txt";
-		}
-		
-		if (mGp.settingLogOption.equals("0") || mGp.logWriter!=null ||
-				!mGp.externalStorageIsMounted) {
-			if (mGp.externalStorageIsMounted) manageLogFileGeneration();
-			return;
-		}
-		manageLogFileGeneration();
-
-		String t_fd="",fp="";
-		t_fd=mGp.settingLogMsgDir;
-		if (t_fd.lastIndexOf("/")==(t_fd.length()-1)) {//last is "/"
-			fp=t_fd+mGp.settingLogMsgFilename;
-		} else fp=t_fd+"/"+mGp.settingLogMsgFilename;
-		File lf=new File(t_fd);
-		if(!lf.exists()) lf.mkdirs();
-//		Log.v("","lfn="+fp);
-		try {
-			BufferedWriter bw;
-			FileWriter fw ;
-			fw=new FileWriter(fp,true);
-			bw = new BufferedWriter(fw,4096*32);
-			mGp.logWriter = new PrintWriter(bw,false);
-			mGp.currentLogFilePath=fp;
-			if (mGp.debugLevel>=2) {
-				Calendar cd = Calendar.getInstance();
-				SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				String logmsg="D "+"I "+df.format(cd.getTime()) + " LOGT      " + "Log file opened.";
-				mGp.logWriter.println(logmsg);
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	};
-
-	private void manageLogFileGeneration() {
-		ArrayList<LogFileManagemntListItem>lfm_list=createLogFileList(mGp);
-		Collections.sort(lfm_list,new Comparator<LogFileManagemntListItem>(){
-			@Override
-			public int compare(LogFileManagemntListItem arg0,
-					LogFileManagemntListItem arg1) {
-				int result=0;
-				long comp=arg0.log_file_last_modified-arg1.log_file_last_modified;
-				if (comp==0) result=0;
-				else if(comp<0) result=-1;
-				else if(comp>0) result=1;
-				return result;
-			}
-		});
-		ArrayList<LogFileManagemntListItem>lfm_del_list= new ArrayList<LogFileManagemntListItem>();
-		for (LogFileManagemntListItem lfmli:lfm_list) {
-			if (lfmli.log_file_generation>=mGp.settiingLogGeneration) {
-				addDebugLogMsg(1,"I","Log file was deleted, name="+lfmli.log_file_path);
-				File lf=new File(lfm_list.get(0).log_file_path);
-				lf.delete();
-				lfm_del_list.add(lfmli);
-			}
-		}
-		for (LogFileManagemntListItem del_lfmli:lfm_del_list) {
-			lfm_list.remove(del_lfmli);
-		}
-	};
-	
-	public void closeLogFile() {
-		addDebugLogMsg(2,"I","close log file entered. esm="+mGp.externalStorageIsMounted);
-		if (mGp.logWriter!=null && mGp.externalStorageIsMounted) {
-			synchronized(mGp.logWriter) {
-				if (mGp.debugLevel>=2) {
-					Calendar cd = Calendar.getInstance();
-					SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-					String logmsg="D "+"I "+df.format(cd.getTime()) + " LOGT      " + "Log file closed.";
-					mGp.logWriter.println(logmsg);
-				}
-				mGp.logWriter.close();
-				mGp.logWriter=null;
-				mGp.currentLogFilePath="";
-			}
-		}
-	};
-	
-	public boolean deleteLogFile() {
-		boolean result=false;
-		addDebugLogMsg(2,"I","delete log file entered. esm="+mGp.externalStorageIsMounted);
-		if (mGp.logWriter==null && mGp.externalStorageIsMounted) {
-			File lf = new File(mGp.settingLogMsgDir+mGp.settingLogMsgFilename);
-			result=lf.delete();
-		} else result=false;
-		return result;
+		LogUtil.writeLog(msg);
 	};
 	
 	static public void setCheckedTextView(final CheckedTextView ctv) {
@@ -574,84 +424,6 @@ public class SMBSyncUtil {
 		});
 	};
 
-    static public ArrayList<LogFileManagemntListItem> createLogFileList(GlobalParameters glblParms) {
-    	ArrayList<LogFileManagemntListItem> lfm_fl=new ArrayList<LogFileManagemntListItem>();
-    	
-    	File lf=new File(glblParms.settingLogMsgDir);
-    	File[] file_list=lf.listFiles();
-    	if (file_list!=null) {
-    		for (int i=0;i<file_list.length;i++) {
-    			if (file_list[i].getName().startsWith("SMBSync_log")) {
-    				if (file_list[i].getName().startsWith("SMBSync_log_20")) {
-        		    	LogFileManagemntListItem t=new LogFileManagemntListItem();
-        		    	t.log_file_name=file_list[i].getName();
-        		    	t.log_file_path=file_list[i].getPath();
-        		    	t.log_file_size=MiscUtil.convertFileSize(file_list[i].length());
-        		    	t.log_file_last_modified=file_list[i].lastModified();
-        		    	String lm_date=DateUtil.convDateTimeTo_YearMonthDayHourMinSec(file_list[i].lastModified());
-        		    	if (file_list[i].getPath().equals(glblParms.currentLogFilePath))
-        		    		t.isCurrentLogFile=true;
-        		    	t.log_file_last_modified_date=lm_date.substring(0,10);
-        		    	t.log_file_last_modified_time=lm_date.substring(11);
-        		    	lfm_fl.add(t);
-//    				} else if (file_list[i].getName().equals("SMBSync_log.txt")){
-//        		    	LogFileManagemntListItem t=new LogFileManagemntListItem();
-//        		    	t.log_file_name=file_list[i].getName();
-//        		    	t.log_file_path=file_list[i].getPath();
-//        		    	t.log_file_size=convertFileSize(file_list[i].length());
-//        		    	t.log_file_last_modified=file_list[i].lastModified();
-//        		    	if (file_list[i].getPath().equals(glblParms.currentLogFilePath))
-//        		    		t.isCurrentLogFile=true;
-//        		    	String lm_date=DateUtil.convDateTimeTo_YearMonthDayHourMinSec(file_list[i].lastModified());
-//        		    	t.log_file_last_modified_date=lm_date.substring(0,10);
-//        		    	t.log_file_last_modified_time=lm_date.substring(11);
-//        		    	lfm_fl.add(t);
-    				}
-    			}
-    		}
-    		Collections.sort(lfm_fl,new Comparator<LogFileManagemntListItem>(){
-				@Override
-				public int compare(LogFileManagemntListItem arg0,
-						LogFileManagemntListItem arg1) {
-//					int result=0;
-//					long comp=arg1.log_file_last_modified-arg0.log_file_last_modified;
-//					if (comp==0) result=0;
-//					else if(comp<0) result=-1;
-//					else if(comp>0) result=1;
-//					return result;
-					return arg1.log_file_name.compareToIgnoreCase(arg0.log_file_name);
-				}
-    			
-    		});
-    	}
-    	if (lfm_fl.size()==0) {
-    		LogFileManagemntListItem t=new LogFileManagemntListItem();
-    		lfm_fl.add(t);
-    	} else {
-    		String c_lfm_date="";
-    		int gen=-1;
-    		for (LogFileManagemntListItem lfmli:lfm_fl) {
-    			String n_lfm_date="";
-    			String lfm_date_time=lfmli.log_file_name
-    					.replace("SMBSync_log_", "")
-    					.replace(".txt","");
-    			if (lfm_date_time.indexOf("_")>=0) {
-    				n_lfm_date=lfm_date_time
-    						.substring(0,lfm_date_time.indexOf("_"));
-    			} else {
-    				n_lfm_date=lfm_date_time;
-    			}
-    			if (!c_lfm_date.equals(n_lfm_date)) {
-    				gen++;
-    				c_lfm_date=n_lfm_date;
-    			} 
-    			lfmli.log_file_generation=gen;
-//    			Log.v("","name="+lfmli.log_file_name+", gen="+lfmli.log_file_generation);
-//    			Log.v("","lfm_date_time="+lfm_date_time+", lfm_date="+n_lfm_date);
-    		}
-    	}
-    	return lfm_fl;
-    };
     
 	@SuppressLint("SdCardPath")
 	public ArrayList<SyncHistoryListItem> loadHistoryList() {

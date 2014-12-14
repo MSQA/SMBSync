@@ -194,18 +194,18 @@ public class MirrorIO implements Runnable {
 		
 		callBackStub=cb;
 		
-		mUtil=new SMBSyncUtil(mGp.svcContext, settingsMediaStoreUseLastModTime, gwa);
+		mUtil=new SMBSyncUtil(mGp.appContext, settingsMediaStoreUseLastModTime, gwa);
 		mUtil.setLogIdentifier("MirrorIO");
 		
 //		SMBSync_External_Root_Dir = LocalMountPoint.getExternalStorageDir();
 		
 		initIoBuffer();
 		
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mGp.svcContext);
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mGp.appContext);
 		settingsMediaStoreUseLastModTime=
-			prefs.getString(mGp.svcContext.getString(R.string.settings_media_store_last_mod_time),"0");
+			prefs.getString(mGp.appContext.getString(R.string.settings_media_store_last_mod_time),"0");
 		String td=
-			prefs.getString(mGp.svcContext.getString(R.string.settings_file_diff_time_seconds), "3");
+			prefs.getString(mGp.appContext.getString(R.string.settings_file_diff_time_seconds), "3");
 		timeDifferenceLimit=Integer.parseInt(td)*1000;
 
 		buildMediaStoreDirList();
@@ -214,9 +214,9 @@ public class MirrorIO implements Runnable {
 		timeZone = tz.getRawOffset();
 		
 		settingsMediaFiles =
-				prefs.getBoolean(mGp.svcContext.getString(R.string.settings_media_scanner_non_media_files_scan),false);
+				prefs.getBoolean(mGp.appContext.getString(R.string.settings_media_scanner_non_media_files_scan),false);
 		defaultSettingScanExternalStorage=
-				prefs.getBoolean(mGp.svcContext.getString(R.string.settings_media_scanner_scan_extstg),false);
+				prefs.getBoolean(mGp.appContext.getString(R.string.settings_media_scanner_scan_extstg),false);
 
 		if (mGp.debugLevel>=1) {
 			addDebugLogMsg(1,"I",
@@ -230,7 +230,7 @@ public class MirrorIO implements Runnable {
 					", defaultSettingScanExternalStorage="+defaultSettingScanExternalStorage);
 		}
 
-		mediaScanner = new MediaScannerConnection(mGp.svcContext,
+		mediaScanner = new MediaScannerConnection(mGp.appContext,
 				new MediaScannerConnectionClient() {
 			@Override
 			public void onMediaScannerConnected() {
@@ -252,7 +252,7 @@ public class MirrorIO implements Runnable {
 //		syncHistoryList=mUtil.loadHistoryList();
 //		mAddedSyncHistoryList=new ArrayList<SyncHistoryListItem>();
 		
-		mUtil.initAppSpecificExternalDirectory(mGp.svcContext);
+		mUtil.initAppSpecificExternalDirectory(mGp.appContext);
 	};
 
 	@SuppressWarnings("unused")
@@ -260,7 +260,7 @@ public class MirrorIO implements Runnable {
 		File lf=new File(fp);
 		long lf_lm=lf.lastModified()/1000;
 		boolean result=false;
-        ContentResolver resolver = mGp.svcContext.getContentResolver();
+        ContentResolver resolver = mGp.appContext.getContentResolver();
         Cursor ci = resolver.query(uri,
         		new String[] {MediaStore.MediaColumns.DATA,
         						MediaStore.MediaColumns.DATE_MODIFIED},
@@ -429,14 +429,14 @@ public class MirrorIO implements Runnable {
 								copyCount,deleteCount,ignoreCount, retryCount, "");
 						mUtil.saveHistoryList(mGp.syncHistoryAdapter.getSyncHistoryList());
 						closeSyncResultLog();
-						ProfileUtility.saveProfileToFile(mGp, mGp.svcContext, mUtil, false, "", "", mGp.profileAdapter, false);
+						ProfileUtility.saveProfileToFile(mGp, mGp.appContext, mUtil, false, "", "", mGp.profileAdapter, false);
 					} else { 
 						addLogMsg("E","",msgs_mirror_prof_was_failed);
 						addHistoryList(SyncHistoryListItem.SYNC_STATUS_ERROR,
 								copyCount,deleteCount,ignoreCount,  retryCount,
 								tcMirror.getThreadMessage());
 						mUtil.saveHistoryList(mGp.syncHistoryAdapter.getSyncHistoryList());
-						ProfileUtility.saveProfileToFile(mGp, mGp.svcContext, mUtil, false, "", "", mGp.profileAdapter, false);
+						ProfileUtility.saveProfileToFile(mGp, mGp.appContext, mUtil, false, "", "", mGp.profileAdapter, false);
 						closeSyncResultLog();
 						tcMirror.setExtraDataInt(1);//Indicate error occured
 						if (!mGp.settingErrorOption) {
@@ -450,7 +450,7 @@ public class MirrorIO implements Runnable {
 					addHistoryList(SyncHistoryListItem.SYNC_STATUS_CANCEL,
 							copyCount,deleteCount, ignoreCount, retryCount, "");
 					mUtil.saveHistoryList(mGp.syncHistoryAdapter.getSyncHistoryList());
-					ProfileUtility.saveProfileToFile(mGp, mGp.svcContext, mUtil, false, "", "", mGp.profileAdapter, false);
+					ProfileUtility.saveProfileToFile(mGp, mGp.appContext, mUtil, false, "", "", mGp.profileAdapter, false);
 					closeSyncResultLog();
 					isSyncParmError=true;
 					break;
@@ -492,7 +492,7 @@ public class MirrorIO implements Runnable {
 
 	private boolean isMountPointAvailable(String fp) {
 		boolean result=false;
-		result=LocalMountPoint.isMountPointAvailable(mGp.svcContext, fp);
+		result=LocalMountPoint.isMountPointAvailable(mGp.appContext, fp);
 		return result;
 	};
 	
@@ -777,7 +777,7 @@ public class MirrorIO implements Runnable {
 					mRemoteHostPort=Integer.parseInt(mipl.getRemotePort());
 					if (!SMBSyncUtil.isSmbHostAddressConnected(mipl.getRemoteAddr(),
 							Integer.parseInt(mipl.getRemotePort()))) {
-						String msg=String.format(mGp.svcContext.getString(R.string.msgs_mirror_remote_addr_not_connected_with_port),
+						String msg=String.format(mGp.appContext.getString(R.string.msgs_mirror_remote_addr_not_connected_with_port),
 								mipl.getRemoteAddr(),mipl.getRemotePort());
 						addLogMsg("E","",msg);
 						tcMirror.setThreadMessage(msg);
@@ -787,7 +787,7 @@ public class MirrorIO implements Runnable {
 					mRemoteHostParmsAvailable=true;
 					mRemoteHostAddress=mipl.getRemoteAddr();
 					if (!SMBSyncUtil.isSmbHostAddressConnected(mipl.getRemoteAddr())) {
-						String msg=String.format(mGp.svcContext.getString(R.string.msgs_mirror_remote_addr_not_connected),
+						String msg=String.format(mGp.appContext.getString(R.string.msgs_mirror_remote_addr_not_connected),
 								mipl.getRemoteAddr());
 						addLogMsg("E","",msg);
 						tcMirror.setThreadMessage(msg);
@@ -798,7 +798,7 @@ public class MirrorIO implements Runnable {
 				mRemoteHostName=mipl.getHostName();
 				mRemoteHostParmsAvailable=true;
 				if (resolveHostName(mipl.getHostName())==null) {
-					String msg=mGp.svcContext.getString(R.string.msgs_mirror_remote_name_not_found)+
+					String msg=mGp.appContext.getString(R.string.msgs_mirror_remote_name_not_found)+
 							mipl.getHostName();
 					addLogMsg("E","",msg);
 					tcMirror.setThreadMessage(msg);
@@ -847,7 +847,7 @@ public class MirrorIO implements Runnable {
 	};
 	
 	private void printMpList() {
-		ArrayList<String>ml=LocalMountPoint.getLocalMountPointList(mGp.svcContext);
+		ArrayList<String>ml=LocalMountPoint.getLocalMountPointList(mGp.appContext);
 		if (ml!=null) {
 			for (int i=0;i<ml.size();i++) addLogMsg("E","","mp="+ml.get(i));
 		}
@@ -874,8 +874,8 @@ public class MirrorIO implements Runnable {
 				srv=mRemoteHostName;
 			}
 			if (msg) {
-				if (result) msg_txt=mGp.svcContext.getString(R.string.msgs_mirror_remote_server_can_be_connected);
-				else msg_txt=mGp.svcContext.getString(R.string.msgs_mirror_remote_server_the_connection_impossible);
+				if (result) msg_txt=mGp.appContext.getString(R.string.msgs_mirror_remote_server_can_be_connected);
+				else msg_txt=mGp.appContext.getString(R.string.msgs_mirror_remote_server_the_connection_impossible);
 				addLogMsg("I","",String.format(msg_txt, srv));
 			}
 		}
@@ -1092,7 +1092,7 @@ public class MirrorIO implements Runnable {
 	
 	final private void buildMediaStoreDirList() {
 		String [] proj = new String[] {MediaStore.MediaColumns.DATA};
-    	ContentResolver resolver = mGp.svcContext.getContentResolver();
+    	ContentResolver resolver = mGp.appContext.getContentResolver();
         String c_m_d="";
     	//build image
         Cursor ci = resolver.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI ,
@@ -1184,7 +1184,7 @@ public class MirrorIO implements Runnable {
 
 	final private void scanMediaStoreLibrary(String fp) {
 //		defaultSettingScanExternalStorage
-		if (LocalMountPoint.isExternalMountPoint(mGp.svcContext, fp) && !defaultSettingScanExternalStorage) {
+		if (LocalMountPoint.isExternalMountPoint(mGp.appContext, fp) && !defaultSettingScanExternalStorage) {
 			if (mGp.debugLevel>=1) 
 				addDebugLogMsg(1,"I",
 					"scanMediaStoreLibrary scan external storage disabled, " ,
@@ -1319,7 +1319,7 @@ public class MirrorIO implements Runnable {
 	final private int deleteMediaStoreItem(String fp) {
 		int dc_image=0, dc_audio=0, dc_video=0, dc_files=0;
 		if (isMediaStoreDir(fp)) {
-	    	ContentResolver cr = mGp.svcContext.getContentResolver();
+	    	ContentResolver cr = mGp.appContext.getContentResolver();
 	    	dc_image=cr.delete(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
 	          		MediaStore.Images.Media.DATA + "=?", new String[]{fp} );
 	       	dc_audio=cr.delete(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
@@ -1376,9 +1376,9 @@ public class MirrorIO implements Runnable {
 	}
 
 	final private void initIoBuffer() {
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mGp.svcContext);
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mGp.appContext);
 		String cp=
-				prefs.getString(mGp.svcContext.getString(R.string.settings_smb_perform_class), "");
+				prefs.getString(mGp.appContext.getString(R.string.settings_smb_perform_class), "");
 		
 		if (cp.equals("0")) {//Minimum
 			settingsIoBuffers="4";
@@ -1388,7 +1388,7 @@ public class MirrorIO implements Runnable {
 			settingsIoBuffers="8";
 		} else {
 			settingsIoBuffers=
-					prefs.getString(mGp.svcContext.getString(R.string.settings_io_buffers), "8");
+					prefs.getString(mGp.appContext.getString(R.string.settings_io_buffers), "8");
 		}
 			
 		mirrorIoBufferSize=Integer.parseInt(settingsIoBuffers)*65536;
@@ -1497,7 +1497,7 @@ public class MirrorIO implements Runnable {
 										hf.setLastModified(lf.lastModified());
 								} catch(SmbException e) {
 									addLogMsg("W",targetUrl,
-											mGp.svcContext.getString(R.string.msgs_mirror_prof_remote_file_set_last_modified_failed));
+											mGp.appContext.getString(R.string.msgs_mirror_prof_remote_file_set_last_modified_failed));
 									addDebugLogMsg(1,"W",targetUrl,
 											"Remote file setLastModified() failed, reason="+ e.getMessage());
 								}
@@ -1532,7 +1532,7 @@ public class MirrorIO implements Runnable {
 			return setErrorStatusRetry(e.getMessage());
 		} catch (SmbException e) {
 			addLogMsg("E","","mirrorCopyLocalToRemote SMBE From="+masterUrl+", To="+targetUrl);
-			String[] e_msg=NetworkUtil.analyzeNtStatusCode(e, mGp.svcContext, 
+			String[] e_msg=NetworkUtil.analyzeNtStatusCode(e, mGp.appContext, 
 					targetUrl,ntlmPasswordAuth.getUsername());
 			addLogMsg("E","",e_msg[0]);//e.toString());
 			printStackTraceElement(e.getStackTrace());
@@ -1573,7 +1573,7 @@ public class MirrorIO implements Runnable {
 				isExceptionRetryRequired=false;
 				exceptionRetryCount++;
 				if (exceptionRetryCount>syncProfileRetryCount) {
-					addLogMsg("I","",mGp.svcContext.getString(R.string.msgs_mirror_retry_ignored_by_limit));
+					addLogMsg("I","",mGp.appContext.getString(R.string.msgs_mirror_retry_ignored_by_limit));
 					return false;//Retry abort
 				} else {
 					retryCount++;
@@ -1586,7 +1586,7 @@ public class MirrorIO implements Runnable {
 						}
 					}
 					if (tcMirror.isEnabled()) {
-						addLogMsg("I","",mGp.svcContext.getString(R.string.msgs_mirror_retry_issued));
+						addLogMsg("I","",mGp.appContext.getString(R.string.msgs_mirror_retry_issued));
 						isExceptionOccured=false;
 						tcMirror.setThreadMessage("");
 						return true;//Retry required
@@ -1711,7 +1711,7 @@ public class MirrorIO implements Runnable {
 			return setErrorStatusRetry(e.getMessage());
 		} catch (SmbException e) {
 			addLogMsg("E","","mirrorDeleteRemoteFile SMBE From="+masterUrl+", To="+targetUrl);
-			String[] e_msg=NetworkUtil.analyzeNtStatusCode(e, mGp.svcContext, 
+			String[] e_msg=NetworkUtil.analyzeNtStatusCode(e, mGp.appContext, 
 					targetUrl,ntlmPasswordAuth.getUsername());
 			addLogMsg("E","",e_msg[0]);//e.toString());
 			printStackTraceElement(e.getStackTrace());
@@ -2049,7 +2049,7 @@ public class MirrorIO implements Runnable {
 									if (syncProfileUseJavaLastModified) {
 										if (!lf.setLastModified(hf.lastModified())) {
 											addLogMsg("W",targetUrl,
-												mGp.svcContext.getString(R.string.msgs_mirror_prof_local_file_set_last_modified_failed));
+												mGp.appContext.getString(R.string.msgs_mirror_prof_local_file_set_last_modified_failed));
 										}
 									}
 //									if (isMediaStoreDir(lf.getParent()))
@@ -2084,7 +2084,7 @@ public class MirrorIO implements Runnable {
 			return setErrorStatusRetry(e.getMessage());
 		} catch (SmbException e) {
 			addLogMsg("E","","mirrorCopyRemoteToLocal SMBE From="+masterUrl+", To="+targetUrl);
-			String[] e_msg=NetworkUtil.analyzeNtStatusCode(e, mGp.svcContext, 
+			String[] e_msg=NetworkUtil.analyzeNtStatusCode(e, mGp.appContext, 
 					masterUrl,ntlmPasswordAuth.getUsername());
 			addLogMsg("E","",e_msg[0]);//e.toString());
 			printStackTraceElement(e.getStackTrace());
@@ -2273,7 +2273,7 @@ public class MirrorIO implements Runnable {
 			addLogMsg("E","",e.getMessage());//e.toString());
 			addLogMsg("E","","From="+masterUrl+", To="+targetUrl);
 			printStackTraceElement(e.getStackTrace());
-			String[] e_msg=NetworkUtil.analyzeNtStatusCode(e, mGp.svcContext, 
+			String[] e_msg=NetworkUtil.analyzeNtStatusCode(e, mGp.appContext, 
 					masterUrl,ntlmPasswordAuth.getUsername());
 			return setErrorStatusRetry(e_msg[0]);
 		}
@@ -2414,7 +2414,7 @@ public class MirrorIO implements Runnable {
 			return setErrorStatusRetry(e.getMessage());
 		} catch (SmbException e) {
 			addLogMsg("E","","mirrorMoveRemoteToLocal SMBE From="+masterUrl+", To="+targetUrl);
-			String[] e_msg=NetworkUtil.analyzeNtStatusCode(e, mGp.svcContext, 
+			String[] e_msg=NetworkUtil.analyzeNtStatusCode(e, mGp.appContext, 
 					masterUrl,ntlmPasswordAuth.getUsername());
 			addLogMsg("E","",e_msg[0]);//e.toString());
 			printStackTraceElement(e.getStackTrace());
@@ -2549,7 +2549,7 @@ public class MirrorIO implements Runnable {
 										hf.setLastModified(lf.lastModified());
 								} catch(SmbException e) {
 									addLogMsg("W",targetUrl,
-											mGp.svcContext.getString(R.string.msgs_mirror_prof_remote_file_set_last_modified_failed));
+											mGp.appContext.getString(R.string.msgs_mirror_prof_remote_file_set_last_modified_failed));
 									addDebugLogMsg(1,"W",targetUrl,
 											"Remote file setLastModified() failed, reason="+ e.getMessage());
 								}
@@ -2603,7 +2603,7 @@ public class MirrorIO implements Runnable {
 		} catch (SmbException e) {
 			printStackTraceElement(e.getStackTrace());
 			addLogMsg("E","","mirrorMoveLocalToRemote SMBE From="+masterUrl+", To="+targetUrl);
-			String[] e_msg=NetworkUtil.analyzeNtStatusCode(e, mGp.svcContext, 
+			String[] e_msg=NetworkUtil.analyzeNtStatusCode(e, mGp.appContext, 
 					targetUrl,ntlmPasswordAuth.getUsername());
 			addLogMsg("E","",e_msg[0]);//e.toString());
 			if (!tmp_target.equals("")) deleteRemoteTempFile(tmp_target);
@@ -3634,7 +3634,7 @@ public class MirrorIO implements Runnable {
 	};
 
 	final private void notifyThreadTerminate() {
-		mUtil.flushLogFile();
+		LogUtil.flushLogFile(mGp);
 		notifyEvent.notifyToListener(true, null);
 	};
 
@@ -3716,7 +3716,7 @@ public class MirrorIO implements Runnable {
 			return setErrorStatusRetry(e.getMessage());
 		} catch (SmbException e) {
 			addLogMsg("E","","deleteRemoteFile SMBE url="+hf.getPath());
-			String[] e_msg=NetworkUtil.analyzeNtStatusCode(e, mGp.svcContext, 
+			String[] e_msg=NetworkUtil.analyzeNtStatusCode(e, mGp.appContext, 
 					hf.getPath(),ntlmPasswordAuth.getUsername());
 			addLogMsg("E","",e_msg[0]);//e.toString());
 			printStackTraceElement(e.getStackTrace());
@@ -3920,43 +3920,43 @@ public class MirrorIO implements Runnable {
 	
 	static private void loadMsgString(GlobalParameters glblParms) {
 
-		msgs_mirror_task_result_ok=glblParms.svcContext.getString(R.string.msgs_mirror_task_result_ok);
-		msgs_mirror_task_result_cancel=glblParms.svcContext.getString(R.string.msgs_mirror_task_result_cancel);
-		msgs_mirror_task_result_error_ignored=glblParms.svcContext.getString(R.string.msgs_mirror_task_result_error_ignored);
-		msgs_mirror_task_result_error_ended=glblParms.svcContext.getString(R.string.msgs_mirror_task_result_error_ended);
-		msgs_mirror_confirm_copy_cancel=glblParms.svcContext.getString(R.string.msgs_mirror_confirm_copy_cancel);
-		msgs_mirror_confirm_delete_cancel=glblParms.svcContext.getString(R.string.msgs_mirror_confirm_delete_cancel);
+		msgs_mirror_task_result_ok=glblParms.appContext.getString(R.string.msgs_mirror_task_result_ok);
+		msgs_mirror_task_result_cancel=glblParms.appContext.getString(R.string.msgs_mirror_task_result_cancel);
+		msgs_mirror_task_result_error_ignored=glblParms.appContext.getString(R.string.msgs_mirror_task_result_error_ignored);
+		msgs_mirror_task_result_error_ended=glblParms.appContext.getString(R.string.msgs_mirror_task_result_error_ended);
+		msgs_mirror_confirm_copy_cancel=glblParms.appContext.getString(R.string.msgs_mirror_confirm_copy_cancel);
+		msgs_mirror_confirm_delete_cancel=glblParms.appContext.getString(R.string.msgs_mirror_confirm_delete_cancel);
 		
-		msgs_mirror_prof_sync_local_mount_point_unavailable=glblParms.svcContext.getString(R.string.msgs_mirror_prof_sync_local_mount_point_unavailable);
-        msgs_mirror_prof_ms_different_file_last_mod=glblParms.svcContext.getString(R.string.msgs_mirror_prof_ms_different_file_last_mod);
-        msgs_mirror_prof_ms_read_error=glblParms.svcContext.getString(R.string.msgs_mirror_prof_ms_read_error);
+		msgs_mirror_prof_sync_local_mount_point_unavailable=glblParms.appContext.getString(R.string.msgs_mirror_prof_sync_local_mount_point_unavailable);
+        msgs_mirror_prof_ms_different_file_last_mod=glblParms.appContext.getString(R.string.msgs_mirror_prof_ms_different_file_last_mod);
+        msgs_mirror_prof_ms_read_error=glblParms.appContext.getString(R.string.msgs_mirror_prof_ms_read_error);
 
-		msgs_mirror_task_started=glblParms.svcContext.getString(R.string.msgs_mirror_task_started);
-		msgs_mirror_task_ended=glblParms.svcContext.getString(R.string.msgs_mirror_task_ended);
-		msgs_mirror_task_result_stats=glblParms.svcContext.getString(R.string.msgs_mirror_task_result_stats);
-		msgs_mirror_prof_file_bypass_media_store_change=glblParms.svcContext.getString(R.string.msgs_mirror_prof_file_bypass_media_store_change);
-		msgs_mirror_prof_file_deleted=glblParms.svcContext.getString(R.string.msgs_mirror_prof_file_deleted);
-		msgs_mirror_prof_started=glblParms.svcContext.getString(R.string.msgs_mirror_prof_started);
-		msgs_mirror_prof_invalid_mirror_type=glblParms.svcContext.getString(R.string.msgs_mirror_prof_invalid_mirror_type);
-		msgs_mirror_prof_was_failed=glblParms.svcContext.getString(R.string.msgs_mirror_prof_was_failed);
-		msgs_mirror_prof_no_of_copy=glblParms.svcContext.getString(R.string.msgs_mirror_prof_no_of_copy);
-		msgs_mirror_prof_avg_rate=glblParms.svcContext.getString(R.string.msgs_mirror_prof_avg_rate);
-		msgs_mirror_prof_success_end=glblParms.svcContext.getString(R.string.msgs_mirror_prof_success_end);
-		msgs_mirror_prof_was_cancelled=glblParms.svcContext.getString(R.string.msgs_mirror_prof_was_cancelled);
-		msgs_mirror_prof_file_copied=glblParms.svcContext.getString(R.string.msgs_mirror_prof_file_copied);
-		msgs_mirror_prof_file_replaced=glblParms.svcContext.getString(R.string.msgs_mirror_prof_file_replaced);
-		msgs_mirror_prof_master_not_found=glblParms.svcContext.getString(R.string.msgs_mirror_prof_master_not_found);
-		msgs_mirror_prof_dir_deleted=glblParms.svcContext.getString(R.string.msgs_mirror_prof_dir_deleted);
-		msgs_mirror_prof_dir_create=glblParms.svcContext.getString(R.string.msgs_mirror_prof_dir_create);
-		msgs_mirror_prof_dir_create_failed=glblParms.svcContext.getString(R.string.msgs_mirror_prof_dir_create_failed);
-		msgs_mirror_prof_file_copying=glblParms.svcContext.getString(R.string.msgs_mirror_prof_file_copying);
+		msgs_mirror_task_started=glblParms.appContext.getString(R.string.msgs_mirror_task_started);
+		msgs_mirror_task_ended=glblParms.appContext.getString(R.string.msgs_mirror_task_ended);
+		msgs_mirror_task_result_stats=glblParms.appContext.getString(R.string.msgs_mirror_task_result_stats);
+		msgs_mirror_prof_file_bypass_media_store_change=glblParms.appContext.getString(R.string.msgs_mirror_prof_file_bypass_media_store_change);
+		msgs_mirror_prof_file_deleted=glblParms.appContext.getString(R.string.msgs_mirror_prof_file_deleted);
+		msgs_mirror_prof_started=glblParms.appContext.getString(R.string.msgs_mirror_prof_started);
+		msgs_mirror_prof_invalid_mirror_type=glblParms.appContext.getString(R.string.msgs_mirror_prof_invalid_mirror_type);
+		msgs_mirror_prof_was_failed=glblParms.appContext.getString(R.string.msgs_mirror_prof_was_failed);
+		msgs_mirror_prof_no_of_copy=glblParms.appContext.getString(R.string.msgs_mirror_prof_no_of_copy);
+		msgs_mirror_prof_avg_rate=glblParms.appContext.getString(R.string.msgs_mirror_prof_avg_rate);
+		msgs_mirror_prof_success_end=glblParms.appContext.getString(R.string.msgs_mirror_prof_success_end);
+		msgs_mirror_prof_was_cancelled=glblParms.appContext.getString(R.string.msgs_mirror_prof_was_cancelled);
+		msgs_mirror_prof_file_copied=glblParms.appContext.getString(R.string.msgs_mirror_prof_file_copied);
+		msgs_mirror_prof_file_replaced=glblParms.appContext.getString(R.string.msgs_mirror_prof_file_replaced);
+		msgs_mirror_prof_master_not_found=glblParms.appContext.getString(R.string.msgs_mirror_prof_master_not_found);
+		msgs_mirror_prof_dir_deleted=glblParms.appContext.getString(R.string.msgs_mirror_prof_dir_deleted);
+		msgs_mirror_prof_dir_create=glblParms.appContext.getString(R.string.msgs_mirror_prof_dir_create);
+		msgs_mirror_prof_dir_create_failed=glblParms.appContext.getString(R.string.msgs_mirror_prof_dir_create_failed);
+		msgs_mirror_prof_file_copying=glblParms.appContext.getString(R.string.msgs_mirror_prof_file_copying);
 		
-		msgs_mirror_master_local_mount_point_not_readable=glblParms.svcContext.getString(R.string.msgs_mirror_master_local_mount_point_not_readable);
-		msgs_mirror_target_local_mount_point_not_writable=glblParms.svcContext.getString(R.string.msgs_mirror_target_local_mount_point_not_writable);
-		msgs_mirror_physcal_access_to_same_dir=glblParms.svcContext.getString(R.string.msgs_mirror_physcal_access_to_same_dir);
-		msgs_mirror_physcal_access_check_create_error=glblParms.svcContext.getString(R.string.msgs_mirror_physcal_access_check_create_error);
+		msgs_mirror_master_local_mount_point_not_readable=glblParms.appContext.getString(R.string.msgs_mirror_master_local_mount_point_not_readable);
+		msgs_mirror_target_local_mount_point_not_writable=glblParms.appContext.getString(R.string.msgs_mirror_target_local_mount_point_not_writable);
+		msgs_mirror_physcal_access_to_same_dir=glblParms.appContext.getString(R.string.msgs_mirror_physcal_access_to_same_dir);
+		msgs_mirror_physcal_access_check_create_error=glblParms.appContext.getString(R.string.msgs_mirror_physcal_access_check_create_error);
 		
-		msgs_mirror_same_directory_ignored=glblParms.svcContext.getString(R.string.msgs_mirror_same_directory_ignored);
+		msgs_mirror_same_directory_ignored=glblParms.appContext.getString(R.string.msgs_mirror_same_directory_ignored);
 		
 		return ;
 				
