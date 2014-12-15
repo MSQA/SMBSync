@@ -61,7 +61,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
-import android.os.PowerManager.WakeLock;
 import android.os.RemoteException;
 import android.os.SystemClock;
 import android.os.Vibrator;
@@ -150,8 +149,6 @@ public class SMBSyncMain extends ActionBarActivity {
 	
 	private ArrayList<Intent> mPendingRequestIntent=new ArrayList<Intent>();
 	
-	private WakeLock mStartupWakeLock=null;
-	
 	@Override  
 	protected void onSaveInstanceState(Bundle out) {  
 		super.onSaveInstanceState(out);
@@ -239,11 +236,6 @@ public class SMBSyncMain extends ActionBarActivity {
         }
         mGp.initialyzeCompleted=true;
         
-        mStartupWakeLock=((PowerManager)getSystemService(Context.POWER_SERVICE))
-    			.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK
-	    				, "SMBSync-Startup-Wakelock");
-        mStartupWakeLock.acquire(1000*10);
-        
 		createTabView() ;
 		
 		initAdapterAndView();
@@ -287,8 +279,18 @@ public class SMBSyncMain extends ActionBarActivity {
 		super.onNewIntent(intent);
 		util.addDebugLogMsg(1,"I","onNewIntent entered, "+"resartStatus="+restartType);
 		synchronized(mPendingRequestIntent) {
-			mPendingRequestIntent.add(intent);
+			if (intent!=null) {
+				if (isAutoStartRequested(intent)) {
+					mPendingRequestIntent.add(intent);
+					util.addDebugLogMsg(1,"I","Auto start intent was added");
+				} else {
+					util.addDebugLogMsg(1,"I","Intent was iignored, because intent is not auto start");
+				}
+			} else {
+				util.addDebugLogMsg(1,"I","Intent was iignored, because intent is null");
+			}
 		}
+		processAutoStartIntent();
 	};
 	
 	@Override
@@ -308,7 +310,7 @@ public class SMBSyncMain extends ActionBarActivity {
 					}
 				});
 			}
-			processAutoStartIntent();
+//			processAutoStartIntent();
 		} else {
 			NotifyEvent svc_ntfy=new NotifyEvent(mContext);
 			svc_ntfy.setListener(new NotifyEventListener(){

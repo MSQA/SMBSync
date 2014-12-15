@@ -33,6 +33,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.wifi.WifiManager;
 import android.net.wifi.WifiManager.WifiLock;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
@@ -59,12 +60,15 @@ public class SMBSyncService extends Service {
 	@SuppressWarnings("unused")
 	private WifiLock mWifiLock=null;
 	
+	private Context mContext=null;
+	
 	private WifiReceiver mWifiReceiver=new WifiReceiver();
 	
 	@Override
 	public void onCreate() {
 		super.onCreate();
 		mGp=(GlobalParameters) getApplication();
+		mContext=getApplicationContext();
 		if (mGp.appContext==null) mGp.appContext=this.getApplicationContext();
 		NotificationUtil.initNotification(mGp);
 		mUtil=new SMBSyncUtil(getApplicationContext(), "Service", mGp);
@@ -106,6 +110,11 @@ public class SMBSyncService extends Service {
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		super.onStartCommand(intent, flags, startId);
+//		WakeLock wl=((PowerManager)getSystemService(Context.POWER_SERVICE))
+//    			.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK
+//	    				| PowerManager.ACQUIRE_CAUSES_WAKEUP
+//	    				, "SMBSync-Service-1");
+//		wl.acquire();
 		String action="";
 		if (intent!=null) if (intent.getAction()!=null) action=intent.getAction();
 		if (action.equals(SCHEDULER_INTENT_TIMER_EXPIRED)) {
@@ -119,6 +128,7 @@ public class SMBSyncService extends Service {
 		} else {
 			mUtil.addDebugLogMsg(1,"I","onStartCommand entered, action="+action);
 		}
+//		wl.release();
 		return START_STICKY;
 	};
 	
@@ -146,7 +156,7 @@ public class SMBSyncService extends Service {
 		final WakeLock wake_lock=((PowerManager)getSystemService(Context.POWER_SERVICE))
     			.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK
 	    				| PowerManager.ACQUIRE_CAUSES_WAKEUP
-	    				, "SMBSync-startSync");
+	    				, "SMBSync-startSync-Partial");
 		final WifiLock wifi_lock=mWifiMgr.createWifiLock(WifiManager.WIFI_MODE_FULL, "SMBSync-startSync");
 		wake_lock.acquire();
 		Thread th=new Thread() {
@@ -185,21 +195,32 @@ public class SMBSyncService extends Service {
 						SystemClock.sleep(sp.syncStartDelayTimeAfterWifiOn*1000);
 					}
 				}
+				@SuppressWarnings("deprecation")
+				final WakeLock full_wake_lock=((PowerManager)getSystemService(Context.POWER_SERVICE))
+		    			.newWakeLock(PowerManager.FULL_WAKE_LOCK
+			    				| PowerManager.ACQUIRE_CAUSES_WAKEUP
+			    				, "SMBSync-startSync-Full");
+				if (Build.VERSION.SDK_INT<14) full_wake_lock.acquire();
 
-		    	Intent in=new Intent(mGp.appContext,SMBSyncMain.class);
+		    	Intent in=new Intent(mContext,SMBSyncMain.class);
+				in.setAction(Intent.ACTION_MAIN);
+				in.addCategory(Intent.CATEGORY_LAUNCHER);
+				in.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+
 		    	in.putExtra(SMBSYNC_SCHEDULER_ID,"SMBSync Scheduler");
 		    	String[] prof=sp.syncProfile.split(",");
 		    	in.putExtra(SMBSYNC_EXTRA_PARM_SYNC_PROFILE, prof);
 		    	in.putExtra(SMBSYNC_EXTRA_PARM_AUTO_START, true);
 		    	in.putExtra(SMBSYNC_EXTRA_PARM_AUTO_TERM, sp.syncOptionAutoterm);
 		    	in.putExtra(SMBSYNC_EXTRA_PARM_BACKGROUND_EXECUTION, sp.syncOptionBgExec);
-		    	in.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		    	mGp.appContext.startActivity(in);
+//		    	mGp.appContext.startActivity(in);
+		    	mContext.startActivity(in);
 		    	
 		    	hndl.postDelayed(new Runnable(){
 					@Override
 					public void run() {
-						mUtil.addDebugLogMsg(1,"I", "Wakelock and Wifilock released");
+						mUtil.addDebugLogMsg(1,"I", "startSyncActivity Wakelock and Wifilock released");
+						if (full_wake_lock.isHeld()) full_wake_lock.release();
 						if (wake_lock.isHeld()) wake_lock.release();
 						if (wifi_lock.isHeld()) wifi_lock.release();
 					}
