@@ -4,8 +4,6 @@ import static com.sentaroh.android.SMBSync.SchedulerConstants.*;
 
 import java.util.Calendar;
 
-import com.sentaroh.android.Utilities.LocalMountPoint;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -15,8 +13,6 @@ public class SchedulerUtil {
     final static public void loadScheduleData(SchedulerParms sp, Context c) {
     	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
     	sp.debugLevel=Integer.parseInt(prefs.getString(c.getString(R.string.settings_log_level), "0"));
-    	sp.logDir=prefs.getString(c.getString(R.string.settings_log_dir),
-    			LocalMountPoint.getExternalStorageDir()+"/SMBSync/");
     	sp.scheduleEnabled=prefs.getBoolean(SCHEDULER_SCHEDULE_ENABLED_KEY, false);
     	sp.scheduleType=prefs.getString(SCHEDULER_SCHEDULE_TYPE_KEY, SCHEDULER_SCHEDULE_TYPE_EVERY_DAY);
     	sp.scheduleHours=prefs.getString(SCHEDULER_SCHEDULE_HOURS_KEY, "00");
@@ -192,7 +188,6 @@ public class SchedulerUtil {
 
 class SchedulerParms {
 	public int debugLevel=0;
-	public String logDir="";
     public boolean scheduleEnabled=false;
     public String scheduleType="";
     public String scheduleHours="";

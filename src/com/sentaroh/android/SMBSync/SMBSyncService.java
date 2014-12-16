@@ -33,7 +33,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.wifi.WifiManager;
 import android.net.wifi.WifiManager.WifiLock;
-import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
@@ -93,8 +92,7 @@ public class SMBSyncService extends Service {
     			.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK
 	    				| PowerManager.ACQUIRE_CAUSES_WAKEUP
 //	   	    				| PowerManager.ON_AFTER_RELEASE
-	    				, "SMBSync-Service");
-
+	    				, "SMBSync-Service-Partial");
 //		PackageInfo packageInfo;
 //		try {
 //			packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
@@ -123,8 +121,6 @@ public class SMBSyncService extends Service {
 		} else if (action.equals(SCHEDULER_INTENT_WIFI_OFF)) {
 			mUtil.addDebugLogMsg(1,"I","onStartCommand entered, action="+action);
 			setWifiOff();
-		} else if (action.equals(SMBSYNC_LOG_WRITE)) {
-			mUtil.addLogMsg("I","Log received="+intent.getExtras().getString("LOG"));
 		} else {
 			mUtil.addDebugLogMsg(1,"I","onStartCommand entered, action="+action);
 		}
@@ -195,12 +191,6 @@ public class SMBSyncService extends Service {
 						SystemClock.sleep(sp.syncStartDelayTimeAfterWifiOn*1000);
 					}
 				}
-				@SuppressWarnings("deprecation")
-				final WakeLock full_wake_lock=((PowerManager)getSystemService(Context.POWER_SERVICE))
-		    			.newWakeLock(PowerManager.FULL_WAKE_LOCK
-			    				| PowerManager.ACQUIRE_CAUSES_WAKEUP
-			    				, "SMBSync-startSync-Full");
-				if (Build.VERSION.SDK_INT<14) full_wake_lock.acquire();
 
 		    	Intent in=new Intent(mContext,SMBSyncMain.class);
 				in.setAction(Intent.ACTION_MAIN);
@@ -220,7 +210,6 @@ public class SMBSyncService extends Service {
 					@Override
 					public void run() {
 						mUtil.addDebugLogMsg(1,"I", "startSyncActivity Wakelock and Wifilock released");
-						if (full_wake_lock.isHeld()) full_wake_lock.release();
 						if (wake_lock.isHeld()) wake_lock.release();
 						if (wifi_lock.isHeld()) wifi_lock.release();
 					}

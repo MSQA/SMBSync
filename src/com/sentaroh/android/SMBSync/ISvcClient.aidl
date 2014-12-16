@@ -23,4 +23,5 @@ interface ISvcClient{
 	void aidlAcqWakeLock();
 	
 	void aidlRelWakeLock();
+	
 }

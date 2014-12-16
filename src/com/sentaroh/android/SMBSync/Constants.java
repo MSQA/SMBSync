@@ -126,6 +126,4 @@ public class Constants {
 	public static final String SMBSYNC_PROFILE_2_CONFIRM_COPY_DELETE_REQUIRED = "REQUIRED";
 
 	public static final String SMBSYNC_PROFILE_RETRY_COUNT="3";
-	
-	public static final String SMBSYNC_LOG_WRITE="smbsync_log_write";
 }

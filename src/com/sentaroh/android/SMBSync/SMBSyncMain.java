@@ -64,6 +64,7 @@ import android.os.PowerManager;
 import android.os.RemoteException;
 import android.os.SystemClock;
 import android.os.Vibrator;
+import android.os.PowerManager.WakeLock;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -101,7 +102,6 @@ import com.sentaroh.android.Utilities.Dialog.CommonDialog;
 import com.sentaroh.android.contextbutton.ContextButtonUtil;
 
 @SuppressWarnings("deprecation")
-@SuppressLint({"SimpleDateFormat" })
 public class SMBSyncMain extends ActionBarActivity {
 	
 	private final static int ATERM_WAIT_TIME = 30;
@@ -453,6 +453,13 @@ public class SMBSyncMain extends ActionBarActivity {
 		super.onRestart();
 		util.addDebugLogMsg(1,"I","onRestart entered, "+"resartStatus="+restartType+
 					", isActivityForeground="+util.isActivityForeground());
+    	if (mSvcConnection!=null && Build.VERSION.SDK_INT<14) {
+           	WakeLock dim_wl=((PowerManager)getSystemService(Context.POWER_SERVICE))
+    	    			.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK
+    	    				| PowerManager.ACQUIRE_CAUSES_WAKEUP
+    	    				, "SMBSync-new-intent");
+           	dim_wl.acquire(100);
+    	}
 	};
 
 	@Override

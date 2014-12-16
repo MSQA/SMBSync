@@ -121,6 +121,7 @@ public class NotificationUtil {
 		gwa.notificationBuilder
 			.setContentTitle(gwa.notificationLastShowedTitle)
 		    .setContentText(gwa.notificationLastShowedMessage)
+		    .setWhen(System.currentTimeMillis())
 		    ;
 		if (Build.VERSION.SDK_INT>=16) {//JB
 			gwa.notificationBigTextStyle
