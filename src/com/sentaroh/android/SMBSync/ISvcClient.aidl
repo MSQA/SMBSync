@@ -18,7 +18,7 @@ interface ISvcClient{
 	
 	void aidlShowNotificationMsg(String prof, String fp, String msg);
 	
-	void aidlSetNotificationIcon(int icon_res);
+//	void aidlSetNotificationIcon(int icon_res);
 	
 	void aidlAcqWakeLock();
 	

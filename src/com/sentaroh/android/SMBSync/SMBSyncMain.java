@@ -1087,6 +1087,7 @@ public class SMBSyncMain extends ActionBarActivity {
 				}
 			}
 			mGp.currentTab=tabId;
+			refreshOptionMenu();
 		};
 	};
 	
@@ -1125,10 +1126,10 @@ public class SMBSyncMain extends ActionBarActivity {
 					menu.findItem(R.id.menu_top_sync).setVisible(true);
 					if (mContextProfileButtonSync.isEnabled()) {
 						menu.findItem(R.id.menu_top_sync).setEnabled(true);
-						menu.findItem(R.id.menu_top_sync).setIcon(R.drawable.ic_32_sync);
+						menu.findItem(R.id.menu_top_sync).setIcon(mContextProfileButtonSyncIconEnabled);
 					} else {
 						menu.findItem(R.id.menu_top_sync).setEnabled(false);
-						menu.findItem(R.id.menu_top_sync).setIcon(R.drawable.ic_32_sync_disabled);
+						menu.findItem(R.id.menu_top_sync).setIcon(mContextProfileButtonSyncIconDisabled);
 					}
 				} else {
 					menu.findItem(R.id.menu_top_sync).setVisible(false);
@@ -1139,9 +1140,13 @@ public class SMBSyncMain extends ActionBarActivity {
 			if (!LocalFileLastModified.isLastModifiedWasUsed(mGp.profileAdapter))
 				menu.findItem(R.id.menu_top_last_mod_list).setEnabled(false);
 		} else {
-			if (mGp.settingShowSyncButtonOnMenuItem) {
-				menu.findItem(R.id.menu_top_sync).setEnabled(false);
-				menu.findItem(R.id.menu_top_sync).setIcon(R.drawable.ic_32_sync_disabled);
+			if (mGp.currentTab.equals(SMBSYNC_TAB_NAME_PROF)) {
+				if (mGp.settingShowSyncButtonOnMenuItem) {
+					menu.findItem(R.id.menu_top_sync).setEnabled(false);
+					menu.findItem(R.id.menu_top_sync).setIcon(mContextProfileButtonSyncIconDisabled);
+				} else {
+					menu.findItem(R.id.menu_top_sync).setVisible(false);
+				}
 			} else {
 				menu.findItem(R.id.menu_top_sync).setVisible(false);
 			}
@@ -2555,6 +2560,9 @@ public class SMBSyncMain extends ActionBarActivity {
     private ImageButton mContextProfileButtonSync=null;
     private ImageButton mContextProfileButtonSelectAll=null;
     private ImageButton mContextProfileButtonUnselectAll=null;
+    
+    private int mContextProfileButtonSyncIconEnabled=R.drawable.ic_32_sync;
+    private int mContextProfileButtonSyncIconDisabled=R.drawable.ic_32_sync_disabled;
 
 //    private Bitmap mContextProfileBitmapActive=null;
 //    private Bitmap mContextProfileBitmapInactive=null;
@@ -2990,6 +2998,7 @@ public class SMBSyncMain extends ActionBarActivity {
 	};
 
 	private void setProfileContextButtonSelectMode() {
+		mContextProfileButtonSyncIconEnabled=R.drawable.ic_32_sync;
 		mActionBar.setIcon(R.drawable.ic_action_done);
 		mActionBar.setHomeButtonEnabled(true);
 		
@@ -3013,14 +3022,14 @@ public class SMBSyncMain extends ActionBarActivity {
         		}
         	}
         	if (act_sync_prof) {
-        		mContextProfileButtonSync.setImageResource(R.drawable.ic_32_sync);
+        		mContextProfileButtonSync.setImageResource(mContextProfileButtonSyncIconEnabled);
         		mContextProfileButtonSync.setEnabled(true);
         	} else {
-        		mContextProfileButtonSync.setImageResource(R.drawable.ic_32_sync_disabled);
+        		mContextProfileButtonSync.setImageResource(mContextProfileButtonSyncIconDisabled);
         		mContextProfileButtonSync.setEnabled(false);
         	}
         } else {
-        	mContextProfileButtonSync.setImageResource(R.drawable.ic_32_sync_disabled);
+        	mContextProfileButtonSync.setImageResource(mContextProfileButtonSyncIconDisabled);
         	mContextProfileButtonSync.setEnabled(false);
         }
         
@@ -3093,6 +3102,7 @@ public class SMBSyncMain extends ActionBarActivity {
 	};
 
 	private void setProfileContextButtonNormalMode() {
+		mContextProfileButtonSyncIconEnabled=R.drawable.ic_32_sync;
 		mActionBar.setIcon(R.drawable.smbsync);
 		mActionBar.setTitle(R.string.app_name);
 		mActionBar.setHomeButtonEnabled(false);
@@ -3114,14 +3124,14 @@ public class SMBSyncMain extends ActionBarActivity {
         		}
         	}
         	if (is_sync_profile_existed) {
-        		mContextProfileButtonSync.setImageResource(R.drawable.ic_32_sync);
+        		mContextProfileButtonSync.setImageResource(mContextProfileButtonSyncIconEnabled);
         		mContextProfileButtonSync.setEnabled(true);
         	} else {
-            	mContextProfileButtonSync.setImageResource(R.drawable.ic_32_sync_disabled);
+            	mContextProfileButtonSync.setImageResource(mContextProfileButtonSyncIconDisabled);
             	mContextProfileButtonSync.setEnabled(false);
         	}
         } else {
-        	mContextProfileButtonSync.setImageResource(R.drawable.ic_32_sync_disabled);
+        	mContextProfileButtonSync.setImageResource(mContextProfileButtonSyncIconDisabled);
         	mContextProfileButtonSync.setEnabled(false);
         }
         
@@ -4126,14 +4136,14 @@ public class SMBSyncMain extends ActionBarActivity {
 		}
 	};
 
-	@SuppressWarnings("unused")
-	private void setNotificationIcon(int icon_res) {
-		try {
-			mSvcClient.aidlSetNotificationIcon(icon_res);
-		} catch (RemoteException e) {
-			e.printStackTrace();
-		}
-	};
+//	@SuppressWarnings("unused")
+//	private void setNotificationIcon(int icon_res) {
+//		try {
+//			mSvcClient.aidlSetNotificationIcon(icon_res);
+//		} catch (RemoteException e) {
+//			e.printStackTrace();
+//		}
+//	};
 	
 	private boolean mRequestAutoTimerExpired=false;
 	private void autoTimer( 
@@ -4342,6 +4352,9 @@ public class SMBSyncMain extends ActionBarActivity {
 						alp.setTargetLocalDir(target_local_dir);
 						alp.setTargetLocalMountPoint(target_local_mp);
 					}
+					alp.setSyncZipFileName(item.getSyncZipFileName());
+					alp.setSyncZipEncMethod(item.getSyncZipEncMethod());
+					alp.setSyncZipAesKeyLength(item.getSyncZipAesKeyLength());
 		} else {
 			if (mirror_prof_master_type.equals("R") && mirror_prof_target_type.equals("R")) {
 				util.addLogMsg("E",String.format(mContext.getString(R.string.msgs_invalid_profile_combination),

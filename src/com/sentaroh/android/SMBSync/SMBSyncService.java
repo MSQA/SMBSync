@@ -33,6 +33,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.wifi.WifiManager;
 import android.net.wifi.WifiManager.WifiLock;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
@@ -315,13 +316,13 @@ public class SMBSyncService extends Service {
 			NotificationUtil.showOngoingMsg(mGp, prof, fp, msg);
 		}
 		
-		@Override
-		public void aidlSetNotificationIcon(int icon_res)
-				throws RemoteException {
-//			Log.v("","icon="+icon_res);
-//			Thread.currentThread().dumpStack();
-			NotificationUtil.setNotificationIcon(mGp, icon_res);
-		}
+//		@Override
+//		public void aidlSetNotificationIcon(int icon_res)
+//				throws RemoteException {
+////			Log.v("","icon="+icon_res);
+////			Thread.currentThread().dumpStack();
+//			NotificationUtil.setNotificationIcon(mGp, icon_res);
+//		}
 		
 		@Override
 		public void aidlAcqWakeLock() throws RemoteException {
@@ -343,10 +344,13 @@ public class SMBSyncService extends Service {
 		}
     };
 
-	@SuppressLint("Wakelock")
 	private void startThread() {
 //		final Handler hndl=new Handler();
-		NotificationUtil.setNotificationIcon(mGp, R.drawable.ic_48_smbsync_run_anim);
+		if (Build.VERSION.SDK_INT<=10) {
+			NotificationUtil.setNotificationIcon(mGp, R.drawable.ic_48_smbsync_run);
+		} else {
+			NotificationUtil.setNotificationIcon(mGp, R.drawable.ic_48_smbsync_run_anim);
+		}
 		tcConfirm.initThreadCtrl();
 		tcMirror.initThreadCtrl();
 		tcMirror.setEnabled();//enableAsyncTask();

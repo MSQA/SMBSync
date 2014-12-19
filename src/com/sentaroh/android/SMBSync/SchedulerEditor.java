@@ -22,6 +22,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -117,7 +118,8 @@ public class SchedulerEditor {
 		
 		loadScheduleData();
 		
-		CommonDialog.setDlgBoxSizeLimit(dialog, true);
+//		CommonDialog.setDlgBoxSizeLimit(dialog, false);
+		CommonDialog.setDlgBoxSizeHeightMax(dialog);
 		
 		setScheduleTypeSpinner(dialog, mSched.scheduleType);
 		setScheduleHoursSpinner(dialog, mSched.scheduleHours);

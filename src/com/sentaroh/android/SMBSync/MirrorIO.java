@@ -3995,6 +3995,10 @@ class MirrorIoParmList {
 	
 	private boolean mp_sync_target_dir_app_specific=false;
 	
+	private String mp_sync_zip_file_name="";
+	private int mp_sync_zip_enc_method=0, mp_sync_zip_aes_key_length=256;
+
+	
 	public MirrorIoParmList (
 			String profname,
 			String master_type,
@@ -4114,6 +4118,14 @@ class MirrorIoParmList {
 
 	public boolean isSyncSubDirectory() {return mp_sync_sub_dir;}
 	public void setSyncSubDir(boolean p) {mp_sync_sub_dir=p;};
+	
+	public void setSyncZipFileName(String p) {mp_sync_zip_file_name=p;}
+	public void setSyncZipEncMethod(int enc_method) {mp_sync_zip_enc_method=enc_method;}
+	public void setSyncZipAesKeyLength(int key_length) {mp_sync_zip_aes_key_length=key_length;}
+	public String getSyncZipFileName() {return mp_sync_zip_file_name;}
+	public int getSyncZipEncMethod() {return mp_sync_zip_enc_method;}
+	public int getSyncZipAesKeyLength() {return mp_sync_zip_aes_key_length;}
+
 }
 
 class LocalFileLastModifiedListCacheItem {
