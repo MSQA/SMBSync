@@ -432,7 +432,7 @@ public class ProfileMaintLocalFragment extends DialogFragment{
 				String prof_name, prof_dir, prof_act, prof_lmp;
 				boolean audit_error = false;
 				String audit_msg="";
-				prof_lmp=mGp.SMBSync_External_Root_Dir;
+				prof_lmp=mGp.externalRootDirectory;
 				prof_dir = editdir.getText().toString();
 				prof_name = editname.getText().toString();
 				if (mProfUtil.hasInvalidChar(prof_dir,new String[]{"\t"})) {

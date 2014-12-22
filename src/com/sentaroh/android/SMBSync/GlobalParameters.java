@@ -37,6 +37,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.Color;
 import android.net.wifi.WifiManager;
 import android.os.Handler;
@@ -75,7 +76,8 @@ public class GlobalParameters extends Application{
 	
 	public Handler uiHandler=null;
 	
-	public TextView mainViewScheduleInfo=null;
+	public TextView scheduleInfoProfView=null, scheduleInfoHistView=null, scheduleInfoMsgView=null;
+	public String scheduleInfoText="";
 	
 	public AdapterProfileList profileAdapter=null;
 	public ListView profileListView=null;
@@ -84,12 +86,12 @@ public class GlobalParameters extends Application{
 	public AdapterMessageList msgListAdapter=null;
 	public ListView msgListView=null;
 	
-	public String SMBSync_External_Root_Dir="/mnt/sdcard";
+	public String externalRootDirectory="/mnt/sdcard";
 	public boolean externalStorageIsMounted=false;
-	public String SMBSync_Internal_Root_Dir="";
+	public String internalRootDirectory="";
 	
 	public String profilePassword="";
-	public final String profilePasswordPrefix="*SMBSync*";
+	public final String profileKeyPrefix="*SMBSync*";
 	
 	public NotificationManager notificationManager=null;
 	public int notificationIcon=R.drawable.ic_48_smbsync_wait;
@@ -213,8 +215,9 @@ public class GlobalParameters extends Application{
 		super.onCreate();
 		Log.v("SMBSyncGP","onCreate entered");
 		onLowMemory=false;
-		SMBSync_External_Root_Dir=LocalMountPoint.getExternalStorageDir();
-		
+		externalRootDirectory=LocalMountPoint.getExternalStorageDir();
+		internalRootDirectory=getFilesDir().toString();
+
 		loadSettingsParm(this);
 	};
 	
@@ -222,6 +225,62 @@ public class GlobalParameters extends Application{
 	public void onLowMemory() {
 //		Log.v("SMBSyncGP","onLowMemory entered");
 		onLowMemory=true;
+	};
+	
+	public void initSettingsParms(Context c) {
+		
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
+		
+		if (prefs.getString(c.getString(R.string.settings_log_dir), "-1").equals("-1")) {
+			Editor pe=prefs.edit();
+			
+			sampleProfileCreateRequired=true;
+			
+			pe.putString(c.getString(R.string.settings_log_dir), externalRootDirectory+"/SMBSync/");
+			pe.putString(c.getString(R.string.settings_network_wifi_option), SMBSYNC_SYNC_WIFI_OPTION_CONNECTED_ANY_AP);
+			pe.putString(c.getString(R.string.settings_file_diff_time_seconds), "3");
+			pe.putString(c.getString(R.string.settings_media_store_last_mod_time), "0");
+
+			pe.putBoolean(c.getString(R.string.settings_media_scanner_non_media_files_scan), true);
+			pe.putBoolean(c.getString(R.string.settings_media_scanner_scan_extstg), true);
+
+			pe.putBoolean(c.getString(R.string.settings_exit_clean), true);
+			
+			pe.putString(c.getString(R.string.settings_smb_lm_compatibility),"0");
+			pe.putBoolean(c.getString(R.string.settings_smb_use_extended_security),false);
+			pe.putString(c.getString(R.string.settings_smb_log_level),"0");
+			pe.putString(c.getString(R.string.settings_smb_rcv_buf_size),"66576");
+			pe.putString(c.getString(R.string.settings_smb_snd_buf_size),"66576");
+			pe.putString(c.getString(R.string.settings_smb_listSize),"65535");
+			pe.putString(c.getString(R.string.settings_smb_maxBuffers),"100");
+			pe.putString(c.getString(R.string.settings_smb_tcp_nodelay),"true");
+			pe.putString(c.getString(R.string.settings_io_buffers),"8");
+			
+			pe.putString(SMBSYNC_PROFILE_CONFIRM_COPY_DELETE, SMBSYNC_PROFILE_CONFIRM_COPY_DELETE_NOT_REQUIRED);
+			
+			pe.commit();
+		}
+
+		if (prefs.getString(c.getString(R.string.settings_keep_screen_on), "").equals("")) {
+			prefs.edit().putString(c.getString(R.string.settings_keep_screen_on), GlobalParameters.KEEP_SCREEN_ON_WHEN_SCREEN_UNLOCKED)
+				.commit();
+		}
+		
+		if (prefs.getString(c.getString(R.string.settings_smb_perform_class), "-1").equals("-1")) {
+			prefs.edit().putString(c.getString(R.string.settings_smb_perform_class), 
+					"0").commit();
+		}
+
+		if (prefs.getString(c.getString(R.string.settings_network_wifi_option), "-1").equals("-1")) {
+			if (prefs.getBoolean("settings_wifi_only", false)) {
+				prefs.edit().putString(c.getString(R.string.settings_network_wifi_option), 
+						SMBSYNC_SYNC_WIFI_OPTION_CONNECTED_ANY_AP).commit();
+			} else {
+				prefs.edit().putString(c.getString(R.string.settings_network_wifi_option), 
+						SMBSYNC_SYNC_WIFI_OPTION_ADAPTER_OFF).commit();
+			}
+		}
+
 	};
 	
 	public void loadSettingsParm(Context c) {
@@ -236,7 +295,7 @@ public class GlobalParameters extends Application{
 		
 		settingLogMsgDir=
 				prefs.getString(c.getString(R.string.settings_log_dir),
-						SMBSync_External_Root_Dir+"/SMBSync/");
+						externalRootDirectory+"/SMBSync/");
 		
 		settingAutoStart=
 				prefs.getBoolean(c.getString(R.string.settings_auto_start), false);

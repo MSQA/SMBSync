@@ -4,7 +4,10 @@ import static com.sentaroh.android.SMBSync.SchedulerConstants.*;
 
 import java.util.Calendar;
 
+import com.sentaroh.android.Utilities.DateUtil;
+
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
@@ -184,6 +187,40 @@ public class SchedulerUtil {
 //		result=System.currentTimeMillis()+(1000*60*5);//SchedulerReceiverも修正（SCHEDULER_INTENT_SET_TIMER_IF_NOT_SET)
     	return result;
     };
+    
+	public static void sendTimerRequest(Context c, String act) {
+		Intent intent = new Intent(act);
+		c.sendBroadcast(intent);
+	};
+    
+	public static void setSchedulerInfo(GlobalParameters gp, Context c, SchedulerParms sched) {
+		SchedulerParms sp=sched;
+		if (sched==null) {
+			sp=new SchedulerParms();
+			SchedulerUtil.loadScheduleData(sp, c);
+		}
+		long nst=-1;
+		if (sp.scheduleEnabled) nst=SchedulerUtil.getNextSchedule(sp);
+    	String sched_time="";
+    	if (nst!=-1) {
+    		sched_time=String.format(c.getString(R.string.msgs_scheduler_info_next_schedule_time), 
+    				DateUtil.convDateTimeTo_YearMonthDayHourMin(nst));
+    		String sync_prof="";
+    		if (sp.syncProfile.equals("")) {
+    			sync_prof=c.getString(R.string.msgs_scheduler_info_sync_all_active_profile);
+    		} else {
+    			sync_prof=String.format(c.getString(R.string.msgs_scheduler_info_sync_selected_profile), 
+    					sp.syncProfile);
+    		}
+    		gp.scheduleInfoText=sched_time+", "+sync_prof;
+    	} else {
+    		gp.scheduleInfoText=c.getString(R.string.msgs_scheduler_info_schedule_disabled);
+    	}
+		gp.scheduleInfoProfView.setText(gp.scheduleInfoText);
+		gp.scheduleInfoHistView.setText(gp.scheduleInfoText);
+		gp.scheduleInfoMsgView.setText(gp.scheduleInfoText);
+	};
+
 }
 
 class SchedulerParms {

@@ -430,7 +430,7 @@ public class SMBSyncUtil {
 //		Log.v("","load hist started");
 		ArrayList<SyncHistoryListItem> hl=new ArrayList<SyncHistoryListItem>();
 		try {
-			String dir=mGp.SMBSync_External_Root_Dir+"/SMBSync";
+			String dir=mGp.externalRootDirectory+"/SMBSync";
 			File lf=new File(dir+"/history.txt");
 			if (lf.exists()) {
 				FileReader fw=new FileReader(lf);
@@ -503,7 +503,7 @@ public class SMBSyncUtil {
 		Thread th=new Thread() {
 			@Override
 			public void run() {
-				String dir=mGp.SMBSync_External_Root_Dir+"/SMBSync/result_log";
+				String dir=mGp.externalRootDirectory+"/SMBSync/result_log";
 				File lf=new File(dir);
 				if (lf.exists()) {
 					File[] fl=lf.listFiles();
@@ -530,7 +530,7 @@ public class SMBSyncUtil {
 	};
 
 	final public String createSyncResultFilePath(String syncProfName) {
-		String dir=mGp.SMBSync_External_Root_Dir+"/SMBSync/result_log";
+		String dir=mGp.externalRootDirectory+"/SMBSync/result_log";
 		File tlf=new File(dir);
 		if (!tlf.exists()) tlf.mkdirs();
 		String dt=DateUtil.convDateTimeTo_YearMonthDayHourMinSec(System.currentTimeMillis());
@@ -543,7 +543,7 @@ public class SMBSyncUtil {
 	final public void saveHistoryList(ArrayList<SyncHistoryListItem> hl) {
 //		Log.v("","save hist started");
 		try {
-			String dir=mGp.SMBSync_External_Root_Dir+"/SMBSync";
+			String dir=mGp.externalRootDirectory+"/SMBSync";
 			File lf=new File(dir);
 			lf.mkdirs();
 			lf=new File(dir+"/history.txt");

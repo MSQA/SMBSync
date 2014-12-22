@@ -166,23 +166,26 @@ public class SMBSyncService extends Service {
 					wifi_lock.acquire();
 					if (sp.syncStartDelayTimeAfterWifiOn==0) {
 //						if (mGp.settingWifiOption.equals(SMBSYNC_SYNC_WIFI_OPTION_ADAPTER_OFF)) {
-//							
+//							mUtil.addDebugLogMsg(1,"I", "Sync not delayed because WiFi is not turn on");						
 //						} else if (mGp.settingWifiOption.equals(SMBSYNC_SYNC_WIFI_OPTION_ADAPTER_ON)) {
-//							SystemClock.sleep(sp.syncDelayedSecondForWifiOn*1000);
+//							mUtil.addDebugLogMsg(1,"I", "Sync start wait until WiFi is turn on");
+//							SystemClock.sleep(1000);
 //							while(!mWifiMgr.isWifiEnabled()) {
-//								SystemClock.sleep(sp.syncDelayedSecondForWifiOn*1000);
+//								SystemClock.sleep(1000);
 //							}
 //						} else if (mGp.settingWifiOption.equals(SMBSYNC_SYNC_WIFI_OPTION_CONNECTED_ANY_AP)) {
-//							SystemClock.sleep(sp.syncDelayedSecondForWifiOn*1000);
-//							int wc=100;
+//							mUtil.addDebugLogMsg(1,"I", "Sync start wait until WiFi access point is connected");
+//							int wc=30;
 //							while(wc>0) {
-//								SystemClock.sleep(sp.syncDelayedSecondForWifiOn*300);
-//								String ssid=mWifiMgr.getConnectionInfo().getSSID();
-//								if (ssid!=null && !ssid.equals("0x") && !ssid.equals("") && 
-//										!ssid.equals("<unknown ssid>")) {
-//									break;
-//								} else {
-//									wc--;
+//								SystemClock.sleep(1000);
+//								if (mWifiMgr.isWifiEnabled()) {
+//									String ssid=mWifiMgr.getConnectionInfo().getSSID();
+//									if (ssid!=null && !ssid.equals("0x") && !ssid.equals("") && 
+//											!ssid.equals("<unknown ssid>")) {
+//										break;
+//									} else {
+//										wc--;
+//									}
 //								}
 //							}
 //						} else if (mGp.settingWifiOption.equals(SMBSYNC_SYNC_WIFI_OPTION_CONNECTED_SPEC_AP)) {

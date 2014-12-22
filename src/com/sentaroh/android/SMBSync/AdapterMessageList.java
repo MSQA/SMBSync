@@ -91,12 +91,12 @@ public class AdapterMessageList extends ArrayAdapter<MsgListItem> {
 	private boolean themeIsLight=false;
 	
 	public AdapterMessageList(Context context, int textViewResourceId,
-			ArrayList<MsgListItem> objects, boolean themeIsLight) {
+			ArrayList<MsgListItem> objects, boolean theme_is_light) {
 		super(context, textViewResourceId, objects);
 		c = context;
 		id = textViewResourceId;
 		items = objects;
-		this.themeIsLight=themeIsLight;
+		themeIsLight=theme_is_light;
 	}
 	
 	final public void remove(int i) {
@@ -172,8 +172,8 @@ public class AdapterMessageList extends ArrayAdapter<MsgListItem> {
             		holder.tv_row_time.setTextColor(Color.argb(255, 192, 128, 0));
             		holder.tv_row_msg.setTextColor(Color.argb(255, 192, 128, 0));
         		} else {
-            		holder.tv_row_time.setTextColor(Color.WHITE);
-            		holder.tv_row_msg.setTextColor(Color.WHITE);
+            		holder.tv_row_time.setTextColor(Color.YELLOW);
+            		holder.tv_row_msg.setTextColor(Color.YELLOW);
         		}
             	holder.tv_row_time.setText(o.getMtime());
             	holder.tv_row_msg.setText(o.getMsg());

@@ -304,9 +304,9 @@ public class SchedulerEditor {
 
 		    	SchedulerUtil.saveScheduleData(mSched, mContext);
 		    	
-		    	sendTimerRequest(mContext, SCHEDULER_INTENT_SET_TIMER);
+		    	SchedulerUtil.sendTimerRequest(mContext, SCHEDULER_INTENT_SET_TIMER);
 		    	
-		    	setSchedulerInfo(mGp, mContext, mSched);
+		    	SchedulerUtil.setSchedulerInfo(mGp, mContext, mSched);
 			}
 		});
 
@@ -476,38 +476,6 @@ public class SchedulerEditor {
 		}
 	};
 	
-	
-	public static void sendTimerRequest(Context c, String act) {
-		Intent intent = new Intent(act);
-		c.sendBroadcast(intent);
-	};
-	
-	public static void setSchedulerInfo(GlobalParameters gp, Context c, SchedulerParms sched) {
-		SchedulerParms sp=sched;
-		if (sched==null) {
-			sp=new SchedulerParms();
-			SchedulerUtil.loadScheduleData(sp, c);
-		}
-		long nst=-1;
-		if (sp.scheduleEnabled) nst=SchedulerUtil.getNextSchedule(sp);
-    	String sched_time="";
-    	if (nst!=-1) {
-    		gp.mainViewScheduleInfo.setVisibility(TextView.VISIBLE);
-    		sched_time=String.format(c.getString(R.string.msgs_scheduler_info_next_schedule_time), 
-    				DateUtil.convDateTimeTo_YearMonthDayHourMin(nst));
-    		String sync_prof="";
-    		if (sp.syncProfile.equals("")) {
-    			sync_prof=c.getString(R.string.msgs_scheduler_info_sync_all_active_profile);
-    		} else {
-    			sync_prof=String.format(c.getString(R.string.msgs_scheduler_info_sync_selected_profile), 
-    					sp.syncProfile);
-    		}
-    		gp.mainViewScheduleInfo.setText(sched_time+", "+sync_prof);
-    	} else {
-    		gp.mainViewScheduleInfo.setText(c.getString(R.string.msgs_scheduler_info_schedule_disabled));
-    	}
-	};
-
 	private void setViewVisibility(Dialog dialog) {
 		final Spinner sp_sched_type=(Spinner)dialog.findViewById(R.id.scheduler_main_dlg_date_time_type);
 //		final Spinner sp_sched_hours=(Spinner)dialog.findViewById(R.id.scheduler_main_dlg_exec_hours);

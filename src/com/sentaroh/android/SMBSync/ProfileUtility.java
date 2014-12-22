@@ -287,7 +287,7 @@ public class ProfileUtility {
 						}
 						if (!enc_str.equals("")) {
 							CipherParms cp=EncryptUtil.initDecryptEnv(
-									mGp.profilePasswordPrefix+passwd);
+									mGp.profileKeyPrefix+passwd);
 							byte[] enc_array=Base64Compat.decode(enc_str, Base64Compat.NO_WRAP);
 							String dec_str=EncryptUtil.decrypt(enc_array, cp);
 							if (!SMBSYNC_PROF_ENC.equals(dec_str)) {
@@ -4006,7 +4006,7 @@ public class ProfileUtility {
 				boolean prof_encrypted=isProfileWasEncrypted(fp);
 				if (prof_encrypted) {
 					cp=EncryptUtil.initDecryptEnv(
-							mGp.profilePasswordPrefix+mGp.profilePassword);
+							mGp.profileKeyPrefix+mGp.profilePassword);
 				}
 				try {
 					BufferedReader br;
@@ -4061,19 +4061,19 @@ public class ProfileUtility {
 			BufferedReader br;
 			String pf = SMBSYNC_PROFILE_FILE_NAME_V0; 
 			try {
-				File lf1= new File(mGp.SMBSync_Internal_Root_Dir+"/"+
+				File lf1= new File(mGp.internalRootDirectory+"/"+
 						SMBSYNC_PROFILE_FILE_NAME_V1);
-				File lf2= new File(mGp.SMBSync_Internal_Root_Dir+"/"+
+				File lf2= new File(mGp.internalRootDirectory+"/"+
 						SMBSYNC_PROFILE_FILE_NAME_V2);
-				File lf3= new File(mGp.SMBSync_Internal_Root_Dir+"/"+
+				File lf3= new File(mGp.internalRootDirectory+"/"+
 						SMBSYNC_PROFILE_FILE_NAME_V3);
-				File lf4= new File(mGp.SMBSync_Internal_Root_Dir+"/"+
+				File lf4= new File(mGp.internalRootDirectory+"/"+
 						SMBSYNC_PROFILE_FILE_NAME_V4);
-				File lf5= new File(mGp.SMBSync_Internal_Root_Dir+"/"+
+				File lf5= new File(mGp.internalRootDirectory+"/"+
 						SMBSYNC_PROFILE_FILE_NAME_V5);
-				File lf6= new File(mGp.SMBSync_Internal_Root_Dir+"/"+
+				File lf6= new File(mGp.internalRootDirectory+"/"+
 						SMBSYNC_PROFILE_FILE_NAME_V6);
-				File lf7= new File(mGp.SMBSync_Internal_Root_Dir+"/"+
+				File lf7= new File(mGp.internalRootDirectory+"/"+
 						SMBSYNC_PROFILE_FILE_NAME_V7);
 				if (lf7.exists()) pf=SMBSYNC_PROFILE_FILE_NAME_V7;
 				else if (lf6.exists()) pf=SMBSYNC_PROFILE_FILE_NAME_V6;
@@ -4084,11 +4084,11 @@ public class ProfileUtility {
 				else if (lf1.exists()) pf=SMBSYNC_PROFILE_FILE_NAME_V1;
 				else pf=SMBSYNC_PROFILE_FILE_NAME_V0;
 				
-				File lf= new File(mGp.SMBSync_Internal_Root_Dir+"/"+pf);
+				File lf= new File(mGp.internalRootDirectory+"/"+pf);
 				
 				if (lf.exists()) {
 					br = new BufferedReader(
-							new FileReader(mGp.SMBSync_Internal_Root_Dir+"/"+pf),8192); 
+							new FileReader(mGp.internalRootDirectory+"/"+pf),8192); 
 	//				InputStream in = context.openFileInput(SMBSYNC_PROFILE_FILE_NAME);
 	//				BufferedReader br = new BufferedReader(new InputStreamReader(
 	//						in, "UTF-8"));
@@ -4100,7 +4100,7 @@ public class ProfileUtility {
 				} else {
 					util.addDebugLogMsg(1, "W", 
 							"profile not found, empty profile list created. fn="+
-									mGp.SMBSync_Internal_Root_Dir+"/"+pf);
+									mGp.internalRootDirectory+"/"+pf);
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -4155,7 +4155,7 @@ public class ProfileUtility {
 				new ArrayList<String>(), true, true,false,false,"0",false,true,true,true,"",0,0,"",0,false));
 		pfl.add(new ProfileListItem(SMBSYNC_PROF_GROUP_DEFAULT, 
 				SMBSYNC_PROF_TYPE_LOCAL,"L-SAMP-DOWNLOAD", SMBSYNC_PROF_ACTIVE, 
-				mGp.SMBSync_External_Root_Dir,"Pictures", "",0,0,false));
+				mGp.externalRootDirectory,"Pictures", "",0,0,false));
 		pfl.add(new ProfileListItem(SMBSYNC_PROF_GROUP_DEFAULT, 
 				SMBSYNC_PROF_TYPE_REMOTE,"R-SAMP-DOWNLOAD", SMBSYNC_PROF_ACTIVE, 
 				"TESTUSER","PSWD","192.168.0.2","","","SHARE", "Android/Pictures",
@@ -4174,7 +4174,7 @@ public class ProfileUtility {
 				"",0,0,"",0,false));
 		pfl.add(new ProfileListItem(SMBSYNC_PROF_GROUP_DEFAULT, 
 				SMBSYNC_PROF_TYPE_LOCAL,"L-SAMP-UPLOAD", SMBSYNC_PROF_ACTIVE, 
-				mGp.SMBSync_External_Root_Dir,"DCIM", 
+				mGp.externalRootDirectory,"DCIM", 
 				"",0,0,false));
 		pfl.add(new ProfileListItem(SMBSYNC_PROF_GROUP_DEFAULT, 
 				SMBSYNC_PROF_TYPE_REMOTE,"R-SAMP-UPLOAD", SMBSYNC_PROF_ACTIVE, 
@@ -4189,7 +4189,7 @@ public class ProfileUtility {
 				"",0,0,"",0,false));
 		pfl.add(new ProfileListItem(SMBSYNC_PROF_GROUP_DEFAULT, 
 				SMBSYNC_PROF_TYPE_LOCAL,"L-SAMP-LOCAL", SMBSYNC_PROF_ACTIVE, 
-				mGp.SMBSync_External_Root_Dir,"DCIM", 
+				mGp.externalRootDirectory,"DCIM", 
 				"",0,0,false));
 		pfl.add(new ProfileListItem(SMBSYNC_PROF_GROUP_DEFAULT, 
 				SMBSYNC_PROF_TYPE_LOCAL,"L-SAMP-USBDISK", SMBSYNC_PROF_ACTIVE, 
@@ -4277,7 +4277,7 @@ public class ProfileUtility {
 						parm[1],//Name
 						parm[2],//Active
 						parm[3],//Directory
-						mGp.SMBSync_External_Root_Dir,
+						mGp.externalRootDirectory,
 						"",0,0,
 						false));
 			} else if (parm[0].equals(SMBSYNC_PROF_TYPE_SYNC)) {//Sync
@@ -4354,7 +4354,7 @@ public class ProfileUtility {
 
 		} else {
 			if (parm[1].equals(SMBSYNC_PROF_TYPE_LOCAL)) {//Local
-				if (parm[5].equals("")) parm[5]=mGp.SMBSync_External_Root_Dir;
+				if (parm[5].equals("")) parm[5]=mGp.externalRootDirectory;
 				lcl.add(createLocalProfilelistItem(mGp,
 						parm[0],//group
 						parm[2],//Name
@@ -4446,7 +4446,7 @@ public class ProfileUtility {
 
 		} else {
 			if (parm[1].equals(SMBSYNC_PROF_TYPE_LOCAL)) {//Local
-				if (parm[5].equals("")) parm[5]=mGp.SMBSync_External_Root_Dir;
+				if (parm[5].equals("")) parm[5]=mGp.externalRootDirectory;
 				lcl.add(createLocalProfilelistItem(mGp,
 						parm[0],//group
 						parm[2],//Name
@@ -4551,7 +4551,7 @@ public class ProfileUtility {
 
 		} else {
 			if (parm[1].equals(SMBSYNC_PROF_TYPE_LOCAL)) {//Local
-				if (parm[5].equals("")) parm[5]=mGp.SMBSync_External_Root_Dir;
+				if (parm[5].equals("")) parm[5]=mGp.externalRootDirectory;
 				lcl.add(createLocalProfilelistItem(mGp,
 						parm[0],//group
 						parm[2],//Name
@@ -4656,7 +4656,7 @@ public class ProfileUtility {
 
 		} else {
 			if (parm[1].equals(SMBSYNC_PROF_TYPE_LOCAL)) {//Local
-				if (parm[5].equals("")) parm[5]=mGp.SMBSync_External_Root_Dir;
+				if (parm[5].equals("")) parm[5]=mGp.externalRootDirectory;
 				lcl.add(createLocalProfilelistItem(mGp,
 						parm[0],//group
 						parm[2],//Name
@@ -4764,7 +4764,7 @@ public class ProfileUtility {
 
 		} else {
 			if (parm[1].equals(SMBSYNC_PROF_TYPE_LOCAL)) {//Local
-				if (parm[5].equals("")) parm[5]=mGp.SMBSync_External_Root_Dir;
+				if (parm[5].equals("")) parm[5]=mGp.externalRootDirectory;
 				lcl.add(createLocalProfilelistItem(mGp,
 						parm[0],//group
 						parm[2],//Name
@@ -4872,7 +4872,7 @@ public class ProfileUtility {
 
 		} else {
 			if (parm[1].equals(SMBSYNC_PROF_TYPE_LOCAL)) {//Local
-				if (parm[5].equals("")) parm[5]=mGp.SMBSync_External_Root_Dir;
+				if (parm[5].equals("")) parm[5]=mGp.externalRootDirectory;
 				lcl.add(createLocalProfilelistItem(mGp,
 						parm[0],//group
 						parm[2],//Name
@@ -4993,7 +4993,7 @@ public class ProfileUtility {
 
 		} else {
 			if (parm[1].equals(SMBSYNC_PROF_TYPE_LOCAL)) {//Local
-				if (parm[5].equals("")) parm[5]=mGp.SMBSync_External_Root_Dir;
+				if (parm[5].equals("")) parm[5]=mGp.externalRootDirectory;
 				lcl.add(createLocalProfilelistItem(mGp,
 						parm[0],//group
 						parm[2],//Name
@@ -5273,7 +5273,7 @@ public class ProfileUtility {
 			CipherParms cp=null;
 			if (sdcard) {
 				if (encrypt_required) {
-					cp=EncryptUtil.initEncryptEnv(mGp.profilePasswordPrefix+mGp.profilePassword);
+					cp=EncryptUtil.initEncryptEnv(mGp.profileKeyPrefix+mGp.profilePassword);
 				}
 				File lf=new File(fd);
 				if (!lf.exists()) lf.mkdir();
@@ -5293,8 +5293,8 @@ public class ProfileUtility {
 //						Context.MODE_PRIVATE);
 //				pw = new PrintWriter(new OutputStreamWriter(out, "UTF-8"));
 //				ofp=SMBSYNC_PROFILE_FILE_NAME;
-				ofp=mGp.SMBSync_Internal_Root_Dir+"/"+CURRENT_SMBSYNC_PROFILE_FILE_NAME;
-				File lf=new File(mGp.SMBSync_Internal_Root_Dir);
+				ofp=mGp.internalRootDirectory+"/"+CURRENT_SMBSYNC_PROFILE_FILE_NAME;
+				File lf=new File(mGp.internalRootDirectory);
 				if (!lf.exists()) lf.mkdir();
 				bw =new BufferedWriter(new FileWriter(ofp),8192);
 				pw = new PrintWriter(bw);

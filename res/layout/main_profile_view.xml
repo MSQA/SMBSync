@@ -19,17 +19,8 @@
         android:textAppearance="?android:attr/textAppearanceMedium" >
     </ListView>
 
-    <include layout="@layout/divider_line1" />
-
-    <TextView
-        android:id="@+id/schedule_info"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ellipsize="end"
-        android:lines="1"
-        android:text="Scheduler info"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
+    <include layout="@layout/main_schedule_view" />
+    
     <include layout="@layout/context_view_profile" />
     
 </LinearLayout>
