@@ -105,6 +105,8 @@
 	<string name="msgs_msg_cont_label_pinned_active">To disable auto scroll</string>
 	<string name="msgs_msg_cont_label_pinned_inactive">To enable auto scroll</string>
 	<string name="msgs_msg_cont_label_clear">To clear message</string>
+	
+	<string name="msgs_cont_button_diabled_by_sync">The requested operation　was ignored for during synchronization</string>
 			
 	<string name="msgs_add_local_profile"	>Add local profile</string>
 	<string name="msgs_add_remote_profile"	>Add remote profile</string>

@@ -106,6 +106,8 @@
 	<string name="msgs_msg_cont_label_pinned_active">自動スクロールを有効にする</string>
 	<string name="msgs_msg_cont_label_pinned_inactive">自動スクロールを無効にする</string>
 	<string name="msgs_msg_cont_label_clear">メッセージを消去する</string>
+	
+	<string name="msgs_cont_button_diabled_by_sync">要求された操作は同期中のため無視しました</string>
 				
 	<string name="msgs_add_local_profile"	>ローカルプロファイルの追加</string>
 	<string name="msgs_add_remote_profile"	>リモートプロファイルの追加</string>

@@ -2141,9 +2141,7 @@ public class SMBSyncMain extends ActionBarActivity {
         mContextHistoryButtonMoveTop.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
-				if (mGp.enableMainUi) {
-					mGp.syncHistoryListView.setSelection(0);
-				}
+				mGp.syncHistoryListView.setSelection(0);
 			}
         });
         ContextButtonUtil.setButtonLabelListener(mContext, mContextHistoryButtonMoveTop,mContext.getString(R.string.msgs_hist_cont_label_move_top));
@@ -2151,9 +2149,7 @@ public class SMBSyncMain extends ActionBarActivity {
         mContextHistoryButtonMoveBottom.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
-				if (mGp.enableMainUi) {
-					mGp.syncHistoryListView.setSelection(mGp.syncHistoryAdapter.getCount()-1);
-				}
+				mGp.syncHistoryListView.setSelection(mGp.syncHistoryAdapter.getCount()-1);
 			}
         });
         ContextButtonUtil.setButtonLabelListener(mContext, mContextHistoryButtonMoveBottom,mContext.getString(R.string.msgs_hist_cont_label_move_bottom));
@@ -2283,7 +2279,8 @@ public class SMBSyncMain extends ActionBarActivity {
 			mContextHistiryViewMoveBottom.setVisibility(ImageButton.VISIBLE);
 			mContextHistiryViewDeleteHistory.setVisibility(ImageButton.GONE);
 			mContextHistiryViewHistoryCopyClipboard.setVisibility(ImageButton.GONE);
-			mContextHistiryViewSelectAll.setVisibility(ImageButton.VISIBLE);
+			if (isUiEnabled()) mContextHistiryViewSelectAll.setVisibility(ImageButton.VISIBLE);
+			else mContextHistiryViewSelectAll.setVisibility(ImageButton.GONE);
 	        mContextHistiryViewUnselectAll.setVisibility(ImageButton.GONE);
 		} else {
 			mContextHistiryViewMoveTop.setVisibility(ImageButton.GONE);
@@ -2885,7 +2882,7 @@ public class SMBSyncMain extends ActionBarActivity {
         ContextButtonUtil.setButtonLabelListener(mContext, mContextProfileButtonUnselectAll,mContext.getString(R.string.msgs_prof_cont_label_unselect_all));
 
 	};
-
+	
 	private void confirmActivate(AdapterProfileList pa, final NotifyEvent p_ntfy) {
 		NotifyEvent ntfy=new NotifyEvent(mContext);
 		ntfy.setListener(new NotifyEventListener(){
@@ -3037,7 +3034,7 @@ public class SMBSyncMain extends ActionBarActivity {
         mContextProfileViewUnselectAll.setVisibility(ImageButton.GONE);
 
 	};
-
+	
 	private void setProfileContextButtonNormalMode() {
 		mContextProfileButtonSyncIconEnabled=R.drawable.ic_32_sync;
 		mActionBar.setIcon(R.drawable.smbsync);
@@ -3074,15 +3071,23 @@ public class SMBSyncMain extends ActionBarActivity {
         
         mContextProfileViewActivete.setVisibility(ImageButton.GONE);
         mContextProfileViewInactivete.setVisibility(ImageButton.GONE);
-        mContextProfileViewAddLocal.setVisibility(ImageButton.VISIBLE);
-        mContextProfileViewAddRemote.setVisibility(ImageButton.VISIBLE);
-        mContextProfileViewAddSync.setVisibility(ImageButton.VISIBLE);
-        mContextProfileViewStartWizard.setVisibility(ImageButton.VISIBLE);
+        if (isUiEnabled()) mContextProfileViewAddLocal.setVisibility(ImageButton.VISIBLE);
+        else mContextProfileViewAddLocal.setVisibility(ImageButton.GONE);
+        if (isUiEnabled()) mContextProfileViewAddRemote.setVisibility(ImageButton.VISIBLE);
+        else mContextProfileViewAddRemote.setVisibility(ImageButton.GONE);
+        if (isUiEnabled()) mContextProfileViewAddSync.setVisibility(ImageButton.VISIBLE);
+        else mContextProfileViewAddSync.setVisibility(ImageButton.GONE);
+        if (isUiEnabled()) mContextProfileViewStartWizard.setVisibility(ImageButton.VISIBLE);
+        else mContextProfileViewStartWizard.setVisibility(ImageButton.GONE);
         mContextProfileViewCopyProfile.setVisibility(ImageButton.GONE);
         mContextProfileViewDeleteProfile.setVisibility(ImageButton.GONE);
         mContextProfileViewRenameProfile.setVisibility(ImageButton.GONE);
-        if (!mGp.profileAdapter.isEmptyAdapter()) mContextProfileViewSelectAll.setVisibility(ImageButton.VISIBLE);
-        else mContextProfileViewSelectAll.setVisibility(ImageButton.GONE);
+        if (isUiEnabled()) {
+            if (!mGp.profileAdapter.isEmptyAdapter()) mContextProfileViewSelectAll.setVisibility(ImageButton.VISIBLE);
+            else mContextProfileViewSelectAll.setVisibility(ImageButton.GONE);
+        } else {
+        	mContextProfileViewSelectAll.setVisibility(ImageButton.INVISIBLE);
+        }
         mContextProfileViewUnselectAll.setVisibility(ImageButton.GONE);
 
         refreshOptionMenu();
@@ -3342,17 +3347,12 @@ public class SMBSyncMain extends ActionBarActivity {
 		util.addDebugLogMsg(1,"I","setUiEnabled entered");
 		mGp.enableMainUi=true;
 		
-//		TabWidget tw=(TabWidget)findViewById(android.R.id.tabs);
-//		tw.setEnabled(true);
-//		if (Build.VERSION.SDK_INT>=11) tw.setAlpha(1.0f);
-		
-//		mTabChildviewProf.setEnabled(true); 
-//		mTabChildviewProf.setViewAlpha(1.0f);
-//		mTabChildviewMsg.setEnabled(true);
-//		mTabChildviewMsg.setViewAlpha(1.0f);
-//		mTabChildviewHist.setEnabled(true);
-//		mTabChildviewHist.setViewAlpha(1.0f);
-		
+		if (!mGp.profileAdapter.isShowCheckBox()) setProfileContextButtonNormalMode();
+		else setProfileContextButtonSelectMode();
+
+		if (!mGp.syncHistoryAdapter.isShowCheckBox()) setHistoryContextButtonNormalMode();
+		else setHistoryContextButtonSelectMode();
+
 		unsetOnKeyCallBackListener();
 		
 		refreshOptionMenu();
@@ -3362,16 +3362,6 @@ public class SMBSyncMain extends ActionBarActivity {
 		util.addDebugLogMsg(1,"I","setUiDisabled entered");
 		mGp.enableMainUi=false;
 		
-//		TabWidget tw=(TabWidget)findViewById(android.R.id.tabs);
-//		tw.setEnabled(false);
-//		if (Build.VERSION.SDK_INT>=11) tw.setAlpha(0.4f);
-		
-//		mTabChildviewProf.setEnabled(false); 
-//		mTabChildviewProf.setAlpha(0.4f);
-//		mTabChildviewMsg.setEnabled(false);
-//		mTabChildviewMsg.setViewAlpha(0.4f);
-//		mTabChildviewHist.setEnabled(false);
-//		mTabChildviewHist.setViewAlpha(0.4f);
 		final Toast toast=Toast.makeText(mContext, 
 				mContext.getString(R.string.msgs_dlg_hardkey_back_button), 
 				Toast.LENGTH_SHORT);
@@ -3388,6 +3378,12 @@ public class SMBSyncMain extends ActionBarActivity {
 			}
 		});
 
+		if (!mGp.profileAdapter.isShowCheckBox()) setProfileContextButtonNormalMode();
+		else setProfileContextButtonSelectMode();
+
+		if (!mGp.syncHistoryAdapter.isShowCheckBox()) setHistoryContextButtonNormalMode();
+		else setHistoryContextButtonSelectMode();
+		
 		refreshOptionMenu();
 	};
 	
@@ -3675,8 +3671,8 @@ public class SMBSyncMain extends ActionBarActivity {
 				mGp.settingRingtoneWhenSyncEnded.equals(SMBSYNC_PB_RINGTONE_NOTIFICATION_ERROR)) {
 				playBackDefaultNotification();
 			}
-			if (code.equals("CANCEL")) cat="W";
-			else if (code.equals("ERROR")) cat="E";
+			if (code.equals("ERROR")) cat="E";
+			else cat="W";
 		}
 		if (util.isActivityForeground()) commonDlg.showCommonDialog(false,cat,text,"",null);
 		else tabHost.setCurrentTabByTag(SMBSYNC_TAB_NAME_MSG);

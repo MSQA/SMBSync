@@ -164,7 +164,7 @@ public class GlobalParameters extends Application{
 	public boolean settingRemoteFileCopyByRename=false;
 	public boolean settingLocalFileCopyByRename=true;
 	
-	public int dialogViewBackGroundColor=Color.BLACK;
+	public int dialogViewBackGroundColor=-1;
     public LinearLayout confirmView=null;
     public TextView confirmTitle=null;
     public TextView confirmMsg=null;
@@ -351,8 +351,13 @@ public class GlobalParameters extends Application{
 		
 		themeIsLight=
 				prefs.getBoolean(c.getString(R.string.settings_theme_is_light), false);
-		if (themeIsLight) applicationTheme=R.style.Theme_AppCompat_Light_DarkActionBar;
-		else applicationTheme=R.style.Theme_AppCompat;
+		if (themeIsLight) {
+			applicationTheme=R.style.Theme_AppCompat_Light_DarkActionBar;
+			dialogViewBackGroundColor=Color.WHITE;
+		} else {
+			applicationTheme=R.style.Theme_AppCompat;
+			dialogViewBackGroundColor=Color.BLACK;
+		}
 //		if (Build.VERSION.SDK_INT>=21) dialogViewBackGroundColor=0xff333333;
 		
 	};

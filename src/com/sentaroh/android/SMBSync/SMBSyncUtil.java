@@ -630,10 +630,13 @@ public class SMBSyncUtil {
 //	};
 	
 	public void addHistoryList(AdapterSyncHistory ha, SyncHistoryListItem item) {
-		if (ha.getCount()==1) {
-			if (ha.getItem(0).sync_prof.equals("")) ha.remove(0);
+		synchronized(ha) {
+			if (ha.getCount()==1) {
+				if (ha.getItem(0).sync_prof.equals("")) ha.remove(0);
+			}
+			ha.insert(item,0);
+			ha.notifyDataSetChanged();
 		}
-		ha.insert(item,0);
 	};
 //	public void removeHistoryList(ArrayList<SyncHistoryListItem> hl, int pos) {
 //		String result_fp=hl.get(pos).sync_result_file_path;
