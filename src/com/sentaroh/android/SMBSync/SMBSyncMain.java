@@ -3652,7 +3652,11 @@ public class SMBSyncMain extends ActionBarActivity {
 //				commonDlg.showCommonDialog(false,"I",text,"",null);
 		if (mGp.settingBgTermNotifyMsg.equals(SMBSYNC_BG_TERM_NOTIFY_MSG_ALWAYS))
 			showNotificationMsg(text);
+		
+//		Toast.makeText(mContext,text,Toast.LENGTH_LONG).show();
+
 //		Log.v("","code="+code+", pb="+glblParms.settingRingtoneWhenSyncEnded+", vib="+glblParms.settingVibrateWhenSyncEnded);
+		String cat="I";
 		if (code.equals("OK")) {
 			if (mGp.settingVibrateWhenSyncEnded.equals(SMBSYNC_VIBRATE_WHEN_SYNC_ENDED_ALWAYS) ||
 				mGp.settingVibrateWhenSyncEnded.equals(SMBSYNC_VIBRATE_WHEN_SYNC_ENDED_SUCCESS)) {
@@ -3671,7 +3675,11 @@ public class SMBSyncMain extends ActionBarActivity {
 				mGp.settingRingtoneWhenSyncEnded.equals(SMBSYNC_PB_RINGTONE_NOTIFICATION_ERROR)) {
 				playBackDefaultNotification();
 			}
+			if (code.equals("CANCEL")) cat="W";
+			else if (code.equals("ERROR")) cat="E";
 		}
+		if (util.isActivityForeground()) commonDlg.showCommonDialog(false,cat,text,"",null);
+		else tabHost.setCurrentTabByTag(SMBSYNC_TAB_NAME_MSG);
 	};
 
 	private ISvcCallback mSvcCallbackStub=new ISvcCallback.Stub() {
