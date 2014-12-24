@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE string>
 <resources>
-    <string name="msgs_mirror_task_result_ok">Synchronize was successfully ended.</string>
-    <string name="msgs_mirror_task_result_cancel">Synchronize was cancelled.</string>
-    <string name="msgs_mirror_task_result_error_ignored">The synchronization was completed, an error occurred some or all of the synchronization profile.</string>
-    <string name="msgs_mirror_task_result_error_ended">Synchronize was ended with error.</string>
+    <string name="msgs_mirror_task_result_ok">Sync was successfully ended.</string>
+    <string name="msgs_mirror_task_result_cancel">Sync was cancelled.</string>
+    <string name="msgs_mirror_task_result_error_ignored">The sync was completed, an error occurred some or all of the sync profile.</string>
+    <string name="msgs_mirror_task_result_error_ended">Sync was ended with error.</string>
     <string name="msgs_mirror_prof_file_deleted">File was deleted</string>
-    <string name="msgs_mirror_prof_started">has been started.</string>
+    <string name="msgs_mirror_prof_started">Sync has been started.</string>
     <string name="msgs_mirror_prof_invalid_mirror_type">invalid mirror type was specified.</string>
-    <string name="msgs_mirror_prof_was_failed">was failed.</string>
+    <string name="msgs_mirror_prof_was_failed">Sync was failed.</string>
     <string name="msgs_mirror_prof_no_of_copy" formatted="false">No of copies=%s, No of deletes=%s, No of ignores=%s</string>
     <string name="msgs_mirror_prof_avg_rate">Average transfer rate</string>
     <string name="msgs_mirror_prof_success_end">was Successfully ended.</string>

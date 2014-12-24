@@ -33,12 +33,15 @@ import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROF_TYPE_SYNC;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.Externalizable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -848,7 +851,8 @@ public class LocalFileLastModified {
 	
 }
 
-class FileLastModifiedEntryItem {
+class FileLastModifiedEntryItem implements Externalizable{
+	private static final long serialVersionUID = 1L;
 	private String full_file_path="";
 	private long local_last_modified_time=0;
 	private long remote_last_modified_time=0;
@@ -870,4 +874,19 @@ class FileLastModifiedEntryItem {
 	public void setFullFilePath(String p) {full_file_path=p;}
 	public void setLocalFileLastModified(long p) { local_last_modified_time=p;}
 	public void setRemoteFileLastModified(long p) { remote_last_modified_time=p;}
+
+	@Override
+	public void readExternal(ObjectInput input) throws IOException,
+			ClassNotFoundException {
+		full_file_path=input.readUTF();
+		local_last_modified_time=input.readLong();
+		remote_last_modified_time=input.readLong();
+	};
+
+	@Override
+	public void writeExternal(ObjectOutput output) throws IOException {
+		output.writeUTF(full_file_path);
+		output.writeLong(local_last_modified_time);
+		output.writeLong(remote_last_modified_time);
+	};
 }

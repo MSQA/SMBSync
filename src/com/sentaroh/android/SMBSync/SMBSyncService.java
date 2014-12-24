@@ -365,13 +365,13 @@ public class SMBSyncService extends Service {
 				NotificationUtil.setNotificationIcon(mGp, R.drawable.ic_48_smbsync_wait);
 				String result_code="", result_msg="";
 				if (tcMirror.isThreadResultSuccess()) {
-					result_code="OK";
+					result_code=SMBSYNC_MIRROR_THREAD_RESULT_SUCCESS;
 					result_msg=tcMirror.getThreadMessage();
 				} else if (tcMirror.isThreadResultCancelled()) {
-					result_code="CANCELLED";
+					result_code=SMBSYNC_MIRROR_THREAD_RESULT_CANCELLED;
 					result_msg=tcMirror.getThreadMessage();
 				} else if (tcMirror.isThreadResultError()) {
-					result_code="ERROR";
+					result_code=SMBSYNC_MIRROR_THREAD_RESULT_ERROR;
 					result_msg=tcMirror.getThreadMessage();
 				}
 				try {

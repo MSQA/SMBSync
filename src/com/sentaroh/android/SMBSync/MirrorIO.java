@@ -427,7 +427,7 @@ public class MirrorIO implements Runnable {
 						addLogMsg("I","",msgs_mirror_prof_success_end);
 						addHistoryList(SyncHistoryListItem.SYNC_STATUS_SUCCESS,
 								copyCount,deleteCount,ignoreCount, retryCount, "");
-						mUtil.saveHistoryList(mGp.syncHistoryAdapter.getSyncHistoryList());
+						mUtil.saveHistoryList(mGp.syncHistoryAdapter);
 						closeSyncResultLog();
 						ProfileUtility.saveProfileToFile(mGp, mGp.appContext, mUtil, false, "", "", mGp.profileAdapter, false);
 					} else { 
@@ -435,7 +435,7 @@ public class MirrorIO implements Runnable {
 						addHistoryList(SyncHistoryListItem.SYNC_STATUS_ERROR,
 								copyCount,deleteCount,ignoreCount,  retryCount,
 								tcMirror.getThreadMessage());
-						mUtil.saveHistoryList(mGp.syncHistoryAdapter.getSyncHistoryList());
+						mUtil.saveHistoryList(mGp.syncHistoryAdapter);
 						ProfileUtility.saveProfileToFile(mGp, mGp.appContext, mUtil, false, "", "", mGp.profileAdapter, false);
 						closeSyncResultLog();
 						tcMirror.setExtraDataInt(1);//Indicate error occured
@@ -449,7 +449,7 @@ public class MirrorIO implements Runnable {
 					addLogMsg("W","",msgs_mirror_prof_was_cancelled);
 					addHistoryList(SyncHistoryListItem.SYNC_STATUS_CANCEL,
 							copyCount,deleteCount, ignoreCount, retryCount, "");
-					mUtil.saveHistoryList(mGp.syncHistoryAdapter.getSyncHistoryList());
+					mUtil.saveHistoryList(mGp.syncHistoryAdapter);
 					ProfileUtility.saveProfileToFile(mGp, mGp.appContext, mUtil, false, "", "", mGp.profileAdapter, false);
 					closeSyncResultLog();
 					isSyncParmError=true;

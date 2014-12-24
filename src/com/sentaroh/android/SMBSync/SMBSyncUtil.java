@@ -540,8 +540,9 @@ public class SMBSyncUtil {
 	};
 	
 	@SuppressLint("SdCardPath")
-	final public void saveHistoryList(ArrayList<SyncHistoryListItem> hl) {
+	final public void saveHistoryList(final AdapterSyncHistory ha) {
 //		Log.v("","save hist started");
+		ArrayList<SyncHistoryListItem> hl=ha.getSyncHistoryList();
 		try {
 			String dir=mGp.externalRootDirectory+"/SMBSync";
 			File lf=new File(dir);
@@ -550,7 +551,7 @@ public class SMBSyncUtil {
 			FileWriter fw=new FileWriter(lf);
 			BufferedWriter bw=new BufferedWriter(fw,4096*16);
 			int max=500;
-			StringBuilder sb_buf=new StringBuilder(1024*512);
+			StringBuilder sb_buf=new StringBuilder(1024*2);
 			SyncHistoryListItem shli=null;
 //			String cpy_str, del_str, ign_str;
 			ArrayList<SyncHistoryListItem>del_list=new ArrayList<SyncHistoryListItem>();
@@ -591,7 +592,15 @@ public class SMBSyncUtil {
 				}
 			}
 			
-			for (int i=0;i<del_list.size();i++) hl.remove(del_list.get(i));
+			synchronized(ha) {
+				for (int i=0;i<del_list.size();i++) ha.remove(del_list.get(i));
+				mGp.uiHandler.post(new Runnable(){
+					@Override
+					public void run() {
+						ha.notifyDataSetChanged();
+					}
+				});
+			}
 			
 			bw.close();
 		} catch (IOException e) {

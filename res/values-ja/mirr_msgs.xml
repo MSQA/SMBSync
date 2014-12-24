@@ -6,9 +6,9 @@
     <string name="msgs_mirror_task_result_error_ignored">同期が終了したが、一部または全ての同期プロファイルでエラーが発生しています。</string>
     <string name="msgs_mirror_task_result_error_ended">同期はエラーで終了しました。</string>
     <string name="msgs_mirror_prof_file_deleted">ファイルを削除しました。</string>
-    <string name="msgs_mirror_prof_started">開始しました。</string>
+    <string name="msgs_mirror_prof_started">同期を開始しました。</string>
     <string name="msgs_mirror_prof_invalid_mirror_type">ミラータイプが無効です。</string>
-    <string name="msgs_mirror_prof_was_failed">失敗しました。</string>
+    <string name="msgs_mirror_prof_was_failed">同期は失敗しました。</string>
     <string name="msgs_mirror_prof_no_of_copy" formatted="false">コピー=%s, 削除=%s, 無視=%s</string>
     <string name="msgs_mirror_prof_avg_rate">平均転送率</string>
     <string name="msgs_mirror_prof_success_end">正常終了しました。</string>
