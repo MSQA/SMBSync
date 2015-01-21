@@ -54,7 +54,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.CheckedTextView;
 
-import com.sentaroh.android.Utilities.DateUtil;
+import com.sentaroh.android.Utilities.StringUtil;
 import com.sentaroh.android.Utilities.NetworkUtil;
 
 @SuppressLint("SimpleDateFormat")
@@ -227,7 +227,7 @@ public class SMBSyncUtil {
 		String msgflag="";
 		if (log) msgflag="1"; 	// flag=1 both, arg2=0 dialog only, arg2=2 msgview only
 		else msgflag="0";
-		String dt=DateUtil.convDateTimeTo_YearMonthDayHourMinSec(System.currentTimeMillis());
+		String dt=StringUtil.convDateTimeTo_YearMonthDayHourMinSec(System.currentTimeMillis());
 		sendMsgToActivity(log_cat,msgflag,syncProfName,dt.substring(0,10),
 				dt.substring(11),mLogIdWithSep,"M",fp,log_msg);
 		if (!msgflag.equals("0")) 
@@ -251,7 +251,7 @@ public class SMBSyncUtil {
 
 	final public String formatLogMsg(String cat, String prof, 
 			String fp, String msg) {
-		String dt=DateUtil.convDateTimeTo_YearMonthDayHourMinSec(System.currentTimeMillis());
+		String dt=StringUtil.convDateTimeTo_YearMonthDayHourMinSec(System.currentTimeMillis());
 		mSbForWriteLog.setLength(0);
 		mSbForWriteLog.append(cat).append(" ")
 			.append(dt.substring(0,10)).append(" ")
@@ -302,7 +302,7 @@ public class SMBSyncUtil {
 
 	private StringBuilder mSbForAddLogMsg=new StringBuilder(256);
 	final public String addLogMsg(String log_cat, String sync_prof, String fp, String log_msg) {
-		String dt=DateUtil.convDateTimeTo_YearMonthDayHourMinSec(System.currentTimeMillis());
+		String dt=StringUtil.convDateTimeTo_YearMonthDayHourMinSec(System.currentTimeMillis());
 		// flag=1 both, arg2=0 dialog only, arg2=2 msgview only
 		sendMsgToActivity(log_cat,"2",sync_prof,dt.substring(0,10), dt.substring(11),
 				mLogIdWithSep,"M",fp,log_msg);
@@ -314,7 +314,7 @@ public class SMBSyncUtil {
 	};
 
 	final public void addLogMsg(String cat, String logmsg) {
-		String dt=DateUtil.convDateTimeTo_YearMonthDayHourMinSec(System.currentTimeMillis());
+		String dt=StringUtil.convDateTimeTo_YearMonthDayHourMinSec(System.currentTimeMillis());
 		addMsgToMsglistAdapter(mGp,
 			  		 new MsgListItem(cat,dt.substring(0,10), dt.substring(11), mLogId,logmsg));
 		writeLog(mGp, "M "+cat+" "+dt.substring(0,10)+" "+dt.substring(11)+" "+
@@ -372,7 +372,7 @@ public class SMBSyncUtil {
 			for (int i=0;i<log_msg.length;i++) mSbForaddDebugLogMsg1.append(log_msg[i]);
 			if (mGp.settingDebugMsgDisplay) {
 //				// flag=1 both, arg2=0 dialog only, arg2=2 msg view only
-				String dt=DateUtil.convDateTimeTo_YearMonthDayHourMinSec(System.currentTimeMillis());
+				String dt=StringUtil.convDateTimeTo_YearMonthDayHourMinSec(System.currentTimeMillis());
 				sendMsgToActivity(log_cat,"2",syncProfName,dt.substring(0,10),
 						dt.substring(11),mLogIdWithSep,"D","", 
 						mSbForaddDebugLogMsg1.toString());
@@ -390,12 +390,12 @@ public class SMBSyncUtil {
 			int lvl, String cat, String logmsg) {
 		if (mGp.debugLevel>=lvl ) {
 			if (mGp.settingDebugMsgDisplay) {
-				String dt=DateUtil.convDateTimeTo_YearMonthDayHourMinSec(System.currentTimeMillis());
+				String dt=StringUtil.convDateTimeTo_YearMonthDayHourMinSec(System.currentTimeMillis());
 				addMsgToMsglistAdapter(mGp,
 				    		 new MsgListItem(cat,dt.substring(0,10),
 				    				 dt.substring(11),mLogIdWithSep,logmsg));
 			}
-			String dt=DateUtil.convDateTimeTo_YearMonthDayHourMinSec(System.currentTimeMillis());
+			String dt=StringUtil.convDateTimeTo_YearMonthDayHourMinSec(System.currentTimeMillis());
 			mSbForaddDebugLogMsg2.setLength(0);
 			mSbForaddDebugLogMsg2.append("D ")
 				.append(cat)
@@ -533,7 +533,7 @@ public class SMBSyncUtil {
 		String dir=mGp.externalRootDirectory+"/SMBSync/result_log";
 		File tlf=new File(dir);
 		if (!tlf.exists()) tlf.mkdirs();
-		String dt=DateUtil.convDateTimeTo_YearMonthDayHourMinSec(System.currentTimeMillis());
+		String dt=StringUtil.convDateTimeTo_YearMonthDayHourMinSec(System.currentTimeMillis());
 		String fn="result_"+syncProfName+"_"+dt+".txt";
 		String fp=dir+"/"+fn.replaceAll("/", "-").replaceAll(":", "").replaceAll(" ","_");
 		return fp;

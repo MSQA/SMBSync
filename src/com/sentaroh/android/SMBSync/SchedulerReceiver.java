@@ -3,7 +3,7 @@ package com.sentaroh.android.SMBSync;
 import static com.sentaroh.android.SMBSync.Constants.*;
 import static com.sentaroh.android.SMBSync.SchedulerConstants.*;
 
-import com.sentaroh.android.Utilities.DateUtil;
+import com.sentaroh.android.Utilities.StringUtil;
 
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
@@ -96,7 +96,7 @@ public class SchedulerReceiver extends BroadcastReceiver{
 		if (mSched.scheduleEnabled) {
 			long time=SchedulerUtil.getNextSchedule(mSched);
 			if (mSched.debugLevel>0) 
-				addDebugMsg(1,"I", "getNextSchedule result="+DateUtil.convDateTimeTo_YearMonthDayHourMinSec(time));
+				addDebugMsg(1,"I", "getNextSchedule result="+StringUtil.convDateTimeTo_YearMonthDayHourMinSec(time));
 			Intent in = new Intent();
 			in.setAction(SCHEDULER_INTENT_TIMER_EXPIRED);
 			PendingIntent pi = PendingIntent.getBroadcast(mContext, 0, in, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -136,14 +136,14 @@ public class SchedulerReceiver extends BroadcastReceiver{
 			for (int i=0;i<msg.length;i++) log_msg.append(msg[i]);
 			Log.v(APPLICATION_TAG,cat+" "+log_id+log_msg.toString());
 			
-			String dt=DateUtil.convDateTimeTo_YearMonthDayHourMinSec(System.currentTimeMillis());
+			String dt=StringUtil.convDateTimeTo_YearMonthDayHourMinSec(System.currentTimeMillis());
 			String log_msg_dt="D "+cat+" "+dt.substring(0,10)+" "+dt.substring(11)+" "+log_id+log_msg.toString();
 			LogUtil.writeLog(log_msg_dt);
 	};
 
 //	final static public void putLogMsg(String cat, String log_msg) {
 //		
-//		String dt=DateUtil.convDateTimeTo_YearMonthDayHourMinSec(System.currentTimeMillis());
+//		String dt=StringUtil.convDateTimeTo_YearMonthDayHourMinSec(System.currentTimeMillis());
 //		String log_msg_dt="D "+cat+" "+dt.substring(0,10)+" "+dt.substring(11)+" "+log_id+log_msg.toString();
 //
 //		Intent in=new Intent(mContext,SMBSyncService.class);

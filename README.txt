@@ -5,6 +5,7 @@ SMBSyncはPC/NASとAndroid端末との間でSMB/SAMBAを使用してファイル
 Build
 
 - https://github.com/Sentaroh/Utilities.git からUtilitiesをダウンロードし、EclipseにImportし、"Library project"とする。
+- https://github.com/Sentaroh/UtilityContextButton.git からUtilityContextButtonをダウンロードし、EclipseにImportし、"Library project"とする。
 - https://github.com/Sentaroh/SMBSync.git からダウンロード（この際に保存するディレクトリーはUtilitiesと同じ親ディレクトリーとすること）
 - EclipseでClean projectを実行
 

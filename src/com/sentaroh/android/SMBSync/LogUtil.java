@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-import com.sentaroh.android.Utilities.DateUtil;
+import com.sentaroh.android.Utilities.StringUtil;
 import com.sentaroh.android.Utilities.MiscUtil;
 
 public final class LogUtil {
@@ -79,7 +79,7 @@ public final class LogUtil {
         		    	t.log_file_path=file_list[i].getPath();
         		    	t.log_file_size=MiscUtil.convertFileSize(file_list[i].length());
         		    	t.log_file_last_modified=file_list[i].lastModified();
-        		    	String lm_date=DateUtil.convDateTimeTo_YearMonthDayHourMinSec(file_list[i].lastModified());
+        		    	String lm_date=StringUtil.convDateTimeTo_YearMonthDayHourMinSec(file_list[i].lastModified());
         		    	if (file_list[i].getPath().equals(getLogFilePath(gp)))
         		    		t.isCurrentLogFile=true;
         		    	t.log_file_last_modified_date=lm_date.substring(0,10);
@@ -141,7 +141,7 @@ public final class LogUtil {
 	
 	public static void openLogFile(GlobalParameters gp) {
 		if (mLogWriter==null && gp.settingLogOption.equals("1")) {
-			String dt=DateUtil.convDateTimeTo_YearMonthDayHourMin(System.currentTimeMillis());
+			String dt=StringUtil.convDateTimeTo_YearMonthDayHourMin(System.currentTimeMillis());
 			gp.settingLogMsgFilename="SMBSync_log_"+dt.substring(0,10).replace("/","-")+".txt";
 			
 			houseKeepLogFile(gp);
@@ -177,7 +177,7 @@ public final class LogUtil {
 	private static void putLogMsg(String lid, String cat, String msg) {
 		String log_id=(lid+"                        ").substring(0,13);
 
-		String dt=DateUtil.convDateTimeTo_YearMonthDayHourMinSec(System.currentTimeMillis());
+		String dt=StringUtil.convDateTimeTo_YearMonthDayHourMinSec(System.currentTimeMillis());
 		String log_msg="M "+cat+" "+dt.substring(0,10)+" "+dt.substring(11)+" "+ log_id+msg;
 		writeLog(log_msg);
 	};

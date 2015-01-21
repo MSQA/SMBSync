@@ -91,7 +91,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sentaroh.android.Utilities.CallBackListener;
-import com.sentaroh.android.Utilities.DateUtil;
+import com.sentaroh.android.Utilities.StringUtil;
 import com.sentaroh.android.Utilities.LocalMountPoint;
 import com.sentaroh.android.Utilities.NotifyEvent;
 import com.sentaroh.android.Utilities.NotifyEvent.NotifyEventListener;
@@ -259,6 +259,11 @@ public class SMBSyncMain extends ActionBarActivity {
 //		adb.setMessage("test msg");
 //		adb.setTitle("test title");
 //		adb.show();
+//		File lf=new File("/storage/sdcard");
+//		DocumentFile df=DocumentFile.fromFile(lf);
+//		df.createDirectory("dir");
+//		df.createFile("text/plain", "file");
+		
 	};
 	
 	@Override
@@ -417,7 +422,7 @@ public class SMBSyncMain extends ActionBarActivity {
 							restartType==RESTART_BY_KILLED || restartType==RESTART_BY_DESTROYED) {
 						if (mGp.mirrorThreadActive) {
 							if (isAutoStartRequested(intent)) {
-								String ymd=DateUtil.convDateTimeTo_YearMonthDayHourMinSec(System.currentTimeMillis());
+								String ymd=StringUtil.convDateTimeTo_YearMonthDayHourMinSec(System.currentTimeMillis());
 								commonDlg.showCommonDialog(false, "W", "", 
 										mContext.getString(R.string.msgs_application_already_started)+" "+ymd, null);
 								util.addLogMsg("W",mContext.getString(R.string.msgs_application_already_started));

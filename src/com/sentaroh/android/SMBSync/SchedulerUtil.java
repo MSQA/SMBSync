@@ -4,7 +4,7 @@ import static com.sentaroh.android.SMBSync.SchedulerConstants.*;
 
 import java.util.Calendar;
 
-import com.sentaroh.android.Utilities.DateUtil;
+import com.sentaroh.android.Utilities.StringUtil;
 
 import android.content.Context;
 import android.content.Intent;
@@ -108,9 +108,9 @@ public class SchedulerUtil {
     		
     		result=sp.scheduleLastExecTime+s_min*(60*1000);
     		
-//    		Log.v("","last="+DateUtil.convDateTimeTo_YearMonthDayHourMinSec(sp.scheduleLastExecTime));
+//    		Log.v("","last="+StringUtil.convDateTimeTo_YearMonthDayHourMinSec(sp.scheduleLastExecTime));
 //    		Log.v("","c_year="+c_year+", c_month="+c_month+", c_day="+c_day+", c_hr="+c_hr+", c_mm="+c_mm+", c_ss="+c_ss);
-//    		Log.v("","new="+DateUtil.convDateTimeTo_YearMonthDayHourMinSec(result));
+//    		Log.v("","new="+StringUtil.convDateTimeTo_YearMonthDayHourMinSec(result));
     	} else if (sp.scheduleType.equals(SCHEDULER_SCHEDULE_TYPE_DAY_OF_THE_WEEK)) {
     		boolean[] dwa=new boolean[]{false,false,false,false,false,false,false};
     		for (int i=0;i<sp.scheduleDayOfTheWeek.length();i++) {
@@ -204,7 +204,7 @@ public class SchedulerUtil {
     	String sched_time="";
     	if (nst!=-1) {
     		sched_time=String.format(c.getString(R.string.msgs_scheduler_info_next_schedule_time), 
-    				DateUtil.convDateTimeTo_YearMonthDayHourMin(nst));
+    				StringUtil.convDateTimeTo_YearMonthDayHourMin(nst));
     		String sync_prof="";
     		if (sp.syncProfile.equals("")) {
     			sync_prof=c.getString(R.string.msgs_scheduler_info_sync_all_active_profile);

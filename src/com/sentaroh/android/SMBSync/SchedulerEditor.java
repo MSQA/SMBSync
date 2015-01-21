@@ -42,7 +42,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.sentaroh.android.SMBSync.SchedulerAdapterSyncList.ViewHolder;
-import com.sentaroh.android.Utilities.DateUtil;
+import com.sentaroh.android.Utilities.StringUtil;
 import com.sentaroh.android.Utilities.NotifyEvent;
 import com.sentaroh.android.Utilities.NotifyEvent.NotifyEventListener;
 import com.sentaroh.android.Utilities.ContextMenu.CustomContextMenu;

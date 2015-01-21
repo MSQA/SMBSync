@@ -56,10 +56,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.sentaroh.android.Utilities.LocalMountPoint;
-import com.sentaroh.android.Utilities.MiscUtil;
 import com.sentaroh.android.Utilities.NotifyEvent;
 import com.sentaroh.android.Utilities.NotifyEvent.NotifyEventListener;
 import com.sentaroh.android.Utilities.ThreadCtrl;
+import com.sentaroh.android.Utilities.ZipUtil;
 import com.sentaroh.android.Utilities.Dialog.CommonDialog;
 import com.sentaroh.android.Utilities.Dialog.MessageDialogFragment;
 import com.sentaroh.android.Utilities.Dialog.ProgressBarDialogFragment;
@@ -540,7 +540,7 @@ public class LogFileManagementFragment extends DialogFragment{
 				File lf=new File(zip_file_name);
 				lf.delete();
 				String[] lmp=LocalMountPoint.convertFilePathToMountpointFormat(mContext, file_name[0]);
-				MiscUtil.createZipFile(mContext, tc,pbdf,zip_file_name,lmp[0],file_name);
+				ZipUtil.createZipFile(mContext, tc,pbdf,zip_file_name,lmp[0],file_name);
 				if (tc.isEnabled()) {
 				    Intent intent=new Intent();
 				    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

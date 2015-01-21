@@ -71,7 +71,7 @@ import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.webkit.MimeTypeMap;
 
-import com.sentaroh.android.Utilities.DateUtil;
+import com.sentaroh.android.Utilities.StringUtil;
 import com.sentaroh.android.Utilities.LocalMountPoint;
 import com.sentaroh.android.Utilities.MiscUtil;
 import com.sentaroh.android.Utilities.NetworkUtil;
@@ -279,8 +279,8 @@ public class MirrorIO implements Runnable {
         	if (ms_lm!=lf_lm) {
         		addLogMsg("W",fp,String
         			.format(msgs_mirror_prof_ms_different_file_last_mod,
-        			DateUtil.convDateTimeTo_YearMonthDayHourMinSec(lf_lm*1000),
-        			DateUtil.convDateTimeTo_YearMonthDayHourMinSec(ms_lm*1000)));
+        			StringUtil.convDateTimeTo_YearMonthDayHourMinSec(lf_lm*1000),
+        			StringUtil.convDateTimeTo_YearMonthDayHourMinSec(ms_lm*1000)));
         	} else result=true;
         }
         if (!checked) {
@@ -529,7 +529,7 @@ public class MirrorIO implements Runnable {
 	
 	final private void addHistoryList(int status, int copy_cnt, int del_cnt, int ignore_cnt,
 			int retry_cnt, String error_msg) {
-		String date_time=DateUtil.convDateTimeTo_YearMonthDayHourMinSec(System.currentTimeMillis());
+		String date_time=StringUtil.convDateTimeTo_YearMonthDayHourMinSec(System.currentTimeMillis());
 		String date=date_time.substring(0,10);
 		String time=date_time.substring(11);
 		final SyncHistoryListItem hli=new SyncHistoryListItem();
@@ -564,7 +564,7 @@ public class MirrorIO implements Runnable {
 	};
 	
 	private void setSyncExecuting() {
-		String date_time=DateUtil.convDateTimeTo_YearMonthDayHourMinSec(System.currentTimeMillis());
+		String date_time=StringUtil.convDateTimeTo_YearMonthDayHourMinSec(System.currentTimeMillis());
 		String date=date_time.substring(0,10);
 		String time=date_time.substring(11);
 		
@@ -1209,7 +1209,7 @@ public class MirrorIO implements Runnable {
 							"scanMediaStoreLibrary MediaScanner invoked. fn=",fp,
 							", lastModified="+lf.lastModified()+
 							", date=",
-							DateUtil.convDateTimeTo_YearMonthDayHourMinSec(lf.lastModified()));
+							StringUtil.convDateTimeTo_YearMonthDayHourMinSec(lf.lastModified()));
 					mediaScanner.scanFile(fp, mt);
 				} else {
 					if (mGp.debugLevel>=2) 
@@ -1233,7 +1233,7 @@ public class MirrorIO implements Runnable {
 							"scanMediaStoreLibrary MediaScanner invoked. fn=",fp,
 							", lastModified="+lf.lastModified(),
 							", date=",
-							DateUtil.convDateTimeTo_YearMonthDayHourMinSec(lf.lastModified()));
+							StringUtil.convDateTimeTo_YearMonthDayHourMinSec(lf.lastModified()));
 					mediaScanner.scanFile(fp, mt);
 				} else {
 					if (mGp.debugLevel>=2) 
@@ -1248,7 +1248,7 @@ public class MirrorIO implements Runnable {
 						addDebugLogMsg(2,"I",
 							"scanMediaStoreLibrary MediaScanner invoked. fn=",fp,
 							", lastModified="+lf.lastModified(),
-							", date=",DateUtil.convDateTimeTo_YearMonthDayHourMinSec(lf.lastModified()));
+							", date=",StringUtil.convDateTimeTo_YearMonthDayHourMinSec(lf.lastModified()));
 					mediaScanner.scanFile(fp, mt);
 				} else {
 					if (mGp.debugLevel>=2) 
@@ -3243,11 +3243,11 @@ public class MirrorIO implements Runnable {
 			addDebugLogMsg(3,"I","isFileChangedDetailCompare");
 			if (hf_exists) addDebugLogMsg(3,"I","Remote file length="+hf_length+
 						", last modified(ms)="+hf_time+
-						", date="+DateUtil.convDateTimeTo_YearMonthDayHourMinSec((hf_time/1000)*1000));
+						", date="+StringUtil.convDateTimeTo_YearMonthDayHourMinSec((hf_time/1000)*1000));
 			else addDebugLogMsg(3,"I","Remote file was not exists");
 			if (lf_exists) addDebugLogMsg(3,"I","Local  file length="+lf_length+
 					", last modified(ms)="+lf_time+
-					", date="+DateUtil.convDateTimeTo_YearMonthDayHourMinSec((lf_time/1000)*1000));
+					", date="+StringUtil.convDateTimeTo_YearMonthDayHourMinSec((lf_time/1000)*1000));
 			else addDebugLogMsg(3,"I","Local  file was not exists");
 			addDebugLogMsg(3,"I","allcopy="+ac+",exists_diff="+exists_diff+
 					",time_diff="+time_diff+", time_zone_diff="+time_diff_tz1+
@@ -3294,11 +3294,11 @@ public class MirrorIO implements Runnable {
 			addDebugLogMsg(3,"I","isFileChangedForLocalToRemote");
 			if (hf_exists) addDebugLogMsg(3,"I","Remote file length="+hf_length+
 						", last modified(ms)="+hf_time+
-						", date="+DateUtil.convDateTimeTo_YearMonthDayHourMinSec((hf_time/1000)*1000));
+						", date="+StringUtil.convDateTimeTo_YearMonthDayHourMinSec((hf_time/1000)*1000));
 			else addDebugLogMsg(3,"I","Remote file was not exists");
 			if (lf_exists) addDebugLogMsg(3,"I","Local  file length="+lf_length+
 					", last modified(ms)="+lf_time+
-					", date="+DateUtil.convDateTimeTo_YearMonthDayHourMinSec((lf_time/1000)*1000));
+					", date="+StringUtil.convDateTimeTo_YearMonthDayHourMinSec((lf_time/1000)*1000));
 			else addDebugLogMsg(3,"I","Local  file was not exists");
 			addDebugLogMsg(3,"I","allcopy="+ac+",exists_diff="+exists_diff+
 					",time_diff="+time_diff+", time_zone_diff="+time_diff_tz1+
