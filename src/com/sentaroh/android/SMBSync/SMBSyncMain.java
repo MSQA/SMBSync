@@ -1100,7 +1100,7 @@ public class SMBSyncMain extends ActionBarActivity {
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		util.addDebugLogMsg(1,"I","onCreateOptionsMenu entered");
+		util.addDebugLogMsg(2,"I","onCreateOptionsMenu entered");
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.menu_top, menu);
 		return true;//super.onCreateOptionsMenu(menu);
@@ -1108,7 +1108,7 @@ public class SMBSyncMain extends ActionBarActivity {
 	
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		util.addDebugLogMsg(1,"I","onPrepareOptionsMenu entered, isUiEnabled()="+isUiEnabled());
+		util.addDebugLogMsg(2,"I","onPrepareOptionsMenu entered, isUiEnabled()="+isUiEnabled());
 //		menu.findItem(R.id.menu_top_scheduler).setVisible(false);
 		if (isUiEnabled()) {
 			menu.findItem(R.id.menu_top_about).setEnabled(true);
@@ -3414,7 +3414,7 @@ public class SMBSyncMain extends ActionBarActivity {
 	
 	@SuppressLint("NewApi")
 	final private void refreshOptionMenu() {
-		util.addDebugLogMsg(1,"I","refreshOptionMenu entered");
+		util.addDebugLogMsg(2,"I","refreshOptionMenu entered");
 //		if (Build.VERSION.SDK_INT>=11)
 //			this.invalidateOptionsMenu();
 		supportInvalidateOptionsMenu();
