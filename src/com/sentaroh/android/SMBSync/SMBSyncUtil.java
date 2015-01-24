@@ -128,6 +128,7 @@ public class SMBSyncUtil {
 				ssid=mWifi.getConnectionInfo().getSSID();
 				if (ssid!=null && 
 						!ssid.equals("0x") &&
+						!ssid.equals("<unknown ssid>") &&
 						!ssid.equals("")) ret=true;
 //				Log.v("","ssid="+ssid);
 			} else if (mGp.settingWifiOption.equals(SMBSYNC_SYNC_WIFI_OPTION_CONNECTED_SPEC_AP)) {
