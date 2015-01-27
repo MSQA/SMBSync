@@ -343,7 +343,7 @@ public class MirrorIO implements Runnable {
     					ex.toString()+st_msg;
         		tcMirror.setThreadMessage(end_msg);
         		addLogMsg("E","",end_msg);
-        		NotificationUtil.showOngoingMsg(mGp,end_msg);
+        		NotificationUtil.showOngoingMsg(mGp,System.currentTimeMillis(),end_msg);
         		notifyThreadTerminate();
         		tcMirror.setDisabled();
                 // re-throw critical exception further to the os (important)
@@ -358,7 +358,7 @@ public class MirrorIO implements Runnable {
 		defaultUEH = Thread.currentThread().getUncaughtExceptionHandler();
         Thread.currentThread().setUncaughtExceptionHandler(unCaughtExceptionHandler);
         
-		NotificationUtil.showOngoingMsg(mGp,msgs_mirror_task_started);
+		NotificationUtil.showOngoingMsg(mGp,System.currentTimeMillis(),msgs_mirror_task_started);
 		waitMediaScanner(true);//wait for media scanner service connection
 		totalCopyCnt=totalDeleteCnt=totalIgnoreCnt=totalWarningMsgCnt=totalRetryCnt=totalErrorMsgCnt=0;
 		boolean error_occured_but_ignored=false;
@@ -374,7 +374,7 @@ public class MirrorIO implements Runnable {
 			if (tcMirror.isEnabled()) { // async process was enabled
 				syncProfName = syncList.get(i).getProfname();
 				openSyncResultLog();
-				addMsgToProgDlg(false,"I","",msgs_mirror_prof_started);
+				addMsgToProgDlg(false,"I", System.currentTimeMillis(), "",msgs_mirror_prof_started);
 				addLogMsg("I","",msgs_mirror_prof_started);
 				initSyncParm(syncList.get(i));
 				if (!isSyncParmError) {
@@ -462,7 +462,7 @@ public class MirrorIO implements Runnable {
 		waitMediaScanner(false);//wait for media scanner disconnection
 
 		addLogMsg("I","",msgs_mirror_task_ended);
-		NotificationUtil.showOngoingMsg(mGp,msgs_mirror_task_ended);
+		NotificationUtil.showOngoingMsg(mGp,System.currentTimeMillis(),msgs_mirror_task_ended);
 
 		addLogMsg("I","",String.format(msgs_mirror_task_result_stats, 
 				totalCopyCnt, totalDeleteCnt, totalIgnoreCnt,totalWarningMsgCnt,totalRetryCnt,totalErrorMsgCnt));
@@ -485,7 +485,7 @@ public class MirrorIO implements Runnable {
 		}
 		tcMirror.setThreadMessage(end_msg);
 		addLogMsg("I","",end_msg);
-		NotificationUtil.showOngoingMsg(mGp,end_msg);
+		NotificationUtil.showOngoingMsg(mGp,System.currentTimeMillis(),end_msg);
 		notifyThreadTerminate();
 		tcMirror.setDisabled();
 	};
@@ -2071,7 +2071,7 @@ public class MirrorIO implements Runnable {
 				if (mGp.debugLevel>=1) 
 					addDebugLogMsg(1,"E","remote file ", masterUrl,
 							" was not copied, because file/dir not found");
-				addMsgToProgDlg(true,"E",masterUrl,msgs_mirror_prof_master_not_found);
+				addMsgToProgDlg(true,"E", 0, masterUrl,msgs_mirror_prof_master_not_found);
 				tcMirror.setThreadMessage(msgs_mirror_prof_master_not_found+","+masterUrl);
 				isExceptionOccured=true;
 				return -1;
@@ -2372,7 +2372,7 @@ public class MirrorIO implements Runnable {
 										addMovedDirList(moved_dirs,hf.getParent());
 										deleteRemoteItem(true,masterUrl);
 //										mHistoryDeletedList.add(masterUrl);
-										addMsgToProgDlg(false,"I",t_fn,msgs_mirror_prof_file_deleted);
+										addMsgToProgDlg(false,"I", 0, t_fn,msgs_mirror_prof_file_deleted);
 									} else {
 										addLogMsg("W",masterUrl,msgs_mirror_confirm_delete_cancel);
 									}
@@ -2387,7 +2387,7 @@ public class MirrorIO implements Runnable {
 									addMovedDirList(moved_dirs,hf.getParent());
 									deleteRemoteItem(true,masterUrl);
 //									mHistoryDeletedList.add(masterUrl);
-									addMsgToProgDlg(false,"I",t_fn,msgs_mirror_prof_file_deleted);
+									addMsgToProgDlg(false,"I", 0, t_fn,msgs_mirror_prof_file_deleted);
 								} else {
 									addLogMsg("W",masterUrl,msgs_mirror_confirm_delete_cancel);
 								}
@@ -2400,7 +2400,7 @@ public class MirrorIO implements Runnable {
 				if (mGp.debugLevel>=1) 
 					addDebugLogMsg(1,"E","remote file ", masterUrl,
 							" was not copied, because file/dir not found");
-				addMsgToProgDlg(true,"E",masterUrl,msgs_mirror_prof_master_not_found);
+				addMsgToProgDlg(true,"E",0,masterUrl,msgs_mirror_prof_master_not_found);
 				tcMirror.setThreadMessage(msgs_mirror_prof_master_not_found+","+masterUrl);
 				isExceptionOccured=true;
 				return -1;
@@ -2563,7 +2563,7 @@ public class MirrorIO implements Runnable {
 									addMovedDirList(moved_dirs,lf.getParent());
 									deleteLocalItem(true,masterUrl);
 //									mHistoryDeletedList.add(masterUrl);
-									addMsgToProgDlg(false,"I",t_fn,msgs_mirror_prof_file_deleted);
+									addMsgToProgDlg(false,"I", 0, t_fn,msgs_mirror_prof_file_deleted);
 								} else {
 									addLogMsg("W",masterUrl,msgs_mirror_confirm_delete_cancel);
 								}
@@ -2576,7 +2576,7 @@ public class MirrorIO implements Runnable {
 								addMovedDirList(moved_dirs,lf.getParent());
 								deleteLocalItem(true,masterUrl);
 //								mHistoryDeletedList.add(masterUrl);
-								addMsgToProgDlg(false,"I",t_fn,msgs_mirror_prof_file_deleted);
+								addMsgToProgDlg(false,"I", 0, t_fn,msgs_mirror_prof_file_deleted);
 							} else {
 								addLogMsg("W",masterUrl,msgs_mirror_confirm_delete_cancel);
 							}
@@ -2717,7 +2717,7 @@ public class MirrorIO implements Runnable {
 										addMovedDirList(moved_dirs,mf.getParent());
 										deleteLocalItem(true,masterUrl);
 //										mHistoryDeletedList.add(masterUrl);
-										addMsgToProgDlg(false,"I",t_fn,msgs_mirror_prof_file_deleted);
+										addMsgToProgDlg(false,"I", 0, t_fn,msgs_mirror_prof_file_deleted);
 									} else {
 										addLogMsg("W",masterUrl,msgs_mirror_confirm_delete_cancel);
 									}
@@ -2730,7 +2730,7 @@ public class MirrorIO implements Runnable {
 									addMovedDirList(moved_dirs,mf.getParent());
 									deleteLocalItem(true,masterUrl);
 //									mHistoryDeletedList.add(masterUrl);
-									addMsgToProgDlg(false,"I",t_fn,msgs_mirror_prof_file_deleted);
+									addMsgToProgDlg(false,"I", 0, t_fn,msgs_mirror_prof_file_deleted);
 								} else {
 									addLogMsg("W",masterUrl,msgs_mirror_confirm_delete_cancel);
 								}
@@ -2888,7 +2888,7 @@ public class MirrorIO implements Runnable {
 			out.write(mirrorIoBuffer, 0, bufferReadBytes);
 			fileReadBytes += bufferReadBytes;
 			if (file_byte>fileReadBytes) {
-				addMsgToProgDlg(false,"I",t_fn,
+				addMsgToProgDlg(false,"I",0, t_fn,
 					String.format(msgs_mirror_prof_file_copying,(fileReadBytes*100)/file_byte));
 			}
 			if (!tcMirror.isEnabled()) {
@@ -2912,7 +2912,7 @@ public class MirrorIO implements Runnable {
 		String tmsg="";
 		if (out_file_exits) tmsg=msgs_mirror_prof_file_replaced;
 		else tmsg=msgs_mirror_prof_file_copied;
-		addMsgToProgDlg(false,"I",t_fn,tmsg);
+		addMsgToProgDlg(false,"I",0,t_fn,tmsg);
 		if (mGp.settingShowSyncDetailMessage) addLogMsg("I",t_fp,tmsg);
 
 		totalTransferByte+=fileReadBytes;
@@ -2945,7 +2945,7 @@ public class MirrorIO implements Runnable {
 			out.write(mirrorIoBuffer, 0, bufferReadBytes);
 			fileReadBytes += bufferReadBytes;
 			if (file_byte>fileReadBytes) {
-				addMsgToProgDlg(false,"I",t_fn,
+				addMsgToProgDlg(false,"I",0, t_fn,
 					String.format(msgs_mirror_prof_file_copying,(fileReadBytes*100)/file_byte));
 			}
 			if (!tcMirror.isEnabled()) {
@@ -2971,7 +2971,7 @@ public class MirrorIO implements Runnable {
 		String tmsg="";
 		if (out_file_exits) tmsg=msgs_mirror_prof_file_replaced;
 		else tmsg=msgs_mirror_prof_file_copied;
-		addMsgToProgDlg(false,"I",t_fn,tmsg);
+		addMsgToProgDlg(false,"I",0, t_fn,tmsg);
 		if (mGp.settingShowSyncDetailMessage) addLogMsg("I",t_fp,tmsg);
 		totalTransferByte+=fileReadBytes;
 		totalTransferTime+=readElapsedTime;
@@ -3003,7 +3003,7 @@ public class MirrorIO implements Runnable {
 			out.write(mirrorIoBuffer, 0, bufferReadBytes);
 			fileReadBytes += bufferReadBytes;
 			if (file_byte>fileReadBytes) {
-				addMsgToProgDlg(false,"I",t_fn,
+				addMsgToProgDlg(false,"I",0,t_fn,
 					String.format(msgs_mirror_prof_file_copying,(fileReadBytes*100)/file_byte));
 			}
 			if (!tcMirror.isEnabled()) {
@@ -3027,7 +3027,7 @@ public class MirrorIO implements Runnable {
 		String tmsg="";
 		if (out_file_exits) tmsg=msgs_mirror_prof_file_replaced;
 		else tmsg=msgs_mirror_prof_file_copied;
-		addMsgToProgDlg(false,"I",t_fn,tmsg);
+		addMsgToProgDlg(false,"I",0,t_fn,tmsg);
 		if (mGp.settingShowSyncDetailMessage) addLogMsg("I",t_fp,tmsg);
 
 		if (mGp.debugLevel>=1) 
@@ -3691,7 +3691,7 @@ public class MirrorIO implements Runnable {
 				hfd.delete();
 //				String t_prf="smb://"+syncRemoteAddr;
 				if (td) {
-					addMsgToProgDlg(false,"I",t_fn,msgs_mirror_prof_dir_deleted);
+					addMsgToProgDlg(false,"I",0, t_fn,msgs_mirror_prof_dir_deleted);
 					if (mGp.settingShowSyncDetailMessage) 
 						addLogMsg("I",t_dir,msgs_mirror_prof_dir_deleted);
 					if (mGp.debugLevel>=1) 
@@ -3699,7 +3699,7 @@ public class MirrorIO implements Runnable {
 							"Remote directory was deleted:"+hfd.getPath().substring(0,hfd.getPath().length()-1));
 				}
 				else{ 
-					addMsgToProgDlg(false,"I",t_fn,msgs_mirror_prof_file_deleted);
+					addMsgToProgDlg(false,"I",0, t_fn,msgs_mirror_prof_file_deleted);
 					if (mGp.settingShowSyncDetailMessage) 
 						addLogMsg("I",t_dir,msgs_mirror_prof_file_deleted);
 					if (mGp.debugLevel>=1) 
@@ -3768,7 +3768,7 @@ public class MirrorIO implements Runnable {
 					currentFileLastModifiedList,newFileLastModifiedList,lf.getPath());
 			deleteCount++;
 			if (td) {
-				addMsgToProgDlg(false,"I",lf.getName(),msgs_mirror_prof_dir_deleted);
+				addMsgToProgDlg(false,"I",0,lf.getName(),msgs_mirror_prof_dir_deleted);
 				if (mGp.settingShowSyncDetailMessage)  
 					addLogMsg("I",lf.getPath().replace(localUrl,""),msgs_mirror_prof_dir_deleted);
 //								lf.getPath().replace(SMBSync_External_Root_Dir,"")));
@@ -3779,7 +3779,7 @@ public class MirrorIO implements Runnable {
 			} else {
 //				Log.v("","Dir="+lf.getParent()+", path="+lf.getPath());
 				deleteMediaStoreItem(lf.getPath());
-				addMsgToProgDlg(false,"I",lf.getName(),msgs_mirror_prof_file_deleted);
+				addMsgToProgDlg(false,"I",0,lf.getName(),msgs_mirror_prof_file_deleted);
 				if (mGp.settingShowSyncDetailMessage)  
 					addLogMsg("I",lf.getPath().replace(localUrl,""),msgs_mirror_prof_file_deleted);
 //								lf.getPath().replace(SMBSync_External_Root_Dir,"")));
@@ -3847,8 +3847,8 @@ public class MirrorIO implements Runnable {
 		return dirEmpty;
 	};
 	
-	final private void addMsgToProgDlg(boolean log, String log_cat, String fp, String log_msg) {
-		mUtil.addMsgToProgDlg(log, log_cat, syncProfName, fp, log_msg);
+	final private void addMsgToProgDlg(boolean log, String log_cat, long when, String fp, String log_msg) {
+		mUtil.addMsgToProgDlg(log, log_cat, when, syncProfName, fp, log_msg);
 	};
 
 	final private void addDebugLogMsg(int lvl, String log_cat, String...log_msg) {

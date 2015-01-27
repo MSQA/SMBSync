@@ -103,6 +103,7 @@ public class GlobalParameters extends Application{
 	public String notificationLastShowedMessage=null, notificationLastShowedTitle="";
 	public String notificationAppName="";
 //	public boolean notiifcationEnabled=false;
+	public long notificationNextShowedTime=0;
 	
 //	public ISvcCallback callBackStub=null;
 	

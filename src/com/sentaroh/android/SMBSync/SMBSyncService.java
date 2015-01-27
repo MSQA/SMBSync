@@ -316,7 +316,7 @@ public class SMBSyncService extends Service {
 		@Override
 		public void aidlShowNotificationMsg(String prof, String fp, String msg)
 				throws RemoteException {
-			NotificationUtil.showOngoingMsg(mGp, prof, fp, msg);
+			NotificationUtil.showOngoingMsg(mGp, System.currentTimeMillis(), prof, fp, msg);
 		}
 		
 //		@Override

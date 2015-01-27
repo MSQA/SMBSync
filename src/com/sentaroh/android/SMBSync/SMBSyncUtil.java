@@ -223,13 +223,13 @@ public class SMBSyncUtil {
 	};
 
 	private StringBuilder mSbForaddMsgToProgDlg = new StringBuilder(256);
-	final public void addMsgToProgDlg(boolean log, String log_cat, String syncProfName, 
+	final public void addMsgToProgDlg(boolean log, String log_cat, long when, String syncProfName, 
 			String fp, String log_msg) {
 		String msgflag="";
 		if (log) msgflag="1"; 	// flag=1 both, arg2=0 dialog only, arg2=2 msgview only
 		else msgflag="0";
 		String dt=StringUtil.convDateTimeTo_YearMonthDayHourMinSec(System.currentTimeMillis());
-		sendMsgToActivity(log_cat,msgflag,syncProfName,dt.substring(0,10),
+		sendMsgToActivity(log_cat,msgflag, when, syncProfName,dt.substring(0,10),
 				dt.substring(11),mLogIdWithSep,"M",fp,log_msg);
 		if (!msgflag.equals("0")) 
 			writeLogMsgToFile(log_cat,syncProfName, fp,log_msg);
@@ -269,8 +269,9 @@ public class SMBSyncUtil {
 	};
 	
 	private StringBuilder mSbForsendMsgToActivity=new StringBuilder(256);
-	final public void sendMsgToActivity(final String log_cat, final String msgflag, final String sync_prof,
-			final String date, final String time, final String tag, final String debug_flag, final String fp, final String msg_text) {
+	final public void sendMsgToActivity(final String log_cat, final String msgflag, final long when, 
+			final String sync_prof, final String date, final String time, final String tag, 
+			final String debug_flag, final String fp, final String msg_text) {
 		mGp.uiHandler.post(new Runnable(){
 			@Override
 			public void run() {
@@ -278,13 +279,13 @@ public class SMBSyncUtil {
 					mGp.progressSpinSyncprof.setText(sync_prof);
 					mGp.progressSpinFilePath.setText(fp);
 					mGp.progressSpinStatus.setText(msg_text);
-					NotificationUtil.showOngoingMsg(mGp,sync_prof,fp,msg_text);
+					NotificationUtil.showOngoingMsg(mGp,when,sync_prof,fp,msg_text);
 				} else { //
 					if (msgflag.equals("1")) {
 						mGp.progressSpinSyncprof.setText(sync_prof);
 						mGp.progressSpinFilePath.setText(fp);
 						mGp.progressSpinStatus.setText(msg_text);
-						NotificationUtil.showOngoingMsg(mGp,sync_prof,fp,msg_text);
+						NotificationUtil.showOngoingMsg(mGp,when,sync_prof,fp,msg_text);
 					}  
 					if (debug_flag.equals("M") || 
 							(debug_flag.equals("D")&&mGp.settingDebugMsgDisplay)) {
@@ -305,7 +306,7 @@ public class SMBSyncUtil {
 	final public String addLogMsg(String log_cat, String sync_prof, String fp, String log_msg) {
 		String dt=StringUtil.convDateTimeTo_YearMonthDayHourMinSec(System.currentTimeMillis());
 		// flag=1 both, arg2=0 dialog only, arg2=2 msgview only
-		sendMsgToActivity(log_cat,"2",sync_prof,dt.substring(0,10), dt.substring(11),
+		sendMsgToActivity(log_cat,"2",0, sync_prof,dt.substring(0,10), dt.substring(11),
 				mLogIdWithSep,"M",fp,log_msg);
 		String wmsg=writeLogMsgToFile("M "+log_cat, sync_prof, fp, log_msg);
 		if (mGp.debugLevel>0)
@@ -374,7 +375,7 @@ public class SMBSyncUtil {
 			if (mGp.settingDebugMsgDisplay) {
 //				// flag=1 both, arg2=0 dialog only, arg2=2 msg view only
 				String dt=StringUtil.convDateTimeTo_YearMonthDayHourMinSec(System.currentTimeMillis());
-				sendMsgToActivity(log_cat,"2",syncProfName,dt.substring(0,10),
+				sendMsgToActivity(log_cat,"2",0, syncProfName,dt.substring(0,10),
 						dt.substring(11),mLogIdWithSep,"D","", 
 						mSbForaddDebugLogMsg1.toString());
 			}			

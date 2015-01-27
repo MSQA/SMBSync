@@ -105,34 +105,37 @@ public class NotificationUtil {
 		else gwa.notificationLastShowedMessage=fp+" "+msg;
 	};
 	
-	final static public Notification showOngoingMsg(GlobalParameters gwa, 
+	final static public Notification showOngoingMsg(GlobalParameters gwa, long when,
 			String msg ) {
-		return showOngoingMsg(gwa,"","",msg);
+		return showOngoingMsg(gwa,when,"","",msg);
 	};
 
-	final static public Notification showOngoingMsg(GlobalParameters gwa, 
+	final static public Notification showOngoingMsg(GlobalParameters gwa, long when,
 			String prof, String msg ) {
-		return showOngoingMsg(gwa,prof,"",msg);
+		return showOngoingMsg(gwa,when,prof,"",msg);
 	};
 	
-	final static public Notification showOngoingMsg(GlobalParameters gwa, 
+	final static public Notification showOngoingMsg(GlobalParameters gwa, long when,
 			String prof, String fp, String msg ) {
 		setNotificationMessage(gwa,prof,fp,msg);
-		gwa.notificationBuilder
-			.setContentTitle(gwa.notificationLastShowedTitle)
-		    .setContentText(gwa.notificationLastShowedMessage)
-		    .setWhen(System.currentTimeMillis())
-		    ;
-		if (Build.VERSION.SDK_INT>=16) {//JB
-			gwa.notificationBigTextStyle
-				.setBigContentTitle(gwa.notificationLastShowedTitle)
-				.bigText(gwa.notificationLastShowedMessage);
-			gwa.notification=gwa.notificationBigTextStyle.build();
-		} else {
-			gwa.notification=gwa.notificationBuilder.build();
-			gwa.notification.icon=gwa.notificationIcon;
-		}
-		gwa.notificationManager.notify(R.string.app_name,gwa.notification);
+//		if (gwa.notificationNextShowedTime<=System.currentTimeMillis()) {
+//			gwa.notificationNextShowedTime=System.currentTimeMillis()+500;
+			gwa.notificationBuilder
+				.setContentTitle(gwa.notificationLastShowedTitle)
+			    .setContentText(gwa.notificationLastShowedMessage)
+			    ;
+			if (when!=0) gwa.notificationBuilder.setWhen(when);
+			if (Build.VERSION.SDK_INT>=16) {//JB
+				gwa.notificationBigTextStyle
+					.setBigContentTitle(gwa.notificationLastShowedTitle)
+					.bigText(gwa.notificationLastShowedMessage);
+				gwa.notification=gwa.notificationBigTextStyle.build();
+			} else {
+				gwa.notification=gwa.notificationBuilder.build();
+				gwa.notification.icon=gwa.notificationIcon;
+			}
+			gwa.notificationManager.notify(R.string.app_name,gwa.notification);
+//		}
 
     	return gwa.notification;
 	};
