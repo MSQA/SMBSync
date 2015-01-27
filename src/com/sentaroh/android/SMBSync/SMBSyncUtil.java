@@ -54,6 +54,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.CheckedTextView;
 
+import com.sentaroh.android.Utilities.LocalMountPoint;
 import com.sentaroh.android.Utilities.StringUtil;
 import com.sentaroh.android.Utilities.NetworkUtil;
 
@@ -87,6 +88,33 @@ public class SMBSyncUtil {
         return false;
     };
 	
+	@SuppressLint("SdCardPath")
+	public static ArrayList<String> loadLocalMountPointList(Context c) {
+		ArrayList<String> tmpl=LocalMountPoint.getLocalMountPointList(c);
+		ArrayList<String> mpl=new ArrayList<String>();
+		if (tmpl.size()==0) tmpl.add("/sdcard");
+		else {
+			mpl=tmpl;
+//			Collections.sort(tmpl);
+//			for (int i=0;i<tmpl.size();i++) {
+//				File lf=new File(tmpl.get(i)+"/smbsync.tmp.work");
+//				try {
+//					if (lf.createNewFile()) {
+//						mpl.add(tmpl.get(i));
+//					}
+//				} catch (IOException e) {
+//					//
+//				}
+//			}
+//			for(int i=0;i<mpl.size();i++) {
+//				File lf=new File(tmpl.get(i)+"/smbsync.tmp.work");
+//				lf.delete();
+//			}
+		}
+    	Collections.sort(mpl);
+    	return mpl;
+	};
+    
 	public boolean isActivityForeground() {return mGp.activityIsForeground;};
 	
 	public boolean isRemoteDisable() {

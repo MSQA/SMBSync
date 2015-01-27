@@ -228,6 +228,8 @@ public class SMBSyncMain extends ActionBarActivity {
 					util.loadHistoryList(),mGp.themeIsLight);
 			util.housekeepHistoryList();
 			mGp.currentTab=SMBSYNC_TAB_NAME_PROF;
+			
+			mGp.localMountPointList=SMBSyncUtil.loadLocalMountPointList(mContext);
         }
         mGp.initialyzeCompleted=true;
         
@@ -2731,8 +2733,9 @@ public class SMBSyncMain extends ActionBarActivity {
 					setContextButtonDelayedEnable(mContextProfileButtonAddLocal,false);
 					ProfileListItem pfli=new ProfileListItem();
 					pfli.setProfileActive(SMBSYNC_PROF_ACTIVE);
+					pfli.setLocalMountPoint(LocalMountPoint.getExternalStorageDir());
 					ProfileMaintLocalFragment pmsp=ProfileMaintLocalFragment.newInstance();
-					pmsp.showDialog(getSupportFragmentManager(), pmsp, "ADD", new ProfileListItem(), 
+					pmsp.showDialog(getSupportFragmentManager(), pmsp, "ADD", pfli, 
 							0, profUtil, util, commonDlg, ntfy);
 					setContextButtonDelayedEnable(mContextProfileButtonAddLocal,true);
 				}

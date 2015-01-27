@@ -110,7 +110,6 @@ import android.widget.TextView;
 import com.sentaroh.android.Utilities.Base64Compat;
 import com.sentaroh.android.Utilities.EncryptUtil;
 import com.sentaroh.android.Utilities.EncryptUtil.CipherParms;
-import com.sentaroh.android.Utilities.LocalMountPoint;
 import com.sentaroh.android.Utilities.NetworkUtil;
 import com.sentaroh.android.Utilities.NotifyEvent;
 import com.sentaroh.android.Utilities.NotifyEvent.NotifyEventListener;
@@ -1824,32 +1823,32 @@ public class ProfileUtility {
 		AdapterLocalMountPoint adapter = 
         		new AdapterLocalMountPoint(c,
 //        				android.R.layout.simple_spinner_item);
-        				R.layout.custom_simple_spinner_item);
+        				R.layout.custom_simple_spinner_item, gp.localMountPointList);
         adapter.setTextColor(Color.BLACK);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setPrompt(c.getString(R.string.msgs_local_profile_dlg_local_mount_point));
         spinner.setAdapter(adapter);
 
-        ArrayList<String>ml=LocalMountPoint.getLocalMountPointList(c);
-        if (ml.size()==0) ml.add("/sdcard");
-
-        if (!prof_lmp.equals("")) {
-            boolean add_lmp=false;
-            for(int i=0;i<ml.size();i++) {
-            	if (ml.get(i).equals(prof_lmp)) {
-            		add_lmp=true;
-            		break;
-            	}
-            }
-            if (!add_lmp) {
-            	ml.add(prof_lmp);
-            }
-        }
-    	Collections.sort(ml);
+//        ArrayList<String>ml=LocalMountPoint.getLocalMountPointList(c);
+//        if (ml.size()==0) ml.add("/sdcard");
+//
+//        if (!prof_lmp.equals("")) {
+//            boolean add_lmp=false;
+//            for(int i=0;i<ml.size();i++) {
+//            	if (ml.get(i).equals(prof_lmp)) {
+//            		add_lmp=true;
+//            		break;
+//            	}
+//            }
+//            if (!add_lmp) {
+//            	ml.add(prof_lmp);
+//            }
+//        }
+//    	Collections.sort(ml);
         
-        for (int i=0;i<ml.size();i++) {
-			adapter.add(ml.get(i));
-			if (ml.get(i).equals(prof_lmp)) spinner.setSelection(i);
+        for (int i=0;i<gp.localMountPointList.size();i++) {
+			adapter.add(gp.localMountPointList.get(i));
+			if (gp.localMountPointList.get(i).equals(prof_lmp)) spinner.setSelection(i);
 		}
         adapter.notifyDataSetChanged();
 	};

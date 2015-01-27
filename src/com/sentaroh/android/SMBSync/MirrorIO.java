@@ -847,9 +847,8 @@ public class MirrorIO implements Runnable {
 	};
 	
 	private void printMpList() {
-		ArrayList<String>ml=LocalMountPoint.getLocalMountPointList(mGp.appContext);
-		if (ml!=null) {
-			for (int i=0;i<ml.size();i++) addLogMsg("E","","mp="+ml.get(i));
+		if (mGp.localMountPointList!=null) {
+			for (int i=0;i<mGp.localMountPointList.size();i++) addLogMsg("E","","mp="+mGp.localMountPointList.get(i));
 		}
 	}
 	

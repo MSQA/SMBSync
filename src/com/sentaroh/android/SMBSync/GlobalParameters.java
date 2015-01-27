@@ -114,6 +114,8 @@ public class GlobalParameters extends Application{
 //	public ArrayList<SyncHistoryListItem> syncHistoryList=null;
 //	public ArrayList<SyncHistoryListItem> addedSyncHistoryList=null;
 	
+	public ArrayList<String> localMountPointList=null;
+	
 	//Message view
 	public boolean freezeMessageViewScroll=false;
 	

@@ -363,6 +363,7 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
                 	holder.iv_row_icon.setVisibility(LinearLayout.GONE);
                     holder.tv_row_active.setVisibility(LinearLayout.GONE);
                     holder.cbv_row_cb1.setVisibility(LinearLayout.GONE);
+                    holder.ll_last_sync.setVisibility(LinearLayout.GONE);
                 }
                 
                 if (isShowCheckBox) holder.cbv_row_cb1.setVisibility(CheckBox.VISIBLE);

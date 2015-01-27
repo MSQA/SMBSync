@@ -32,7 +32,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.sentaroh.android.Utilities.LocalMountPoint;
 import com.sentaroh.android.Utilities.Widget.CustomSpinnerAdapter;
 
 @SuppressLint("ViewConstructor")
@@ -40,9 +39,9 @@ public class AdapterLocalMountPoint extends CustomSpinnerAdapter {
 
 	private ArrayList<String>mpl;
 
-	public AdapterLocalMountPoint(Context context, int textViewResourceId) {
+	public AdapterLocalMountPoint(Context context, int textViewResourceId, ArrayList<String>lmp) {
 		super(context, textViewResourceId);
-		mpl=LocalMountPoint.getLocalMountPointList(context);
+		mpl=lmp;
 	}
 
 	@Override
