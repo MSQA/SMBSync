@@ -28,6 +28,9 @@
     <item android:id="@+id/menu_top_log_management"
           android:title="@string/msgs_menu_log_management"
           />
+    <item android:id="@+id/menu_top_edit_local_mount_point"
+          android:title="@string/msgs_edit_lmp_dialog_title"
+          />
     <item android:id="@+id/menu_top_about"
           android:title="@string/msgs_menu_about" 
           android:icon="@+android:drawable/ic_menu_info_details"

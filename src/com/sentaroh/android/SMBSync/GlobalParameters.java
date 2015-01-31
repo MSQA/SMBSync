@@ -26,10 +26,12 @@ OTHER DEALINGS IN THE SOFTWARE.
 import static com.sentaroh.android.SMBSync.Constants.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import com.sentaroh.android.SMBSync.SMBSyncMain.ViewSaveArea;
 import com.sentaroh.android.Utilities.LocalMountPoint;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -113,8 +115,6 @@ public class GlobalParameters extends Application{
 	public AdapterSyncHistory syncHistoryAdapter=null;
 //	public ArrayList<SyncHistoryListItem> syncHistoryList=null;
 //	public ArrayList<SyncHistoryListItem> addedSyncHistoryList=null;
-	
-	public ArrayList<String> localMountPointList=null;
 	
 	//Message view
 	public boolean freezeMessageViewScroll=false;
@@ -286,6 +286,61 @@ public class GlobalParameters extends Application{
 
 	};
 	
+	public ArrayList<String> localMountPointList=new ArrayList<String>();
+	public void buildLocalMountPointList(Context c) {
+		ArrayList<String> smpl=getSystemLocalMountPointList(c);
+		ArrayList<String> ampl=getUserLocalMountPointList(c);
+		for(int i=0;i<ampl.size();i++) {
+			if (ampl.get(i)!=null) {
+				if (!smpl.contains(ampl.get(i))) smpl.add(ampl.get(i));
+			}
+		}
+		Collections.sort(smpl);
+		localMountPointList=smpl;
+	};
+	public ArrayList<String> getUserLocalMountPointList(Context c) {
+		ArrayList<String> almpl=new ArrayList<String>();
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
+		String lmpl=prefs.getString(SMBSYNC_USER_LOCAL_MOUNT_POINT_LIST_KEY, "");
+		String[] a_lmp=null;
+		if (lmpl!=null && !lmpl.equals("")) {
+			a_lmp=lmpl.split("\t");
+			for(int i=0;i<a_lmp.length;i++) {
+				if (a_lmp[i]!=null) {
+					almpl.add(a_lmp[i]);
+				}
+			}
+		}
+		return almpl;
+	};
+
+	@SuppressLint("SdCardPath")
+	public ArrayList<String> getSystemLocalMountPointList(Context c) {
+		ArrayList<String> tmpl=LocalMountPoint.getLocalMountPointList(c);
+		ArrayList<String> mpl=new ArrayList<String>();
+		if (tmpl.size()==0) tmpl.add("/sdcard");
+		else {
+			mpl=tmpl;
+		}
+    	Collections.sort(mpl);
+    	
+    	return mpl;
+	}
+	
+	public void saveUserLocalMountPointList(Context c, ArrayList<String> almpl) {
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
+		String s_lmpl="";
+		for(int i=0;i<almpl.size();i++) {
+			s_lmpl+=almpl.get(i)+"\t";
+		}
+		prefs.edit().putString(SMBSYNC_USER_LOCAL_MOUNT_POINT_LIST_KEY, s_lmpl).commit();
+	};
+
+	public void clearUserLocalMountPointList(Context c) {
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
+		prefs.edit().remove(SMBSYNC_USER_LOCAL_MOUNT_POINT_LIST_KEY).commit();
+	};
+
 	public void loadSettingsParm(Context c) {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
 

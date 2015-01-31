@@ -1820,8 +1820,8 @@ public class ProfileUtility {
 	public static void setLocalMountPointSpinner(GlobalParameters gp,
 			Context c, Spinner spinner, String prof_lmp) {
 //		Local mount pointの設定
-		AdapterLocalMountPoint adapter = 
-        		new AdapterLocalMountPoint(c,
+		AdapterLocalMountPointSpinner adapter = 
+        		new AdapterLocalMountPointSpinner(c,
 //        				android.R.layout.simple_spinner_item);
         				R.layout.custom_simple_spinner_item, gp.localMountPointList);
         adapter.setTextColor(Color.BLACK);
@@ -5597,7 +5597,8 @@ public class ProfileUtility {
 														   	encrypt_required,cp,SMBSYNC_PROFILE_CONFIRM_COPY_DELETE);
 		saveSettingsParmsToFileString(c, group, pw, SMBSYNC_PROFILE_2_CONFIRM_COPY_DELETE_REQUIRED, 
 				   											encrypt_required,cp,SMBSYNC_PROFILE_2_CONFIRM_COPY_DELETE);
-
+		
+		saveSettingsParmsToFileString(c, group, pw, "", encrypt_required,cp,SMBSYNC_USER_LOCAL_MOUNT_POINT_LIST_KEY);
 	};
 
 	

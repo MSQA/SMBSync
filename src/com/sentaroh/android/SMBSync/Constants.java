@@ -129,4 +129,7 @@ public class Constants {
 	public static final String SMBSYNC_PROFILE_2_CONFIRM_COPY_DELETE_REQUIRED = "REQUIRED";
 
 	public static final String SMBSYNC_PROFILE_RETRY_COUNT="3";
+	
+	public static final String SMBSYNC_USER_LOCAL_MOUNT_POINT_LIST_KEY="settings_additional_local_mount_point_list";
+
 }

@@ -229,7 +229,7 @@ public class SMBSyncMain extends ActionBarActivity {
 			util.housekeepHistoryList();
 			mGp.currentTab=SMBSYNC_TAB_NAME_PROF;
 			
-			mGp.localMountPointList=SMBSyncUtil.loadLocalMountPointList(mContext);
+			mGp.buildLocalMountPointList(mContext);
         }
         mGp.initialyzeCompleted=true;
         
@@ -1238,6 +1238,10 @@ public class SMBSyncMain extends ActionBarActivity {
 				invokeLogManagement();
 				setContextButtonNormalMode();
 				return true;
+			case R.id.menu_top_edit_local_mount_point:
+				invokeLocalMountPointListEditor();
+				setContextButtonNormalMode();
+				return true;
 			case R.id.menu_top_scheduler:
 				if (mScheduleEditorAvailable) {
 					mScheduleEditorAvailable=false;
@@ -1311,6 +1315,13 @@ public class SMBSyncMain extends ActionBarActivity {
 		LogFileManagementFragment lfm=
 				LogFileManagementFragment.newInstance(getString(R.string.msgs_log_management_title));
 		lfm.showDialog(getSupportFragmentManager(), lfm, mGp);
+	};
+	
+	private void invokeLocalMountPointListEditor() {
+		LogUtil.flushLogFile(mGp);
+		MountPointManagementFragment elmpl=
+				MountPointManagementFragment.newInstance();
+		elmpl.showDialog(getSupportFragmentManager(), elmpl, mGp);
 	};
 	
 	private void checkLastModifiedListValidity() {

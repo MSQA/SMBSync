@@ -496,7 +496,7 @@ public class ProfileCreationWizard {
 				mWizData.master_type.equals("L") && mWizData.target_type.equals("L") &&
 				mWizData.prof_node[0].local_dir_name.equals("")) {
 			//remove same mount point
-			AdapterLocalMountPoint adapter=(AdapterLocalMountPoint) spinnerLmp.getAdapter();
+			AdapterLocalMountPointSpinner adapter=(AdapterLocalMountPointSpinner) spinnerLmp.getAdapter();
 			String lfm_mpn=mWizData.prof_node[0].local_mount_point_name;
 			File lfm=new File(lfm_mpn);
 			try {
