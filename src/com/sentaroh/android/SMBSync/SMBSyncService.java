@@ -126,7 +126,7 @@ public class SMBSyncService extends Service {
 			mUtil.addDebugLogMsg(1,"I","onStartCommand entered, action="+action);
 		}
 //		wl.release();
-		return START_STICKY;
+		return START_NOT_STICKY;
 	};
 	
 	private void setWifiOn() {

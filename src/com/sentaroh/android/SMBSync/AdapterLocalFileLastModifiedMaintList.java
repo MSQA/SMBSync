@@ -25,14 +25,14 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 import java.util.ArrayList;
 
+import com.sentaroh.android.Utilities.NotifyEvent;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 
 public class AdapterLocalFileLastModifiedMaintList extends ArrayAdapter<LocalFileLastModifiedMaintListItem>{
@@ -40,6 +40,8 @@ public class AdapterLocalFileLastModifiedMaintList extends ArrayAdapter<LocalFil
 	private ArrayList<LocalFileLastModifiedMaintListItem>items=null;
 	private int id=0;
 	private Context c;
+	@SuppressWarnings("unused")
+	private NotifyEvent mNtfyCheckBox=null;
 	
 	public AdapterLocalFileLastModifiedMaintList(Context context, 
 			int textViewResourceId,
@@ -48,6 +50,10 @@ public class AdapterLocalFileLastModifiedMaintList extends ArrayAdapter<LocalFil
 		c=context;
 		id=textViewResourceId;
 		items=objects;
+	}
+	
+	public void setNotifyCheckBoxListener(NotifyEvent ntfy) {
+		mNtfyCheckBox=ntfy;
 	}
 
 	@Override
@@ -70,20 +76,23 @@ public class AdapterLocalFileLastModifiedMaintList extends ArrayAdapter<LocalFil
         }
         final LocalFileLastModifiedMaintListItem o = getItem(position);
         if (o != null) {
-            final int p = position;
+//            final int p = position;
             holder.tv_prof_name.setText(o.getLocalMountPoint());
             holder.tv_prof_status.setText(o.getStatus());
          	if (!o.getLocalMountPoint().equals(
          			c.getString(R.string.msgs_local_file_modified_maint_no_entry))) {
                 //必ずsetChecked前にリスナを登録(convertView != null の場合は既に別行用のリスナが登録されている！)
-             	holder.cb_cb1.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-     				@Override
-     				public void onCheckedChanged(CompoundButton buttonView,
-    						boolean isChecked) {
-     					o.setChecked(isChecked);
-     					items.set(p, o);
-     					}
-     				});
+         		holder.cb_cb1.setClickable(false);
+         		holder.cb_cb1.setEnabled(false);
+//             	holder.cb_cb1.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+//     				@Override
+//     				public void onCheckedChanged(CompoundButton buttonView,
+//    						boolean isChecked) {
+//     					o.setChecked(isChecked);
+//     					if (mNtfyCheckBox!=null) mNtfyCheckBox.notifyToListener(true, new Object[]{p,isChecked});
+//     					Log.v("","pos="+p);
+//     				}
+//     			});
              	holder.cb_cb1.setChecked(items.get(position).isChecked());
          	} else {
          		holder.tv_prof_status.setVisibility(TextView.GONE);

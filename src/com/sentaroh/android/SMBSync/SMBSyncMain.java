@@ -1122,6 +1122,7 @@ public class SMBSyncMain extends ActionBarActivity {
 				menu.findItem(R.id.menu_top_import).setEnabled(false);
 				menu.findItem(R.id.menu_top_last_mod_list).setEnabled(false);
 				menu.findItem(R.id.menu_top_log_management).setEnabled(false);
+				menu.findItem(R.id.menu_top_mount_point_management).setEnabled(false);
 			} else {
 				if (mGp.settingLogOption.equals("0")) menu.findItem(R.id.menu_top_browse_log).setEnabled(false);
 				else menu.findItem(R.id.menu_top_browse_log).setEnabled(true);
@@ -1129,6 +1130,7 @@ public class SMBSyncMain extends ActionBarActivity {
 				menu.findItem(R.id.menu_top_import).setEnabled(true);
 				menu.findItem(R.id.menu_top_last_mod_list).setEnabled(true);
 				menu.findItem(R.id.menu_top_log_management).setEnabled(true);
+				menu.findItem(R.id.menu_top_mount_point_management).setEnabled(true);
 			}
 			if (mGp.settingShowSyncButtonOnMenuItem) {
 				if (mGp.currentTab.equals(SMBSYNC_TAB_NAME_PROF)) {
@@ -1175,6 +1177,7 @@ public class SMBSyncMain extends ActionBarActivity {
 			menu.findItem(R.id.menu_top_about).setEnabled(false);
 			menu.findItem(R.id.menu_top_settings).setEnabled(false);
 			menu.findItem(R.id.menu_top_log_management).setEnabled(false);
+			menu.findItem(R.id.menu_top_mount_point_management).setEnabled(false);
 			menu.findItem(R.id.menu_top_scheduler).setEnabled(false);
 		}
         return super.onPrepareOptionsMenu(menu);
@@ -1238,7 +1241,7 @@ public class SMBSyncMain extends ActionBarActivity {
 				invokeLogManagement();
 				setContextButtonNormalMode();
 				return true;
-			case R.id.menu_top_edit_local_mount_point:
+			case R.id.menu_top_mount_point_management:
 				invokeLocalMountPointListEditor();
 				setContextButtonNormalMode();
 				return true;

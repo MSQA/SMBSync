@@ -11,7 +11,7 @@
         android:layout_height="wrap_content" >
 
         <ImageButton
-            android:id="@+id/edit_lmp_list_dlg_btn_done"
+            android:id="@+id/mount_point_edit_dlg_btn_done"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:background="#00000000"
@@ -19,7 +19,7 @@
             android:src="@drawable/ic_action_done" />
 
         <TextView
-            android:id="@+id/edit_lmp_list_dlg_title"
+            android:id="@+id/mount_point_edit_dlg_title"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:gravity="left|center_vertical"
@@ -29,14 +29,14 @@
     <include layout="@layout/divider_line1_turquoise" />
 
     <TextView
-        android:id="@+id/edit_lmp_list_dlg_msg"
+        android:id="@+id/mount_point_edit_dlg_msg"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textColor="#ff0000"
         android:textAppearance="?android:attr/textAppearanceMedium" />
     
     <ListView
-        android:id="@+id/edit_lmp_list_dlg_listview"
+        android:id="@+id/mount_point_edit_dlg_listview"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" >
@@ -47,25 +47,25 @@
         android:layout_height="wrap_content" >
 
         <Button
-            android:id="@+id/edit_lmp_list_dlg_add_path"
+            android:id="@+id/mount_point_edit_dlg_add_path"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/msgs_edit_lmp_dialog_btn_add"
+            android:text="@string/msgs_edit_mp_dialog_btn_add"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <EditText
-            android:id="@+id/edit_lmp_list_dlg_new_path"
+            android:id="@+id/mount_point_edit_dlg_new_path"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:hint="@string/msgs_edit_lmp_dialog_hint_new_path"
+            android:hint="@string/msgs_edit_mp_dialog_hint_new_path"
             android:inputType="text" >
 
         </EditText>
     </LinearLayout>
 
     <include
-        android:id="@+id/edit_lmp_list_dlg_context_view"
+        android:id="@+id/mount_point_edit_dlg_context_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         layout="@layout/context_view_edit_lmp" />
@@ -73,6 +73,6 @@
     <include
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        layout="@layout/edit_lmp_list_dlg_ok_cancel" />
+        layout="@layout/mount_point_edit_dlg_ok_cancel" />
 
 </LinearLayout>

@@ -142,6 +142,7 @@ Files should not be copied and originally specified in the same mount point to a
    	<string name="msgs_local_file_modified_maint_status_valid">Validated</string>
    	<string name="msgs_local_file_modified_maint_status_corrupted">Corrupted</string>
    	<string name="msgs_local_file_modified_maint_status_fileonly">Unreferenced</string>
+   	<string name="msgs_local_file_modified_maint_status_not_created">Not created</string>
    	
    	<string name="msgs_local_file_modified_maint_validation_title">Local file last modified list</string>
    	<string name="msgs_local_file_modified_maint_validation_msg">Following list was corrupted, do you moved to maintenance menu?</string>

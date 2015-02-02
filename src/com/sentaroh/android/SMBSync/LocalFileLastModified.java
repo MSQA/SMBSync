@@ -52,6 +52,7 @@ import java.util.zip.ZipOutputStream;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
@@ -69,13 +70,13 @@ import com.sentaroh.android.Utilities.Dialog.DialogBackKeyListener;
 
 public class LocalFileLastModified {
 
-	private Context context;
+	private Context mContext;
 	private AdapterProfileList profileAdapter;
 	private SMBSyncUtil util;
 	private CommonDialog commonDlg;
 	
 	LocalFileLastModified(Context c, AdapterProfileList pa, SMBSyncUtil ut, CommonDialog cd) {
-		context=c;
+		mContext=c;
 		profileAdapter=pa;
 		util=ut;
 		commonDlg=cd;
@@ -86,14 +87,14 @@ public class LocalFileLastModified {
 		ArrayList<LocalFileLastModifiedMaintListItem> maint_list=
 				new ArrayList<LocalFileLastModifiedMaintListItem>();
 		boolean holder_data_available=false;
-		createLastModifiedMaintList(context, profileAdapter,maint_list);
+		createLastModifiedMaintList(mContext, profileAdapter,maint_list);
 		if (maint_list.size()==0) {
 			maint_list.add(new LocalFileLastModifiedMaintListItem(
-					context.getString(R.string.msgs_local_file_modified_maint_no_entry),"",false));
+					mContext.getString(R.string.msgs_local_file_modified_maint_no_entry),"",false));
 		} else holder_data_available=true;
 					
 		// common カスタムダイアログの生成
-		final Dialog dialog = new Dialog(context);
+		final Dialog dialog = new Dialog(mContext);
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		dialog.setContentView(R.layout.maint_last_mod_list_dlg);
 		TextView dlg_msg=(TextView)dialog.findViewById(R.id.maint_last_mod_list_dlg_msg);
@@ -113,9 +114,22 @@ public class LocalFileLastModified {
 		CommonDialog.setDlgBoxSizeLimit(dialog,false);
 		
 		final AdapterLocalFileLastModifiedMaintList lflmAdapter=new AdapterLocalFileLastModifiedMaintList(
-				context, R.layout.maint_last_modified_list_dlg_listview_item,
+				mContext, R.layout.maint_last_modified_list_dlg_listview_item,
 				maint_list); 
 		dlg_lv.setAdapter(lflmAdapter);
+		
+		NotifyEvent ntfy=new NotifyEvent(mContext);
+		ntfy.setListener(new NotifyEventListener(){
+			@Override
+			public void positiveResponse(Context c, Object[] o) {
+//				int pos=(Integer)o[0];
+//				boolean isChecked=(Boolean)o[1];
+			}
+			@Override
+			public void negativeResponse(Context c, Object[] o) {
+			}
+		});
+		lflmAdapter.setNotifyCheckBoxListener(ntfy);
 		
 		dlg_lv.setOnItemClickListener(new OnItemClickListener(){
 			@Override
@@ -123,77 +137,83 @@ public class LocalFileLastModified {
 					long arg3) {
 				boolean p_chk=lflmAdapter.getItem(pos).isChecked();
 	         	if (!lflmAdapter.getItem(pos).getLocalMountPoint().equals(
-	         			context.getString(R.string.msgs_local_file_modified_maint_no_entry))) {
-					if (lflmAdapter.getItem(pos).getStatus().equals(
-							context.getString(R.string.msgs_local_file_modified_maint_status_fileonly))) {
-						for (int i=0;i<lflmAdapter.getCount();i++) lflmAdapter.getItem(i).setChecked(false);
-						lflmAdapter.getItem(pos).setChecked(!p_chk);
-//						Log.v("","checked="+lflmAdapter.getItem(pos).isChecked()+", pchk="+p_chk);
-						if (lflmAdapter.getItem(pos).isChecked()) {
+	         			mContext.getString(R.string.msgs_local_file_modified_maint_no_entry))) {
+					for (int i=0;i<lflmAdapter.getCount();i++) lflmAdapter.getItem(i).setChecked(false);
+					lflmAdapter.getItem(pos).setChecked(!p_chk);
+//					Log.v("","checked="+lflmAdapter.getItem(pos).isChecked()+", pchk="+p_chk);
+					if (lflmAdapter.getItem(pos).isChecked()) {
+						if (lflmAdapter.getItem(pos).getStatus().equals(mContext.getString(R.string.msgs_local_file_modified_maint_status_init))) {
+							btnDelete.setEnabled(true);
+							btnInit.setEnabled(false);
+							btnReset.setEnabled(true);
+						} else if (lflmAdapter.getItem(pos).getStatus().equals(mContext.getString(R.string.msgs_local_file_modified_maint_status_reset))) {
+							btnDelete.setEnabled(true);
+							btnInit.setEnabled(true);
+							btnReset.setEnabled(false);
+						} else if (lflmAdapter.getItem(pos).getStatus().equals(mContext.getString(R.string.msgs_local_file_modified_maint_status_valid))) {
+							btnDelete.setEnabled(true);
+							btnInit.setEnabled(true);
+							btnReset.setEnabled(true);
+						} else if (lflmAdapter.getItem(pos).getStatus().equals(mContext.getString(R.string.msgs_local_file_modified_maint_status_corrupted))) {
+							btnDelete.setEnabled(true);
+							btnInit.setEnabled(true);
+							btnReset.setEnabled(true);
+						} else if (lflmAdapter.getItem(pos).getStatus().equals(mContext.getString(R.string.msgs_local_file_modified_maint_status_fileonly))) {
 							btnDelete.setEnabled(true);
 							btnInit.setEnabled(false);
 							btnReset.setEnabled(false);
-						} else {
-							btnDelete.setEnabled(false);
-							btnInit.setEnabled(false);
-							btnReset.setEnabled(false);
-						}
-						lflmAdapter.notifyDataSetChanged();
-					} else {
-						for (int i=0;i<lflmAdapter.getCount();i++) lflmAdapter.getItem(i).setChecked(false);
-						lflmAdapter.getItem(pos).setChecked(!p_chk);
-//						Log.v("","checked="+lflmAdapter.getItem(pos).isChecked()+", pchk="+p_chk);
-						if (lflmAdapter.getItem(pos).isChecked()) {
+						} else if (lflmAdapter.getItem(pos).getStatus().equals(mContext.getString(R.string.msgs_local_file_modified_maint_status_not_created))) {
 							btnDelete.setEnabled(false);
 							btnInit.setEnabled(true);
 							btnReset.setEnabled(true);
-						} else {
-							btnDelete.setEnabled(false);
-							btnInit.setEnabled(false);
-							btnReset.setEnabled(false);
 						}
-						lflmAdapter.notifyDataSetChanged();
+					} else {
+						btnDelete.setEnabled(false);
+						btnInit.setEnabled(false);
+						btnReset.setEnabled(false);
 					}
+					lflmAdapter.notifyDataSetChanged();
 	         	}
 			}
 		});
-		dialog.setOnKeyListener(new DialogBackKeyListener(context));
+		dialog.setOnKeyListener(new DialogBackKeyListener(mContext));
 		// Delete ボタンの指定
 		btnDelete.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				String d_mp="";
-				for (int i=0;i<lflmAdapter.getCount();i++)
-					if (lflmAdapter.getItem(i).isChecked()) d_mp=lflmAdapter.getItem(i).getLocalMountPoint();
-				final String lmp=d_mp;
-				NotifyEvent ntfy=new NotifyEvent(context);
+				LocalFileLastModifiedMaintListItem tli=null;
+				for (int i=0;i<lflmAdapter.getCount();i++) {
+					if (lflmAdapter.getItem(i).isChecked()) {
+						tli=lflmAdapter.getItem(i);
+						d_mp=tli.getLocalMountPoint();
+					}
+				}
+				final LocalFileLastModifiedMaintListItem lflmmli=tli; 
+				final String d_lmp=d_mp;
+				NotifyEvent ntfy=new NotifyEvent(mContext);
 				ntfy.setListener(new NotifyEventListener(){
 					@Override
 					public void positiveResponse(Context c, Object[] o) {
-						for (int i=0;i<lflmAdapter.getCount();i++)
-							if (lflmAdapter.getItem(i).isChecked()) {
-								if (lflmAdapter.getItem(i).getStatus().equals(
-										context.getString(R.string.msgs_local_file_modified_maint_status_fileonly))) {
-									deleteListFile(lmp);
-									lflmAdapter.remove(lflmAdapter.getItem(i));
-									btnDelete.setEnabled(false);
-									break;
-								}
-							}
+						deleteListFile(d_lmp);
+						lflmmli.setStatus(mContext.getString(R.string.msgs_local_file_modified_maint_status_not_created));
+						lflmmli.setChecked(false);
+						btnDelete.setEnabled(false);
+						btnInit.setEnabled(false);
+						btnReset.setEnabled(false);
 						lflmAdapter.notifyDataSetChanged();
 					}
 					@Override
 					public void negativeResponse(Context c, Object[] o) {}
 				});
 				commonDlg.showCommonDialog(true, "W", 
-						context.getString(R.string.msgs_local_file_modified_maint_delete_btn), 
-						context.getString(R.string.msgs_local_file_modified_maint_delete_msg), 
-						ntfy);
+						mContext.getString(R.string.msgs_local_file_modified_maint_delete_msg), 
+						getFillePathFromLmpName(d_lmp), ntfy);
 			}
 		});
 		// Init ボタンの指定
 		btnInit.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				NotifyEvent ntfy=new NotifyEvent(context);
+				NotifyEvent ntfy=new NotifyEvent(mContext);
 				ntfy.setListener(new NotifyEventListener(){
 					@Override
 					public void positiveResponse(Context c, Object[] o) {
@@ -205,7 +225,13 @@ public class LocalFileLastModified {
 										new ArrayList<FileLastModifiedEntryItem>();
 								saveLastModifiedList(lflmAdapter.getItem(i).getLocalMountPoint(),
 										curr_list, new_list);
-								lflmAdapter.getItem(i).setStatus(context.getString(R.string.msgs_local_file_modified_maint_status_init));
+								lflmAdapter.getItem(i).setStatus(mContext.getString(R.string.msgs_local_file_modified_maint_status_init));
+								
+								lflmAdapter.getItem(i).setChecked(false);
+								btnDelete.setEnabled(false);
+								btnInit.setEnabled(false);
+								btnReset.setEnabled(false);
+
 								lflmAdapter.notifyDataSetChanged();
 							}
 					}
@@ -213,15 +239,15 @@ public class LocalFileLastModified {
 					public void negativeResponse(Context c, Object[] o) {}
 				});
 				commonDlg.showCommonDialog(true, "W", 
-						context.getString(R.string.msgs_local_file_modified_maint_init_btn), 
-						context.getString(R.string.msgs_local_file_modified_maint_init_msg), 
+						mContext.getString(R.string.msgs_local_file_modified_maint_init_btn), 
+						mContext.getString(R.string.msgs_local_file_modified_maint_init_msg), 
 						ntfy);
 			}
 		});
 		// Reset ボタンの指定
 		btnReset.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				NotifyEvent ntfy=new NotifyEvent(context);
+				NotifyEvent ntfy=new NotifyEvent(mContext);
 				ntfy.setListener(new NotifyEventListener(){
 					@Override
 					public void positiveResponse(Context c, Object[] o) {
@@ -235,7 +261,13 @@ public class LocalFileLastModified {
 										SMBSYNC_LOCAL_FILE_LAST_MODIFIED_WAS_FORCE_LASTEST,0,0,false));
 								saveLastModifiedList(lflmAdapter.getItem(i).getLocalMountPoint(),
 										curr_list, new_list);
-								lflmAdapter.getItem(i).setStatus(context.getString(R.string.msgs_local_file_modified_maint_status_reset));
+								lflmAdapter.getItem(i).setStatus(mContext.getString(R.string.msgs_local_file_modified_maint_status_reset));
+								
+								lflmAdapter.getItem(i).setChecked(false);
+								btnDelete.setEnabled(false);
+								btnInit.setEnabled(false);
+								btnReset.setEnabled(false);
+
 								lflmAdapter.notifyDataSetChanged();
 							}
 					}
@@ -243,8 +275,8 @@ public class LocalFileLastModified {
 					public void negativeResponse(Context c, Object[] o) {}
 				});
 				commonDlg.showCommonDialog(true, "W", 
-						context.getString(R.string.msgs_local_file_modified_maint_reset_btn), 
-						context.getString(R.string.msgs_local_file_modified_maint_reset_msg), ntfy);
+						mContext.getString(R.string.msgs_local_file_modified_maint_reset_btn), 
+						mContext.getString(R.string.msgs_local_file_modified_maint_reset_msg), ntfy);
 			}
 		});
 		// Cleanup ボタンの指定
@@ -253,7 +285,7 @@ public class LocalFileLastModified {
 		else btnCleanup.setVisibility(Button.GONE);
 		btnCleanup.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				NotifyEvent ntfy=new NotifyEvent(context);
+				NotifyEvent ntfy=new NotifyEvent(mContext);
 				ntfy.setListener(new NotifyEventListener(){
 					@Override
 					public void positiveResponse(Context c, Object[] o) {
@@ -276,8 +308,8 @@ public class LocalFileLastModified {
 					public void negativeResponse(Context c, Object[] o) {}
 				});
 				commonDlg.showCommonDialog(true, "W", 
-						context.getString(R.string.msgs_local_file_modified_maint_cleanup_btn), 
-						context.getString(R.string.msgs_local_file_modified_maint_cleanup_msg), ntfy);
+						mContext.getString(R.string.msgs_local_file_modified_maint_cleanup_btn), 
+						mContext.getString(R.string.msgs_local_file_modified_maint_cleanup_msg), ntfy);
 			}
 		});
 		// close ボタンの指定
@@ -294,10 +326,8 @@ public class LocalFileLastModified {
 	final static public void createLastModifiedMaintList(
 			Context context, AdapterProfileList profile_adapter,
 			ArrayList<LocalFileLastModifiedMaintListItem> maint_list) {
-		final ArrayList<FileLastModifiedEntryItem> curr_list=
-				new ArrayList<FileLastModifiedEntryItem>();
-		final ArrayList<FileLastModifiedEntryItem> new_list=
-				new ArrayList<FileLastModifiedEntryItem>();
+		final ArrayList<FileLastModifiedEntryItem> curr_list=new ArrayList<FileLastModifiedEntryItem>();
+		final ArrayList<FileLastModifiedEntryItem> new_list=new ArrayList<FileLastModifiedEntryItem>();
 		ArrayList<String> mpl=new ArrayList<String>();
 		
 		for (int i=0;i<profile_adapter.getCount();i++) {
@@ -308,7 +338,7 @@ public class LocalFileLastModified {
 						ProfileUtility.getProfile(syncprof_item.getTargetName(), profile_adapter);
 				if (lclprof_item!=null) {
 					String lmp=lclprof_item.getLocalMountPoint();
-					if (!lclprof_item.getDirectoryName().equals("")) lmp+="/"+lclprof_item.getDirectoryName();
+//					if (!lclprof_item.getDirectoryName().equals("")) lmp+="/"+lclprof_item.getDirectoryName();
 //					Log.v("","lmp="+lmp);
 					if (!lmp.equals("/")&&!lmp.equals("")) {
 						if (!isSetLastModifiedFunctional(lmp) ||
@@ -335,8 +365,8 @@ public class LocalFileLastModified {
 		if (fl!=null) {
 			for (int i=0;i<fl.length;i++) {
 				if (fl[i].isFile() &&
-					fl[i].getName().startsWith(SMBSYNC_LOCAL_FILE_LAST_MODIFIED_NAME_V2)) {
-					String lmp=fl[i].getName().replace(SMBSYNC_LOCAL_FILE_LAST_MODIFIED_NAME_V2, "").replaceAll("_", "/");
+					fl[i].getName().startsWith(SMBSYNC_LOCAL_FILE_LAST_MODIFIED_NAME_V3)) {
+					String lmp=fl[i].getName().replace(SMBSYNC_LOCAL_FILE_LAST_MODIFIED_NAME_V3, "").replaceAll("_", "/");
 					boolean found=false;
 					for (int j=0;j<mpl.size();j++) {
 						if (mpl.get(j).equals(lmp)) {
@@ -348,7 +378,21 @@ public class LocalFileLastModified {
 						mpl.add(lmp+"\t"+"F");
 //						Log.v("","add file lmp="+lmp);
 					}
-				}
+//				} else if (fl[i].isFile() &&
+//						fl[i].getName().startsWith(SMBSYNC_LOCAL_FILE_LAST_MODIFIED_NAME_V2)) {
+//						String lmp=fl[i].getName().replace(SMBSYNC_LOCAL_FILE_LAST_MODIFIED_NAME_V2, "").replaceAll("_", "/");
+//						boolean found=false;
+//						for (int j=0;j<mpl.size();j++) {
+//							if (mpl.get(j).equals(lmp)) {
+//								found=true;
+//								break;
+//							}
+//						}
+//						if (!found) {
+//							mpl.add(lmp+"\t"+"F");
+////							Log.v("","add file lmp="+lmp);
+//						}
+					}
 			}
 		}
 		
@@ -359,37 +403,46 @@ public class LocalFileLastModified {
 			String st="";
 			if (lmp.length!=1) {
 				st=context.getString(R.string.msgs_local_file_modified_maint_status_fileonly);
-				maint_list.add(new LocalFileLastModifiedMaintListItem(
-						lmp[0],st,false));
+				maint_list.add(new LocalFileLastModifiedMaintListItem(lmp[0],st,false));
 //				Log.v("","add maint file lmp="+lmp[0]);
 			} else {
-				boolean corrupted=
-						loadLastModifiedList(lmp[0], curr_list,new_list);
+				boolean corrupted=loadLastModifiedList(lmp[0], curr_list,new_list);
 				if (lmp.length!=1) {
 				} else {
 					if (corrupted) {
 						st=context.getString(R.string.msgs_local_file_modified_maint_status_corrupted);
 					} else {
 						if (curr_list.size()==1 && 
-								curr_list.get(0).getFullFilePath().equals(SMBSYNC_LOCAL_FILE_LAST_MODIFIED_WAS_FORCE_LASTEST))
+								curr_list.get(0).getFullFilePath().equals(SMBSYNC_LOCAL_FILE_LAST_MODIFIED_WAS_FORCE_LASTEST)) {
 							st=context.getString(R.string.msgs_local_file_modified_maint_status_reset);
-						else if (curr_list.size()==0) 
-							st=context.getString(R.string.msgs_local_file_modified_maint_status_init);
-						else st=context.getString(R.string.msgs_local_file_modified_maint_status_valid);
+						} else if (curr_list.size()==0) {
+							File t_lf=new File(getFillePathFromLmpName(lmp[0]));
+							Log.v("","lmp="+t_lf.getPath()+", e="+t_lf.exists()); 
+							if (t_lf.exists()) {
+								st=context.getString(R.string.msgs_local_file_modified_maint_status_init);
+							} else {
+								st=context.getString(R.string.msgs_local_file_modified_maint_status_not_created);
+							}
+						} else {
+							st=context.getString(R.string.msgs_local_file_modified_maint_status_valid);
+						}
 					}
 				}
-				maint_list.add(new LocalFileLastModifiedMaintListItem(
-						lmp[0],st,false));
+				maint_list.add(new LocalFileLastModifiedMaintListItem(lmp[0],st,false));
 //				Log.v("","add maint prof lmp="+lmp[0]);
 			}
 		}
 	};
 	
 	final public static void deleteListFile(String lmp) {
-		File lf=new File(LocalMountPoint.getExternalStorageDir()+"/SMBSync/lflm/"+
-				SMBSYNC_LOCAL_FILE_LAST_MODIFIED_NAME_V2+lmp.replaceAll("/", "_"));
+		File lf=new File(getFillePathFromLmpName(lmp));
 		lf.delete();
 	};
+	
+	final public static String getFillePathFromLmpName(String lmp) {
+		return LocalMountPoint.getExternalStorageDir()+"/SMBSync/lflm/"+
+				SMBSYNC_LOCAL_FILE_LAST_MODIFIED_NAME_V3+lmp.replaceAll("/", "_");
+	}
 	
 	final public static boolean isLastModifiedWasUsed(AdapterProfileList profile_adapter) {
 		boolean usable=false;

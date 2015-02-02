@@ -36,7 +36,7 @@
     <string name="msgs_sync_history_status_error">Fail</string>
     <string name="msgs_sync_history_status_cancel">Cancel</string>
     <string name="msgs_sync_history_status_success">Successful</string>
-    <string name="msgs_sync_history_status_running">Running</string>
+    <string name="msgs_sync_history_status_running">Syncing</string>
 	<string name="msgs_sync_history_count_files">Files</string>    
     <string name="msgs_sync_history_count_copied">Copied:</string>
     <string name="msgs_sync_history_count_deleted">Deleted:</string>

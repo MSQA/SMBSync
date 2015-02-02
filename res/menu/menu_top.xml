@@ -13,10 +13,6 @@
           android:title="@string/msgs_menu_browse_logfile" 
           android:icon="@drawable/ic_32_bw_browse_text"
           appv7:showAsAction="ifRoom|withText"/>
-    <item android:id="@+id/menu_top_last_mod_list"
-          android:title="@string/msgs_menu_last_mod_list"
-          android:icon="@drawable/ic_32_last_modified" 
-          />
     <item android:id="@+id/menu_top_export"
           android:title="@string/msgs_menu_export" 
           android:icon="@+android:drawable/ic_menu_save"
@@ -28,9 +24,6 @@
     <item android:id="@+id/menu_top_log_management"
           android:title="@string/msgs_menu_log_management"
           />
-    <item android:id="@+id/menu_top_edit_local_mount_point"
-          android:title="@string/msgs_edit_lmp_dialog_title"
-          />
     <item android:id="@+id/menu_top_about"
           android:title="@string/msgs_menu_about" 
           android:icon="@+android:drawable/ic_menu_info_details"
@@ -38,6 +31,13 @@
     <item android:id="@+id/menu_top_settings"
           android:title="@string/msgs_menu_settings" 
           android:icon="@+android:drawable/ic_menu_preferences"
+          />
+    <item android:id="@+id/menu_top_mount_point_management"
+          android:title="@string/msgs_edit_mp_dialog_title"
+          />
+    <item android:id="@+id/menu_top_last_mod_list"
+          android:title="@string/msgs_menu_last_mod_list"
+          android:icon="@drawable/ic_32_last_modified" 
           />
     <item android:id="@+id/menu_top_kill"
           android:title="@string/msgs_menu_kill" 

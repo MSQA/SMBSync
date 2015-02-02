@@ -22,9 +22,9 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import com.sentaroh.android.Utilities.NotifyEvent;
 import com.sentaroh.android.Utilities.Widget.CustomTextView;
 
-public class AdapterMountPointList  extends BaseAdapter{
+public class AdapterMountPointEditList  extends BaseAdapter{
 
-	private ArrayList<MountPointListItem>local_mount_point_list=null;
+	private ArrayList<MountPointEditListItem>local_mount_point_list=null;
 	private int textViewResourceId=0;
 	private Context c;
 	
@@ -32,8 +32,8 @@ public class AdapterMountPointList  extends BaseAdapter{
 	
 	private boolean themeIsLight=false;
 	
-	public AdapterMountPointList(Context context, int textViewResourceId,
-			ArrayList<MountPointListItem> objects, boolean themeIsLight, NotifyEvent ntfy) {
+	public AdapterMountPointEditList(Context context, int textViewResourceId,
+			ArrayList<MountPointEditListItem> objects, boolean themeIsLight, NotifyEvent ntfy) {
 		c=context;
 		local_mount_point_list=objects;
 		mCheckBoxClickListener=ntfy;
@@ -43,7 +43,7 @@ public class AdapterMountPointList  extends BaseAdapter{
 		sort();
 	}
 	
-	public void replaceDataList(ArrayList<MountPointListItem> dl) {
+	public void replaceDataList(ArrayList<MountPointEditListItem> dl) {
 		local_mount_point_list=dl;
 		notifyDataSetChanged();
 	}
@@ -54,7 +54,7 @@ public class AdapterMountPointList  extends BaseAdapter{
 	}
 
 	@Override
-	public MountPointListItem getItem(int pos) {
+	public MountPointEditListItem getItem(int pos) {
 		return local_mount_point_list.get(pos);
 	}
 
@@ -63,11 +63,11 @@ public class AdapterMountPointList  extends BaseAdapter{
 		return arg0;
 	}
 	
-	public void add(MountPointListItem lmpli) {
+	public void add(MountPointEditListItem lmpli) {
 		local_mount_point_list.add(lmpli);
 	}
 
-	public void remove(MountPointListItem lmpli) {
+	public void remove(MountPointEditListItem lmpli) {
 		local_mount_point_list.remove(lmpli);
 	}
 
@@ -75,16 +75,16 @@ public class AdapterMountPointList  extends BaseAdapter{
 		sort(local_mount_point_list);
 	};
 	
-	public static void sort(ArrayList<MountPointListItem>mpl) {
-		Collections.sort(mpl, new Comparator<MountPointListItem>(){
+	public static void sort(ArrayList<MountPointEditListItem>mpl) {
+		Collections.sort(mpl, new Comparator<MountPointEditListItem>(){
 			@Override
-			public int compare(MountPointListItem lhs,
-					MountPointListItem rhs) {
+			public int compare(MountPointEditListItem lhs,
+					MountPointEditListItem rhs) {
 				String l_type="U", r_type="U";
 				if (lhs.isSystemDefined) l_type="S";
 				if (rhs.isSystemDefined) r_type="S";
-				String l_key=l_type+lhs.local_mount_point_path;
-				String r_key=r_type+rhs.local_mount_point_path;
+				String l_key=l_type+lhs.mount_point;
+				String r_key=r_type+rhs.mount_point;
 				return l_key.compareToIgnoreCase(r_key);
 			}
 		});
@@ -98,7 +98,7 @@ public class AdapterMountPointList  extends BaseAdapter{
 		boolean result=true;
 		if (local_mount_point_list!=null) {
 			if (local_mount_point_list.size()>0) {
-				if (local_mount_point_list.get(0).local_mount_point_path!=null) result=false;
+				if (local_mount_point_list.get(0).mount_point!=null) result=false;
 			}
 		}
 		return result;
@@ -150,11 +150,11 @@ public class AdapterMountPointList  extends BaseAdapter{
             LayoutInflater vi = (LayoutInflater)c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             v = vi.inflate(textViewResourceId, null);
             holder=new ViewHolder();
-            holder.cb_select=(CheckBox)v.findViewById(R.id.edit_lmp_list_item_checkbox);
-            holder.tv_lmp_path=(CustomTextView)v.findViewById(R.id.edit_lmp_list_item_lmp_path);
-            holder.tv_lmp_type=(TextView)v.findViewById(R.id.edit_lmp_list_item_lmp_type);
+            holder.cb_select=(CheckBox)v.findViewById(R.id.mount_point_edit_list_item_checkbox);
+            holder.tv_lmp_path=(CustomTextView)v.findViewById(R.id.mount_point_edit_list_item_lmp_path);
+            holder.tv_lmp_type=(TextView)v.findViewById(R.id.mount_point_edit_list_item_lmp_type);
             
-            holder.ll_view=(LinearLayout)v.findViewById(R.id.edit_lmp_list_item_lmp_view);
+            holder.ll_view=(LinearLayout)v.findViewById(R.id.mount_point_edit_list_item_lmp_view);
             
             if (ll_default!=null) ll_default=holder.ll_view.getBackground();
             if (cs_list==null) cs_list=holder.tv_lmp_type.getTextColors();
@@ -162,9 +162,9 @@ public class AdapterMountPointList  extends BaseAdapter{
         } else {
         	holder= (ViewHolder)v.getTag();
         }
-        final MountPointListItem o = getItem(position);
-        if (o.local_mount_point_path!=null) {
-    		holder.tv_lmp_path.setText(o.local_mount_point_path);
+        final MountPointEditListItem o = getItem(position);
+        if (o.mount_point!=null) {
+    		holder.tv_lmp_path.setText(o.mount_point);
     		holder.tv_lmp_type.setVisibility(TextView.VISIBLE);
     		holder.tv_lmp_path.setTextColor(cs_list.getDefaultColor());
     		holder.tv_lmp_type.setTextColor(cs_list);
@@ -194,7 +194,7 @@ public class AdapterMountPointList  extends BaseAdapter{
     		});
          	holder.cb_select.setChecked(getItem(position).isChecked);
         } else {
-    		holder.tv_lmp_path.setText(c.getString(R.string.msgs_edit_lmp_no_lmp_entry));
+    		holder.tv_lmp_path.setText(c.getString(R.string.msgs_edit_mp_no_lmp_entry));
     		holder.tv_lmp_type.setVisibility(TextView.INVISIBLE);
     		holder.cb_select.setVisibility(TextView.GONE);
         }
@@ -208,9 +208,9 @@ public class AdapterMountPointList  extends BaseAdapter{
 		CustomTextView tv_lmp_path;
 	}
 }
-class MountPointListItem {
+class MountPointEditListItem {
 	public boolean isChecked=false;
 	public boolean isAvailable=false;
 	public boolean isSystemDefined=false;
-	public String local_mount_point_path=null;
+	public String mount_point=null;
 }

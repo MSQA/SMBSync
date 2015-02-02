@@ -49,8 +49,8 @@ public class MountPointManagementFragment extends DialogFragment{
 	
 	private Context mContext=null;
 
-	private ArrayList<MountPointListItem> mMountPointList=null;
-	private AdapterMountPointList mMountPointListAdapter=null;
+	private ArrayList<MountPointEditListItem> mMountPointList=null;
+	private AdapterMountPointEditList mMountPointListAdapter=null;
 	
 	public static MountPointManagementFragment newInstance() {
 		if (DEBUG_ENABLE) Log.v(APPLICATION_TAG,"newInstance");
@@ -116,12 +116,12 @@ public class MountPointManagementFragment extends DialogFragment{
     		mMountPointList=loadMountPointList();
     };
     
-    private ArrayList<MountPointListItem> loadMountPointList() {
-    	ArrayList<MountPointListItem> lmp=new ArrayList<MountPointListItem>();
+    private ArrayList<MountPointEditListItem> loadMountPointList() {
+    	ArrayList<MountPointEditListItem> lmp=new ArrayList<MountPointEditListItem>();
     	ArrayList<String>smpl=mGp.getSystemLocalMountPointList(mContext);
     	for(int i=0;i<smpl.size();i++) {
-    		MountPointListItem lmpli=new MountPointListItem();
-    		lmpli.local_mount_point_path=smpl.get(i);
+    		MountPointEditListItem lmpli=new MountPointEditListItem();
+    		lmpli.mount_point=smpl.get(i);
     		lmpli.isAvailable=true;
     		lmpli.isSystemDefined=true;
     		lmp.add(lmpli);
@@ -129,15 +129,15 @@ public class MountPointManagementFragment extends DialogFragment{
     	ArrayList<String>ampl=mGp.getUserLocalMountPointList(mContext);
     	if (ampl.size()>0) {
         	for(int i=0;i<ampl.size();i++) {
-        		MountPointListItem lmpli=new MountPointListItem();
-        		lmpli.local_mount_point_path=ampl.get(i);
+        		MountPointEditListItem lmpli=new MountPointEditListItem();
+        		lmpli.mount_point=ampl.get(i);
         		lmp.add(lmpli);
         	}
 //    	} else {
 //    		LocalMountPointEditListItem lmpli=new LocalMountPointEditListItem();
 //    		lmp.add(lmpli);
     	}
-    	AdapterMountPointList.sort(lmp);
+    	AdapterMountPointEditList.sort(lmp);
     	return lmp;
     };
     
@@ -253,16 +253,16 @@ public class MountPointManagementFragment extends DialogFragment{
     	if (DEBUG_ENABLE) Log.v(APPLICATION_TAG,"initViewWidget");
     	if (mGp==null) return;
     	
-    	mDialog.setContentView(R.layout.edit_lmp_list_dlg);
+    	mDialog.setContentView(R.layout.mount_point_edit_dlg);
     	
-    	mDlgTitle=(TextView)mDialog.findViewById(R.id.edit_lmp_list_dlg_title);
-    	mDlgMsg=(TextView)mDialog.findViewById(R.id.edit_lmp_list_dlg_msg);
-    	mDlgBtnDone=(ImageButton)mDialog.findViewById(R.id.edit_lmp_list_dlg_btn_done);
-    	mDlgListView=(ListView)mDialog.findViewById(R.id.edit_lmp_list_dlg_listview);
-    	mDlgBtnAdd=(Button)mDialog.findViewById(R.id.edit_lmp_list_dlg_add_path);
-    	mDlgBtnOk=(Button)mDialog.findViewById(R.id.edit_lmp_list_dlg_ok_btn);
-    	mDlgBtnCancel=(Button)mDialog.findViewById(R.id.edit_lmp_list_dlg_cancel_btn);
-    	mDlgEtPath=(EditText)mDialog.findViewById(R.id.edit_lmp_list_dlg_new_path);
+    	mDlgTitle=(TextView)mDialog.findViewById(R.id.mount_point_edit_dlg_title);
+    	mDlgMsg=(TextView)mDialog.findViewById(R.id.mount_point_edit_dlg_msg);
+    	mDlgBtnDone=(ImageButton)mDialog.findViewById(R.id.mount_point_edit_dlg_btn_done);
+    	mDlgListView=(ListView)mDialog.findViewById(R.id.mount_point_edit_dlg_listview);
+    	mDlgBtnAdd=(Button)mDialog.findViewById(R.id.mount_point_edit_dlg_add_path);
+    	mDlgBtnOk=(Button)mDialog.findViewById(R.id.mount_point_edit_dlg_ok_btn);
+    	mDlgBtnCancel=(Button)mDialog.findViewById(R.id.mount_point_edit_dlg_cancel_btn);
+    	mDlgEtPath=(EditText)mDialog.findViewById(R.id.mount_point_edit_dlg_new_path);
 
     	mDlgBtnDone.setVisibility(ImageButton.GONE);
     	
@@ -286,8 +286,8 @@ public class MountPointManagementFragment extends DialogFragment{
     	});
     	
     	mMountPointListAdapter= 
-    				new AdapterMountPointList(mContext, 
-    						R.layout.edit_lmp_list_item, mMountPointList, mGp.themeIsLight, ntfy_cb_listener);
+    				new AdapterMountPointEditList(mContext, 
+    						R.layout.mount_point_edit_list_item, mMountPointList, mGp.themeIsLight, ntfy_cb_listener);
     	mDlgListView.setAdapter(mMountPointListAdapter);
     	mDlgListView.setClickable(true);
     	mDlgListView.setFocusable(true);
@@ -302,7 +302,7 @@ public class MountPointManagementFragment extends DialogFragment{
     	mDlgListView.setOnItemClickListener(new OnItemClickListener(){
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int pos, long arg3) {
-				if (mMountPointListAdapter.getItem(0).local_mount_point_path==null || 
+				if (mMountPointListAdapter.getItem(0).mount_point==null || 
 						mMountPointListAdapter.getItem(0).isSystemDefined) return;
 //				if (mGlblParms.settingAltUiEnabled) {
 //				} else mLogFileManagementAdapter.getItem(pos).isChecked=!mLogFileManagementAdapter.getItem(pos).isChecked;
@@ -386,11 +386,11 @@ public class MountPointManagementFragment extends DialogFragment{
     	mDlgBtnAdd.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View arg0) {
-				if (mMountPointListAdapter.getItem(0).local_mount_point_path==null) {
+				if (mMountPointListAdapter.getItem(0).mount_point==null) {
 					mMountPointListAdapter.remove(mMountPointListAdapter.getItem(0));
 				}
-				MountPointListItem lmpli=new MountPointListItem();
-				lmpli.local_mount_point_path=mDlgEtPath.getText().toString();
+				MountPointEditListItem lmpli=new MountPointEditListItem();
+				lmpli.mount_point=mDlgEtPath.getText().toString();
 				mDlgEtPath.setText("");
 				mDlgBtnAdd.setEnabled(false);
 				mMountPointListAdapter.add(lmpli);
@@ -409,8 +409,8 @@ public class MountPointManagementFragment extends DialogFragment{
 				ArrayList<String>ampl=new ArrayList<String>();
 				for(int i=0;i<mMountPointListAdapter.getCount();i++) {
 					if (!mMountPointListAdapter.getItem(i).isSystemDefined &&
-						mMountPointListAdapter.getItem(i).local_mount_point_path!=null)
-						ampl.add(mMountPointListAdapter.getItem(i).local_mount_point_path);
+						mMountPointListAdapter.getItem(i).mount_point!=null)
+						ampl.add(mMountPointListAdapter.getItem(i).mount_point);
 				}
 				mGp.saveUserLocalMountPointList(mContext, ampl);
 				mGp.buildLocalMountPointList(mContext);
@@ -438,7 +438,7 @@ public class MountPointManagementFragment extends DialogFragment{
     		//empty
     	} else if (sys_def && !user_def) {
     		//non user def
-    		result=mContext.getString(R.string.msgs_edit_lmp_no_lmp_entry);
+    		result=mContext.getString(R.string.msgs_edit_mp_no_lmp_entry);
     	} else if (!sys_def && user_def) {
     		//user def only
     	} else if (sys_def && user_def) {
@@ -451,7 +451,7 @@ public class MountPointManagementFragment extends DialogFragment{
 		if (n_path.equals("")) mDlgBtnAdd.setEnabled(false);
 		else {
 			if (!n_path.startsWith("/")) {
-				mDlgMsg.setText(mContext.getString(R.string.msgs_edit_lmp_msg_must_start_slash));
+				mDlgMsg.setText(mContext.getString(R.string.msgs_edit_mp_msg_must_start_slash));
 				mDlgBtnAdd.setEnabled(false);
 			} else {
 				boolean found=false;
@@ -460,16 +460,16 @@ public class MountPointManagementFragment extends DialogFragment{
 					if (n_path.equals(smpl.get(i))) {
 						mDlgBtnAdd.setEnabled(false);
 						found=true;
-						mDlgMsg.setText(mContext.getString(R.string.msgs_edit_lmp_msg_dup_system_mpl));
+						mDlgMsg.setText(mContext.getString(R.string.msgs_edit_mp_msg_dup_system_mpl));
 						break;
 					}
 				}
 				if (!found) {
 					for(int i=0;i<mMountPointListAdapter.getCount();i++) {
-						if (n_path.equals(mMountPointListAdapter.getItem(i).local_mount_point_path)) {
+						if (n_path.equals(mMountPointListAdapter.getItem(i).mount_point)) {
 							mDlgBtnAdd.setEnabled(false);
 							found=true;
-							mDlgMsg.setText(mContext.getString(R.string.msgs_edit_lmp_msg_dup_add_mpl));
+							mDlgMsg.setText(mContext.getString(R.string.msgs_edit_mp_msg_dup_add_mpl));
 							break;
 						}
 					}
@@ -484,8 +484,8 @@ public class MountPointManagementFragment extends DialogFragment{
     }
     
 	private void setContextButtonListener() {
-		LinearLayout ll_prof=(LinearLayout) mDialog.findViewById(R.id.edit_lmp_list_dlg_context_view);
-		ImageButton ib_add_mp=(ImageButton)ll_prof.findViewById(R.id.context_button_add_mp);
+		LinearLayout ll_prof=(LinearLayout) mDialog.findViewById(R.id.mount_point_edit_dlg_context_view);
+		ImageButton ib_search_mp=(ImageButton)ll_prof.findViewById(R.id.context_button_search_directory);
         ImageButton ib_delete=(ImageButton)ll_prof.findViewById(R.id.context_button_delete);
         ImageButton ib_select_all=(ImageButton)ll_prof.findViewById(R.id.context_button_select_all);
         ImageButton ib_unselect_all=(ImageButton)ll_prof.findViewById(R.id.context_button_unselect_all);
@@ -503,7 +503,7 @@ public class MountPointManagementFragment extends DialogFragment{
 			}
     	});
 
-        ib_add_mp.setOnClickListener(new OnClickListener(){
+        ib_search_mp.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
 				NotifyEvent ntfy=new NotifyEvent(mContext);
@@ -521,12 +521,12 @@ public class MountPointManagementFragment extends DialogFragment{
 				});
 				FileSelectDialogFragment fsdf=
 						FileSelectDialogFragment.newInstance(false,false, false, true, true, "/", "", 
-							"", mContext.getString(R.string.msgs_edit_lmp_select_dir_for_lmp));
+							"", mContext.getString(R.string.msgs_edit_mp_select_dir_for_lmp));
 				fsdf.showDialog(getFragmentManager(), fsdf, ntfy);
 			}
         });
-        ContextButtonUtil.setButtonLabelListener(mContext, ib_add_mp, 
-        		mContext.getString(R.string.msgs_edit_lmp_button_title_add_mp));
+        ContextButtonUtil.setButtonLabelListener(mContext, ib_search_mp, 
+        		mContext.getString(R.string.msgs_edit_mp_button_title_find_directory));
         
         ib_delete.setOnClickListener(new OnClickListener(){
 			@Override
@@ -535,7 +535,7 @@ public class MountPointManagementFragment extends DialogFragment{
 			}
         });
         ContextButtonUtil.setButtonLabelListener(mContext, ib_delete, 
-        		mContext.getString(R.string.msgs_edit_lmp_button_title_delete));
+        		mContext.getString(R.string.msgs_edit_mp_button_title_delete));
         
         ib_select_all.setOnClickListener(new OnClickListener(){
 			@Override
@@ -546,7 +546,7 @@ public class MountPointManagementFragment extends DialogFragment{
 			}
         });
         ContextButtonUtil.setButtonLabelListener(mContext, ib_select_all, 
-        		mContext.getString(R.string.msgs_edit_lmp_button_title_select_all));
+        		mContext.getString(R.string.msgs_edit_mp_button_title_select_all));
 
         ib_unselect_all.setOnClickListener(new OnClickListener(){
 			@Override
@@ -558,11 +558,11 @@ public class MountPointManagementFragment extends DialogFragment{
 			}
         });
         ContextButtonUtil.setButtonLabelListener(mContext, ib_unselect_all, 
-        		mContext.getString(R.string.msgs_edit_lmp_button_title_unselect_all));
+        		mContext.getString(R.string.msgs_edit_mp_button_title_unselect_all));
 
 	};
 
-	private void setContextButtonSelecteMode(AdapterMountPointList mpl_adapter) {
+	private void setContextButtonSelecteMode(AdapterMountPointEditList mpl_adapter) {
 		mDlgMsg.setText("");
     	int u_cnt=0;
     	for(int i=0;i<mpl_adapter.getCount();i++) if (!mpl_adapter.getItem(i).isSystemDefined) u_cnt++;
@@ -577,13 +577,13 @@ public class MountPointManagementFragment extends DialogFragment{
         
     	mDlgBtnDone.setVisibility(ImageButton.VISIBLE);
 
-		LinearLayout ll_prof=(LinearLayout) mDialog.findViewById(R.id.edit_lmp_list_dlg_context_view);
-		LinearLayout ll_add_mp=(LinearLayout)ll_prof.findViewById(R.id.context_button_add_mp_view);
+		LinearLayout ll_prof=(LinearLayout) mDialog.findViewById(R.id.mount_point_edit_dlg_context_view);
+		LinearLayout ll_search_mp=(LinearLayout)ll_prof.findViewById(R.id.context_button_search_directory_view);
 		LinearLayout ll_delete=(LinearLayout)ll_prof.findViewById(R.id.context_button_delete_view);
 		LinearLayout ll_select_all=(LinearLayout)ll_prof.findViewById(R.id.context_button_select_all_view);
 		LinearLayout ll_unselect_all=(LinearLayout)ll_prof.findViewById(R.id.context_button_unselect_all_view);
 
-		ll_add_mp.setVisibility(LinearLayout.GONE);
+		ll_search_mp.setVisibility(LinearLayout.GONE);
 		
         ll_select_all.setVisibility(LinearLayout.VISIBLE);
         if (mpl_adapter.isAnyItemSelected()) ll_unselect_all.setVisibility(LinearLayout.VISIBLE);
@@ -594,8 +594,8 @@ public class MountPointManagementFragment extends DialogFragment{
 
 	};
 
-	private void setContextButtonNormalMode(AdapterMountPointList mpl_adapter) {
-    	mDlgTitle.setText(mContext.getString(R.string.msgs_edit_lmp_dialog_title));
+	private void setContextButtonNormalMode(AdapterMountPointEditList mpl_adapter) {
+    	mDlgTitle.setText(mContext.getString(R.string.msgs_edit_mp_dialog_title));
     	int u_cnt=0;
     	for(int i=0;i<mpl_adapter.getCount();i++) if (!mpl_adapter.getItem(i).isSystemDefined) u_cnt++;
 
@@ -608,14 +608,14 @@ public class MountPointManagementFragment extends DialogFragment{
 
     	mDlgBtnDone.setVisibility(ImageButton.GONE);
 
-		LinearLayout ll_prof=(LinearLayout) mDialog.findViewById(R.id.edit_lmp_list_dlg_context_view);
-		LinearLayout ll_add_mp=(LinearLayout)ll_prof.findViewById(R.id.context_button_add_mp_view);
+		LinearLayout ll_prof=(LinearLayout) mDialog.findViewById(R.id.mount_point_edit_dlg_context_view);
+		LinearLayout ll_search_mp=(LinearLayout)ll_prof.findViewById(R.id.context_button_search_directory_view);
 
 		LinearLayout ll_delete=(LinearLayout)ll_prof.findViewById(R.id.context_button_delete_view);
 		LinearLayout ll_select_all=(LinearLayout)ll_prof.findViewById(R.id.context_button_select_all_view);
 		LinearLayout ll_unselect_all=(LinearLayout)ll_prof.findViewById(R.id.context_button_unselect_all_view);
 
-		ll_add_mp.setVisibility(LinearLayout.VISIBLE);
+		ll_search_mp.setVisibility(LinearLayout.VISIBLE);
 		ll_delete.setVisibility(LinearLayout.GONE);
         
     	if (u_cnt==0) {
@@ -627,13 +627,13 @@ public class MountPointManagementFragment extends DialogFragment{
     	}
 	};
 
-    private void confirmDeleteLocalMountPoint(final AdapterMountPointList lmp_adapter) {
+    private void confirmDeleteLocalMountPoint(final AdapterMountPointEditList lmp_adapter) {
     	String delete_list="",sep="";
-    	final ArrayList<MountPointListItem> mpl=new ArrayList<MountPointListItem>();
+    	final ArrayList<MountPointEditListItem> mpl=new ArrayList<MountPointEditListItem>();
     	for (int i=0;i<lmp_adapter.getCount();i++) {
-    		MountPointListItem item=lmp_adapter.getItem(i);
+    		MountPointEditListItem item=lmp_adapter.getItem(i);
     		if (item.isChecked) {
-    			delete_list+=sep+item.local_mount_point_path;
+    			delete_list+=sep+item.mount_point;
     			sep="\n";
     			mpl.add(item);
     		}
@@ -649,7 +649,7 @@ public class MountPointManagementFragment extends DialogFragment{
 				lmp_adapter.setAllItemChecked(false);
 				lmp_adapter.setShowCheckBox(false);
 		    	if (lmp_adapter.getCount()==0) {
-		    		MountPointListItem lmpli=new MountPointListItem();
+		    		MountPointEditListItem lmpli=new MountPointEditListItem();
 		    		lmp_adapter.add(lmpli);
 		    	}
 		    	mDlgMsg.setText(isCheckUserDefinedMountPointExists());
@@ -662,17 +662,17 @@ public class MountPointManagementFragment extends DialogFragment{
 			public void negativeResponse(Context c, Object[] o) {}
     	});
         MessageDialogFragment cdf =MessageDialogFragment.newInstance(true, "W",
-        		mContext.getString(R.string.msgs_edit_lmp_confirm_delete_lmp),
+        		mContext.getString(R.string.msgs_edit_mp_confirm_delete_lmp),
         		delete_list);
         cdf.showDialog(mFragment.getFragmentManager(),cdf,ntfy);
     };
 
-    private void setOkBtnEnabled(final AdapterMountPointList lmp_adapter) {
+    private void setOkBtnEnabled(final AdapterMountPointEditList lmp_adapter) {
 		String prev_lmp="", new_lmp="";
 		ArrayList<String>ampl=mGp.getUserLocalMountPointList(mContext);
 		for(int i=0;i<ampl.size();i++) prev_lmp+=ampl.get(i);
 		for(int i=0;i<lmp_adapter.getCount();i++) {
-			if (!lmp_adapter.getItem(i).isSystemDefined) new_lmp+=lmp_adapter.getItem(i).local_mount_point_path;
+			if (!lmp_adapter.getItem(i).isSystemDefined) new_lmp+=lmp_adapter.getItem(i).mount_point;
 		}
 //		Log.v("","prev="+prev_lmp+", new="+new_lmp);
 		if (!prev_lmp.equals(new_lmp)) mDlgBtnOk.setEnabled(true);
