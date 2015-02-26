@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.sentaroh.android.Utilities.MiscUtil;
-import com.sentaroh.android.Utilities.TextColorList;
+import com.sentaroh.android.Utilities.ThemeColorList;
 import com.sentaroh.android.Utilities.Widget.CustomTextView;
 
 import android.content.Context;
@@ -95,7 +95,7 @@ public class AdapterMessageList extends ArrayAdapter<MsgListItem> {
 	@SuppressWarnings("unused")
 	private Typeface msgTypeFace=null;
 	
-	private TextColorList mTextColorList;
+	private ThemeColorList mThemeColorList;
 
 	public AdapterMessageList(Context context, int textViewResourceId,
 			ArrayList<MsgListItem> objects, boolean theme_is_light) {
@@ -107,7 +107,7 @@ public class AdapterMessageList extends ArrayAdapter<MsgListItem> {
 		msgTypeFace=Typeface.create(Typeface.MONOSPACE, Typeface.NORMAL);
 		vi=(LayoutInflater)c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		
-		mTextColorList=MiscUtil.getTextColorList(c);
+		mThemeColorList=MiscUtil.getThemeColorList(c);
 	}
 	
 	final public void remove(int i) {
@@ -178,18 +178,18 @@ public class AdapterMessageList extends ArrayAdapter<MsgListItem> {
 //        	else holder.tv_row_time.setVisibility(TextView.GONE);
         	String cat=o.getCat();
         	if (cat.equals("W")) {
-        		holder.tv_row_time.setTextColor(mTextColorList.text_color_warning);
-        		holder.tv_row_msg.setTextColor(mTextColorList.text_color_warning);
+        		holder.tv_row_time.setTextColor(mThemeColorList.text_color_warning);
+        		holder.tv_row_msg.setTextColor(mThemeColorList.text_color_warning);
             	holder.tv_row_time.setText(o.getMtime());
             	holder.tv_row_msg.setText(o.getMsg());
         	} else if (cat.equals("E")) {
-        		holder.tv_row_time.setTextColor(mTextColorList.text_color_error);
-        		holder.tv_row_msg.setTextColor(mTextColorList.text_color_error);
+        		holder.tv_row_time.setTextColor(mThemeColorList.text_color_error);
+        		holder.tv_row_msg.setTextColor(mThemeColorList.text_color_error);
         		holder.tv_row_time.setText(o.getMtime());
             	holder.tv_row_msg.setText(o.getMsg());
         	} else {
-        		holder.tv_row_time.setTextColor(mTextColorList.text_color_primary);
-        		holder.tv_row_msg.setTextColor(mTextColorList.text_color_primary);
+        		holder.tv_row_time.setTextColor(mThemeColorList.text_color_primary);
+        		holder.tv_row_msg.setTextColor(mThemeColorList.text_color_primary);
         		holder.tv_row_time.setText(o.getMtime());
             	holder.tv_row_msg.setText(o.getMsg());
         	}

@@ -39,7 +39,7 @@ import java.util.Locale;
 
 import com.sentaroh.android.Utilities.MiscUtil;
 import com.sentaroh.android.Utilities.NotifyEvent;
-import com.sentaroh.android.Utilities.TextColorList;
+import com.sentaroh.android.Utilities.ThemeColorList;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -66,7 +66,7 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
 		private String tv_status_success, tv_status_error, tv_status_cancel;
 		private boolean themeIsLight=false;
 		
-		private TextColorList mTextColorList;
+		private ThemeColorList mThemeColorList;
 		
 		public AdapterProfileList(Context c, int textViewResourceId,
 				ArrayList<ProfileListItem> objects, boolean theme_light) {
@@ -85,7 +85,7 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
             
             themeIsLight=theme_light;
             
-            mTextColorList=MiscUtil.getTextColorList(c);
+            mThemeColorList=MiscUtil.getThemeColorList(c);
 		}
 		public ProfileListItem getItem(int i) {
 			return items.get(i);
@@ -290,7 +290,7 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
                     
                     if (!o.getLastSyncTime().equals("")) {
                     	String result="";
-                    	holder.tv_last_sync_result.setTextColor(mTextColorList.text_color_primary);
+                    	holder.tv_last_sync_result.setTextColor(mThemeColorList.text_color_primary);
 	        			if (o.isSyncRunning()) {
 	        				result=tv_status_running;
                     		if (themeIsLight) holder.ll_view.setBackgroundColor(Color.GRAY);
@@ -299,17 +299,17 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
 	            			if (o.getLastSyncResult()==SyncHistoryListItem.SYNC_STATUS_SUCCESS) {
 	            				result=tv_status_success;
 	            				if (getItem(position).isProfileActive()) {
-	                        		holder.tv_last_sync_result.setTextColor(mTextColorList.text_color_primary);
+	                        		holder.tv_last_sync_result.setTextColor(mThemeColorList.text_color_primary);
 	            				}
 	            			} else if (o.getLastSyncResult()==SyncHistoryListItem.SYNC_STATUS_CANCEL) {
 	            				result=tv_status_cancel;
 	                        	if (getItem(position).isProfileActive()) {
-	                        		holder.tv_last_sync_result.setTextColor(mTextColorList.text_color_warning);
+	                        		holder.tv_last_sync_result.setTextColor(mThemeColorList.text_color_warning);
 	                        	}
 	            			} else if (o.getLastSyncResult()==SyncHistoryListItem.SYNC_STATUS_ERROR) {
 	            				result=tv_status_error;
 	                        	if (getItem(position).isProfileActive()) {
-	                				holder.tv_last_sync_result.setTextColor(mTextColorList.text_color_error);
+	                				holder.tv_last_sync_result.setTextColor(mThemeColorList.text_color_error);
 	                        	}
 	            			}
 	        			}

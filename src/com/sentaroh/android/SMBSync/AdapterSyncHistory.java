@@ -27,7 +27,7 @@ import java.util.ArrayList;
 
 import com.sentaroh.android.Utilities.MiscUtil;
 import com.sentaroh.android.Utilities.NotifyEvent;
-import com.sentaroh.android.Utilities.TextColorList;
+import com.sentaroh.android.Utilities.ThemeColorList;
 
 import android.app.Activity;
 import android.content.Context;
@@ -50,7 +50,7 @@ public class AdapterSyncHistory extends ArrayAdapter<SyncHistoryListItem> {
 	@SuppressWarnings("unused")
 	private boolean themeIsLight=false;
 	
-	private TextColorList mTextColorList;
+	private ThemeColorList mThemeColorList;
 	
 	public AdapterSyncHistory(Activity a, int textViewResourceId,
 			ArrayList<SyncHistoryListItem> objects, boolean themeIsLight) {
@@ -62,7 +62,7 @@ public class AdapterSyncHistory extends ArrayAdapter<SyncHistoryListItem> {
         vi=(LayoutInflater)a.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.themeIsLight=themeIsLight;
         
-        mTextColorList=MiscUtil.getTextColorList(a);
+        mThemeColorList=MiscUtil.getThemeColorList(a);
 	}
 
 	@Override
@@ -168,13 +168,13 @@ public class AdapterSyncHistory extends ArrayAdapter<SyncHistoryListItem> {
             	String st_text="";
             	if (o.sync_status==SyncHistoryListItem.SYNC_STATUS_SUCCESS) {
             		st_text=mContext.getString(R.string.msgs_sync_history_status_success);
-            		holder.tv_status.setTextColor(mTextColorList.text_color_primary);
+            		holder.tv_status.setTextColor(mThemeColorList.text_color_primary);
             	} else if (o.sync_status==SyncHistoryListItem.SYNC_STATUS_ERROR) {
             		st_text=mContext.getString(R.string.msgs_sync_history_status_error);
-            		holder.tv_status.setTextColor(mTextColorList.text_color_error);
+            		holder.tv_status.setTextColor(mThemeColorList.text_color_error);
             	} else if (o.sync_status==SyncHistoryListItem.SYNC_STATUS_CANCEL) {
             		st_text=mContext.getString(R.string.msgs_sync_history_status_cancel);
-            		holder.tv_status.setTextColor(mTextColorList.text_color_warning);
+            		holder.tv_status.setTextColor(mThemeColorList.text_color_warning);
             	}
             	holder.tv_status.setText(st_text);
             	holder.tv_cnt_copied.setText(Integer.toString(o.sync_result_no_of_copied));
