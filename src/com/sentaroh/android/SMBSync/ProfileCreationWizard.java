@@ -1502,7 +1502,7 @@ public class ProfileCreationWizard {
 		btn_dir_filter.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				ArrayList<ProfileListItem>pl=new ArrayList<ProfileListItem>();
-				AdapterProfileList t_prof=new AdapterProfileList(mContext, 
+				AdapterProfileList t_prof=new AdapterProfileList(mContext,
 							R.layout.profile_list_item_view, pl, mGp.themeIsLight);
 				syncWizardCreateProfile(t_prof);
 				NotifyEvent ntfy=new NotifyEvent(mContext);

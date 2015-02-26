@@ -65,6 +65,8 @@
     
     <string name="msgs_smbsync_main_settings_jcifs_changed_restart"	>SMBパラメーターが変更されましたがアプリケーションを再起動するまでは反映されません。</string>
     
+    <string name="msgs_smbsync_main_settings_theme_changed_restart"	>画面テーマが変更されましたがアプリケーションを再起動するまでは反映されません。</string>
+    
     <string name="msgs_create_profile_error">プロファイルリスト作成に失敗しました。ファイル=%s</string>
     <string name="msgs_create_profile_not_found">指定されたファイルが見つからないためプロファイルリスト作成できません。ファイル=%s</string>
     <string name="msgs_save_to_profile_error">"プロファイルの保存に失敗しました。ファイル=%s</string>

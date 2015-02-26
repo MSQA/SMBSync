@@ -23,7 +23,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_BG_TERM_NOTIFY_MSG_ALWAYS;
+import static com.sentaroh.android.SMBSync.Constants.*;
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_BG_TERM_NOTIFY_MSG_ERROR;
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_BG_TERM_NOTIFY_MSG_NO;
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PB_RINGTONE_NOTIFICATION_ALWAYS;
@@ -60,15 +60,18 @@ import com.sentaroh.android.Utilities.LocalMountPoint;
 @SuppressLint("NewApi")
 public class SMBSyncSettings extends PreferenceActivity{
 	private static boolean DEBUG_ENABLE=false;
-	private static final String APPLICATION_TAG="SMBSync";
 	private static Context mContext=null;
 	private static PreferenceActivity mPrefAct=null;
 	private static PreferenceFragment mPrefFrag=null;
+	
+	private GlobalParameters mGp=null;
 	
     /** Called when the activity is first created. */
     @SuppressWarnings("deprecation")
 	@Override
     public void onCreate(Bundle savedInstanceState) {
+    	if (mGp==null) mGp=(GlobalParameters) getApplication();
+    	if (mGp.themeIsLight) setTheme(mGp.applicationTheme);
         super.onCreate(savedInstanceState);
         if (DEBUG_ENABLE) Log.v(APPLICATION_TAG,"SettingsActivity onCreate entered");
         if (Build.VERSION.SDK_INT>=11) return;
@@ -94,6 +97,8 @@ public class SMBSyncSettings extends PreferenceActivity{
     	if (Build.VERSION.SDK_INT<11) {
     		findPreference(getString(R.string.settings_media_scanner_non_media_files_scan).toString())
     			.setEnabled(false);
+    		findPreference(getString(R.string.settings_use_light_theme).toString())
+				.setEnabled(false);
     	}
 
 		SharedPreferences shared_pref = PreferenceManager.getDefaultSharedPreferences(this);
@@ -121,6 +126,7 @@ public class SMBSyncSettings extends PreferenceActivity{
 		initSettingValueBeforeHc(shared_pref,getString(R.string.settings_playback_ringtone_when_sync_ended));
 		initSettingValueBeforeHc(shared_pref,getString(R.string.settings_vibrate_when_sync_ended));
 		initSettingValueBeforeHc(shared_pref,getString(R.string.settings_show_sync_on_action_bar));
+		initSettingValueBeforeHc(shared_pref,getString(R.string.settings_use_light_theme));
 		
     	initSettingValueBeforeHc(shared_pref,getString(R.string.settings_media_scanner_non_media_files_scan));
     	initSettingValueBeforeHc(shared_pref,getString(R.string.settings_media_scanner_scan_extstg));
@@ -376,6 +382,8 @@ public class SMBSyncSettings extends PreferenceActivity{
 					.setSummary(c.getString(R.string.settings_vibrate_when_sync_ended_summary_no));
 			}
 		} else if (key_string.equals(c.getString(R.string.settings_show_sync_on_action_bar))) {
+			isChecked=true;
+		} else if (key_string.equals(c.getString(R.string.settings_use_light_theme))) {
 			isChecked=true;
     	}
 		
@@ -823,6 +831,7 @@ public class SMBSyncSettings extends PreferenceActivity{
     		initSettingValueAfterHc(shared_pref,getString(R.string.settings_playback_ringtone_when_sync_ended));
     		initSettingValueAfterHc(shared_pref,getString(R.string.settings_vibrate_when_sync_ended));
     		initSettingValueAfterHc(shared_pref,getString(R.string.settings_show_sync_on_action_bar));
+    		initSettingValueAfterHc(shared_pref,getString(R.string.settings_use_light_theme));
     		
         };
         

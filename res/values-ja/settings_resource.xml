@@ -99,7 +99,10 @@
 
 	<string name="settings_show_sync_on_action_bar_title">同期ボタンの表示</string>
     <string name="settings_show_sync_on_action_bar_summary_ena">同期ボタンを画面上部メニューに表示</string>
-				
+
+	<string name="settings_use_light_theme_title">画面テーマ</string>
+    <string name="settings_use_light_theme_summary_ena">ライトテーマを使用する</string>
+					
 	<string name="settings_log_title">ログ</string>
 	<string name="settings_log_preference_screen_title">ログ</string>
 			

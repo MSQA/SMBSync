@@ -37,6 +37,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Locale;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.KeyguardManager;
 import android.content.ComponentName;
@@ -111,6 +112,7 @@ public class SMBSyncMain extends ActionBarActivity {
 
 	private TabHost tabHost=null;
 	private Context mContext=null;
+	private Activity mActivity=null;
 	
 	private static GlobalParameters mGp=null;
 	private ProfileUtility profUtil=null;
@@ -164,16 +166,9 @@ public class SMBSyncMain extends ActionBarActivity {
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-//		StrictMode.enableDefaults();
-//		setTheme(android.R.style.Theme_Dialog);
-//		setTheme(android.R.style.Theme_Holo_Light);
-//		setTheme(android.R.style.Theme_Light);
-//		Theme tm=getTheme();
-//		setTheme(R.style.Theme_AppCompat);
-		super.onCreate(savedInstanceState);
-//		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		mGp=(GlobalParameters) getApplication();
 		mGp.appContext=mContext=this;
+		mActivity=this;
 		mGp.initSettingsParms(mGp.appContext);
 		mGp.uiHandler=new Handler();
 //		mGp.SMBSync_Internal_Root_Dir=getFilesDir().toString();
@@ -181,6 +176,8 @@ public class SMBSyncMain extends ActionBarActivity {
 		LogUtil.openLogFile(mGp);
 		
 		setTheme(mGp.applicationTheme);
+		
+		super.onCreate(savedInstanceState);
 
 		mCurrentLocale=getResources().getConfiguration().locale;
 		
@@ -224,7 +221,7 @@ public class SMBSyncMain extends ActionBarActivity {
 
 			mGp.profileAdapter=profUtil.createProfileList(false,"");
 			
-			mGp.syncHistoryAdapter=new AdapterSyncHistory(mContext, R.layout.sync_history_list_item_view, 
+			mGp.syncHistoryAdapter=new AdapterSyncHistory(mActivity, R.layout.sync_history_list_item_view, 
 					util.loadHistoryList(),mGp.themeIsLight);
 			util.housekeepHistoryList();
 			mGp.currentTab=SMBSYNC_TAB_NAME_PROF;
@@ -301,7 +298,6 @@ public class SMBSyncMain extends ActionBarActivity {
 		util.addDebugLogMsg(1,"I","onResume entered, "+"resartStatus="+restartType+
 					", isActivityForeground="+util.isActivityForeground());
 		util.setActivityIsForeground(true);
-		
 		if (restartType==RESTART_WITH_OUT_INITIALYZE) {
 			SchedulerUtil.setSchedulerInfo(mGp, mContext,null);
 			if (!mGp.freezeMessageViewScroll) {
@@ -368,7 +364,7 @@ public class SMBSyncMain extends ActionBarActivity {
 			openService(svc_ntfy);
 		}
 	};
-
+	
 	private void restoreViewAndTabData() {
 		ArrayList<ProfileListItem>pfl=mGp.profileAdapter.getArrayList();
 		mGp.profileAdapter=new AdapterProfileList(mContext, R.layout.profile_list_item_view, pfl, mGp.themeIsLight);
@@ -376,7 +372,7 @@ public class SMBSyncMain extends ActionBarActivity {
 		mGp.profileAdapter.notifyDataSetChanged();
 
 		ArrayList<SyncHistoryListItem> hl=mGp.syncHistoryAdapter.getSyncHistoryList();
-		mGp.syncHistoryAdapter=new AdapterSyncHistory(mContext, R.layout.sync_history_list_item_view, hl,mGp.themeIsLight);
+		mGp.syncHistoryAdapter=new AdapterSyncHistory(mActivity, R.layout.sync_history_list_item_view, hl,mGp.themeIsLight);
 		mGp.syncHistoryAdapter.setShowCheckBox(mGp.mainViewSaveArea.sync_adapter_show_cb);
 		mGp.syncHistoryAdapter.notifyDataSetChanged();
 		tabHost.setOnTabChangedListener(null);
@@ -601,6 +597,10 @@ public class SMBSyncMain extends ActionBarActivity {
 	    		changeLanguageCode(newConfig);
 	    	}
 	    }
+	    screenReload();
+	};
+
+	private void screenReload() {
 	    ViewSaveArea vsa=null;
 	    if (Build.VERSION.SDK_INT>10) {
 		    vsa=saveViewContent();
@@ -620,7 +620,7 @@ public class SMBSyncMain extends ActionBarActivity {
 			mGp.profileAdapter.setShowCheckBox(vsa.prof_adapter_show_cb);
 			mGp.profileAdapter.notifyDataSetChanged();
 			
-			mGp.syncHistoryAdapter=new AdapterSyncHistory(mContext, R.layout.sync_history_list_item_view, 
+			mGp.syncHistoryAdapter=new AdapterSyncHistory(mActivity, R.layout.sync_history_list_item_view, 
 					vsa.sync_hist_list, mGp.themeIsLight);
 			mGp.syncHistoryAdapter.setShowCheckBox(vsa.sync_adapter_show_cb);
 			mGp.syncHistoryAdapter.notifyDataSetChanged();
@@ -670,7 +670,7 @@ public class SMBSyncMain extends ActionBarActivity {
 
 		    mGp.syncHistoryListView.setAdapter(null);
 			mGp.syncHistoryAdapter=
-				new AdapterSyncHistory(mContext, R.layout.sync_history_list_item_view, vsa.sync_hist_list, mGp.themeIsLight);
+				new AdapterSyncHistory(mActivity, R.layout.sync_history_list_item_view, vsa.sync_hist_list, mGp.themeIsLight);
 			mGp.syncHistoryAdapter.setShowCheckBox(show_cb);
 			
 			mGp.syncHistoryListView.setAdapter(mGp.syncHistoryAdapter);
@@ -687,8 +687,8 @@ public class SMBSyncMain extends ActionBarActivity {
 			else setUiDisabled();
 	    }
 	    vsa=null;
-	};
-
+	}
+	
 	private ViewSaveArea saveViewContent() {
 		ViewSaveArea vsa=new ViewSaveArea();
 	    vsa.current_tab_pos=tabHost.getCurrentTab();
@@ -939,7 +939,7 @@ public class SMBSyncMain extends ActionBarActivity {
 	
 	private void setFastScrollListener(final ListView lv) {
 		if (Build.VERSION.SDK_INT == 19) {
-			lv.setFastScrollAlwaysVisible(true);
+//			lv.setFastScrollAlwaysVisible(true);
 //			mUiHandler.postDelayed(new Runnable(){
 //				@Override
 //				public void run() {
@@ -1115,7 +1115,7 @@ public class SMBSyncMain extends ActionBarActivity {
 		if (isUiEnabled()) {
 			menu.findItem(R.id.menu_top_about).setEnabled(true);
 			menu.findItem(R.id.menu_top_settings).setEnabled(true);
-			menu.findItem(R.id.menu_top_scheduler).setEnabled(true);
+			menu.findItem(R.id.menu_top_scheduler).setVisible(true);//.setEnabled(true);
 			if (!mGp.externalStorageIsMounted) {
 				menu.findItem(R.id.menu_top_browse_log).setEnabled(false);
 				menu.findItem(R.id.menu_top_export).setEnabled(false);
@@ -1137,10 +1137,10 @@ public class SMBSyncMain extends ActionBarActivity {
 					menu.findItem(R.id.menu_top_sync).setVisible(true);
 					if (mContextProfileButtonSync.isEnabled()) {
 						menu.findItem(R.id.menu_top_sync).setEnabled(true);
-						menu.findItem(R.id.menu_top_sync).setIcon(mContextProfileButtonSyncIconEnabled);
+//						menu.findItem(R.id.menu_top_sync).setIcon(mContextProfileButtonSyncIconEnabled);
 					} else {
-						menu.findItem(R.id.menu_top_sync).setEnabled(false);
-						menu.findItem(R.id.menu_top_sync).setIcon(mContextProfileButtonSyncIconDisabled);
+//						menu.findItem(R.id.menu_top_sync).setEnabled(false);
+//						menu.findItem(R.id.menu_top_sync).setIcon(mContextProfileButtonSyncIconDisabled);
 					}
 				} else {
 					menu.findItem(R.id.menu_top_sync).setVisible(false);
@@ -1153,8 +1153,8 @@ public class SMBSyncMain extends ActionBarActivity {
 		} else {
 			if (mGp.currentTab.equals(SMBSYNC_TAB_NAME_PROF)) {
 				if (mGp.settingShowSyncButtonOnMenuItem) {
-					menu.findItem(R.id.menu_top_sync).setEnabled(false);
-					menu.findItem(R.id.menu_top_sync).setIcon(mContextProfileButtonSyncIconDisabled);
+					menu.findItem(R.id.menu_top_sync).setVisible(false);//.setEnabled(false);
+//					menu.findItem(R.id.menu_top_sync).setIcon(mContextProfileButtonSyncIconDisabled);
 				} else {
 					menu.findItem(R.id.menu_top_sync).setVisible(false);
 				}
@@ -1178,7 +1178,7 @@ public class SMBSyncMain extends ActionBarActivity {
 			menu.findItem(R.id.menu_top_settings).setEnabled(false);
 			menu.findItem(R.id.menu_top_log_management).setEnabled(false);
 			menu.findItem(R.id.menu_top_mount_point_management).setEnabled(false);
-			menu.findItem(R.id.menu_top_scheduler).setEnabled(false);
+			menu.findItem(R.id.menu_top_scheduler).setVisible(false);//.setEnabled(false);
 		}
         return super.onPrepareOptionsMenu(menu);
 	};
@@ -1686,6 +1686,7 @@ public class SMBSyncMain extends ActionBarActivity {
 
 		String p_dir= mGp.settingLogMsgDir;
 		String p_opt=mGp.settingLogOption;
+		boolean p_light_theme=mGp.themeIsLight;
 		
 		mGp.loadSettingsParm(mGp.appContext);
 		
@@ -1699,6 +1700,12 @@ public class SMBSyncMain extends ActionBarActivity {
 			LogUtil.openLogFile(mGp);
 		}
 
+		if ((p_light_theme && !mGp.themeIsLight) || (!p_light_theme && mGp.themeIsLight)) {
+			startActivity(new Intent(this, getClass()));
+			commonDlg.showCommonDialog(false,"W",
+					"",mContext.getString(R.string.msgs_smbsync_main_settings_theme_changed_restart),null);
+		}
+		
 		checkJcifsOptionChanged();
 
 	};
@@ -4485,7 +4492,7 @@ public class SMBSyncMain extends ActionBarActivity {
 		if (!isTaskTermination) {
 			if (!isTaskDataExisted() || mGp.msgListAdapter.resetDataChanged())  {
 				ActivityDataHolder data = new ActivityDataHolder();
-				data.ml=mGp.msgListAdapter.getAllItem();
+				data.ml=mGp.msgListAdapter.getMessageList();
 				data.pl=mGp.profileAdapter.getArrayList();
 				try {
 				    FileOutputStream fos = openFileOutput(SMBSYNC_SERIALIZABLE_FILE_NAME, MODE_PRIVATE);
@@ -4534,7 +4541,7 @@ public class SMBSyncMain extends ActionBarActivity {
 			    
 				mGp.msgListAdapter.clear();
 
-				mGp.msgListAdapter.setAllItem(data.ml);
+				mGp.msgListAdapter.setMessageList(data.ml);
 
 				for (int i=0;i<o_ml.size();i++) mGp.msgListAdapter.add(o_ml.get(i));
 

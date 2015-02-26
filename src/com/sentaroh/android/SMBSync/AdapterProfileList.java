@@ -37,11 +37,12 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Locale;
 
+import com.sentaroh.android.Utilities.MiscUtil;
 import com.sentaroh.android.Utilities.NotifyEvent;
+import com.sentaroh.android.Utilities.TextColorList;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
@@ -57,7 +58,7 @@ import android.widget.TextView;
 
 public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
 
-		private Context c;
+		private Context mContext;
 		private int id;
 		private ArrayList<ProfileListItem>items;
 		@SuppressWarnings("unused")
@@ -65,23 +66,26 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
 		private String tv_status_success, tv_status_error, tv_status_cancel;
 		private boolean themeIsLight=false;
 		
-		public AdapterProfileList(Context context, int textViewResourceId,
-				ArrayList<ProfileListItem> objects, boolean themeIsLight) {
-			super(context, textViewResourceId, objects);
-			c = context;
+		private TextColorList mTextColorList;
+		
+		public AdapterProfileList(Context c, int textViewResourceId,
+				ArrayList<ProfileListItem> objects, boolean theme_light) {
+			super(c, textViewResourceId, objects);
+			mContext = c;
 			id = textViewResourceId;
 			items = objects;
 			
-            tv_active_active=c.getString(R.string.msgs_sync_list_array_activ_activ);
-            tv_active_inact=c.getString(R.string.msgs_sync_list_array_activ_inact);
-            tv_no_sync=c.getString(R.string.msgs_sync_list_array_no_last_sync_time);
-            tv_status_running=c.getString(R.string.msgs_sync_history_status_running);
-            tv_status_success=c.getString(R.string.msgs_sync_history_status_success);
-            tv_status_error=c.getString(R.string.msgs_sync_history_status_error);
-            tv_status_cancel=c.getString(R.string.msgs_sync_history_status_cancel);
+            tv_active_active=mContext.getString(R.string.msgs_sync_list_array_activ_activ);
+            tv_active_inact=mContext.getString(R.string.msgs_sync_list_array_activ_inact);
+            tv_no_sync=mContext.getString(R.string.msgs_sync_list_array_no_last_sync_time);
+            tv_status_running=mContext.getString(R.string.msgs_sync_history_status_running);
+            tv_status_success=mContext.getString(R.string.msgs_sync_history_status_success);
+            tv_status_error=mContext.getString(R.string.msgs_sync_history_status_error);
+            tv_status_cancel=mContext.getString(R.string.msgs_sync_history_status_cancel);
             
-            this.themeIsLight=themeIsLight;
-
+            themeIsLight=theme_light;
+            
+            mTextColorList=MiscUtil.getTextColorList(c);
 		}
 		public ProfileListItem getItem(int i) {
 			return items.get(i);
@@ -160,7 +164,6 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
 //			 return getItem(idx).getActive().equals("A");
 //		}
 
-		private ColorStateList cs_list=null;
 		private Drawable ll_default=null;
 		
 		@SuppressWarnings("deprecation")
@@ -170,7 +173,7 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
 			
             View v = convertView;
             if (v == null) {
-                LayoutInflater vi = (LayoutInflater)c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                LayoutInflater vi = (LayoutInflater)mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 v = vi.inflate(id, null);
                 holder=new ViewHolder();
                 holder.iv_row_icon= (ImageView) v.findViewById(R.id.profile_list_icon);
@@ -184,9 +187,9 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
                 holder.iv_row_sync_dir_image= (ImageView) v.findViewById(R.id.profile_list_sync_direction_image);
                 holder.iv_row_image_master= (ImageView) v.findViewById(R.id.profile_list_image_master);
                 holder.iv_row_image_target= (ImageView) v.findViewById(R.id.profile_list_image_target);
-                holder.tv_mtype_mirror=c.getString(R.string.msgs_sync_list_array_mtype_mirr);
-                holder.tv_mtype_copy=c.getString(R.string.msgs_sync_list_array_mtype_copy);
-                holder.tv_mtype_move=c.getString(R.string.msgs_sync_list_array_mtype_move);
+                holder.tv_mtype_mirror=mContext.getString(R.string.msgs_sync_list_array_mtype_mirr);
+                holder.tv_mtype_copy=mContext.getString(R.string.msgs_sync_list_array_mtype_copy);
+                holder.tv_mtype_move=mContext.getString(R.string.msgs_sync_list_array_mtype_move);
                 
                 holder.ll_sync=(LinearLayout) v.findViewById(R.id.profile_list_sync_layout);
                 holder.ll_entry=(LinearLayout) v.findViewById(R.id.profile_list_entry_layout);
@@ -198,8 +201,6 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
                 holder.ll_last_sync=(LinearLayout) v.findViewById(R.id.profile_list_last_sync_time_view);
                 
                 holder.tv_dir_name=(TextView) v.findViewById(R.id.profile_list_dir_name);
-                
-                if (cs_list==null) cs_list=holder.tv_dir_name.getTextColors();
                 
                 v.setTag(holder);
             } else {
@@ -289,7 +290,7 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
                     
                     if (!o.getLastSyncTime().equals("")) {
                     	String result="";
-                    	holder.tv_last_sync_result.setTextColor(cs_list);
+                    	holder.tv_last_sync_result.setTextColor(mTextColorList.text_color_primary);
 	        			if (o.isSyncRunning()) {
 	        				result=tv_status_running;
                     		if (themeIsLight) holder.ll_view.setBackgroundColor(Color.GRAY);
@@ -298,19 +299,17 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
 	            			if (o.getLastSyncResult()==SyncHistoryListItem.SYNC_STATUS_SUCCESS) {
 	            				result=tv_status_success;
 	            				if (getItem(position).isProfileActive()) {
-	                        		if (themeIsLight) holder.tv_last_sync_result.setTextColor(Color.BLACK);
-	                        		else holder.tv_last_sync_result.setTextColor(Color.LTGRAY);
+	                        		holder.tv_last_sync_result.setTextColor(mTextColorList.text_color_primary);
 	            				}
 	            			} else if (o.getLastSyncResult()==SyncHistoryListItem.SYNC_STATUS_CANCEL) {
 	            				result=tv_status_cancel;
 	                        	if (getItem(position).isProfileActive()) {
-	                        		if (themeIsLight) holder.tv_last_sync_result.setTextColor(Color.argb(255, 192, 128, 0));
-	                        		else holder.tv_last_sync_result.setTextColor(Color.YELLOW);
+	                        		holder.tv_last_sync_result.setTextColor(mTextColorList.text_color_warning);
 	                        	}
 	            			} else if (o.getLastSyncResult()==SyncHistoryListItem.SYNC_STATUS_ERROR) {
 	            				result=tv_status_error;
 	                        	if (getItem(position).isProfileActive()) {
-	                				holder.tv_last_sync_result.setTextColor(Color.RED);
+	                				holder.tv_last_sync_result.setTextColor(mTextColorList.text_color_error);
 	                        	}
 	            			}
 	        			}
@@ -385,7 +384,7 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
             return v;
 		};
 		
-		class ViewHolder {
+		static class ViewHolder {
 			TextView tv_row_name,tv_row_active;
 			ImageView iv_row_icon;
 			CheckBox cbv_row_cb1;

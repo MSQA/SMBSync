@@ -866,8 +866,7 @@ public class ProfileUtility {
 			@Override
 			public void negativeResponse(Context c,Object[] o) {}
 		});
-		commonDlg.fileOnlySelectWithCreate(
-				lurl,ldir,ifn,msgs_select_export_file,ntfy);
+		commonDlg.fileOnlySelectWithCreate(lurl,ldir,ifn,msgs_select_export_file,ntfy);
 	};	
 			
 	public void exportProfileToFile(final String profile_dir, 

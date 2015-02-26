@@ -151,7 +151,7 @@ public class LogFileManagementFragment extends DialogFragment{
     public Dialog onCreateDialog(Bundle savedInstanceState) {
     	if (DEBUG_ENABLE) Log.v(APPLICATION_TAG,"onCreateDialog");
     	
-    	mDialog=new Dialog(getActivity());
+    	mDialog=new Dialog(getActivity(), mGp.applicationTheme);
 		mDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
 		mDialog.setCanceledOnTouchOutside(false);
@@ -280,7 +280,7 @@ public class LogFileManagementFragment extends DialogFragment{
     	
     	mLogFileManagementAdapter=
     				new AdapterLogFileManagementList(mContext, 
-    						R.layout.log_management_list_item,mLogFileList, ntfy_cb_listener);
+    						R.layout.log_management_list_item,mLogFileList, ntfy_cb_listener, mGp.themeIsLight);
     	lv_log_file.setAdapter(mLogFileManagementAdapter);
     	lv_log_file.setClickable(true);
     	lv_log_file.setFocusable(true);

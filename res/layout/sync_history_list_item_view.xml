@@ -7,7 +7,7 @@
     android:layout_marginLeft="5dp"
     android:layout_marginRight="5dp"
     android:orientation="horizontal"
-     >
+    tools:ignore="HardcodedText" >
 
     <TextView
         android:id="@+id/sync_history_list_view_seq"

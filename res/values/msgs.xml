@@ -62,7 +62,9 @@
     <string name="msgs_smbsync_main_end">Application was being terminated.</string>
     <string name="msgs_smbsync_main_language_changed">Language of the system has been changed, but there is a point where the application has not been reflected dynamically. (For example, the profile edit dialog appearance and message of synchronous execution)\nYou must restart the application in order to fully reflect the modified. (If running synchronization, please restart synchronization from the end)</string>    
     <string name="msgs_smbsync_main_settings_force_log_enabled"	>To enable logging because Auto sync startup was enabled.</string>
-	<string name="msgs_smbsync_main_settings_jcifs_changed_restart"	>SMB parameters have been changed, but will not take effect until you restart the application.</string>    
+	<string name="msgs_smbsync_main_settings_jcifs_changed_restart"	>SMB parameters have been changed, but will not take effect until you restart the application.</string>
+	    
+	<string name="msgs_smbsync_main_settings_theme_changed_restart"	>Screen theme have been changed, but will not take effect until you restart the application.</string>
     
     <string name="msgs_create_profile_error">create profile was failed. file=%s</string>
     <string name="msgs_create_profile_not_found">"create profile was failed. Because specified file was not found. file=%s</string>

@@ -8,28 +8,6 @@
     tools:ignore="SpUsage" >
 
     <TextView
-        android:id="@+id/msg_list_view_item_cat"
-        android:layout_width="20dp"
-        android:layout_height="fill_parent"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:gravity="top"
-        android:text="W"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:visibility="gone" />
-
-    <TextView
-        android:id="@+id/msg_list_view_item_date"
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:gravity="top"
-        android:text="yyyy/MM/DD"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:visibility="gone" />
-
-    <TextView
         android:id="@+id/msg_list_view_item_time"
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
@@ -37,8 +15,7 @@
         android:layout_marginRight="5dp"
         android:gravity="top"
         android:text="HH:MM:SS"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:visibility="gone" />
+        android:textAppearance="?android:attr/textAppearanceSmall"/>
 
     <com.sentaroh.android.Utilities.Widget.CustomTextView
         android:id="@+id/msg_list_view_item_msg"

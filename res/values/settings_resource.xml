@@ -145,8 +145,10 @@
     <string name="settings_show_sync_on_action_bar_summary_ena">Show the sync button in menu at the top of screen.</string>
 	<string name="settings_show_sync_on_action_bar">settings_show_sync_on_action_bar</string>
 	
-	<string name="settings_theme_is_light">settings_theme_is_light</string>	
-    		
+	<string name="settings_use_light_theme_title">Screen theme</string>
+    <string name="settings_use_light_theme_summary_ena">Use light theme</string>
+	<string name="settings_use_light_theme">settings_use_light_theme</string>
+			
 	<string name="settings_log_title">Log</string>	    
 	<string name="settings_log_preference_screen_title">Log</string>
 	

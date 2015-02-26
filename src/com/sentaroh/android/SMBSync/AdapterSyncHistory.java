@@ -25,10 +25,12 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 import java.util.ArrayList;
 
+import com.sentaroh.android.Utilities.MiscUtil;
 import com.sentaroh.android.Utilities.NotifyEvent;
+import com.sentaroh.android.Utilities.TextColorList;
 
+import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,19 +42,27 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class AdapterSyncHistory extends ArrayAdapter<SyncHistoryListItem> {
-	private Context c;
+	private Context mContext;
+	@SuppressWarnings("unused")
+	private Activity mActivity;
 	private int id;
 	private ArrayList<SyncHistoryListItem> items;
+	@SuppressWarnings("unused")
 	private boolean themeIsLight=false;
 	
-	public AdapterSyncHistory(Context context, int textViewResourceId,
+	private TextColorList mTextColorList;
+	
+	public AdapterSyncHistory(Activity a, int textViewResourceId,
 			ArrayList<SyncHistoryListItem> objects, boolean themeIsLight) {
-		super(context, textViewResourceId, objects);
-		c=context;
+		super(a, textViewResourceId, objects);
+		mContext=a.getApplicationContext();
+		mActivity=a;
 		id=textViewResourceId;
 		items=objects;
-        vi=(LayoutInflater)c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        vi=(LayoutInflater)a.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.themeIsLight=themeIsLight;
+        
+        mTextColorList=MiscUtil.getTextColorList(a);
 	}
 
 	@Override
@@ -111,6 +121,8 @@ public class AdapterSyncHistory extends ArrayAdapter<SyncHistoryListItem> {
 	}
 	
 	private LayoutInflater vi =null;
+//	private int mTextColorPrimary=-1;
+	
 	@Override
     public View getView(final int position, View convertView, ViewGroup parent) {
 		final ViewHolder holder;
@@ -133,6 +145,8 @@ public class AdapterSyncHistory extends ArrayAdapter<SyncHistoryListItem> {
     		holder.ll_count=(LinearLayout)v.findViewById(R.id.sync_history_list_view_count);
     		holder.ll_main=(LinearLayout)v.findViewById(R.id.sync_history_list_view);
             
+//    		if (mTextColorPrimary==-1) mTextColorPrimary=holder.tv_date.getCurrentTextColor();
+    		
             v.setTag(holder);
         } else {
         	holder= (ViewHolder)v.getTag();
@@ -153,16 +167,14 @@ public class AdapterSyncHistory extends ArrayAdapter<SyncHistoryListItem> {
             	holder.tv_prof.setText(o.sync_prof);
             	String st_text="";
             	if (o.sync_status==SyncHistoryListItem.SYNC_STATUS_SUCCESS) {
-            		st_text=c.getString(R.string.msgs_sync_history_status_success);
-            		if (themeIsLight) holder.tv_status.setTextColor(Color.BLACK);
-            		else holder.tv_status.setTextColor(Color.LTGRAY);
+            		st_text=mContext.getString(R.string.msgs_sync_history_status_success);
+            		holder.tv_status.setTextColor(mTextColorList.text_color_primary);
             	} else if (o.sync_status==SyncHistoryListItem.SYNC_STATUS_ERROR) {
-            		st_text=c.getString(R.string.msgs_sync_history_status_error);
-            		holder.tv_status.setTextColor(Color.RED);
+            		st_text=mContext.getString(R.string.msgs_sync_history_status_error);
+            		holder.tv_status.setTextColor(mTextColorList.text_color_error);
             	} else if (o.sync_status==SyncHistoryListItem.SYNC_STATUS_CANCEL) {
-            		st_text=c.getString(R.string.msgs_sync_history_status_cancel);
-            		if (themeIsLight) holder.tv_status.setTextColor(Color.argb(255, 192, 128, 0));
-            		else holder.tv_status.setTextColor(Color.YELLOW);
+            		st_text=mContext.getString(R.string.msgs_sync_history_status_cancel);
+            		holder.tv_status.setTextColor(mTextColorList.text_color_warning);
             	}
             	holder.tv_status.setText(st_text);
             	holder.tv_cnt_copied.setText(Integer.toString(o.sync_result_no_of_copied));
@@ -192,7 +204,7 @@ public class AdapterSyncHistory extends ArrayAdapter<SyncHistoryListItem> {
              	);
              	holder.cb_sel.setChecked(items.get(position).isChecked);
         	} else {
-        		holder.tv_prof.setText(c.getString(R.string.msgs_sync_history_empty));
+        		holder.tv_prof.setText(mContext.getString(R.string.msgs_sync_history_empty));
         		holder.tv_seq.setVisibility(TextView.GONE);
         		holder.tv_date.setVisibility(TextView.GONE);
             	holder.tv_time.setVisibility(TextView.GONE);

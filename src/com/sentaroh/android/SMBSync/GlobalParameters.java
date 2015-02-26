@@ -42,6 +42,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Color;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Handler;
 import android.os.PowerManager.WakeLock;
 import android.preference.PreferenceManager;
@@ -230,6 +231,18 @@ public class GlobalParameters extends Application{
 		onLowMemory=true;
 	};
 	
+//	private int mTextColorForeground=0;
+//	private int mTextColorBackground=0;
+//	public void initTextColor(Context c) {
+//    	TypedValue outValue = new TypedValue();
+//    	c.getTheme().resolveAttribute(android.R.attr.textColorPrimary, outValue, true);
+//    	mTextColorForeground=c.getResources().getColor(outValue.resourceId);
+//    	c.getTheme().resolveAttribute(android.R.attr.colorBackground, outValue, true);
+//    	mTextColorBackground=c.getResources().getColor(outValue.resourceId);
+//    	Log.v("","f="+String.format("0x%08x", mTextColorForeground));
+//    	Log.v("","b="+String.format("0x%08x", mTextColorBackground));
+//	};
+
 	public void initSettingsParms(Context c) {
 		
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
@@ -407,14 +420,16 @@ public class GlobalParameters extends Application{
 		
 		if (!settingAutoStart) settingAutoTerm=false;
 		
-		themeIsLight=
-				prefs.getBoolean(c.getString(R.string.settings_theme_is_light), false);
+		if (Build.VERSION.SDK_INT>=11) themeIsLight=prefs.getBoolean(c.getString(R.string.settings_use_light_theme), false);
+		else themeIsLight=false;
 		if (themeIsLight) {
 			applicationTheme=R.style.Theme_AppCompat_Light_DarkActionBar;
 			dialogViewBackGroundColor=Color.WHITE;
+//			dialogViewBackGroundColor=Color.argb(255, 50, 50, 50);//.BLACK;
 		} else {
 			applicationTheme=R.style.Theme_AppCompat;
 			dialogViewBackGroundColor=Color.BLACK;
+//			dialogViewBackGroundColor=Color.argb(255, 50, 50, 50);//.BLACK;
 		}
 //		if (Build.VERSION.SDK_INT>=21) dialogViewBackGroundColor=0xff333333;
 		

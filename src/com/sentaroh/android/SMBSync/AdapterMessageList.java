@@ -27,9 +27,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sentaroh.android.Utilities.MiscUtil;
+import com.sentaroh.android.Utilities.TextColorList;
+import com.sentaroh.android.Utilities.Widget.CustomTextView;
+
 import android.content.Context;
 import android.content.res.Configuration;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,7 +40,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.sentaroh.android.Utilities.Widget.CustomTextView;
 
 class MsgListItem implements Serializable {
 	/**
@@ -88,8 +90,13 @@ public class AdapterMessageList extends ArrayAdapter<MsgListItem> {
 	private int id;
 	private ArrayList<MsgListItem>items;
 	private boolean msgDataChanged=false;
+	@SuppressWarnings("unused")
 	private boolean themeIsLight=false;
+	@SuppressWarnings("unused")
+	private Typeface msgTypeFace=null;
 	
+	private TextColorList mTextColorList;
+
 	public AdapterMessageList(Context context, int textViewResourceId,
 			ArrayList<MsgListItem> objects, boolean theme_is_light) {
 		super(context, textViewResourceId, objects);
@@ -97,6 +104,10 @@ public class AdapterMessageList extends ArrayAdapter<MsgListItem> {
 		id = textViewResourceId;
 		items = objects;
 		themeIsLight=theme_is_light;
+		msgTypeFace=Typeface.create(Typeface.MONOSPACE, Typeface.NORMAL);
+		vi=(LayoutInflater)c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		
+		mTextColorList=MiscUtil.getTextColorList(c);
 	}
 	
 	final public void remove(int i) {
@@ -122,9 +133,9 @@ public class AdapterMessageList extends ArrayAdapter<MsgListItem> {
 		 return items.get(i);
 	}
 	
-	final public ArrayList<MsgListItem> getAllItem() {return items;}
+	final public ArrayList<MsgListItem> getMessageList() {return items;}
 	
-	final public void setAllItem(List<MsgListItem> p) {
+	final public void setMessageList(List<MsgListItem> p) {
 		items.clear();
 		if (p!=null) items.addAll(p);
 		notifyDataSetChanged();
@@ -135,23 +146,22 @@ public class AdapterMessageList extends ArrayAdapter<MsgListItem> {
 //		 return getItem(idx).getActive().equals("A");
 //	}
 
+	private LayoutInflater vi;
 	@Override
 	final public View getView(int position, View convertView, ViewGroup parent) {
 		ViewHolder holder;
 		
         View v = convertView;
         if (v == null) {
-            LayoutInflater vi = (LayoutInflater)c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             v = vi.inflate(id, null);
             holder=new ViewHolder();
 //            holder.tv_row_cat= (TextView) v.findViewById(R.id.msg_list_view_item_cat);
             holder.tv_row_msg= (CustomTextView) v.findViewById(R.id.msg_list_view_item_msg);
             holder.tv_row_time= (TextView) v.findViewById(R.id.msg_list_view_item_time);
             
-    		Typeface tf=Typeface.create(Typeface.MONOSPACE, Typeface.NORMAL);
-        	holder.tv_row_msg.setTypeface(tf);
-        	holder.tv_row_msg.setLineBreak(CustomTextView.LINE_BREAK_NO_WORD_WRAP);
-            holder.config=v.getResources().getConfiguration();
+//        	holder.tv_row_msg.setTypeface(msgTypeFace);
+//        	holder.tv_row_msg.setLineBreak(CustomTextView.LINE_BREAK_NO_WORD_WRAP);
+//            holder.config=v.getResources().getConfiguration();
             v.setTag(holder);
         } else {
         	holder= (ViewHolder)v.getTag();
@@ -164,41 +174,30 @@ public class AdapterMessageList extends ArrayAdapter<MsgListItem> {
 //    					.getWindowManager().getDefaultDisplay().getHeight();
 //    		
 //    		if (wsz_w>=700) 
-        		holder.tv_row_time.setVisibility(TextView.VISIBLE);
+//       		holder.tv_row_time.setVisibility(TextView.VISIBLE);
 //        	else holder.tv_row_time.setVisibility(TextView.GONE);
-
-        	if (o.getCat().equals("W")) {
-        		if (themeIsLight) {
-            		holder.tv_row_time.setTextColor(Color.argb(255, 192, 128, 0));
-            		holder.tv_row_msg.setTextColor(Color.argb(255, 192, 128, 0));
-        		} else {
-            		holder.tv_row_time.setTextColor(Color.YELLOW);
-            		holder.tv_row_msg.setTextColor(Color.YELLOW);
-        		}
+        	String cat=o.getCat();
+        	if (cat.equals("W")) {
+        		holder.tv_row_time.setTextColor(mTextColorList.text_color_warning);
+        		holder.tv_row_msg.setTextColor(mTextColorList.text_color_warning);
             	holder.tv_row_time.setText(o.getMtime());
             	holder.tv_row_msg.setText(o.getMsg());
-        	} else if (o.getCat().equals("E")) {
-        		holder.tv_row_time.setTextColor(Color.RED);
-        		holder.tv_row_msg.setTextColor(Color.RED);
+        	} else if (cat.equals("E")) {
+        		holder.tv_row_time.setTextColor(mTextColorList.text_color_error);
+        		holder.tv_row_msg.setTextColor(mTextColorList.text_color_error);
         		holder.tv_row_time.setText(o.getMtime());
             	holder.tv_row_msg.setText(o.getMsg());
         	} else {
-        		if (themeIsLight) {
-            		holder.tv_row_time.setTextColor(Color.BLACK);
-            		holder.tv_row_msg.setTextColor(Color.BLACK);
-        		} else {
-            		holder.tv_row_time.setTextColor(Color.WHITE);
-            		holder.tv_row_msg.setTextColor(Color.WHITE);
-        		}
+        		holder.tv_row_time.setTextColor(mTextColorList.text_color_primary);
+        		holder.tv_row_msg.setTextColor(mTextColorList.text_color_primary);
         		holder.tv_row_time.setText(o.getMtime());
-
             	holder.tv_row_msg.setText(o.getMsg());
         	}
        	}
         return v;
 	};
 	
-	class ViewHolder {
+	static class ViewHolder {
 //		TextView tv_row_cat;
 		TextView tv_row_time;
 		CustomTextView tv_row_msg;
