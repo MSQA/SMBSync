@@ -1,40 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TabHost xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@android:id/tabhost"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:visibility="visible"
-    tools:ignore="HardcodedText,UselessParent" >
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"  
+    xmlns:tools="http://schemas.android.com/tools"  
+    android:layout_width="match_parent"  
+    android:layout_height="match_parent"  
+    android:orientation="vertical" >  
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-		android:orientation="vertical" >
+	<TabHost 
+	    android:id="@android:id/tabhost"
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+	    android:visibility="visible"
+	    tools:ignore="HardcodedText,UselessParent" >
+	
+	    <LinearLayout
+	        android:layout_width="fill_parent"
+	        android:layout_height="fill_parent"
+			android:orientation="vertical" >
+	
+	        <TabWidget
+	            android:id="@android:id/tabs"
+	            android:layout_width="fill_parent"
+	            android:layout_height="wrap_content"
+	            />
+	        
+			<include layout="@layout/main_dialog_view"/>
+				        
+	        <FrameLayout
+	            android:id="@android:id/tabcontent"
+	            android:layout_width="0dp"
+	            android:layout_height="0dp" >
+	        </FrameLayout>
 
-        <TabWidget
-            android:id="@android:id/tabs"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"/>
-        
-		<include layout="@layout/main_dialog_view"/>
-			        
-        <FrameLayout
-            android:id="@android:id/tabcontent"
-            android:layout_width="fill_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:padding="5dp" >
-            
-            <include layout="@layout/main_profile_view" />
-            
-            <include layout="@layout/main_msg_view" />
-
-            <include layout="@layout/main_history_view" />
-
-        </FrameLayout>
-
-    </LinearLayout>
-    
-    
-</TabHost>
+	        <com.sentaroh.android.SMBSync.MainViewPager
+	            android:id="@+id/main_view_pager"
+	            android:layout_width="fill_parent"
+	            android:layout_height="0dp"
+	            android:layout_marginLeft="5dp"
+	            android:layout_marginRight="5dp"
+	            android:layout_weight="1"/>
+	        
+			<include layout="@layout/main_schedule_view" />
+	        	        	        	
+	    </LinearLayout>
+	    
+	    
+	</TabHost>
+</LinearLayout>    

@@ -216,9 +216,7 @@ public class SchedulerUtil {
     	} else {
     		gp.scheduleInfoText=c.getString(R.string.msgs_scheduler_info_schedule_disabled);
     	}
-		gp.scheduleInfoProfView.setText(gp.scheduleInfoText);
-		gp.scheduleInfoHistView.setText(gp.scheduleInfoText);
-		gp.scheduleInfoMsgView.setText(gp.scheduleInfoText);
+		gp.scheduleInfoView.setText(gp.scheduleInfoText);
 	};
 
 }

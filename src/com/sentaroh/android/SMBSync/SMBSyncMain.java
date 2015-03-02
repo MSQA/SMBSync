@@ -37,6 +37,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Locale;
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.KeyguardManager;
@@ -66,6 +67,7 @@ import android.os.SystemClock;
 import android.os.Vibrator;
 import android.os.PowerManager.WakeLock;
 import android.preference.PreferenceManager;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.text.ClipboardManager;
@@ -88,6 +90,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
+import android.widget.TabWidget;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -531,6 +534,7 @@ public class SMBSyncMain extends ActionBarActivity {
 	
 	class ViewSaveArea {
 		public int current_tab_pos=0;
+		public int current_pager_pos=0;
 		public int prof_list_view_pos_x=0,prof_list_view_pos_y=0;
 		public boolean prof_adapter_show_cb=false;
 		public int msg_list_view_pos_x=0,msg_list_view_pos_y=0;
@@ -692,6 +696,7 @@ public class SMBSyncMain extends ActionBarActivity {
 	private ViewSaveArea saveViewContent() {
 		ViewSaveArea vsa=new ViewSaveArea();
 	    vsa.current_tab_pos=tabHost.getCurrentTab();
+	    vsa.current_pager_pos=mMainViewPager.getCurrentItem();
 	    
 	    vsa.prof_list_view_pos_x=mGp.profileListView.getFirstVisiblePosition();
 	    if (mGp.profileListView.getChildAt(0)!=null) vsa.prof_list_view_pos_y=mGp.profileListView.getChildAt(0).getTop();
@@ -736,6 +741,7 @@ public class SMBSyncMain extends ActionBarActivity {
 	
 	private void restoreViewContent(ViewSaveArea vsa) {
 		tabHost.setCurrentTab(vsa.current_tab_pos);
+		mMainViewPager.setCurrentItem(vsa.current_pager_pos);
 		mGp.profileListView.setSelectionFromTop(vsa.prof_list_view_pos_x, vsa.prof_list_view_pos_y);
 		mGp.msgListView.setSelectionFromTop(vsa.msg_list_view_pos_x, vsa.msg_list_view_pos_y);
 		mGp.syncHistoryListView.setSelectionFromTop(vsa.sync_list_view_pos_x, vsa.sync_list_view_pos_y);
@@ -759,9 +765,7 @@ public class SMBSyncMain extends ActionBarActivity {
 		mGp.progressSpinSyncprof.setText(vsa.prog_prof);
 		mGp.progressSpinFilePath.setText(vsa.prog_fp);
 		mGp.progressSpinStatus.setText(vsa.prog_msg);
-		mGp.scheduleInfoProfView.setText(mGp.scheduleInfoText);
-		mGp.scheduleInfoHistView.setText(mGp.scheduleInfoText);
-		mGp.scheduleInfoMsgView.setText(mGp.scheduleInfoText);
+		mGp.scheduleInfoView.setText(mGp.scheduleInfoText);
 
 		if (vsa.prog_bar_view_visibility!=LinearLayout.GONE) {
 			mGp.progressBarView.bringToFront();
@@ -999,36 +1003,45 @@ public class SMBSyncMain extends ActionBarActivity {
 //	private CustomTabContentView mTabChildviewProf=null, 
 //			mTabChildviewMsg=null, mTabChildviewHist=null;
 	
+	private LinearLayout mProfileView;
+	private LinearLayout mHistoryView;
+	private LinearLayout mMessageView;
+
+	private MainViewPager mMainViewPager;
+	private MainViewPagerAdapter mMainViewPagerAdapter;
+	
+	private TabWidget mTabWidget;
+	@SuppressLint("InflateParams")
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	private void createTabView() {
 		tabHost=(TabHost)findViewById(android.R.id.tabhost);
 		tabHost.setup();
-
+		mTabWidget = (TabWidget) findViewById(android.R.id.tabs);
+		 
+		if (Build.VERSION.SDK_INT>=11) {
+		    mTabWidget.setStripEnabled(false);  
+		    mTabWidget.setShowDividers(LinearLayout.SHOW_DIVIDER_NONE);  
+		}
+	    
 		CustomTabContentView tabViewProf = new CustomTabContentView(this,getString(R.string.msgs_tab_name_prof));
-		TabHost.TabSpec tabSpec= tabHost.newTabSpec(SMBSYNC_TAB_NAME_PROF).setIndicator(tabViewProf).setContent(R.id.profile_view);
-		tabHost.addTab(tabSpec);
+		tabHost.addTab(tabHost.newTabSpec(SMBSYNC_TAB_NAME_PROF).setIndicator(tabViewProf).setContent(android.R.id.tabcontent));
 		
 		CustomTabContentView tabViewHist = new CustomTabContentView(this,getString(R.string.msgs_tab_name_history));
-		tabSpec= tabHost.newTabSpec(SMBSYNC_TAB_NAME_HIST).setIndicator(tabViewHist).setContent(R.id.history_view);
-		tabHost.addTab(tabSpec);
+		tabHost.addTab(tabHost.newTabSpec(SMBSYNC_TAB_NAME_HIST).setIndicator(tabViewHist).setContent(android.R.id.tabcontent));
 
 		CustomTabContentView tabViewMsg = new CustomTabContentView(this,getString(R.string.msgs_tab_name_msg));
-		tabSpec= tabHost.newTabSpec(SMBSYNC_TAB_NAME_MSG).setIndicator(tabViewMsg).setContent(R.id.message_view);
-		tabHost.addTab(tabSpec);
-
-		if (restartType==NORMAL_START) tabHost.setCurrentTabByTag(SMBSYNC_TAB_NAME_PROF);
-		tabHost.setOnTabChangedListener(new OnTabChange());
-
-		LinearLayout ll_prof=(LinearLayout)findViewById(R.id.profile_view);
-		LinearLayout ll_hist=(LinearLayout)findViewById(R.id.history_view);
-		LinearLayout ll_msg=(LinearLayout)findViewById(R.id.message_view);
+		tabHost.addTab(tabHost.newTabSpec(SMBSYNC_TAB_NAME_MSG).setIndicator(tabViewMsg).setContent(android.R.id.tabcontent));
 		
-		mGp.msgListView = (ListView) findViewById(R.id.message_view_list);
-		mGp.profileListView =(ListView) findViewById(R.id.profile_view_list);
-		mGp.syncHistoryListView=(ListView)findViewById(R.id.history_view_list);
+        LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		mProfileView=(LinearLayout)vi.inflate(R.layout.main_profile_view,null);
+		mHistoryView=(LinearLayout)vi.inflate(R.layout.main_history_view,null);
+		mMessageView=(LinearLayout)vi.inflate(R.layout.main_msg_view,null);
+
+		mGp.msgListView = (ListView) mMessageView.findViewById(R.id.message_view_list);
+		mGp.profileListView =(ListView) mProfileView.findViewById(R.id.profile_view_list);
+		mGp.syncHistoryListView=(ListView)mHistoryView.findViewById(R.id.history_view_list);
 		
-		mGp.scheduleInfoProfView=(TextView)ll_prof.findViewById(R.id.schedule_info);
-		mGp.scheduleInfoHistView=(TextView)ll_hist.findViewById(R.id.schedule_info);
-		mGp.scheduleInfoMsgView=(TextView)ll_msg.findViewById(R.id.schedule_info);
+		mGp.scheduleInfoView=(TextView)findViewById(R.id.schedule_info);
 		
 		mGp.confirmView=(LinearLayout)findViewById(R.id.profile_confirm);
 		mGp.confirmView.setVisibility(LinearLayout.GONE);
@@ -1056,6 +1069,18 @@ public class SMBSyncMain extends ActionBarActivity {
 	    mGp.progressSpinCancel=(Button)findViewById(R.id.profile_progress_spin_btn_cancel);
 
 	    createContextView();
+	    
+	    mMainViewPagerAdapter=new MainViewPagerAdapter(this, 
+	    		new View[]{mProfileView, mHistoryView, mMessageView});
+	    mMainViewPager=(MainViewPager)findViewById(R.id.main_view_pager);
+	    mMainViewPager.setAdapter(mMainViewPagerAdapter);
+	    mMainViewPager.setOnPageChangeListener(new PageChangeListener()); 
+		if (restartType==NORMAL_START) {
+			tabHost.setCurrentTabByTag(SMBSYNC_TAB_NAME_PROF);
+			mMainViewPager.setCurrentItem(0);
+		}
+		tabHost.setOnTabChangedListener(new OnTabChange());
+
 	};
 	
 	class OnTabChange implements OnTabChangeListener {
@@ -1067,15 +1092,21 @@ public class SMBSyncMain extends ActionBarActivity {
 			mActionBar.setHomeButtonEnabled(false);
 			mActionBar.setTitle(R.string.app_name);
 			
-			mGp.profileAdapter.setShowCheckBox(false);
-			mGp.profileAdapter.setAllItemChecked(false);
-			mGp.profileAdapter.notifyDataSetChanged();
-			setProfileContextButtonNormalMode();
+			mMainViewPager.setCurrentItem(tabHost.getCurrentTab());
 			
-			mGp.syncHistoryAdapter.setShowCheckBox(false);
-			mGp.syncHistoryAdapter.setAllItemChecked(false);
-			mGp.syncHistoryAdapter.notifyDataSetChanged();
-			setHistoryContextButtonNormalMode();
+			if (mGp.profileAdapter.isShowCheckBox()) {
+				mGp.profileAdapter.setShowCheckBox(false);
+				mGp.profileAdapter.setAllItemChecked(false);
+				mGp.profileAdapter.notifyDataSetChanged();
+				setProfileContextButtonNormalMode();
+			}
+
+			if (mGp.syncHistoryAdapter.isShowCheckBox()) {
+				mGp.syncHistoryAdapter.setShowCheckBox(false);
+				mGp.syncHistoryAdapter.setAllItemChecked(false);
+				mGp.syncHistoryAdapter.notifyDataSetChanged();
+				setHistoryContextButtonNormalMode();
+			}
 			
 			if (tabId.equals(SMBSYNC_TAB_NAME_PROF) && mGp.newProfileListViewPos!=-1) {
 				mGp.profileListView.post(new Runnable(){
@@ -1099,6 +1130,25 @@ public class SMBSyncMain extends ActionBarActivity {
 			refreshOptionMenu();
 		};
 	};
+	
+	private class PageChangeListener implements ViewPager.OnPageChangeListener {  
+	    @Override  
+	    public void onPageSelected(int position) {
+//	    	util.addDebugLogMsg(2,"I","onPageSelected entered, pos="+position);
+	        mTabWidget.setCurrentTab(position);
+	        tabHost.setCurrentTab(position);
+	    }  
+	  
+	    @Override  
+	    public void onPageScrollStateChanged(int state) {  
+//	    	util.addDebugLogMsg(2,"I","onPageScrollStateChanged entered, state="+state);
+	    }  
+	  
+	    @Override  
+	    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+//	    	util.addDebugLogMsg(2,"I","onPageScrolled entered, pos="+position);
+	    }  
+	};  
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -2639,19 +2689,18 @@ public class SMBSyncMain extends ActionBarActivity {
 //    	    mContextProfileBitmapSelectAll=BitmapFactory.decodeResource(getResources(), R.drawable.select_all);
 //    	    mContextProfileBitmapUnselectAll=BitmapFactory.decodeResource(getResources(), R.drawable.unselect_all);
 //    	}
-    	LinearLayout ll_prof=(LinearLayout) findViewById(R.id.context_view_profile);
-        mContextProfileButtonActivete=(ImageButton)ll_prof.findViewById(R.id.context_button_activate);
-        mContextProfileButtonInactivete=(ImageButton)ll_prof.findViewById(R.id.context_button_inactivate);
-        mContextProfileButtonAddLocal=(ImageButton)ll_prof.findViewById(R.id.context_button_add_local);
-        mContextProfileButtonAddRemote=(ImageButton)ll_prof.findViewById(R.id.context_button_add_remote);
-        mContextProfileButtonAddSync=(ImageButton)ll_prof.findViewById(R.id.context_button_add_sync);
-        mContextProfileButtonStartWizard=(ImageButton)ll_prof.findViewById(R.id.context_button_start_wizard);
-        mContextProfileButtonCopyProfile=(ImageButton)ll_prof.findViewById(R.id.context_button_copy);
-        mContextProfileButtonDeleteProfile=(ImageButton)ll_prof.findViewById(R.id.context_button_delete);
-        mContextProfileButtonRenameProfile=(ImageButton)ll_prof.findViewById(R.id.context_button_rename);
-        mContextProfileButtonSync=(ImageButton)ll_prof.findViewById(R.id.context_button_sync);
-        mContextProfileButtonSelectAll=(ImageButton)ll_prof.findViewById(R.id.context_button_select_all);
-        mContextProfileButtonUnselectAll=(ImageButton)ll_prof.findViewById(R.id.context_button_unselect_all);
+        mContextProfileButtonActivete=(ImageButton)mProfileView.findViewById(R.id.context_button_activate);
+        mContextProfileButtonInactivete=(ImageButton)mProfileView.findViewById(R.id.context_button_inactivate);
+        mContextProfileButtonAddLocal=(ImageButton)mProfileView.findViewById(R.id.context_button_add_local);
+        mContextProfileButtonAddRemote=(ImageButton)mProfileView.findViewById(R.id.context_button_add_remote);
+        mContextProfileButtonAddSync=(ImageButton)mProfileView.findViewById(R.id.context_button_add_sync);
+        mContextProfileButtonStartWizard=(ImageButton)mProfileView.findViewById(R.id.context_button_start_wizard);
+        mContextProfileButtonCopyProfile=(ImageButton)mProfileView.findViewById(R.id.context_button_copy);
+        mContextProfileButtonDeleteProfile=(ImageButton)mProfileView.findViewById(R.id.context_button_delete);
+        mContextProfileButtonRenameProfile=(ImageButton)mProfileView.findViewById(R.id.context_button_rename);
+        mContextProfileButtonSync=(ImageButton)mProfileView.findViewById(R.id.context_button_sync);
+        mContextProfileButtonSelectAll=(ImageButton)mProfileView.findViewById(R.id.context_button_select_all);
+        mContextProfileButtonUnselectAll=(ImageButton)mProfileView.findViewById(R.id.context_button_unselect_all);
 
 //        mContextProfileButtonActivete.setImageBitmap(mContextProfileBitmapActive);
 //        mContextProfileButtonInactivete.setImageBitmap(mContextProfileBitmapInactive);
@@ -2666,44 +2715,42 @@ public class SMBSyncMain extends ActionBarActivity {
 //        mContextProfileButtonSelectAll.setImageBitmap(mContextProfileBitmapSelectAll);
 //        mContextProfileButtonUnselectAll.setImageBitmap(mContextProfileBitmapUnselectAll);
         
-        mContextProfileViewSync=(LinearLayout)ll_prof.findViewById(R.id.context_button_sync_view);
-        mContextProfileViewActivete=(LinearLayout)ll_prof.findViewById(R.id.context_button_activate_view);
-        mContextProfileViewInactivete=(LinearLayout)ll_prof.findViewById(R.id.context_button_inactivate_view);
-        mContextProfileViewAddLocal=(LinearLayout)ll_prof.findViewById(R.id.context_button_add_local_view);
-        mContextProfileViewAddRemote=(LinearLayout)ll_prof.findViewById(R.id.context_button_add_remote_view);
-        mContextProfileViewAddSync=(LinearLayout)ll_prof.findViewById(R.id.context_button_add_sync_view);
-        mContextProfileViewStartWizard=(LinearLayout)ll_prof.findViewById(R.id.context_button_start_wizard_view);
-        mContextProfileViewCopyProfile=(LinearLayout)ll_prof.findViewById(R.id.context_button_copy_view);
-        mContextProfileViewDeleteProfile=(LinearLayout)ll_prof.findViewById(R.id.context_button_delete_view);
-        mContextProfileViewRenameProfile=(LinearLayout)ll_prof.findViewById(R.id.context_button_rename_view);
-        mContextProfileViewSelectAll=(LinearLayout)ll_prof.findViewById(R.id.context_button_select_all_view);
-        mContextProfileViewUnselectAll=(LinearLayout)ll_prof.findViewById(R.id.context_button_unselect_all_view);
+        mContextProfileViewSync=(LinearLayout)mProfileView.findViewById(R.id.context_button_sync_view);
+        mContextProfileViewActivete=(LinearLayout)mProfileView.findViewById(R.id.context_button_activate_view);
+        mContextProfileViewInactivete=(LinearLayout)mProfileView.findViewById(R.id.context_button_inactivate_view);
+        mContextProfileViewAddLocal=(LinearLayout)mProfileView.findViewById(R.id.context_button_add_local_view);
+        mContextProfileViewAddRemote=(LinearLayout)mProfileView.findViewById(R.id.context_button_add_remote_view);
+        mContextProfileViewAddSync=(LinearLayout)mProfileView.findViewById(R.id.context_button_add_sync_view);
+        mContextProfileViewStartWizard=(LinearLayout)mProfileView.findViewById(R.id.context_button_start_wizard_view);
+        mContextProfileViewCopyProfile=(LinearLayout)mProfileView.findViewById(R.id.context_button_copy_view);
+        mContextProfileViewDeleteProfile=(LinearLayout)mProfileView.findViewById(R.id.context_button_delete_view);
+        mContextProfileViewRenameProfile=(LinearLayout)mProfileView.findViewById(R.id.context_button_rename_view);
+        mContextProfileViewSelectAll=(LinearLayout)mProfileView.findViewById(R.id.context_button_select_all_view);
+        mContextProfileViewUnselectAll=(LinearLayout)mProfileView.findViewById(R.id.context_button_unselect_all_view);
 
-    	LinearLayout ll_hist=(LinearLayout) findViewById(R.id.context_view_history);
-        mContextHistoryButtonMoveTop=(ImageButton)ll_hist.findViewById(R.id.context_button_move_to_top);
-        mContextHistoryButtonMoveBottom=(ImageButton)ll_hist.findViewById(R.id.context_button_move_to_bottom);
-        mContextHistoryButtonDeleteHistory=(ImageButton)ll_hist.findViewById(R.id.context_button_delete);
-        mContextHistoryButtonHistiryCopyClipboard=(ImageButton)ll_hist.findViewById(R.id.context_button_copy_to_clipboard);
-        mContextHistiryButtonSelectAll=(ImageButton)ll_hist.findViewById(R.id.context_button_select_all);
-        mContextHistiryButtonUnselectAll=(ImageButton)ll_hist.findViewById(R.id.context_button_unselect_all);
+        mContextHistoryButtonMoveTop=(ImageButton)mHistoryView.findViewById(R.id.context_button_move_to_top);
+        mContextHistoryButtonMoveBottom=(ImageButton)mHistoryView.findViewById(R.id.context_button_move_to_bottom);
+        mContextHistoryButtonDeleteHistory=(ImageButton)mHistoryView.findViewById(R.id.context_button_delete);
+        mContextHistoryButtonHistiryCopyClipboard=(ImageButton)mHistoryView.findViewById(R.id.context_button_copy_to_clipboard);
+        mContextHistiryButtonSelectAll=(ImageButton)mHistoryView.findViewById(R.id.context_button_select_all);
+        mContextHistiryButtonUnselectAll=(ImageButton)mHistoryView.findViewById(R.id.context_button_unselect_all);
 
-    	mContextHistiryViewMoveTop=(LinearLayout)ll_hist.findViewById(R.id.context_button_move_to_top_view);
-    	mContextHistiryViewMoveBottom=(LinearLayout)ll_hist.findViewById(R.id.context_button_move_to_bottom_view);
-    	mContextHistiryViewDeleteHistory=(LinearLayout)ll_hist.findViewById(R.id.context_button_delete_view);
-    	mContextHistiryViewHistoryCopyClipboard=(LinearLayout)ll_hist.findViewById(R.id.context_button_copy_to_clipboard_view);
-    	mContextHistiryViewSelectAll=(LinearLayout)ll_hist.findViewById(R.id.context_button_select_all_view);
-    	mContextHistiryViewUnselectAll=(LinearLayout)ll_hist.findViewById(R.id.context_button_unselect_all_view);
+    	mContextHistiryViewMoveTop=(LinearLayout)mHistoryView.findViewById(R.id.context_button_move_to_top_view);
+    	mContextHistiryViewMoveBottom=(LinearLayout)mHistoryView.findViewById(R.id.context_button_move_to_bottom_view);
+    	mContextHistiryViewDeleteHistory=(LinearLayout)mHistoryView.findViewById(R.id.context_button_delete_view);
+    	mContextHistiryViewHistoryCopyClipboard=(LinearLayout)mHistoryView.findViewById(R.id.context_button_copy_to_clipboard_view);
+    	mContextHistiryViewSelectAll=(LinearLayout)mHistoryView.findViewById(R.id.context_button_select_all_view);
+    	mContextHistiryViewUnselectAll=(LinearLayout)mHistoryView.findViewById(R.id.context_button_unselect_all_view);
 
-    	LinearLayout ll_msg=(LinearLayout) findViewById(R.id.context_view_message);
-    	mContextMessageButtonPinned=(ImageButton)ll_msg.findViewById(R.id.context_button_pinned);
-        mContextMessageButtonMoveTop=(ImageButton)ll_msg.findViewById(R.id.context_button_move_to_top);
-        mContextMessageButtonMoveBottom=(ImageButton)ll_msg.findViewById(R.id.context_button_move_to_bottom);
-        mContextMessageButtonClear=(ImageButton)ll_msg.findViewById(R.id.context_button_clear);
+    	mContextMessageButtonPinned=(ImageButton)mMessageView.findViewById(R.id.context_button_pinned);
+        mContextMessageButtonMoveTop=(ImageButton)mMessageView.findViewById(R.id.context_button_move_to_top);
+        mContextMessageButtonMoveBottom=(ImageButton)mMessageView.findViewById(R.id.context_button_move_to_bottom);
+        mContextMessageButtonClear=(ImageButton)mMessageView.findViewById(R.id.context_button_clear);
 
-        mContextMessageViewPinned=(LinearLayout)ll_msg.findViewById(R.id.context_button_pinned_view);
-        mContextMessageViewMoveTop=(LinearLayout)ll_msg.findViewById(R.id.context_button_move_to_top_view);
-        mContextMessageViewMoveBottom=(LinearLayout)ll_msg.findViewById(R.id.context_button_move_to_bottom_view);
-        mContextMessageViewClear=(LinearLayout)ll_msg.findViewById(R.id.context_button_clear_view);
+        mContextMessageViewPinned=(LinearLayout)mMessageView.findViewById(R.id.context_button_pinned_view);
+        mContextMessageViewMoveTop=(LinearLayout)mMessageView.findViewById(R.id.context_button_move_to_top_view);
+        mContextMessageViewMoveBottom=(LinearLayout)mMessageView.findViewById(R.id.context_button_move_to_bottom_view);
+        mContextMessageViewClear=(LinearLayout)mMessageView.findViewById(R.id.context_button_clear_view);
     };
 
     private void setContextButtonEnabled(final ImageButton btn, boolean enabled) {

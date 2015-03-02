@@ -17,6 +17,4 @@
         android:text="Scheduler info"
         android:textAppearance="?android:attr/textAppearanceMedium" />
     
-    <include layout="@layout/divider_line3" />
-    
 </LinearLayout>

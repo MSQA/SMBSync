@@ -79,7 +79,7 @@ public class GlobalParameters extends Application{
 	
 	public Handler uiHandler=null;
 	
-	public TextView scheduleInfoProfView=null, scheduleInfoHistView=null, scheduleInfoMsgView=null;
+	public TextView scheduleInfoView=null;
 	public String scheduleInfoText="";
 	
 	public AdapterProfileList profileAdapter=null;
