@@ -64,6 +64,9 @@ public class SMBSyncService extends Service {
 	
 	private WifiReceiver mWifiReceiver=new WifiReceiver();
 	
+	@SuppressWarnings("unused")
+	private Handler mUiHandler=null;
+	
 	@Override
 	public void onCreate() {
 		super.onCreate();
@@ -75,6 +78,8 @@ public class SMBSyncService extends Service {
 		
 		mUtil.addDebugLogMsg(1,"I","onCreate entered");
 
+		mUiHandler=new Handler();
+		
 		mWifiMgr=(WifiManager)getSystemService(Context.WIFI_SERVICE);
 		mWifiLock=mWifiMgr.createWifiLock(WifiManager.WIFI_MODE_FULL, "SMBSync-Service");
 		
@@ -345,6 +350,7 @@ public class SMBSyncService extends Service {
 				mUtil.addDebugLogMsg(1, "I", "aidlRelWakeLock WakeLock released.");
 			}
 		}
+		
     };
 
 	private void startThread() {

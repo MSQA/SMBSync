@@ -4,47 +4,62 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:ignore="TextFields,HardcodedText,ContentDescription" >
+    tools:ignore="TextFields,HardcodedText,ContentDescription,NewApi" >
 
     <LinearLayout
+        android:id="@+id/mount_point_edit_dlg_title_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
 
-        <ImageButton
-            android:id="@+id/mount_point_edit_dlg_btn_done"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="#00000000"
-            android:scaleType="centerCrop"
-            android:src="@drawable/ic_action_done" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
 
-        <TextView
-            android:id="@+id/mount_point_edit_dlg_title"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:gravity="left|center_vertical"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            <ImageButton
+                android:id="@+id/mount_point_edit_dlg_btn_done"
+                android:layout_width="40dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="0dp"
+                android:background="#00000000"
+                android:scaleType="fitCenter"
+                android:src="@drawable/abc_ic_ab_back_mtrl_am_alpha" />
+
+            <TextView
+                android:id="@+id/mount_point_edit_dlg_title"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left|center_vertical"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        </LinearLayout>
+
+        <include layout="@layout/divider_line1_turquoise" />
+        
     </LinearLayout>
-
-    <include layout="@layout/divider_line1_turquoise" />
 
     <TextView
         android:id="@+id/mount_point_edit_dlg_msg"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textColor="#ff0000"
+        android:layout_marginLeft="5dp"
         android:textAppearance="?android:attr/textAppearanceMedium" />
     
     <ListView
         android:id="@+id/mount_point_edit_dlg_listview"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginLeft="5dp"
         android:layout_weight="1" >
     </ListView>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp" >
 
         <Button
             android:id="@+id/mount_point_edit_dlg_add_path"

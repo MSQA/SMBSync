@@ -43,6 +43,7 @@ import android.widget.Button;
 import android.widget.CheckedTextView;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -170,7 +171,7 @@ public class ProfileMaintSyncFragment extends DialogFragment{
     	if (DEBUG_ENABLE) Log.v(APPLICATION_TAG,SUB_APPLICATION_TAG+"onCreateDialog");
 
 //    	mContext=getActivity().getApplicationContext();
-    	mDialog=new Dialog(getActivity());
+    	mDialog=new Dialog(getActivity(), mGp.applicationTheme);
 		mDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		mDialog.setCanceledOnTouchOutside(false);
 		mDialog.getWindow().setSoftInputMode(
@@ -349,7 +350,11 @@ public class ProfileMaintSyncFragment extends DialogFragment{
     final private void addProfile(boolean copy, final ProfileListItem pfli) {
 		mDialog.setContentView(R.layout.edit_profile_sync);
 
+		final LinearLayout title_view=(LinearLayout) mDialog.findViewById(R.id.sync_profile_dlg_title_view);
+		title_view.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);
 		final TextView dlg_title=(TextView) mDialog.findViewById(R.id.sync_profile_dlg_title);
+		dlg_title.setTextColor(mGp.themeColorList.text_color_dialog_title);
+
 		if (!copy) dlg_title.setText(mContext.getString(R.string.msgs_add_sync_profile));
 		else dlg_title.setText(mContext.getString(R.string.msgs_copy_sync_profile));
 //		dlg_title.setText(mContext.getString(R.string.msgs_copy_sync_profile));
@@ -765,9 +770,14 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 	
 		// カスタムダイアログの生成
 		mDialog.setContentView(R.layout.edit_profile_sync);
+		final LinearLayout title_view=(LinearLayout) mDialog.findViewById(R.id.sync_profile_dlg_title_view);
+		title_view.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);
 		final TextView dlg_title=(TextView) mDialog.findViewById(R.id.sync_profile_dlg_title);
+		dlg_title.setTextColor(mGp.themeColorList.text_color_dialog_title);
+
 		dlg_title.setText(mContext.getString(R.string.msgs_edit_sync_profile));
 		final TextView dlg_title_sub=(TextView) mDialog.findViewById(R.id.sync_profile_dlg_title_sub);
+		dlg_title_sub.setTextColor(mGp.themeColorList.text_color_dialog_title);
 		dlg_title_sub.setText(" ("+pfli.getProfileName()+")");
 
 		

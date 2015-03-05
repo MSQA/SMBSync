@@ -110,7 +110,7 @@ public class ProfileCreationWizard {
 	public void wizardMain() {
 		mWizData=new WizardData();
 		// カスタムダイアログの生成
-		final Dialog dialog = new Dialog(mContext);
+		final Dialog dialog = new Dialog(mContext, mGp.applicationTheme);
 		mWizData.dialog_list.add(dialog);
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		dialog.setCanceledOnTouchOutside(false);
@@ -121,7 +121,10 @@ public class ProfileCreationWizard {
 		final LinearLayout ll_remote=(LinearLayout)dialog.findViewById(R.id.sync_wizard_dlg_remote);
 		final LinearLayout ll_sync=(LinearLayout)dialog.findViewById(R.id.sync_wizard_dlg_sync);
 
+		final LinearLayout title_view=(LinearLayout) dialog.findViewById(R.id.sync_wizard_dlg_title_view);
+		title_view.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);
 		final TextView dlg_title=(TextView) dialog.findViewById(R.id.sync_wizard_dlg_title);
+		dlg_title.setTextColor(mGp.themeColorList.text_color_dialog_title);
 		dlg_title.setText(mContext.getString(R.string.msgs_sync_wizard_title)+" - "+
 				mContext.getString(R.string.msgs_sync_wizard_title_type_overall));
 		
@@ -455,7 +458,11 @@ public class ProfileCreationWizard {
 		final LinearLayout ll_remote=(LinearLayout)dialog.findViewById(R.id.sync_wizard_dlg_remote);
 		final LinearLayout ll_sync=(LinearLayout)dialog.findViewById(R.id.sync_wizard_dlg_sync);
 
+		final LinearLayout title_view=(LinearLayout) dialog.findViewById(R.id.sync_wizard_dlg_title_view);
+		title_view.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);
 		final TextView dlg_title=(TextView) dialog.findViewById(R.id.sync_wizard_dlg_title);
+		dlg_title.setTextColor(mGp.themeColorList.text_color_dialog_title);
+
 		String n_type="";
 		if (node_pos==0) n_type=mContext.getString(R.string.msgs_sync_wizard_title_type_master);
 		else n_type=mContext.getString(R.string.msgs_sync_wizard_title_type_target);
@@ -771,7 +778,11 @@ public class ProfileCreationWizard {
 		final LinearLayout ll_remote=(LinearLayout)dialog.findViewById(R.id.sync_wizard_dlg_remote);
 		final LinearLayout ll_sync=(LinearLayout)dialog.findViewById(R.id.sync_wizard_dlg_sync);
 
+		final LinearLayout title_view=(LinearLayout) dialog.findViewById(R.id.sync_wizard_dlg_title_view);
+		title_view.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);
 		final TextView dlg_title=(TextView) dialog.findViewById(R.id.sync_wizard_dlg_title);
+		dlg_title.setTextColor(mGp.themeColorList.text_color_dialog_title);
+
 		String n_type="";
 		if (node_pos==0) n_type=mContext.getString(R.string.msgs_sync_wizard_title_type_master);
 		else n_type=mContext.getString(R.string.msgs_sync_wizard_title_type_target);
@@ -1340,7 +1351,11 @@ public class ProfileCreationWizard {
 		final LinearLayout ll_remote=(LinearLayout)dialog.findViewById(R.id.sync_wizard_dlg_remote);
 		final LinearLayout ll_sync=(LinearLayout)dialog.findViewById(R.id.sync_wizard_dlg_sync);
 
+		final LinearLayout title_view=(LinearLayout) dialog.findViewById(R.id.sync_wizard_dlg_title_view);
+		title_view.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);
 		final TextView dlg_title=(TextView) dialog.findViewById(R.id.sync_wizard_dlg_title);
+		dlg_title.setTextColor(mGp.themeColorList.text_color_dialog_title);
+
 		dlg_title.setText(mContext.getString(R.string.msgs_sync_wizard_title)+" - "+
 				mContext.getString(R.string.msgs_sync_wizard_title_type_sync));
 		
@@ -1503,7 +1518,7 @@ public class ProfileCreationWizard {
 			public void onClick(View v) {
 				ArrayList<ProfileListItem>pl=new ArrayList<ProfileListItem>();
 				AdapterProfileList t_prof=new AdapterProfileList(mContext,
-							R.layout.profile_list_item_view, pl, mGp.themeIsLight);
+							R.layout.profile_list_item_view, pl);
 				syncWizardCreateProfile(t_prof);
 				NotifyEvent ntfy=new NotifyEvent(mContext);
 				//Listen setRemoteShare response 

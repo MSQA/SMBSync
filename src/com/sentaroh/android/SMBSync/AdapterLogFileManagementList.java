@@ -26,9 +26,10 @@ OTHER DEALINGS IN THE SOFTWARE.
 import java.util.ArrayList;
 
 import com.sentaroh.android.Utilities.NotifyEvent;
+import com.sentaroh.android.Utilities.ThemeColorList;
+import com.sentaroh.android.Utilities.ThemeUtil;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,18 +45,16 @@ public class AdapterLogFileManagementList extends BaseAdapter{
 	private int textViewResourceId=0;
 	private Context c;
 	
-	private boolean themeIsLight=false;
-	
 	private NotifyEvent mCheckBoxClickListener=null;
-	
+	private ThemeColorList mThemeColorList;
 	public AdapterLogFileManagementList(Context context, int textViewResourceId,
-			ArrayList<LogFileManagemntListItem> objects, NotifyEvent ntfy, boolean theme_is_light) {
+			ArrayList<LogFileManagemntListItem> objects, NotifyEvent ntfy) {
 		c=context;
 		log_list=objects;
 		mCheckBoxClickListener=ntfy;
-		themeIsLight=theme_is_light;
 		this.textViewResourceId=textViewResourceId;
 		if (isAnyItemSelected()) setShowCheckBox(true);
+		mThemeColorList=ThemeUtil.getThemeColorList(context);
 	}
 	
 	public void replaceDataList(ArrayList<LogFileManagemntListItem> dl) {
@@ -146,10 +145,9 @@ public class AdapterLogFileManagementList extends BaseAdapter{
         }
         final LogFileManagemntListItem o = getItem(position);
         if (o.log_file_name!=null) {
-        	if (o.isCurrentLogFile) holder.tv_log_file_name.setTextColor(Color.RED);
+        	if (o.isCurrentLogFile) holder.tv_log_file_name.setTextColor(mThemeColorList.text_color_error);
         	else {
-        		if (themeIsLight) holder.tv_log_file_name.setTextColor(Color.DKGRAY);
-            	else holder.tv_log_file_name.setTextColor(Color.WHITE);
+        		holder.tv_log_file_name.setTextColor(mThemeColorList.text_color_primary);
         	}
 //        	TypedValue outValue = new TypedValue();
 //        	c.getTheme().resolveAttribute(android.R.attr.textColorPrimary, outValue, true);

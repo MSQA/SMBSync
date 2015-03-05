@@ -6,15 +6,21 @@
     android:orientation="vertical"
     tools:ignore="SpUsage" >
 
-    <TextView
-        android:id="@+id/filter_select_edit_title"
-        android:layout_width="fill_parent"
+    <LinearLayout
+        android:id="@+id/filter_select_edit_title_view"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:text="@string/msgs_filter_list_dlg_file_filter"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:orientation="vertical" >
 
-    <include layout="@layout/divider_line1_turquoise" />
+        <TextView
+            android:id="@+id/filter_select_edit_title"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/msgs_filter_list_dlg_file_filter"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <include layout="@layout/divider_line1_turquoise" />
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"

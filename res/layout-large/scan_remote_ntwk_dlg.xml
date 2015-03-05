@@ -8,15 +8,21 @@
     android:orientation="vertical"
     tools:ignore="HardcodedText,InefficientWeight" >
 
-    <TextView
-        android:id="@+id/scan_remote_ntwk_title"
-        android:layout_width="fill_parent"
+    <LinearLayout
+        android:id="@+id/scan_remote_ntwk_title_view"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="@string/msgs_scan_ip_address_select_title"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:orientation="vertical" >
 
-    <include layout="@layout/divider_line1_turquoise" />
+        <TextView
+            android:id="@+id/scan_remote_ntwk_title"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/msgs_scan_ip_address_select_title"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <include layout="@layout/divider_line1_turquoise" />
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/scan_remote_ntwk_scan_address"

@@ -167,7 +167,7 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
     	if (DEBUG_ENABLE) Log.v(APPLICATION_TAG,SUB_APPLICATION_TAG+"onCreateDialog");
 
 //    	mContext=getActivity().getApplicationContext();
-    	mDialog=new Dialog(getActivity());
+    	mDialog=new Dialog(getActivity(), mGp.applicationTheme);
 		mDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		mDialog.setCanceledOnTouchOutside(false);
 		mDialog.getWindow().setSoftInputMode(
@@ -329,7 +329,11 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
     final private void addProfile(boolean copy, final ProfileListItem pfli) {
 		mDialog.setContentView(R.layout.edit_profile_remote);
 
+		final LinearLayout title_view=(LinearLayout) mDialog.findViewById(R.id.remote_profile_dlg_title_view);
+		title_view.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);
 		final TextView dlg_title=(TextView) mDialog.findViewById(R.id.remote_profile_dlg_title);
+		dlg_title.setTextColor(mGp.themeColorList.text_color_dialog_title);
+
 		if (!copy) dlg_title.setText(mContext.getString(R.string.msgs_add_remote_profile));
 		else dlg_title.setText(mContext.getString(R.string.msgs_copy_remote_profile));
 		
@@ -541,12 +545,15 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		dialog.setCanceledOnTouchOutside(false);
 		dialog.setContentView(R.layout.progress_spin_dlg);
-		((TextView)dialog.findViewById(R.id.progress_spin_dlg_title))
-			.setText(R.string.msgs_progress_spin_dlg_test_logon);
-		((TextView)dialog.findViewById(R.id.progress_spin_dlg_msg))
-			.setText("");
-		((TextView)dialog.findViewById(R.id.progress_spin_dlg_msg))
-			.setVisibility(TextView.GONE);
+		
+		final LinearLayout title_view = (LinearLayout) dialog.findViewById(R.id.progress_spin_dlg_title_view);
+		final TextView title = (TextView) dialog.findViewById(R.id.progress_spin_dlg_title);
+		title_view.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);
+		title.setTextColor(mGp.themeColorList.text_color_dialog_title);
+
+		title.setText(R.string.msgs_progress_spin_dlg_test_logon);
+		((TextView)dialog.findViewById(R.id.progress_spin_dlg_msg)).setText("");
+		((TextView)dialog.findViewById(R.id.progress_spin_dlg_msg)).setVisibility(TextView.GONE);
 		final Button btn_cancel = (Button) dialog.findViewById(R.id.progress_spin_dlg_btn_cancel);
 		btn_cancel.setText(R.string.msgs_progress_spin_dlg_test_logon_cancel);
 		
@@ -939,9 +946,15 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 		final CheckedTextView ctv_active = (CheckedTextView) mDialog.findViewById(R.id.remote_profile_ctv_active);
 		SMBSyncUtil.setCheckedTextView(ctv_active);
 		ctv_active.setChecked(pfli.isProfileActive());
+		
+		final LinearLayout title_view=(LinearLayout) mDialog.findViewById(R.id.remote_profile_dlg_title_view);
+		title_view.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);
 		final TextView dlg_title=(TextView) mDialog.findViewById(R.id.remote_profile_dlg_title);
+		dlg_title.setTextColor(mGp.themeColorList.text_color_dialog_title);
+		
 		dlg_title.setText(mContext.getString(R.string.msgs_edit_remote_profile));
 		final TextView dlg_title_sub=(TextView) mDialog.findViewById(R.id.remote_profile_dlg_title_sub);
+		dlg_title_sub.setTextColor(mGp.themeColorList.text_color_dialog_title);
 		dlg_title_sub.setText(" ("+pfli.getProfileName()+")");
 
 		

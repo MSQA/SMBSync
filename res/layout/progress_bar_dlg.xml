@@ -5,17 +5,24 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/progress_bar_dlg_title"
-        android:layout_width="fill_parent"
-        android:gravity="center_horizontal"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
+    <LinearLayout
+        android:id="@+id/progress_bar_dlg_title_view"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/msgs_progress_bar_dlg_aterm_terminating"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:orientation="vertical" >
 
-	<include layout="@layout/divider_line1_turquoise" />
+        <TextView
+            android:id="@+id/progress_bar_dlg_title"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:gravity="center_horizontal"
+            android:text="@string/msgs_progress_bar_dlg_aterm_terminating"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <include layout="@layout/divider_line1_turquoise" />
+    </LinearLayout>
     
     <TextView
         android:id="@+id/progress_bar_dlg_msg"

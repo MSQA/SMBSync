@@ -145,7 +145,7 @@ public class MountPointManagementFragment extends DialogFragment{
     public Dialog onCreateDialog(Bundle savedInstanceState) {
     	if (DEBUG_ENABLE) Log.v(APPLICATION_TAG,"onCreateDialog");
     	
-    	mDialog=new Dialog(getActivity());
+    	mDialog=new Dialog(getActivity(), mGp.applicationTheme);
 		mDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
 		mDialog.setCanceledOnTouchOutside(false);
@@ -255,7 +255,10 @@ public class MountPointManagementFragment extends DialogFragment{
     	
     	mDialog.setContentView(R.layout.mount_point_edit_dlg);
     	
+    	LinearLayout mDialogTitleView=(LinearLayout)mDialog.findViewById(R.id.mount_point_edit_dlg_title_view);
+    	mDialogTitleView.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);
     	mDlgTitle=(TextView)mDialog.findViewById(R.id.mount_point_edit_dlg_title);
+    	mDlgTitle.setTextColor(mGp.themeColorList.text_color_dialog_title);
     	mDlgMsg=(TextView)mDialog.findViewById(R.id.mount_point_edit_dlg_msg);
     	mDlgBtnDone=(ImageButton)mDialog.findViewById(R.id.mount_point_edit_dlg_btn_done);
     	mDlgListView=(ListView)mDialog.findViewById(R.id.mount_point_edit_dlg_listview);
@@ -263,6 +266,8 @@ public class MountPointManagementFragment extends DialogFragment{
     	mDlgBtnOk=(Button)mDialog.findViewById(R.id.mount_point_edit_dlg_ok_btn);
     	mDlgBtnCancel=(Button)mDialog.findViewById(R.id.mount_point_edit_dlg_cancel_btn);
     	mDlgEtPath=(EditText)mDialog.findViewById(R.id.mount_point_edit_dlg_new_path);
+
+    	mDlgBtnDone.setImageResource(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
 
     	mDlgBtnDone.setVisibility(ImageButton.GONE);
     	
@@ -286,8 +291,8 @@ public class MountPointManagementFragment extends DialogFragment{
     	});
     	
     	mMountPointListAdapter= 
-    				new AdapterMountPointEditList(mContext, 
-    						R.layout.mount_point_edit_list_item, mMountPointList, mGp.themeIsLight, ntfy_cb_listener);
+    				new AdapterMountPointEditList(getActivity(), 
+    						R.layout.mount_point_edit_list_item, mMountPointList, ntfy_cb_listener);
     	mDlgListView.setAdapter(mMountPointListAdapter);
     	mDlgListView.setClickable(true);
     	mDlgListView.setFocusable(true);
@@ -303,7 +308,7 @@ public class MountPointManagementFragment extends DialogFragment{
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int pos, long arg3) {
 				if (mMountPointListAdapter.getItem(0).mount_point==null || 
-						mMountPointListAdapter.getItem(0).isSystemDefined) return;
+						mMountPointListAdapter.getItem(pos).isSystemDefined) return;
 //				if (mGlblParms.settingAltUiEnabled) {
 //				} else mLogFileManagementAdapter.getItem(pos).isChecked=!mLogFileManagementAdapter.getItem(pos).isChecked;
 				if (mMountPointListAdapter.isShowCheckBox()) {
@@ -490,18 +495,18 @@ public class MountPointManagementFragment extends DialogFragment{
         ImageButton ib_select_all=(ImageButton)ll_prof.findViewById(R.id.context_button_select_all);
         ImageButton ib_unselect_all=(ImageButton)ll_prof.findViewById(R.id.context_button_unselect_all);
 
-    	mDlgBtnDone.setVisibility(ImageButton.VISIBLE);
-
-    	mDlgBtnDone.setOnClickListener(new OnClickListener(){
-			@Override
-			public void onClick(View v) {
-				mDlgBtnDone.setVisibility(ImageButton.GONE);
-				mMountPointListAdapter.setAllItemChecked(false);
-				mMountPointListAdapter.setShowCheckBox(false);
-				mMountPointListAdapter.notifyDataSetChanged();
-				setContextButtonNormalMode(mMountPointListAdapter);
-			}
-    	});
+//    	mDlgBtnDone.setVisibility(ImageButton.VISIBLE);
+//
+//    	mDlgBtnDone.setOnClickListener(new OnClickListener(){
+//			@Override
+//			public void onClick(View v) {
+//				mDlgBtnDone.setVisibility(ImageButton.GONE);
+//				mMountPointListAdapter.setAllItemChecked(false);
+//				mMountPointListAdapter.setShowCheckBox(false);
+//				mMountPointListAdapter.notifyDataSetChanged();
+//				setContextButtonNormalMode(mMountPointListAdapter);
+//			}
+//    	});
 
         ib_search_mp.setOnClickListener(new OnClickListener(){
 			@Override

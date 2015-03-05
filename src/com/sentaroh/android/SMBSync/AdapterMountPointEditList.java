@@ -6,7 +6,6 @@ import java.util.Comparator;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,6 +19,8 @@ import android.widget.TextView;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
 import com.sentaroh.android.Utilities.NotifyEvent;
+import com.sentaroh.android.Utilities.ThemeColorList;
+import com.sentaroh.android.Utilities.ThemeUtil;
 import com.sentaroh.android.Utilities.Widget.CustomTextView;
 
 public class AdapterMountPointEditList  extends BaseAdapter{
@@ -30,17 +31,17 @@ public class AdapterMountPointEditList  extends BaseAdapter{
 	
 	private NotifyEvent mCheckBoxClickListener=null;
 	
-	private boolean themeIsLight=false;
+	private ThemeColorList mThemeColorList;
 	
 	public AdapterMountPointEditList(Context context, int textViewResourceId,
-			ArrayList<MountPointEditListItem> objects, boolean themeIsLight, NotifyEvent ntfy) {
+			ArrayList<MountPointEditListItem> objects, NotifyEvent ntfy) {
 		c=context;
 		local_mount_point_list=objects;
 		mCheckBoxClickListener=ntfy;
 		this.textViewResourceId=textViewResourceId;
 		if (isAnyItemSelected()) setShowCheckBox(true);
-		this.themeIsLight=themeIsLight;
 		sort();
+		mThemeColorList=ThemeUtil.getThemeColorList(context);
 	}
 	
 	public void replaceDataList(ArrayList<MountPointEditListItem> dl) {
@@ -169,10 +170,8 @@ public class AdapterMountPointEditList  extends BaseAdapter{
     		holder.tv_lmp_path.setTextColor(cs_list.getDefaultColor());
     		holder.tv_lmp_type.setTextColor(cs_list);
     		if (o.isSystemDefined) {
-    			if (themeIsLight) holder.tv_lmp_path.setTextColor(Color.BLACK);
-    			else holder.tv_lmp_path.setTextColor(Color.GRAY);
-    			if (themeIsLight) holder.tv_lmp_type.setTextColor(Color.BLACK);
-    			else holder.tv_lmp_type.setTextColor(Color.GRAY);
+    			holder.tv_lmp_path.setTextColor(mThemeColorList.text_color_primary);
+    			holder.tv_lmp_type.setTextColor(mThemeColorList.text_color_primary);
     			holder.tv_lmp_type.setText("S");
     			holder.cb_select.setEnabled(false);
     			holder.cb_select.setVisibility(CheckBox.INVISIBLE);

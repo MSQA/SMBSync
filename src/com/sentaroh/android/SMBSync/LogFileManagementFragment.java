@@ -245,16 +245,21 @@ public class LogFileManagementFragment extends DialogFragment{
     private void restoreViewContents() {
     	
     };
-    
+
     private void initViewWidget() {
     	if (DEBUG_ENABLE) Log.v(APPLICATION_TAG,"initViewWidget");
     	if (mGp==null) return;
     	
     	mDialog.setContentView(R.layout.log_management_dlg);
     	
+    	LinearLayout mDialogTitleView=(LinearLayout)mDialog.findViewById(R.id.log_management_dlg_title_view);
+    	mDialogTitleView.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);
+
     	final TextView dlg_title=(TextView)mDialog.findViewById(R.id.log_management_dlg_title);
     	dlg_title.setText(mDialogTitle);
+    	dlg_title.setTextColor(mGp.themeColorList.text_color_dialog_title);
     	final ImageButton dlg_done=(ImageButton)mDialog.findViewById(R.id.log_management_dlg_btn_done);
+    	dlg_done.setImageResource(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
     	dlg_done.setVisibility(ImageButton.GONE);
     	
     	final ListView lv_log_file=(ListView)mDialog.findViewById(R.id.log_management_dlg_log_listview);
@@ -279,8 +284,8 @@ public class LogFileManagementFragment extends DialogFragment{
     	});
     	
     	mLogFileManagementAdapter=
-    				new AdapterLogFileManagementList(mContext, 
-    						R.layout.log_management_list_item,mLogFileList, ntfy_cb_listener, mGp.themeIsLight);
+    				new AdapterLogFileManagementList(getActivity(), 
+    						R.layout.log_management_list_item,mLogFileList, ntfy_cb_listener);
     	lv_log_file.setAdapter(mLogFileManagementAdapter);
     	lv_log_file.setClickable(true);
     	lv_log_file.setFocusable(true);

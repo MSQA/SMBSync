@@ -27,8 +27,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.sentaroh.android.Utilities.MiscUtil;
 import com.sentaroh.android.Utilities.ThemeColorList;
+import com.sentaroh.android.Utilities.ThemeUtil;
 import com.sentaroh.android.Utilities.Widget.CustomTextView;
 
 import android.content.Context;
@@ -98,16 +98,15 @@ public class AdapterMessageList extends ArrayAdapter<MsgListItem> {
 	private ThemeColorList mThemeColorList;
 
 	public AdapterMessageList(Context context, int textViewResourceId,
-			ArrayList<MsgListItem> objects, boolean theme_is_light) {
+			ArrayList<MsgListItem> objects) {
 		super(context, textViewResourceId, objects);
 		c = context;
 		id = textViewResourceId;
 		items = objects;
-		themeIsLight=theme_is_light;
 		msgTypeFace=Typeface.create(Typeface.MONOSPACE, Typeface.NORMAL);
 		vi=(LayoutInflater)c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		
-		mThemeColorList=MiscUtil.getThemeColorList(c);
+		mThemeColorList=ThemeUtil.getThemeColorList(c);
 	}
 	
 	final public void remove(int i) {

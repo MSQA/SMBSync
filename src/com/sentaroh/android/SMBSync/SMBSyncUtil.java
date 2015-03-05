@@ -645,7 +645,9 @@ public class SMBSyncUtil {
 			if (ha.getCount()==1) {
 				if (ha.getItem(0).sync_prof.equals("")) ha.remove(0);
 			}
+//			Log.v("","add");
 			ha.insert(item,0);
+//			Log.v("","Notify");
 			ha.notifyDataSetChanged();
 		}
 	};

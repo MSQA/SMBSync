@@ -30,6 +30,7 @@ import java.util.Collections;
 
 import com.sentaroh.android.SMBSync.SMBSyncMain.ViewSaveArea;
 import com.sentaroh.android.Utilities.LocalMountPoint;
+import com.sentaroh.android.Utilities.ThemeColorList;
 
 import android.annotation.SuppressLint;
 import android.app.Application;
@@ -40,7 +41,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.graphics.Color;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Handler;
@@ -57,8 +57,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class GlobalParameters extends Application{
-	public boolean initialyzeCompleted=false;
-	
 	public Context appContext=null;
 	
 	public int logLineCount=0;
@@ -76,6 +74,7 @@ public class GlobalParameters extends Application{
 	
 	public boolean themeIsLight=true;
 	public int applicationTheme=-1;
+	public ThemeColorList themeColorList=null;
 	
 	public Handler uiHandler=null;
 	
@@ -423,12 +422,10 @@ public class GlobalParameters extends Application{
 		if (Build.VERSION.SDK_INT>=11) themeIsLight=prefs.getBoolean(c.getString(R.string.settings_use_light_theme), false);
 		else themeIsLight=false;
 		if (themeIsLight) {
-			applicationTheme=R.style.Theme_AppCompat_Light_DarkActionBar;
-			dialogViewBackGroundColor=Color.WHITE;
+			applicationTheme=R.style.MainLight;
 //			dialogViewBackGroundColor=Color.argb(255, 50, 50, 50);//.BLACK;
 		} else {
-			applicationTheme=R.style.Theme_AppCompat;
-			dialogViewBackGroundColor=Color.BLACK;
+			applicationTheme=R.style.Main;
 //			dialogViewBackGroundColor=Color.argb(255, 50, 50, 50);//.BLACK;
 		}
 //		if (Build.VERSION.SDK_INT>=21) dialogViewBackGroundColor=0xff333333;

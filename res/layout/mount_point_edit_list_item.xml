@@ -5,6 +5,7 @@
     android:id="@+id/mount_point_edit_list_item_lmp_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center_vertical"
     android:orientation="horizontal"
     tools:ignore="SpUsage,HardcodedText" >
 
@@ -14,7 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_weight="1"
-        android:text=""
+        android:text="a"
         android:textAppearance="?android:attr/textAppearanceLarge"
         ctv:textSize="18dp" />
 

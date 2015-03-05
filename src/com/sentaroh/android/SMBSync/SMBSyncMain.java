@@ -71,6 +71,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.text.ClipboardManager;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -95,6 +96,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sentaroh.android.Utilities.CallBackListener;
+import com.sentaroh.android.Utilities.ThemeUtil;
 import com.sentaroh.android.Utilities.StringUtil;
 import com.sentaroh.android.Utilities.LocalMountPoint;
 import com.sentaroh.android.Utilities.NotifyEvent;
@@ -117,7 +119,7 @@ public class SMBSyncMain extends ActionBarActivity {
 	private Context mContext=null;
 	private Activity mActivity=null;
 	
-	private static GlobalParameters mGp=null;
+	private GlobalParameters mGp=null;
 	private ProfileUtility profUtil=null;
 	
 	private static SMBSyncUtil util=null;
@@ -140,7 +142,7 @@ public class SMBSyncMain extends ActionBarActivity {
 	
 	
 	private static ServiceConnection mSvcConnection=null;
-	private ThreadCtrl tcService=null;
+//	private ThreadCtrl tcService=null;
     private CommonDialog commonDlg=null;
     private static Handler mUiHandler=new Handler();
 
@@ -186,9 +188,11 @@ public class SMBSyncMain extends ActionBarActivity {
 		
 		setContentView(R.layout.main);
 		
+		mGp.themeColorList=ThemeUtil.getThemeColorList(mActivity);
 //		mGp.enableMainUi=true;
 
 		mActionBar = getSupportActionBar();
+		mActionBar.setDisplayShowHomeEnabled(false);
 		mActionBar.setHomeButtonEnabled(false);
 
 		checkExternalStorage();
@@ -201,14 +205,14 @@ public class SMBSyncMain extends ActionBarActivity {
 
         startService(new Intent(mContext, SMBSyncService.class));
         
-		tcService=new ThreadCtrl();
+//		tcService=new ThreadCtrl();
 
 		ccMenu = new CustomContextMenu(getResources(),getSupportFragmentManager());
-		commonDlg=new CommonDialog(mContext, getSupportFragmentManager());
+		commonDlg=new CommonDialog(this, getSupportFragmentManager());
 
 		profUtil=new ProfileUtility(util,this, commonDlg, ccMenu, mGp,getSupportFragmentManager());
 		
-        if (!mGp.initialyzeCompleted) {
+//        if (!mGp.initialyzeCompleted) {
            	mGp.mDimScreenWakelock=((PowerManager)getSystemService(Context.POWER_SERVICE))
     	    			.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK
 //    	    				 PowerManager.PARTIAL_WAKE_LOCK
@@ -220,18 +224,18 @@ public class SMBSyncMain extends ActionBarActivity {
     				.createWifiLock(WifiManager.WIFI_MODE_FULL, "SMBSync-wifi");
            	
 			ArrayList<MsgListItem> tml =new ArrayList<MsgListItem>();
-			mGp.msgListAdapter = new AdapterMessageList(this,R.layout.msg_list_item_view,tml,mGp.themeIsLight);
+			mGp.msgListAdapter = new AdapterMessageList(this,R.layout.msg_list_item_view,tml);
 
 			mGp.profileAdapter=profUtil.createProfileList(false,"");
 			
 			mGp.syncHistoryAdapter=new AdapterSyncHistory(mActivity, R.layout.sync_history_list_item_view, 
-					util.loadHistoryList(),mGp.themeIsLight);
+					util.loadHistoryList());
 			util.housekeepHistoryList();
 			mGp.currentTab=SMBSYNC_TAB_NAME_PROF;
 			
 			mGp.buildLocalMountPointList(mContext);
-        }
-        mGp.initialyzeCompleted=true;
+//        }
+//        mGp.initialyzeCompleted=true;
         
 		createTabView() ;
 		
@@ -370,12 +374,12 @@ public class SMBSyncMain extends ActionBarActivity {
 	
 	private void restoreViewAndTabData() {
 		ArrayList<ProfileListItem>pfl=mGp.profileAdapter.getArrayList();
-		mGp.profileAdapter=new AdapterProfileList(mContext, R.layout.profile_list_item_view, pfl, mGp.themeIsLight);
+		mGp.profileAdapter=new AdapterProfileList(mContext, R.layout.profile_list_item_view, pfl);
 		mGp.profileAdapter.setShowCheckBox(mGp.mainViewSaveArea.prof_adapter_show_cb);
 		mGp.profileAdapter.notifyDataSetChanged();
 
 		ArrayList<SyncHistoryListItem> hl=mGp.syncHistoryAdapter.getSyncHistoryList();
-		mGp.syncHistoryAdapter=new AdapterSyncHistory(mActivity, R.layout.sync_history_list_item_view, hl,mGp.themeIsLight);
+		mGp.syncHistoryAdapter=new AdapterSyncHistory(mActivity, R.layout.sync_history_list_item_view, hl);
 		mGp.syncHistoryAdapter.setShowCheckBox(mGp.mainViewSaveArea.sync_adapter_show_cb);
 		mGp.syncHistoryAdapter.notifyDataSetChanged();
 		tabHost.setOnTabChangedListener(null);
@@ -410,7 +414,7 @@ public class SMBSyncMain extends ActionBarActivity {
 								checkAutoStart(intent);
 							} else {
 								if (mGp.profileAdapter.isEmptyAdapter()) {
-									ProfileCreationWizard sw=new ProfileCreationWizard(mGp, mContext, 
+									ProfileCreationWizard sw=new ProfileCreationWizard(mGp, mActivity, 
 												util, profUtil, commonDlg, mGp.profileAdapter, null);
 									sw.wizardMain();
 								} else {
@@ -616,16 +620,21 @@ public class SMBSyncMain extends ActionBarActivity {
 		    
 			mGp.profileListView.setAdapter(null);
 			ArrayList<ProfileListItem>pfl=mGp.profileAdapter.getArrayList();
-			
+
+			mGp.msgListView.setAdapter(null);
+			ArrayList<MsgListItem>mfl=mGp.msgListAdapter.getMessageList();
+
 			createTabView() ;
 			tabHost.setOnTabChangedListener(null);
 			
-			mGp.profileAdapter=new AdapterProfileList(mContext, R.layout.profile_list_item_view, pfl, mGp.themeIsLight);
+			mGp.profileAdapter=new AdapterProfileList(mActivity, R.layout.profile_list_item_view, pfl);
 			mGp.profileAdapter.setShowCheckBox(vsa.prof_adapter_show_cb);
 			mGp.profileAdapter.notifyDataSetChanged();
 			
+			mGp.msgListAdapter = new AdapterMessageList(this,R.layout.msg_list_item_view,mfl);
+			
 			mGp.syncHistoryAdapter=new AdapterSyncHistory(mActivity, R.layout.sync_history_list_item_view, 
-					vsa.sync_hist_list, mGp.themeIsLight);
+					vsa.sync_hist_list);
 			mGp.syncHistoryAdapter.setShowCheckBox(vsa.sync_adapter_show_cb);
 			mGp.syncHistoryAdapter.notifyDataSetChanged();
 
@@ -674,7 +683,7 @@ public class SMBSyncMain extends ActionBarActivity {
 
 		    mGp.syncHistoryListView.setAdapter(null);
 			mGp.syncHistoryAdapter=
-				new AdapterSyncHistory(mActivity, R.layout.sync_history_list_item_view, vsa.sync_hist_list, mGp.themeIsLight);
+				new AdapterSyncHistory(mActivity, R.layout.sync_history_list_item_view, vsa.sync_hist_list);
 			mGp.syncHistoryAdapter.setShowCheckBox(show_cb);
 			
 			mGp.syncHistoryListView.setAdapter(mGp.syncHistoryAdapter);
@@ -1014,6 +1023,8 @@ public class SMBSyncMain extends ActionBarActivity {
 	@SuppressLint("InflateParams")
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	private void createTabView() {
+		mGp.dialogViewBackGroundColor=mGp.themeColorList.window_background_color_content;
+		
 		tabHost=(TabHost)findViewById(android.R.id.tabhost);
 		tabHost.setup();
 		mTabWidget = (TabWidget) findViewById(android.R.id.tabs);
@@ -1032,16 +1043,23 @@ public class SMBSyncMain extends ActionBarActivity {
 		CustomTabContentView tabViewMsg = new CustomTabContentView(this,getString(R.string.msgs_tab_name_msg));
 		tabHost.addTab(tabHost.newTabSpec(SMBSYNC_TAB_NAME_MSG).setIndicator(tabViewMsg).setContent(android.R.id.tabcontent));
 		
+		LinearLayout ll_main=(LinearLayout)findViewById(R.id.main_view);
+		ll_main.setBackgroundColor(mGp.themeColorList.window_background_color_content);
+		
         LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		mProfileView=(LinearLayout)vi.inflate(R.layout.main_profile_view,null);
+//		mProfileView.setBackgroundColor(mThemeColorList.window_color_background);
 		mHistoryView=(LinearLayout)vi.inflate(R.layout.main_history_view,null);
+//		mHistoryView.setBackgroundColor(mThemeColorList.window_color_background);
 		mMessageView=(LinearLayout)vi.inflate(R.layout.main_msg_view,null);
+//		mMessageView.setBackgroundColor(mThemeColorList.window_color_background);
 
 		mGp.msgListView = (ListView) mMessageView.findViewById(R.id.message_view_list);
 		mGp.profileListView =(ListView) mProfileView.findViewById(R.id.profile_view_list);
 		mGp.syncHistoryListView=(ListView)mHistoryView.findViewById(R.id.history_view_list);
 		
 		mGp.scheduleInfoView=(TextView)findViewById(R.id.schedule_info);
+//		mGp.scheduleInfoView.setBackgroundColor(mThemeColorList.window_color_background);
 		
 		mGp.confirmView=(LinearLayout)findViewById(R.id.profile_confirm);
 		mGp.confirmView.setVisibility(LinearLayout.GONE);
@@ -1073,6 +1091,7 @@ public class SMBSyncMain extends ActionBarActivity {
 	    mMainViewPagerAdapter=new MainViewPagerAdapter(this, 
 	    		new View[]{mProfileView, mHistoryView, mMessageView});
 	    mMainViewPager=(MainViewPager)findViewById(R.id.main_view_pager);
+//	    mMainViewPager.setBackgroundColor(mThemeColorList.window_color_background);
 	    mMainViewPager.setAdapter(mMainViewPagerAdapter);
 	    mMainViewPager.setOnPageChangeListener(new PageChangeListener()); 
 		if (restartType==NORMAL_START) {
@@ -1245,7 +1264,7 @@ public class SMBSyncMain extends ActionBarActivity {
 //						ntfy.setListener(new NotifyEventListener(){
 //							@Override
 //							public void positiveResponse(Context c, Object[] o) {
-//								ProfileCreationWizard sw=new ProfileCreationWizard(mGp, mContext, 
+//								ProfileCreationWizard sw=new ProfileCreationWizard(mGp, mActivity, 
 //										util, profUtil, commonDlg, mGp.profileAdapter,null);
 //								sw.wizardMain();
 //							}
@@ -1274,8 +1293,12 @@ public class SMBSyncMain extends ActionBarActivity {
 				setContextButtonNormalMode();
 				return true;
 			case R.id.menu_top_last_mod_list:
+//				AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//				builder.setTitle("Title");
+//		        builder.setMessage("test");
+//		        builder.create().show();
 				LocalFileLastModified lflm=
-					new LocalFileLastModified(mContext,mGp.profileAdapter,util,commonDlg);
+					new LocalFileLastModified(mGp,this,mGp.profileAdapter,util,commonDlg);
 				lflm.maintLastModListDlg();
 				setContextButtonNormalMode();
 				return true;
@@ -1298,7 +1321,7 @@ public class SMBSyncMain extends ActionBarActivity {
 			case R.id.menu_top_scheduler:
 				if (mScheduleEditorAvailable) {
 					mScheduleEditorAvailable=false;
-					SchedulerEditor sm=new SchedulerEditor(util, mContext, commonDlg, ccMenu, mGp);
+					SchedulerEditor sm=new SchedulerEditor(util, this, commonDlg, ccMenu, mGp);
 					sm.initDialog();
 					setContextButtonNormalMode();
 					mUiHandler.postDelayed(new Runnable(){
@@ -1444,9 +1467,12 @@ public class SMBSyncMain extends ActionBarActivity {
 				final Dialog dialog = new Dialog(mContext);//, android.R.style.Theme_Black);
 				dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 				dialog.setContentView(R.layout.mixed_mount_point_dialog);
-				TextView title=(TextView)dialog.findViewById(R.id.mixed_mount_point_dialog_title);
+
+				final LinearLayout title_view = (LinearLayout) dialog.findViewById(R.id.mixed_mount_point_dialog_title_view);
+				final TextView title = (TextView) dialog.findViewById(R.id.mixed_mount_point_dialog_title);
+				title_view.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);
 				title.setText(mContext.getString(R.string.msgs_common_dialog_warning));
-				title.setTextColor(Color.YELLOW);
+				title.setTextColor(mGp.themeColorList.text_color_warning);
 				
 				((TextView)dialog.findViewById(R.id.mixed_mount_point_dialog_subtitle))
 				.setText(mContext.getString(R.string.msgs_local_file_modified_maint_mixed_old_new_title));
@@ -1500,7 +1526,7 @@ public class SMBSyncMain extends ActionBarActivity {
 				@Override
 				public void positiveResponse(Context c, Object[] o) {
 					LocalFileLastModified lflm=
-							new LocalFileLastModified(mContext,mGp.profileAdapter,util,commonDlg);
+							new LocalFileLastModified(mGp, mContext,mGp.profileAdapter,util,commonDlg);
 					lflm.maintLastModListDlg();
 				}
 				@Override
@@ -1582,8 +1608,13 @@ public class SMBSyncMain extends ActionBarActivity {
 		final Dialog dialog = new Dialog(this);
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		dialog.setContentView(R.layout.about_dialog);
-		((TextView)dialog.findViewById(R.id.about_dialog_title)).setText(
-			getString(R.string.msgs_dlg_title_about)+"(Ver "+packageVersionName+")");
+		
+		final LinearLayout title_view = (LinearLayout) dialog.findViewById(R.id.about_dialog_title_view);
+		final TextView title = (TextView) dialog.findViewById(R.id.about_dialog_title);
+		title_view.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);
+		title.setTextColor(mGp.themeColorList.text_color_dialog_title);
+
+		title.setText(getString(R.string.msgs_dlg_title_about)+"(Ver "+packageVersionName+")");
 		final WebView func_view=(WebView)dialog.findViewById(R.id.about_dialog_function);
 //		func_view.loadDataWithBaseURL("file:///android_asset/",
 //				getString(R.string.msgs_dlg_title_about_func_desc),"text/html","UTF-8","");
@@ -1738,7 +1769,11 @@ public class SMBSyncMain extends ActionBarActivity {
 		String p_opt=mGp.settingLogOption;
 		boolean p_light_theme=mGp.themeIsLight;
 		
-		mGp.loadSettingsParm(mGp.appContext);
+		Log.v("","p theme="+mGp.applicationTheme);
+		
+		mGp.loadSettingsParm(this);
+		
+		Log.v("","a theme="+mGp.applicationTheme);
 		
 		if (!mGp.settingLogMsgDir.equals(p_dir)) {// option was changed
 			LogUtil.closeLogFile();
@@ -1751,9 +1786,11 @@ public class SMBSyncMain extends ActionBarActivity {
 		}
 
 		if ((p_light_theme && !mGp.themeIsLight) || (!p_light_theme && mGp.themeIsLight)) {
-			startActivity(new Intent(this, getClass()));
-			commonDlg.showCommonDialog(false,"W",
-					"",mContext.getString(R.string.msgs_smbsync_main_settings_theme_changed_restart),null);
+		    setTheme(mGp.applicationTheme);
+		    mGp.themeColorList=ThemeUtil.getThemeColorList(mActivity);
+			screenReload();
+//			commonDlg.showCommonDialog(false,"W",
+//					"",mContext.getString(R.string.msgs_smbsync_main_settings_theme_changed_restart),null);
 		}
 		
 		checkJcifsOptionChanged();
@@ -2330,12 +2367,9 @@ public class SMBSyncMain extends ActionBarActivity {
 	};
 
 	private void setHistoryContextButtonSelectMode() {
-		mActionBar.setIcon(R.drawable.ic_action_done);
-		mActionBar.setHomeButtonEnabled(true);
-		
         int sel_cnt=mGp.syncHistoryAdapter.getItemSelectedCount();
         int tot_cnt=mGp.syncHistoryAdapter.getCount();
-        mActionBar.setTitle(""+sel_cnt+"/"+tot_cnt);
+		setActionBarSelectMode(sel_cnt, tot_cnt);
 		
 		mContextHistiryViewMoveTop.setVisibility(ImageButton.VISIBLE);
 		mContextHistiryViewMoveBottom.setVisibility(ImageButton.VISIBLE);
@@ -2358,9 +2392,7 @@ public class SMBSyncMain extends ActionBarActivity {
 	};
 
 	private void setHistoryContextButtonNormalMode() {
-		mActionBar.setIcon(R.drawable.smbsync);
-		mActionBar.setHomeButtonEnabled(false);
-		mActionBar.setTitle(R.string.app_name);
+		setActionBarNormalMode();
 
 		if (!mGp.syncHistoryAdapter.isEmptyAdapter())  {
 			mContextHistiryViewMoveTop.setVisibility(ImageButton.VISIBLE);
@@ -2851,7 +2883,7 @@ public class SMBSyncMain extends ActionBarActivity {
 			public void onClick(View v) {
 				if (mGp.enableMainUi) {
 					setContextButtonEnabled(mContextProfileButtonStartWizard,false);
-					ProfileCreationWizard sw=new ProfileCreationWizard(mGp, mContext, 
+					ProfileCreationWizard sw=new ProfileCreationWizard(mGp, mActivity, 
 							util, profUtil, commonDlg, mGp.profileAdapter, ntfy);
 					sw.wizardMain();
 					setContextButtonEnabled(mContextProfileButtonStartWizard,true);
@@ -3019,12 +3051,9 @@ public class SMBSyncMain extends ActionBarActivity {
 
 	private void setProfileContextButtonSelectMode() {
 		mContextProfileButtonSyncIconEnabled=R.drawable.ic_32_sync;
-		mActionBar.setIcon(R.drawable.ic_action_done);
-		mActionBar.setHomeButtonEnabled(true);
-		
         int sel_cnt=ProfileUtility.getAnyProfileSelectedItemCount(mGp.profileAdapter, SMBSYNC_PROF_GROUP_DEFAULT);
         int tot_cnt=mGp.profileAdapter.getCount();
-        mActionBar.setTitle(""+sel_cnt+"/"+tot_cnt);
+		setActionBarSelectMode(sel_cnt, tot_cnt);
 		
         boolean any_selected=ProfileUtility.isAnyProfileSelected(mGp.profileAdapter, SMBSYNC_PROF_GROUP_DEFAULT);
 
@@ -3121,11 +3150,25 @@ public class SMBSyncMain extends ActionBarActivity {
 
 	};
 	
+	private void setActionBarSelectMode(int sel_cnt, int tot_cnt) {
+		ActionBar actionBar = getSupportActionBar();
+		actionBar.setHomeButtonEnabled(true);
+		actionBar.setDisplayHomeAsUpEnabled(true);
+        String sel_txt=""+sel_cnt+"/"+tot_cnt;
+        actionBar.setTitle(sel_txt);
+	};
+
+	private void setActionBarNormalMode() {
+		ActionBar actionBar = getSupportActionBar();
+		actionBar.setTitle(R.string.app_name);
+		actionBar.setHomeButtonEnabled(false);
+		actionBar.setDisplayHomeAsUpEnabled(false);
+	};
+
+	
 	private void setProfileContextButtonNormalMode() {
 		mContextProfileButtonSyncIconEnabled=R.drawable.ic_32_sync;
-		mActionBar.setIcon(R.drawable.smbsync);
-		mActionBar.setTitle(R.string.app_name);
-		mActionBar.setHomeButtonEnabled(false);
+		setActionBarNormalMode();
 		
 		mGp.profileAdapter.setAllItemChecked(false);
 		mGp.profileAdapter.setShowCheckBox(false);
@@ -3339,9 +3382,12 @@ public class SMBSyncMain extends ActionBarActivity {
 				final Dialog dialog = new Dialog(mContext);//, android.R.style.Theme_Black);
 				dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 				dialog.setContentView(R.layout.confirm_app_specific_dir_dialog);
-				TextView title=(TextView)dialog.findViewById(R.id.confirm_app_specific_dialog_title);
+				
+				final LinearLayout title_view = (LinearLayout) dialog.findViewById(R.id.confirm_app_specific_dialog_title_view);
+				final TextView title = (TextView) dialog.findViewById(R.id.confirm_app_specific_dialog_title);
+				title_view.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);
 				title.setText(mContext.getString(R.string.msgs_common_dialog_warning));
-				title.setTextColor(Color.YELLOW);
+				title.setTextColor(mGp.themeColorList.text_color_warning);
 				
 				((TextView)dialog.findViewById(R.id.confirm_app_specific_dialog_subtitle))
 				.setText(mContext.getString(R.string.msgs_local_mount_point_app_specific_dir_used_title));
@@ -3818,9 +3864,9 @@ public class SMBSyncMain extends ActionBarActivity {
     			mSvcConnection = null;
    				util.addDebugLogMsg(1,"I","onServiceDisconnected entered");
 //    	    	mSvcClient=null;
-    	    	synchronized(tcService) {
-        	    	tcService.notify();
-    	    	}
+//    	    	synchronized(tcService) {
+//        	    	tcService.notify();
+//    	    	}
     		}
         };
     	

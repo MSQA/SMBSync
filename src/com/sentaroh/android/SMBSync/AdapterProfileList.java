@@ -37,9 +37,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Locale;
 
-import com.sentaroh.android.Utilities.MiscUtil;
 import com.sentaroh.android.Utilities.NotifyEvent;
 import com.sentaroh.android.Utilities.ThemeColorList;
+import com.sentaroh.android.Utilities.ThemeUtil;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -64,12 +64,11 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
 		@SuppressWarnings("unused")
 		private String tv_active_active,tv_active_inact, tv_no_sync, tv_status_running;
 		private String tv_status_success, tv_status_error, tv_status_cancel;
-		private boolean themeIsLight=false;
 		
 		private ThemeColorList mThemeColorList;
 		
 		public AdapterProfileList(Context c, int textViewResourceId,
-				ArrayList<ProfileListItem> objects, boolean theme_light) {
+				ArrayList<ProfileListItem> objects) {
 			super(c, textViewResourceId, objects);
 			mContext = c;
 			id = textViewResourceId;
@@ -83,9 +82,7 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
             tv_status_error=mContext.getString(R.string.msgs_sync_history_status_error);
             tv_status_cancel=mContext.getString(R.string.msgs_sync_history_status_cancel);
             
-            themeIsLight=theme_light;
-            
-            mThemeColorList=MiscUtil.getThemeColorList(c);
+            mThemeColorList=ThemeUtil.getThemeColorList(c);
 		}
 		public ProfileListItem getItem(int i) {
 			return items.get(i);
@@ -224,11 +221,15 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
             	holder.tv_row_name.setText(o.getProfileName());
                 
                 if (!getItem(position).getProfileActive().equals("A")) {
-              	   holder.tv_row_name.setEnabled(false);
-              	   holder.tv_row_active.setEnabled(false);
+//              	   holder.tv_row_name.setEnabled(false);
+//              	   holder.tv_row_active.setEnabled(false);
+              	   holder.tv_row_name.setTextColor(mThemeColorList.text_color_disabled);
+              	   holder.tv_row_active.setTextColor(mThemeColorList.text_color_disabled);
                 } else {
-               	   holder.tv_row_name.setEnabled(true);
-               	   holder.tv_row_active.setEnabled(true);
+//               	   holder.tv_row_name.setEnabled(true);
+//               	   holder.tv_row_active.setEnabled(true);
+               	   holder.tv_row_name.setTextColor(mThemeColorList.text_color_primary);
+               	   holder.tv_row_active.setTextColor(mThemeColorList.text_color_primary);
                 }
                
                 if (o.getProfileType().equals("S")) {//Sync profile
@@ -293,7 +294,7 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
                     	holder.tv_last_sync_result.setTextColor(mThemeColorList.text_color_primary);
 	        			if (o.isSyncRunning()) {
 	        				result=tv_status_running;
-                    		if (themeIsLight) holder.ll_view.setBackgroundColor(Color.GRAY);
+                    		if (mThemeColorList.theme_is_light) holder.ll_view.setBackgroundColor(Color.GRAY);
                     		else holder.ll_view.setBackgroundColor(Color.DKGRAY);
 	        			} else {
 	            			if (o.getLastSyncResult()==SyncHistoryListItem.SYNC_STATUS_SUCCESS) {
@@ -322,17 +323,25 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
                     }
                     
                     if (!getItem(position).isProfileActive()) {
-                    	holder.tv_row_master.setEnabled(false);
-                    	holder.tv_row_target.setEnabled(false);
                     	holder.iv_row_sync_dir_image.setImageResource(R.drawable.arrow_right_disabled); 
-                    	holder.tv_row_synctype.setEnabled(false);
-                    	for(int i=0;i<holder.ll_last_sync.getChildCount();i++) holder.ll_last_sync.getChildAt(i).setEnabled(false);
+//                    	holder.tv_row_master.setEnabled(false);
+//                    	holder.tv_row_target.setEnabled(false);
+//                    	holder.tv_row_synctype.setEnabled(false);
+//                    	for(int i=0;i<holder.ll_last_sync.getChildCount();i++) holder.ll_last_sync.getChildAt(i).setEnabled(false);
+                    	holder.tv_row_master.setTextColor(mThemeColorList.text_color_disabled);
+                    	holder.tv_row_target.setTextColor(mThemeColorList.text_color_disabled);
+                    	holder.tv_row_synctype.setTextColor(mThemeColorList.text_color_disabled);
+                    	for(int i=0;i<holder.ll_last_sync.getChildCount();i++) ((TextView)holder.ll_last_sync.getChildAt(i)).setTextColor(mThemeColorList.text_color_disabled);
                     } else {
-                    	holder.tv_row_master.setEnabled(true);
-                    	holder.tv_row_target.setEnabled(true);
                     	holder.iv_row_sync_dir_image.setImageResource(R.drawable.arrow_right_enabled); 
-                    	holder.tv_row_synctype.setEnabled(true);
-                    	for(int i=0;i<holder.ll_last_sync.getChildCount();i++) holder.ll_last_sync.getChildAt(i).setEnabled(true);
+//                    	holder.tv_row_master.setEnabled(true);
+//                    	holder.tv_row_target.setEnabled(true);
+//                    	holder.tv_row_synctype.setEnabled(true);
+//                    	for(int i=0;i<holder.ll_last_sync.getChildCount();i++) holder.ll_last_sync.getChildAt(i).setEnabled(true);
+                    	holder.tv_row_master.setTextColor(mThemeColorList.text_color_primary);
+                    	holder.tv_row_target.setTextColor(mThemeColorList.text_color_primary);
+                    	holder.tv_row_synctype.setTextColor(mThemeColorList.text_color_primary);
+                    	for(int i=0;i<holder.ll_last_sync.getChildCount();i++) ((TextView)holder.ll_last_sync.getChildAt(i)).setTextColor(mThemeColorList.text_color_primary);
                     }
                 } else if (o.getProfileType().equals("R") || o.getProfileType().equals("L")) {//Remote or Local profile
                 	holder.tv_dir_name.setVisibility(LinearLayout.VISIBLE);

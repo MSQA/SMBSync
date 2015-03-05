@@ -25,7 +25,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 import java.util.ArrayList;
 
-import com.sentaroh.android.Utilities.MiscUtil;
+import com.sentaroh.android.Utilities.ThemeUtil;
 import com.sentaroh.android.Utilities.NotifyEvent;
 import com.sentaroh.android.Utilities.ThemeColorList;
 
@@ -47,22 +47,19 @@ public class AdapterSyncHistory extends ArrayAdapter<SyncHistoryListItem> {
 	private Activity mActivity;
 	private int id;
 	private ArrayList<SyncHistoryListItem> items;
-	@SuppressWarnings("unused")
-	private boolean themeIsLight=false;
 	
 	private ThemeColorList mThemeColorList;
 	
 	public AdapterSyncHistory(Activity a, int textViewResourceId,
-			ArrayList<SyncHistoryListItem> objects, boolean themeIsLight) {
+			ArrayList<SyncHistoryListItem> objects) {
 		super(a, textViewResourceId, objects);
 		mContext=a.getApplicationContext();
 		mActivity=a;
 		id=textViewResourceId;
 		items=objects;
         vi=(LayoutInflater)a.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        this.themeIsLight=themeIsLight;
         
-        mThemeColorList=MiscUtil.getThemeColorList(a);
+        mThemeColorList=ThemeUtil.getThemeColorList(a);
 	}
 
 	@Override
@@ -139,12 +136,19 @@ public class AdapterSyncHistory extends ArrayAdapter<SyncHistoryListItem> {
     		holder.tv_cnt_copied=(TextView)v.findViewById(R.id.sync_history_list_view_count_copied);
     		holder.tv_cnt_deleted=(TextView)v.findViewById(R.id.sync_history_list_view_count_deleted);
     		holder.tv_cnt_ignored=(TextView)v.findViewById(R.id.sync_history_list_view_count_ignored);
-//    		holder.tv_cnt_retry=(TextView)v.findViewById(R.id.sync_history_list_view_count_retry);
     		holder.tv_seq=(TextView)v.findViewById(R.id.sync_history_list_view_seq);
     		holder.tv_error=(TextView)v.findViewById(R.id.sync_history_list_view_error_text);
     		holder.ll_count=(LinearLayout)v.findViewById(R.id.sync_history_list_view_count);
     		holder.ll_main=(LinearLayout)v.findViewById(R.id.sync_history_list_view);
-            
+
+    		holder.tv_date.setTextColor(mThemeColorList.text_color_primary);
+    		holder.tv_time.setTextColor(mThemeColorList.text_color_primary);
+    		holder.tv_prof.setTextColor(mThemeColorList.text_color_primary);
+    		holder.tv_status.setTextColor(mThemeColorList.text_color_primary);
+    		holder.tv_seq.setTextColor(mThemeColorList.text_color_primary);
+    		holder.tv_error.setTextColor(mThemeColorList.text_color_error);
+
+    		
 //    		if (mTextColorPrimary==-1) mTextColorPrimary=holder.tv_date.getCurrentTextColor();
     		
             v.setTag(holder);

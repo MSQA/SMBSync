@@ -5,14 +5,22 @@
         android:layout_height="fill_parent"
         android:orientation="vertical" >
 
-	<TextView
-	    android:id="@+id/mixed_mount_point_dialog_title"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:layout_gravity="center"
-	    android:layout_marginTop="5dp"
-	    android:textAppearance="?android:attr/textAppearanceLarge" />
-	<include layout="@layout/divider_line1_turquoise" />
+    <LinearLayout
+        android:id="@+id/mixed_mount_point_dialog_title_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/mixed_mount_point_dialog_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <include layout="@layout/divider_line1_turquoise" />
+    </LinearLayout>
+
 	<ScrollView 
 	    android:fadeScrollbars="false"
 	    android:layout_weight="1"

@@ -6,16 +6,22 @@
     android:orientation="vertical"
     tools:ignore="HardcodedText" >
 
-    <TextView
-        android:id="@+id/export_import_profile_title"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/export_import_profile_title_view"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginRight="5dp"
-        android:layout_marginTop="5dp"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:orientation="vertical" >
 
-    <include layout="@layout/divider_line1_turquoise" />
+        <TextView
+            android:id="@+id/export_import_profile_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="5dp"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <include layout="@layout/divider_line1_turquoise" />
+    </LinearLayout>
 
     <CheckedTextView
         android:id="@+id/export_import_profile_list_ctv_import_settings"

@@ -58,6 +58,7 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -75,7 +76,10 @@ public class LocalFileLastModified {
 	private SMBSyncUtil util;
 	private CommonDialog commonDlg;
 	
-	LocalFileLastModified(Context c, AdapterProfileList pa, SMBSyncUtil ut, CommonDialog cd) {
+	private GlobalParameters mGp=null;
+	
+	LocalFileLastModified(GlobalParameters gp, Context c, AdapterProfileList pa, SMBSyncUtil ut, CommonDialog cd) {
+		mGp=gp;
 		mContext=c;
 		profileAdapter=pa;
 		util=ut;
@@ -94,9 +98,15 @@ public class LocalFileLastModified {
 		} else holder_data_available=true;
 					
 		// common カスタムダイアログの生成
-		final Dialog dialog = new Dialog(mContext);
+		final Dialog dialog = new Dialog(mContext);//, mGp.applicationTheme);
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		dialog.setContentView(R.layout.maint_last_mod_list_dlg);
+		
+		LinearLayout title_view=(LinearLayout)dialog.findViewById(R.id.maint_last_mod_list_dlg_title_view);
+		TextView title=(TextView)dialog.findViewById(R.id.maint_last_mod_list_dlg_title);
+		title_view.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);
+		title.setTextColor(mGp.themeColorList.text_color_dialog_title);
+		
 		TextView dlg_msg=(TextView)dialog.findViewById(R.id.maint_last_mod_list_dlg_msg);
 		ListView dlg_lv=(ListView)dialog.findViewById(R.id.maint_last_mod_list_dlg_listview);
 		

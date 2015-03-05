@@ -234,6 +234,12 @@ public class ProfileUtility {
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		dialog.setCanceledOnTouchOutside(false);
 		dialog.setContentView(R.layout.password_input_dlg);
+		
+		final LinearLayout title_view = (LinearLayout) dialog.findViewById(R.id.password_input_title_view);
+		final TextView title = (TextView) dialog.findViewById(R.id.password_input_title);
+		title_view.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);
+		title.setTextColor(mGp.themeColorList.text_color_dialog_title);
+		
 		final TextView dlg_msg = (TextView) dialog.findViewById(R.id.password_input_msg);
 		final CheckedTextView ctv_protect = (CheckedTextView) dialog.findViewById(R.id.password_input_ctv_protect);
 		final Button btn_ok = (Button) dialog.findViewById(R.id.password_input_ok_btn);
@@ -334,6 +340,12 @@ public class ProfileUtility {
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		dialog.setCanceledOnTouchOutside(false);
 		dialog.setContentView(R.layout.password_input_dlg);
+		
+		final LinearLayout title_view = (LinearLayout) dialog.findViewById(R.id.password_input_title_view);
+		final TextView title = (TextView) dialog.findViewById(R.id.password_input_title);
+		title_view.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);
+		title.setTextColor(mGp.themeColorList.text_color_dialog_title);
+
 		final TextView dlg_msg = (TextView) dialog.findViewById(R.id.password_input_msg);
 		final CheckedTextView ctv_protect = (CheckedTextView) dialog.findViewById(R.id.password_input_ctv_protect);
 		final Button btn_ok = (Button) dialog.findViewById(R.id.password_input_ok_btn);
@@ -511,8 +523,11 @@ public class ProfileUtility {
 		
 		CommonDialog.setDlgBoxSizeLimit(dialog,true);
 		
-		TextView tv_title=(TextView)dialog.findViewById(R.id.export_import_profile_title);
-		tv_title.setText(mContext.getString(R.string.msgs_export_import_profile_title));
+		final LinearLayout title_view = (LinearLayout) dialog.findViewById(R.id.export_import_profile_title_view);
+		final TextView title = (TextView) dialog.findViewById(R.id.export_import_profile_title);
+		title_view.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);
+		title.setTextColor(mGp.themeColorList.text_color_dialog_title);
+		title.setText(mContext.getString(R.string.msgs_export_import_profile_title));
 //		TextView tv_msgx=(TextView)dialog.findViewById(R.id.export_import_profile_msg);
 //		tv_msgx.setVisibility(LinearLayout.GONE);
 		LinearLayout ll_filelist=(LinearLayout)dialog.findViewById(R.id.export_import_profile_file_list);
@@ -1092,12 +1107,15 @@ public class ProfileUtility {
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		dialog.setCanceledOnTouchOutside(false);
 		dialog.setContentView(R.layout.progress_spin_dlg);
-		((TextView)dialog.findViewById(R.id.progress_spin_dlg_title))
-			.setText(R.string.msgs_progress_spin_dlg_test_logon);
-		((TextView)dialog.findViewById(R.id.progress_spin_dlg_msg))
-			.setText("");
-		((TextView)dialog.findViewById(R.id.progress_spin_dlg_msg))
-			.setVisibility(TextView.GONE);
+		
+		final LinearLayout title_view = (LinearLayout) dialog.findViewById(R.id.progress_spin_dlg_title_view);
+		final TextView title = (TextView) dialog.findViewById(R.id.progress_spin_dlg_title);
+		title_view.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);
+		title.setTextColor(mGp.themeColorList.text_color_dialog_title);
+		title.setText(R.string.msgs_progress_spin_dlg_test_logon);
+		
+		((TextView)dialog.findViewById(R.id.progress_spin_dlg_msg)).setText("");
+		((TextView)dialog.findViewById(R.id.progress_spin_dlg_msg)).setVisibility(TextView.GONE);
 		final Button btn_cancel = (Button) dialog.findViewById(R.id.progress_spin_dlg_btn_cancel);
 		btn_cancel.setText(R.string.msgs_progress_spin_dlg_test_logon_cancel);
 		
@@ -1432,14 +1450,19 @@ public class ProfileUtility {
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		dialog.setCanceledOnTouchOutside(false);
 		dialog.setContentView(R.layout.single_item_input_dlg);
-		final TextView dlg_title = (TextView) dialog.findViewById(R.id.single_item_input_title);		
+		
+		final LinearLayout title_view = (LinearLayout) dialog.findViewById(R.id.single_item_input_title_view);
+		final TextView title = (TextView) dialog.findViewById(R.id.single_item_input_title);
+		title_view.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);
+		title.setTextColor(mGp.themeColorList.text_color_dialog_title);
+
 //		final TextView dlg_msg = (TextView) dialog.findViewById(R.id.single_item_input_msg);
 		final TextView dlg_cmp = (TextView) dialog.findViewById(R.id.single_item_input_name);
 		final Button btn_ok = (Button) dialog.findViewById(R.id.single_item_input_ok_btn);
 		final Button btn_cancel = (Button) dialog.findViewById(R.id.single_item_input_cancel_btn);
 		final EditText etInput=(EditText) dialog.findViewById(R.id.single_item_input_dir);
 		
-		dlg_title.setText(mContext.getString(R.string.msgs_rename_profile));
+		title.setText(mContext.getString(R.string.msgs_rename_profile));
 		
 		dlg_cmp.setVisibility(TextView.GONE);
 		CommonDialog.setDlgBoxSizeCompact(dialog);
@@ -1874,6 +1897,11 @@ public class ProfileUtility {
 		dialog.setCanceledOnTouchOutside(false);
 		dialog.setContentView(R.layout.filter_list_dlg);
 		
+		final LinearLayout title_view = (LinearLayout) dialog.findViewById(R.id.filter_select_edit_title_view);
+		final TextView title = (TextView) dialog.findViewById(R.id.filter_select_edit_title);
+		title_view.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);
+		title.setTextColor(mGp.themeColorList.text_color_dialog_title);
+
 		Button dirbtn=(Button) dialog.findViewById(R.id.filter_select_edit_dir_btn);
 		dirbtn.setVisibility(Button.GONE);
 
@@ -1894,8 +1922,7 @@ public class ProfileUtility {
 //		filterAdapter.getFileFilter().filter("D");
 //		lv.setTextFilterEnabled(false);
 //		lv.setDivider(new ColorDrawable(Color.WHITE));
-		final TextView dlg_title=(TextView) dialog.findViewById(R.id.filter_select_edit_title);
-		dlg_title.setText(mContext.getString(R.string.msgs_filter_list_dlg_file_filter));
+		title.setText(mContext.getString(R.string.msgs_filter_list_dlg_file_filter));
 		final TextView dlg_msg=(TextView) dialog.findViewById(R.id.filter_select_edit_msg);
 		
 		CommonDialog.setDlgBoxSizeLimit(dialog,true);
@@ -2013,6 +2040,11 @@ public class ProfileUtility {
 		dialog.setCanceledOnTouchOutside(false);
 		dialog.setContentView(R.layout.filter_list_dlg);
 		
+		final LinearLayout title_view = (LinearLayout) dialog.findViewById(R.id.filter_select_edit_title_view);
+		final TextView title = (TextView) dialog.findViewById(R.id.filter_select_edit_title);
+		title_view.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);
+		title.setTextColor(mGp.themeColorList.text_color_dialog_title);
+
 		filterAdapter = new AdapterFilterList(mContext,
 				R.layout.filter_list_item_view,filterList);
 		final ListView lv=
@@ -2031,8 +2063,7 @@ public class ProfileUtility {
         lv.setScrollingCacheEnabled(false);
         lv.setScrollbarFadingEnabled(false);
 		
-		final TextView dlg_title=(TextView) dialog.findViewById(R.id.filter_select_edit_title);
-		dlg_title.setText(mContext.getString(R.string.msgs_filter_list_dlg_dir_filter));
+		title.setText(mContext.getString(R.string.msgs_filter_list_dlg_dir_filter));
 		final TextView dlg_msg=(TextView) dialog.findViewById(R.id.filter_select_edit_msg);
 		final Button dirbtn = (Button) dialog.findViewById(R.id.filter_select_edit_dir_btn);
 		
@@ -2181,6 +2212,11 @@ public class ProfileUtility {
 		dialog.setCanceledOnTouchOutside(false);
 		dialog.setContentView(R.layout.filter_edit_dlg);
 		
+		final LinearLayout title_view = (LinearLayout) dialog.findViewById(R.id.filter_edit_dlg_title_view);
+		final TextView title = (TextView) dialog.findViewById(R.id.filter_select_edit_title);
+		title_view.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);
+		title.setTextColor(mGp.themeColorList.text_color_dialog_title);
+
 		CommonDialog.setDlgBoxSizeCompact(dialog);
 		final EditText et_filter=(EditText)dialog.findViewById(R.id.filter_edit_dlg_filter);
 		et_filter.setText(filter);
@@ -2277,10 +2313,16 @@ public class ProfileUtility {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCanceledOnTouchOutside(false);
     	dialog.setContentView(R.layout.item_select_list_dlg);
-		((TextView)dialog.findViewById(R.id.item_select_list_dlg_title))
-			.setText(mContext.getString(R.string.msgs_filter_list_dlg_add_dir_filter));
-		((TextView)dialog.findViewById(R.id.item_select_list_dlg_subtitle))
-    		.setText(msgs_current_dir+" "+item.getLocalMountPoint()+"/"+cdir);
+    	
+		final LinearLayout title_view = (LinearLayout) dialog.findViewById(R.id.item_select_list_dlg_title_view);
+		final TextView title = (TextView) dialog.findViewById(R.id.item_select_list_dlg_title);
+		final TextView subtitle = (TextView) dialog.findViewById(R.id.item_select_list_dlg_subtitle);
+		title_view.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);
+		title.setTextColor(mGp.themeColorList.text_color_dialog_title);
+		subtitle.setTextColor(mGp.themeColorList.text_color_dialog_title);
+		
+		title.setText(mContext.getString(R.string.msgs_filter_list_dlg_add_dir_filter));
+		subtitle.setText(msgs_current_dir+" "+item.getLocalMountPoint()+"/"+cdir);
         final TextView dlg_msg=(TextView)dialog.findViewById(R.id.item_select_list_dlg_msg);
 	    final Button btn_ok=(Button)dialog.findViewById(R.id.item_select_list_dlg_ok_btn);
 
@@ -2452,10 +2494,16 @@ public class ProfileUtility {
 				dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 				dialog.setCanceledOnTouchOutside(false);
 				dialog.setContentView(R.layout.item_select_list_dlg);
-				((TextView)dialog.findViewById(R.id.item_select_list_dlg_title))
-					.setText(mContext.getString(R.string.msgs_filter_list_dlg_add_dir_filter));
-				((TextView)dialog.findViewById(R.id.item_select_list_dlg_subtitle))
-		    		.setText(msgs_current_dir+" "+remurl+remdir);
+				
+				final LinearLayout title_view = (LinearLayout) dialog.findViewById(R.id.item_select_list_dlg_title_view);
+				final TextView title = (TextView) dialog.findViewById(R.id.item_select_list_dlg_title);
+				final TextView subtitle = (TextView) dialog.findViewById(R.id.item_select_list_dlg_subtitle);
+				title_view.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);
+				title.setTextColor(mGp.themeColorList.text_color_dialog_title);
+				subtitle.setTextColor(mGp.themeColorList.text_color_dialog_title);
+
+				title.setText(mContext.getString(R.string.msgs_filter_list_dlg_add_dir_filter));
+				subtitle.setText(msgs_current_dir+" "+remurl+remdir);
 		        final TextView dlg_msg=(TextView)dialog.findViewById(R.id.item_select_list_dlg_msg);
 		        final LinearLayout ll_context=(LinearLayout)dialog.findViewById(R.id.context_view_file_select);
 		        ll_context.setVisibility(LinearLayout.VISIBLE);
@@ -2850,6 +2898,12 @@ public class ProfileUtility {
 	    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 	    dialog.setCanceledOnTouchOutside(false);
 	    dialog.setContentView(R.layout.scan_remote_ntwk_dlg);
+	    
+		final LinearLayout title_view = (LinearLayout) dialog.findViewById(R.id.scan_remote_ntwk_title_view);
+		final TextView title = (TextView) dialog.findViewById(R.id.scan_remote_ntwk_title);
+		title_view.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);
+		title.setTextColor(mGp.themeColorList.text_color_dialog_title);
+
 	    final Button btn_scan=(Button)dialog.findViewById(R.id.scan_remote_ntwk_btn_ok);
 	    final Button btn_cancel=(Button)dialog.findViewById(R.id.scan_remote_ntwk_btn_cancel);
 	    final TextView tvmsg = (TextView) dialog.findViewById(R.id.scan_remote_ntwk_msg);
@@ -3421,10 +3475,17 @@ public class ProfileUtility {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCanceledOnTouchOutside(false);
     	dialog.setContentView(R.layout.item_select_list_dlg);
-        ((TextView)dialog.findViewById(R.id.item_select_list_dlg_title))
-        	.setText(msgs_select_local_dir);
-        ((TextView)dialog.findViewById(R.id.item_select_list_dlg_subtitle))
-        	.setText(msgs_current_dir+url+dir);
+    	
+		final LinearLayout title_view = (LinearLayout) dialog.findViewById(R.id.item_select_list_dlg_title_view);
+		final TextView title = (TextView) dialog.findViewById(R.id.item_select_list_dlg_title);
+		final TextView subtitle = (TextView) dialog.findViewById(R.id.item_select_list_dlg_subtitle);
+		title_view.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);
+		title.setTextColor(mGp.themeColorList.text_color_dialog_title);
+		subtitle.setTextColor(mGp.themeColorList.text_color_dialog_title);
+
+        title.setText(msgs_select_local_dir);
+        subtitle.setText(msgs_current_dir+url+dir);
+        
 	    final Button btn_ok=(Button)dialog.findViewById(R.id.item_select_list_dlg_ok_btn);
 
 //        if (rows.size()<=2) 
@@ -3576,8 +3637,13 @@ public class ProfileUtility {
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		dialog.setCanceledOnTouchOutside(false);
 		dialog.setContentView(R.layout.progress_spin_dlg);
-		((TextView)dialog.findViewById(R.id.progress_spin_dlg_title))
-			.setText(R.string.msgs_progress_spin_dlg_filelist_getting);
+		
+		final LinearLayout title_view = (LinearLayout) dialog.findViewById(R.id.progress_spin_dlg_title_view);
+		final TextView title = (TextView) dialog.findViewById(R.id.progress_spin_dlg_title);
+		title_view.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);
+		title.setTextColor(mGp.themeColorList.text_color_dialog_title);
+
+		title.setText(R.string.msgs_progress_spin_dlg_filelist_getting);
 		((TextView)dialog.findViewById(R.id.progress_spin_dlg_msg))
 			.setText("");
 		((TextView)dialog.findViewById(R.id.progress_spin_dlg_msg))
@@ -3695,10 +3761,16 @@ public class ProfileUtility {
 				dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 				dialog.setCanceledOnTouchOutside(false);
 				dialog.setContentView(R.layout.item_select_list_dlg);
-				((TextView)dialog.findViewById(R.id.item_select_list_dlg_title))
-					.setText(msgs_select_remote_share);
-				((TextView)dialog.findViewById(R.id.item_select_list_dlg_subtitle))
-					.setVisibility(TextView.GONE);
+				
+				final LinearLayout title_view = (LinearLayout) dialog.findViewById(R.id.item_select_list_dlg_title_view);
+				final TextView title = (TextView) dialog.findViewById(R.id.item_select_list_dlg_title);
+				final TextView subtitle = (TextView) dialog.findViewById(R.id.item_select_list_dlg_subtitle);
+				title_view.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);
+				title.setTextColor(mGp.themeColorList.text_color_dialog_title);
+				subtitle.setTextColor(mGp.themeColorList.text_color_dialog_title);
+
+				title.setText(msgs_select_remote_share);
+				subtitle.setVisibility(TextView.GONE);
 				
 //		        if (rows.size()<=2) 
 //		        	((TextView)dialog.findViewById(R.id.item_select_list_dlg_spacer))
@@ -3790,11 +3862,16 @@ public class ProfileUtility {
 			    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 			    dialog.setCanceledOnTouchOutside(false);
 				dialog.setContentView(R.layout.item_select_list_dlg);
-			    ((TextView)dialog.findViewById(R.id.item_select_list_dlg_title))
-			    	.setText(msgs_select_remote_dir);
-			    
-			    ((TextView)dialog.findViewById(R.id.item_select_list_dlg_subtitle))
-			    	.setText(msgs_current_dir+"/"+remurl);
+				
+				final LinearLayout title_view = (LinearLayout) dialog.findViewById(R.id.item_select_list_dlg_title_view);
+				final TextView title = (TextView) dialog.findViewById(R.id.item_select_list_dlg_title);
+				final TextView subtitle = (TextView) dialog.findViewById(R.id.item_select_list_dlg_subtitle);
+				title_view.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);
+				title.setTextColor(mGp.themeColorList.text_color_dialog_title);
+				subtitle.setTextColor(mGp.themeColorList.text_color_dialog_title);
+
+			    title.setText(msgs_select_remote_dir);
+			    subtitle.setText(msgs_current_dir+"/"+remurl);
 //			    if (rows.size()<1) {
 //			    	TextView dlg_msg=(TextView)dialog.findViewById(R.id.item_select_list_dlg_msg);
 //			    	dlg_msg.setText(msgs_dir_empty);
@@ -4122,7 +4199,7 @@ public class ProfileUtility {
 //				pfl.replace(item, i);
 			}
 		}
-		pfl = new AdapterProfileList(mContext, R.layout.profile_list_item_view, sync, mGp.themeIsLight);
+		pfl = new AdapterProfileList(mContext, R.layout.profile_list_item_view, sync);
 
 		if (pfl.getCount() == 0) {
 			if (BUILD_FOR_AMAZON) {
@@ -5553,6 +5630,7 @@ public class ProfileUtility {
 		saveSettingsParmsToFileString(c, group, pw, "0", encrypt_required,cp,c.getString(R.string.settings_playback_ringtone_when_sync_ended));
 		saveSettingsParmsToFileString(c, group, pw, "0", encrypt_required,cp,c.getString(R.string.settings_vibrate_when_sync_ended));
 		saveSettingsParmsToFileBoolean(c, group, pw, false, encrypt_required,cp,c.getString(R.string.settings_show_sync_on_action_bar));
+		saveSettingsParmsToFileBoolean(c, group, pw, false, encrypt_required,cp,c.getString(R.string.settings_use_light_theme));
 
 		saveSettingsParmsToFileString(c, group, pw, "0",    encrypt_required,cp,c.getString(R.string.settings_media_store_last_mod_time));
 		saveSettingsParmsToFileString(c, group, pw, "3",    encrypt_required,cp,c.getString(R.string.settings_file_diff_time_seconds));

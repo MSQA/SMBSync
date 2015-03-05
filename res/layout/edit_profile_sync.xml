@@ -6,25 +6,28 @@
     android:layout_height="fill_parent"
     android:orientation="vertical"
     tools:ignore="SpUsage,HardcodedText" >
-    
-    <TextView
-        android:id="@+id/sync_profile_dlg_title"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:gravity="center"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <TextView
-        android:id="@+id/sync_profile_dlg_title_sub"
-        android:layout_width="fill_parent"
+    <LinearLayout
+        android:id="@+id/sync_profile_dlg_title_view"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text=""
-        android:gravity="center"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-    
-     <include layout="@layout/divider_line1_turquoise" />
-    
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/sync_profile_dlg_title"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <TextView
+            android:id="@+id/sync_profile_dlg_title_sub"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <include layout="@layout/divider_line1_turquoise" />
+    </LinearLayout>
 
     <ScrollView
         android:layout_width="fill_parent"

@@ -36,6 +36,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
 import android.widget.CheckedTextView;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -163,7 +164,7 @@ public class ProfileMaintLocalFragment extends DialogFragment{
     	if (DEBUG_ENABLE) Log.v(APPLICATION_TAG,SUB_APPLICATION_TAG+"onCreateDialog");
 
 //    	mContext=getActivity().getApplicationContext();
-    	mDialog=new Dialog(getActivity());
+    	mDialog=new Dialog(getActivity(), mGp.applicationTheme);
 		mDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		mDialog.setCanceledOnTouchOutside(false);
 		mDialog.getWindow().setSoftInputMode(
@@ -296,7 +297,11 @@ public class ProfileMaintLocalFragment extends DialogFragment{
     final private void addProfile(boolean copy, final ProfileListItem pfli) {
 		mDialog.setContentView(R.layout.edit_profile_local);
 
+		final LinearLayout title_view=(LinearLayout) mDialog.findViewById(R.id.local_profile_dlg_title_view);
+		title_view.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);
 		final TextView dlg_title=(TextView) mDialog.findViewById(R.id.local_profile_dlg_title);
+		dlg_title.setTextColor(mGp.themeColorList.text_color_dialog_title);
+
 		if (!copy) dlg_title.setText(mContext.getString(R.string.msgs_add_local_profile));
 		else dlg_title.setText(mContext.getString(R.string.msgs_copy_local_profile));
 		
@@ -503,9 +508,13 @@ public class ProfileMaintLocalFragment extends DialogFragment{
 	private void editProfile(final ProfileListItem pfli) {
 		mDialog.setContentView(R.layout.edit_profile_local);
 		
+		final LinearLayout title_view=(LinearLayout) mDialog.findViewById(R.id.local_profile_dlg_title_view);
+		title_view.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);
 		final TextView dlg_title=(TextView) mDialog.findViewById(R.id.local_profile_dlg_title);
+		dlg_title.setTextColor(mGp.themeColorList.text_color_dialog_title);
 		dlg_title.setText(mContext.getString(R.string.msgs_edit_local_profile));
 		final TextView dlg_title_sub=(TextView) mDialog.findViewById(R.id.local_profile_dlg_title_sub);
+		dlg_title_sub.setTextColor(mGp.themeColorList.text_color_dialog_title);
 		dlg_title_sub.setText(" ("+pfli.getProfileName()+")");
 		final TextView dlg_msg=(TextView) mDialog.findViewById(R.id.local_profile_dlg_msg);
 		final EditText editdir = (EditText) mDialog.findViewById(R.id.local_profile_dir);
