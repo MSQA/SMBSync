@@ -14,6 +14,7 @@
             android:id="@+id/scheduler_edit_synclist_dlg_title"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
             android:text="@string/msgs_scheduler_edit_synclist_dlg_hdr_title"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 

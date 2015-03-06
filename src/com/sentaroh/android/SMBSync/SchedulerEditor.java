@@ -76,6 +76,12 @@ public class SchedulerEditor {
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		dialog.setCanceledOnTouchOutside(false);
 		dialog.setContentView(R.layout.scheduler_main_dlg);
+		
+    	LinearLayout title_view=(LinearLayout)dialog.findViewById(R.id.scheduler_main_dlg_title_view);
+    	title_view.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);
+    	TextView dlg_title=(TextView)dialog.findViewById(R.id.scheduler_main_dlg_title);
+    	dlg_title.setTextColor(mGp.themeColorList.text_color_dialog_title);
+
 		final Button btn_ok = (Button) dialog.findViewById(R.id.scheduler_main_dlg_ok);
 		final Button btn_cancel = (Button) dialog.findViewById(R.id.scheduler_main_dlg_cancel);
 		final Button btn_edit = (Button) dialog.findViewById(R.id.scheduler_main_dlg_edit_sync_prof);
@@ -333,6 +339,12 @@ public class SchedulerEditor {
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		dialog.setCanceledOnTouchOutside(false);
 		dialog.setContentView(R.layout.scheduler_edit_synclist_dlg);
+		
+    	LinearLayout title_view=(LinearLayout)dialog.findViewById(R.id.scheduler_edit_synclist_dlg_title_view);
+    	title_view.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);
+    	TextView dlg_title=(TextView)dialog.findViewById(R.id.scheduler_edit_synclist_dlg_title);
+    	dlg_title.setTextColor(mGp.themeColorList.text_color_dialog_title);
+
 		final CheckedTextView ctv_show_all_prof = (CheckedTextView) dialog.findViewById(R.id.scheduler_edit_synclist_dlg_show_active_prof);
 		final Button btn_ok = (Button) dialog.findViewById(R.id.scheduler_edit_synclist_dlg_ok);
 		final Button btn_cancel = (Button) dialog.findViewById(R.id.scheduler_edit_synclist_dlg_cancel);
@@ -555,7 +567,6 @@ public class SchedulerEditor {
 		final Spinner sp_sched_type=(Spinner)dialog.findViewById(R.id.scheduler_main_dlg_date_time_type);
 		
 		final CustomSpinnerAdapter adapter=new CustomSpinnerAdapter(mContext, R.layout.custom_simple_spinner_item);
-		adapter.setTextColor(Color.BLACK);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		sp_sched_type.setPrompt(mContext.getString(R.string.msgs_scheduler_main_spinner_sched_type_prompt));
 		sp_sched_type.setAdapter(adapter);
@@ -591,7 +602,6 @@ public class SchedulerEditor {
 	private void setScheduleHoursSpinner(Dialog dialog, String hh) {
 		final Spinner sp_sched_hours=(Spinner)dialog.findViewById(R.id.scheduler_main_dlg_exec_hours);
 		final CustomSpinnerAdapter adapter=new CustomSpinnerAdapter(mContext, R.layout.custom_simple_spinner_item);
-		adapter.setTextColor(Color.BLACK);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		sp_sched_hours.setPrompt(mContext.getString(R.string.msgs_scheduler_main_spinner_sched_hours_prompt));
 		sp_sched_hours.setAdapter(adapter);
@@ -609,7 +619,6 @@ public class SchedulerEditor {
 	private void setScheduleMinutesSpinner(Dialog dialog, String sched_type, String mm) {
 		final Spinner sp_sched_minutes=(Spinner)dialog.findViewById(R.id.scheduler_main_dlg_exec_minutes);
 		final CustomSpinnerAdapter adapter=new CustomSpinnerAdapter(mContext, R.layout.custom_simple_spinner_item);
-		adapter.setTextColor(Color.BLACK);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		sp_sched_minutes.setPrompt(mContext.getString(R.string.msgs_scheduler_main_spinner_sched_hours_prompt));
 		sp_sched_minutes.setAdapter(adapter);

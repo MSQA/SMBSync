@@ -294,8 +294,8 @@ public class AdapterProfileList extends ArrayAdapter<ProfileListItem> {
                     	holder.tv_last_sync_result.setTextColor(mThemeColorList.text_color_primary);
 	        			if (o.isSyncRunning()) {
 	        				result=tv_status_running;
-                    		if (mThemeColorList.theme_is_light) holder.ll_view.setBackgroundColor(Color.GRAY);
-                    		else holder.ll_view.setBackgroundColor(Color.DKGRAY);
+                    		if (mThemeColorList.theme_is_light) holder.ll_view.setBackgroundColor(Color.argb(255, 00, 192, 00));
+                    		else holder.ll_view.setBackgroundColor(Color.argb(255, 00, 128, 00));
 	        			} else {
 	            			if (o.getLastSyncResult()==SyncHistoryListItem.SYNC_STATUS_SUCCESS) {
 	            				result=tv_status_success;

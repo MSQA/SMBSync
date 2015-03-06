@@ -1292,7 +1292,6 @@ public class ProfileUtility {
 	static public void setSyncOptionSpinner(Context c, Spinner spinnerSyncOption, String prof_syncopt) {
 //		final Spinner spinnerSyncOption=(Spinner)dialog.findViewById(R.id.sync_profile_sync_option);
 		final CustomSpinnerAdapter adapterSyncOption=new CustomSpinnerAdapter(c, R.layout.custom_simple_spinner_item);
-		adapterSyncOption.setTextColor(Color.BLACK);
 		adapterSyncOption.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		spinnerSyncOption.setPrompt(c.getString(R.string.msgs_sync_profile_dlg_syncopt_prompt));
 		spinnerSyncOption.setAdapter(adapterSyncOption);
@@ -1846,7 +1845,6 @@ public class ProfileUtility {
         		new AdapterLocalMountPointSpinner(c,
 //        				android.R.layout.simple_spinner_item);
         				R.layout.custom_simple_spinner_item, gp.localMountPointList);
-        adapter.setTextColor(Color.BLACK);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setPrompt(c.getString(R.string.msgs_local_profile_dlg_local_mount_point));
         spinner.setAdapter(adapter);

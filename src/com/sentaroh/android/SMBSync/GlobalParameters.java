@@ -167,7 +167,6 @@ public class GlobalParameters extends Application{
 	public boolean settingRemoteFileCopyByRename=false;
 	public boolean settingLocalFileCopyByRename=true;
 	
-	public int dialogViewBackGroundColor=-1;
     public LinearLayout confirmView=null;
     public TextView confirmTitle=null;
     public TextView confirmMsg=null;
