@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scheduler_edit_synclist_dlg_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
@@ -15,6 +16,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
             android:text="@string/msgs_scheduler_edit_synclist_dlg_hdr_title"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 

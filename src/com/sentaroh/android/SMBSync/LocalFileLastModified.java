@@ -65,6 +65,8 @@ import android.widget.TextView;
 import com.sentaroh.android.Utilities.LocalMountPoint;
 import com.sentaroh.android.Utilities.NotifyEvent;
 import com.sentaroh.android.Utilities.NotifyEvent.NotifyEventListener;
+import com.sentaroh.android.Utilities.ThemeColorList;
+import com.sentaroh.android.Utilities.ThemeUtil;
 import com.sentaroh.android.Utilities.Dialog.CommonDialog;
 import com.sentaroh.android.Utilities.Dialog.DialogBackKeyListener;
 
@@ -101,6 +103,10 @@ public class LocalFileLastModified {
 		final Dialog dialog = new Dialog(mContext);//, mGp.applicationTheme);
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		dialog.setContentView(R.layout.maint_last_mod_list_dlg);
+		
+    	ThemeColorList tcl=ThemeUtil.getThemeColorList(mContext);
+		LinearLayout ll_dlg_view=(LinearLayout) dialog.findViewById(R.id.maint_last_mod_list_dlg_view);
+		ll_dlg_view.setBackgroundColor(tcl.dialog_msg_background_color);
 		
 		LinearLayout title_view=(LinearLayout)dialog.findViewById(R.id.maint_last_mod_list_dlg_title_view);
 		TextView title=(TextView)dialog.findViewById(R.id.maint_last_mod_list_dlg_title);

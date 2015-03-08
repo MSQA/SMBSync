@@ -67,7 +67,7 @@
         android:checkMark="?android:attr/textCheckMark"
         android:gravity="center_vertical"
         android:text="@string/msgs_sync_wizard_sync_all_files" 
-        />
+        android:textAppearance="?android:attr/textAppearanceMedium"/>
     
     <LinearLayout
         android:id="@+id/sync_wizard_dlg_process_files_list"

@@ -556,7 +556,7 @@ public class SMBSyncUtil {
 			StringBuilder sb_buf=new StringBuilder(1024*2);
 			SyncHistoryListItem shli=null;
 //			String cpy_str, del_str, ign_str;
-			ArrayList<SyncHistoryListItem>del_list=new ArrayList<SyncHistoryListItem>();
+			final ArrayList<SyncHistoryListItem>del_list=new ArrayList<SyncHistoryListItem>();
 			for (int i=0;i<hl.size();i++) {
 //				Log.v("","i="+i+", n="+hl.get(i).sync_prof);
 				if (!hl.get(i).sync_prof.equals("")) {
@@ -595,10 +595,10 @@ public class SMBSyncUtil {
 			}
 			
 			synchronized(ha) {
-				for (int i=0;i<del_list.size();i++) ha.remove(del_list.get(i));
 				mGp.uiHandler.post(new Runnable(){
 					@Override
 					public void run() {
+						for (int i=0;i<del_list.size();i++) ha.remove(del_list.get(i));
 						ha.notifyDataSetChanged();
 					}
 				});

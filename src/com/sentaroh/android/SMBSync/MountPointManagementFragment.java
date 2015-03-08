@@ -32,6 +32,8 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 
 import com.sentaroh.android.Utilities.NotifyEvent;
+import com.sentaroh.android.Utilities.ThemeColorList;
+import com.sentaroh.android.Utilities.ThemeUtil;
 import com.sentaroh.android.Utilities.Dialog.CommonDialog;
 import com.sentaroh.android.Utilities.Dialog.FileSelectDialogFragment;
 import com.sentaroh.android.Utilities.Dialog.MessageDialogFragment;
@@ -255,6 +257,10 @@ public class MountPointManagementFragment extends DialogFragment{
     	
     	mDialog.setContentView(R.layout.mount_point_edit_dlg);
     	
+    	ThemeColorList tcl=ThemeUtil.getThemeColorList(getActivity());
+		LinearLayout ll_dlg_view=(LinearLayout) mDialog.findViewById(R.id.mount_point_edit_dlg_view);
+		ll_dlg_view.setBackgroundColor(tcl.dialog_msg_background_color);
+
     	LinearLayout mDialogTitleView=(LinearLayout)mDialog.findViewById(R.id.mount_point_edit_dlg_title_view);
     	mDialogTitleView.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);
     	mDlgTitle=(TextView)mDialog.findViewById(R.id.mount_point_edit_dlg_title);

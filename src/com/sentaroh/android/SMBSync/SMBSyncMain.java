@@ -115,7 +115,7 @@ public class SMBSyncMain extends ActionBarActivity {
 	
 	private String packageVersionName="Not found"; 
 
-	private TabHost tabHost=null;
+	private TabHost mMainTabHost=null;
 	private Context mContext=null;
 	private Activity mActivity=null;
 	
@@ -337,7 +337,7 @@ public class SMBSyncMain extends ActionBarActivity {
 						restoreTaskData();
 						util.addLogMsg("W",mContext.getString(R.string.msgs_smbsync_main_restart_by_killed)+" Version "+packageVersionName);
 						showNotificationMsg(mContext.getString(R.string.msgs_smbsync_main_restart_by_killed)+" Version "+packageVersionName);
-						tabHost.setCurrentTabByTag(SMBSYNC_TAB_NAME_MSG);
+						mMainTabHost.setCurrentTabByTag(SMBSYNC_TAB_NAME_MSG);
 					} else if (restartType==RESTART_BY_DESTROYED) {
 						if (mGp.changedConfiguration==0) {
 							if (mGp.debugLevel>0) {
@@ -382,11 +382,11 @@ public class SMBSyncMain extends ActionBarActivity {
 		mGp.syncHistoryAdapter=new AdapterSyncHistory(mActivity, R.layout.sync_history_list_item_view, hl);
 		mGp.syncHistoryAdapter.setShowCheckBox(mGp.mainViewSaveArea.sync_adapter_show_cb);
 		mGp.syncHistoryAdapter.notifyDataSetChanged();
-		tabHost.setOnTabChangedListener(null);
+		mMainTabHost.setOnTabChangedListener(null);
 		initAdapterAndView();
 		restoreViewContent(mGp.mainViewSaveArea);
-		tabHost.setCurrentTabByTag(SMBSYNC_TAB_NAME_MSG);
-		tabHost.setOnTabChangedListener(new OnTabChange());
+		mMainTabHost.setCurrentTabByTag(SMBSYNC_TAB_NAME_MSG);
+		mMainTabHost.setOnTabChangedListener(new MainOnTabChange());
 		
 		if (mGp.confirmDialogShowed)
 			showConfirmDialog(mGp.confirmDialogFilePath, mGp.confirmDialogMethod);
@@ -428,8 +428,8 @@ public class SMBSyncMain extends ActionBarActivity {
 						if (mGp.mirrorThreadActive) {
 							if (isAutoStartRequested(intent)) {
 								String ymd=StringUtil.convDateTimeTo_YearMonthDayHourMinSec(System.currentTimeMillis());
-								commonDlg.showCommonDialog(false, "W", "", 
-										mContext.getString(R.string.msgs_application_already_started)+" "+ymd, null);
+								commonDlg.showCommonDialog(false, "W",  
+										mContext.getString(R.string.msgs_application_already_started)+" "+ymd, "", null);
 								util.addLogMsg("W",mContext.getString(R.string.msgs_application_already_started));
 							}
 						} else {
@@ -439,7 +439,7 @@ public class SMBSyncMain extends ActionBarActivity {
 									isExtraSpecAutoStart=isExtraSpecAutoTerm=isExtraSpecBgExec=false;
 									checkAutoStart(intent);
 								} else {
-									tabHost.setCurrentTabByTag(SMBSYNC_TAB_NAME_MSG);
+									mMainTabHost.setCurrentTabByTag(SMBSYNC_TAB_NAME_MSG);
 									util.addLogMsg("W",
 											mContext.getString(R.string.msgs_main_auto_start_ignored_by_other_msg));
 								}
@@ -625,7 +625,7 @@ public class SMBSyncMain extends ActionBarActivity {
 			ArrayList<MsgListItem>mfl=mGp.msgListAdapter.getMessageList();
 
 			createTabView() ;
-			tabHost.setOnTabChangedListener(null);
+			mMainTabHost.setOnTabChangedListener(null);
 			
 			mGp.profileAdapter=new AdapterProfileList(mActivity, R.layout.profile_list_item_view, pfl);
 			mGp.profileAdapter.setShowCheckBox(vsa.prof_adapter_show_cb);
@@ -641,7 +641,7 @@ public class SMBSyncMain extends ActionBarActivity {
 			initAdapterAndView();
 
 			restoreViewContent(vsa);
-			tabHost.setOnTabChangedListener(new OnTabChange());
+			mMainTabHost.setOnTabChangedListener(new MainOnTabChange());
 			
 			setMessageContextButtonListener();
 			setMessageContextButtonNormalMode();
@@ -704,7 +704,7 @@ public class SMBSyncMain extends ActionBarActivity {
 	
 	private ViewSaveArea saveViewContent() {
 		ViewSaveArea vsa=new ViewSaveArea();
-	    vsa.current_tab_pos=tabHost.getCurrentTab();
+	    vsa.current_tab_pos=mMainTabHost.getCurrentTab();
 	    vsa.current_pager_pos=mMainViewPager.getCurrentItem();
 	    
 	    vsa.prof_list_view_pos_x=mGp.profileListView.getFirstVisiblePosition();
@@ -749,7 +749,7 @@ public class SMBSyncMain extends ActionBarActivity {
 	};
 	
 	private void restoreViewContent(ViewSaveArea vsa) {
-		tabHost.setCurrentTab(vsa.current_tab_pos);
+		mMainTabHost.setCurrentTab(vsa.current_tab_pos);
 		mMainViewPager.setCurrentItem(vsa.current_pager_pos);
 		mGp.profileListView.setSelectionFromTop(vsa.prof_list_view_pos_x, vsa.prof_list_view_pos_y);
 		mGp.msgListView.setSelectionFromTop(vsa.msg_list_view_pos_x, vsa.msg_list_view_pos_y);
@@ -807,8 +807,8 @@ public class SMBSyncMain extends ActionBarActivity {
 		profUtil.loadMsgString();
 		mCurrentLocale=newConfig.locale;
 		
-		commonDlg.showCommonDialog(false, "W", "", 
-				getString(R.string.msgs_smbsync_main_language_changed), null);
+		commonDlg.showCommonDialog(false, "W",  
+				getString(R.string.msgs_smbsync_main_language_changed), "", null);
 		
 	};
 	
@@ -871,7 +871,7 @@ public class SMBSyncMain extends ActionBarActivity {
 					
 				});
 				util.addLogMsg("W",m_txt+"\n"+c_prof);
-				commonDlg.showCommonDialog(false, "W", m_txt+"\n"+c_prof, "", ntfy);
+				commonDlg.showCommonDialog(false, "W", m_txt, c_prof, ntfy);
 				result=false;
 			} else {
 				result=true;
@@ -910,7 +910,7 @@ public class SMBSyncMain extends ActionBarActivity {
 					
 				});
 				util.addLogMsg("W",m_txt+"\n"+c_prof);
-				commonDlg.showCommonDialog(false, "W", m_txt+"\n"+c_prof, "", ntfy);
+				commonDlg.showCommonDialog(false, "W", m_txt, c_prof, ntfy);
 				result=false;
 			} else {
 				result=true;
@@ -1019,38 +1019,38 @@ public class SMBSyncMain extends ActionBarActivity {
 	private MainViewPager mMainViewPager;
 	private MainViewPagerAdapter mMainViewPagerAdapter;
 	
-	private TabWidget mTabWidget;
+	private TabWidget mMainTabWidget;
 	@SuppressLint("InflateParams")
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	private void createTabView() {
-		tabHost=(TabHost)findViewById(android.R.id.tabhost);
-		tabHost.setup();
-		mTabWidget = (TabWidget) findViewById(android.R.id.tabs);
+		mMainTabHost=(TabHost)findViewById(android.R.id.tabhost);
+		mMainTabHost.setup();
+		mMainTabWidget = (TabWidget) findViewById(android.R.id.tabs);
 		 
 		if (Build.VERSION.SDK_INT>=11) {
-		    mTabWidget.setStripEnabled(false);  
-		    mTabWidget.setShowDividers(LinearLayout.SHOW_DIVIDER_NONE);  
+		    mMainTabWidget.setStripEnabled(false);  
+		    mMainTabWidget.setShowDividers(LinearLayout.SHOW_DIVIDER_NONE);  
 		}
 	    
 		CustomTabContentView tabViewProf = new CustomTabContentView(this,getString(R.string.msgs_tab_name_prof));
-		tabHost.addTab(tabHost.newTabSpec(SMBSYNC_TAB_NAME_PROF).setIndicator(tabViewProf).setContent(android.R.id.tabcontent));
+		mMainTabHost.addTab(mMainTabHost.newTabSpec(SMBSYNC_TAB_NAME_PROF).setIndicator(tabViewProf).setContent(android.R.id.tabcontent));
 		
 		CustomTabContentView tabViewHist = new CustomTabContentView(this,getString(R.string.msgs_tab_name_history));
-		tabHost.addTab(tabHost.newTabSpec(SMBSYNC_TAB_NAME_HIST).setIndicator(tabViewHist).setContent(android.R.id.tabcontent));
+		mMainTabHost.addTab(mMainTabHost.newTabSpec(SMBSYNC_TAB_NAME_HIST).setIndicator(tabViewHist).setContent(android.R.id.tabcontent));
 
 		CustomTabContentView tabViewMsg = new CustomTabContentView(this,getString(R.string.msgs_tab_name_msg));
-		tabHost.addTab(tabHost.newTabSpec(SMBSYNC_TAB_NAME_MSG).setIndicator(tabViewMsg).setContent(android.R.id.tabcontent));
+		mMainTabHost.addTab(mMainTabHost.newTabSpec(SMBSYNC_TAB_NAME_MSG).setIndicator(tabViewMsg).setContent(android.R.id.tabcontent));
 		
 		LinearLayout ll_main=(LinearLayout)findViewById(R.id.main_view);
 		ll_main.setBackgroundColor(mGp.themeColorList.window_background_color_content);
 		
         LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		mProfileView=(LinearLayout)vi.inflate(R.layout.main_profile_view,null);
-//		mProfileView.setBackgroundColor(mThemeColorList.window_color_background);
+		mProfileView.setBackgroundColor(mGp.themeColorList.window_background_color_content);
 		mHistoryView=(LinearLayout)vi.inflate(R.layout.main_history_view,null);
-//		mHistoryView.setBackgroundColor(mThemeColorList.window_color_background);
+		mHistoryView.setBackgroundColor(mGp.themeColorList.window_background_color_content);
 		mMessageView=(LinearLayout)vi.inflate(R.layout.main_msg_view,null);
-//		mMessageView.setBackgroundColor(mThemeColorList.window_color_background);
+		mMessageView.setBackgroundColor(mGp.themeColorList.window_background_color_content);
 
 		mGp.msgListView = (ListView) mMessageView.findViewById(R.id.message_view_list);
 		mGp.profileListView =(ListView) mProfileView.findViewById(R.id.profile_view_list);
@@ -1105,16 +1105,16 @@ public class SMBSyncMain extends ActionBarActivity {
 	    mMainViewPager=(MainViewPager)findViewById(R.id.main_view_pager);
 //	    mMainViewPager.setBackgroundColor(mThemeColorList.window_color_background);
 	    mMainViewPager.setAdapter(mMainViewPagerAdapter);
-	    mMainViewPager.setOnPageChangeListener(new PageChangeListener()); 
+	    mMainViewPager.setOnPageChangeListener(new MainPageChangeListener()); 
 		if (restartType==NORMAL_START) {
-			tabHost.setCurrentTabByTag(SMBSYNC_TAB_NAME_PROF);
+			mMainTabHost.setCurrentTabByTag(SMBSYNC_TAB_NAME_PROF);
 			mMainViewPager.setCurrentItem(0);
 		}
-		tabHost.setOnTabChangedListener(new OnTabChange());
+		mMainTabHost.setOnTabChangedListener(new MainOnTabChange());
 
 	};
 	
-	private class OnTabChange implements OnTabChangeListener {
+	private class MainOnTabChange implements OnTabChangeListener {
 		@Override
 		public void onTabChanged(String tabId){
 			util.addDebugLogMsg(2,"I","onTabchanged entered. tab="+tabId+",v="+mGp.currentTab);
@@ -1123,7 +1123,7 @@ public class SMBSyncMain extends ActionBarActivity {
 			mActionBar.setHomeButtonEnabled(false);
 			mActionBar.setTitle(R.string.app_name);
 			
-			mMainViewPager.setCurrentItem(tabHost.getCurrentTab());
+			mMainViewPager.setCurrentItem(mMainTabHost.getCurrentTab());
 			
 			if (mGp.profileAdapter.isShowCheckBox()) {
 				mGp.profileAdapter.setShowCheckBox(false);
@@ -1162,12 +1162,12 @@ public class SMBSyncMain extends ActionBarActivity {
 		};
 	};
 	
-	private class PageChangeListener implements ViewPager.OnPageChangeListener {  
+	private class MainPageChangeListener implements ViewPager.OnPageChangeListener {  
 	    @Override  
 	    public void onPageSelected(int position) {
 //	    	util.addDebugLogMsg(2,"I","onPageSelected entered, pos="+position);
-	        mTabWidget.setCurrentTab(position);
-	        tabHost.setCurrentTab(position);
+	        mMainTabWidget.setCurrentTab(position);
+	        mMainTabHost.setCurrentTab(position);
 	    }  
 	  
 	    @Override  
@@ -1191,7 +1191,8 @@ public class SMBSyncMain extends ActionBarActivity {
 	
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		util.addDebugLogMsg(2,"I","onPrepareOptionsMenu entered, isUiEnabled()="+isUiEnabled());
+		util.addDebugLogMsg(2,"I","onPrepareOptionsMenu entered, isUiEnabled()="+isUiEnabled()+
+				", sync_btn="+mContextProfileButtonSync.isEnabled());
 //		menu.findItem(R.id.menu_top_scheduler).setVisible(false);
 		if (isUiEnabled()) {
 			menu.findItem(R.id.menu_top_about).setEnabled(true);
@@ -1215,13 +1216,14 @@ public class SMBSyncMain extends ActionBarActivity {
 			}
 			if (mGp.settingShowSyncButtonOnMenuItem) {
 				if (mGp.currentTab.equals(SMBSYNC_TAB_NAME_PROF)) {
-					menu.findItem(R.id.menu_top_sync).setVisible(true);
 					if (mContextProfileButtonSync.isEnabled()) {
-						menu.findItem(R.id.menu_top_sync).setEnabled(true);
+//						menu.findItem(R.id.menu_top_sync).setEnabled(true);
 //						menu.findItem(R.id.menu_top_sync).setIcon(mContextProfileButtonSyncIconEnabled);
+						menu.findItem(R.id.menu_top_sync).setVisible(true);
 					} else {
 //						menu.findItem(R.id.menu_top_sync).setEnabled(false);
 //						menu.findItem(R.id.menu_top_sync).setIcon(mContextProfileButtonSyncIconDisabled);
+						menu.findItem(R.id.menu_top_sync).setVisible(false);
 					}
 				} else {
 					menu.findItem(R.id.menu_top_sync).setVisible(false);
@@ -1614,82 +1616,68 @@ public class SMBSyncMain extends ActionBarActivity {
 
 	};
 	
+	private AboutViewPagerAdapter mAboutViewPagerAdapter;
+	private AboutViewPager mAboutViewPager;
+	private TabHost mAboutTabHost ;
+	private TabWidget mAboutTabWidget ;
+
+	@SuppressLint({ "InlinedApi", "InflateParams" })
 	private void aboutSMBSync() {
-		
-		// common カスタムダイアログの生成
 		final Dialog dialog = new Dialog(this);
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-		dialog.setContentView(R.layout.about_dialog);
-		
+	    dialog.setContentView(R.layout.about_dialog);
+
 		final LinearLayout title_view = (LinearLayout) dialog.findViewById(R.id.about_dialog_title_view);
 		final TextView title = (TextView) dialog.findViewById(R.id.about_dialog_title);
 		title_view.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);
 		title.setTextColor(mGp.themeColorList.text_color_dialog_title);
-
 		title.setText(getString(R.string.msgs_dlg_title_about)+"(Ver "+packageVersionName+")");
-		final WebView func_view=(WebView)dialog.findViewById(R.id.about_dialog_function);
-//		func_view.loadDataWithBaseURL("file:///android_asset/",
-//				getString(R.string.msgs_dlg_title_about_func_desc),"text/html","UTF-8","");
-		func_view.loadUrl("file:///android_asset/"+
-				getString(R.string.msgs_dlg_title_about_func_desc));
+		
+        // get our tabHost from the xml
+        mAboutTabHost = (TabHost)dialog.findViewById(R.id.about_tab_host);
+        mAboutTabHost.setup();
+        
+        mAboutTabWidget = (TabWidget)dialog.findViewById(android.R.id.tabs);
+		 
+		if (Build.VERSION.SDK_INT>=11) {
+		    mAboutTabWidget.setStripEnabled(false);  
+		    mAboutTabWidget.setShowDividers(LinearLayout.SHOW_DIVIDER_NONE);  
+		}
+
+		CustomTabContentView tabViewProf = new CustomTabContentView(this,getString(R.string.msgs_about_dlg_func_btn));
+		mAboutTabHost.addTab(mAboutTabHost.newTabSpec("func").setIndicator(tabViewProf).setContent(android.R.id.tabcontent));
+		
+		CustomTabContentView tabViewHist = new CustomTabContentView(this,getString(R.string.msgs_about_dlg_change_btn));
+		mAboutTabHost.addTab(mAboutTabHost.newTabSpec("change").setIndicator(tabViewHist).setContent(android.R.id.tabcontent));
+
+        LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LinearLayout ll_func=(LinearLayout)vi.inflate(R.layout.about_dialog_func,null);
+        LinearLayout ll_change=(LinearLayout)vi.inflate(R.layout.about_dialog_change,null);
+
+		final WebView func_view=(WebView)ll_func.findViewById(R.id.about_dialog_function);
+		func_view.loadUrl("file:///android_asset/"+getString(R.string.msgs_dlg_title_about_func_desc));
 		func_view.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
 		func_view.getSettings().setBuiltInZoomControls(true);
 		
 		final WebView change_view=
-				(WebView)dialog.findViewById(R.id.about_dialog_change_history);
-		change_view.loadUrl("file:///android_asset/"+
-				getString(R.string.msgs_dlg_title_about_change_desc));
+				(WebView)ll_change.findViewById(R.id.about_dialog_change_history);
+		change_view.loadUrl("file:///android_asset/"+getString(R.string.msgs_dlg_title_about_change_desc));
 		change_view.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
 		change_view.getSettings().setBuiltInZoomControls(true);
 		
-		final Button btnFunc = (Button) dialog.findViewById(R.id.about_dialog_btn_show_func);
-		final Button btnChange = (Button) dialog.findViewById(R.id.about_dialog_btn_show_change);		
+		mAboutViewPagerAdapter=new AboutViewPagerAdapter(this, 
+	    		new WebView[]{func_view, change_view});
+		mAboutViewPager=(AboutViewPager)dialog.findViewById(R.id.about_view_pager);
+//	    mMainViewPager.setBackgroundColor(mThemeColorList.window_color_background);
+		mAboutViewPager.setAdapter(mAboutViewPagerAdapter);
+		mAboutViewPager.setOnPageChangeListener(new AboutPageChangeListener()); 
+
+		mAboutTabHost.setOnTabChangedListener(new AboutOnTabChange());
+		
 		final Button btnOk = (Button) dialog.findViewById(R.id.about_dialog_btn_ok);
-		
-		func_view.setVisibility(TextView.VISIBLE);
-		change_view.setVisibility(TextView.GONE);
-		btnChange.setBackgroundResource(R.drawable.button_bg_color_selector);
-		btnFunc.setBackgroundResource(R.drawable.button_bg_color_selector);
-		btnChange.setTextColor(Color.DKGRAY);
-		btnFunc.setTextColor(Color.GREEN);
-		btnFunc.setEnabled(false);
-		
-//		btnOk.setTextColor(Color.DKGRAY);
-//		btnOk.setTextColor(Color.GREEN);
-//		btnOk.setBackgroundResource(R.drawable.button_back_ground_color_selector);
 
 		CommonDialog.setDlgBoxSizeLimit(dialog,true);
-		
-		// funcボタンの指定
-		btnFunc.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-				change_view.setVisibility(TextView.GONE);
-				func_view.setVisibility(TextView.VISIBLE);
-				CommonDialog.setDlgBoxSizeLimit(dialog,true);
-//				func_view.setEnabled(true);
-//				change_view.setEnabled(false);
-				btnFunc.setTextColor(Color.GREEN);
-				btnChange.setTextColor(Color.DKGRAY);
-				btnChange.setEnabled(true);
-				btnFunc.setEnabled(false);
-			}
-		});
-		
-		// changeボタンの指定
-		btnChange.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-				change_view.setVisibility(TextView.VISIBLE);
-				func_view.setVisibility(TextView.GONE);
-				CommonDialog.setDlgBoxSizeLimit(dialog,true);
-//				func_view.setEnabled(true);
-//				change_view.setEnabled(false);
-				btnChange.setTextColor(Color.GREEN);
-				btnFunc.setTextColor(Color.DKGRAY);
-				btnChange.setEnabled(false);
-				btnFunc.setEnabled(true);
-			}
-		});
-		
+
 		// OKボタンの指定
 		btnOk.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
@@ -1703,12 +1691,38 @@ public class SMBSyncMain extends ActionBarActivity {
 				btnOk.performClick();
 			}
 		});
-//		dialog.setOnKeyListener(new DialogOnKeyListener(mContext));
-//		dialog.setCancelable(false);
-		dialog.show();
-				
-	};
 
+		dialog.show();
+	};
+	
+	
+	private class AboutOnTabChange implements OnTabChangeListener {
+		@Override
+		public void onTabChanged(String tabId){
+			util.addDebugLogMsg(2,"I","onTabchanged entered. tab="+tabId);
+			mAboutViewPager.setCurrentItem(mAboutTabHost.getCurrentTab());
+		};
+	};
+	
+	private class AboutPageChangeListener implements ViewPager.OnPageChangeListener {  
+	    @Override  
+	    public void onPageSelected(int position) {
+//	    	util.addDebugLogMsg(2,"I","onPageSelected entered, pos="+position);
+	        mAboutTabWidget.setCurrentTab(position);
+	        mAboutTabHost.setCurrentTab(position);
+	    }  
+	  
+	    @Override  
+	    public void onPageScrollStateChanged(int state) {  
+//	    	util.addDebugLogMsg(2,"I","onPageScrollStateChanged entered, state="+state);
+	    }  
+	  
+	    @Override  
+	    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+//	    	util.addDebugLogMsg(2,"I","onPageScrolled entered, pos="+position);
+	    }  
+	};  
+	
 	@SuppressLint("SdCardPath")
 	private void checkExternalStorage() {
     	// get file state  
@@ -1727,15 +1741,15 @@ public class SMBSyncMain extends ActionBarActivity {
 	};
 
 	private void terminateApplication() {
-		if (tabHost.getCurrentTabTag().equals(SMBSYNC_TAB_NAME_PROF)) {//
+		if (mMainTabHost.getCurrentTabTag().equals(SMBSYNC_TAB_NAME_PROF)) {//
 			if (mGp.profileAdapter.isShowCheckBox()) {
 				mGp.profileAdapter.setShowCheckBox(false);
 				mGp.profileAdapter.notifyDataSetChanged();
 				setProfileContextButtonNormalMode();
 				return;
 			}
-		} else if (tabHost.getCurrentTabTag().equals(SMBSYNC_TAB_NAME_MSG)) {
-		} else if (tabHost.getCurrentTabTag().equals(SMBSYNC_TAB_NAME_HIST)) {
+		} else if (mMainTabHost.getCurrentTabTag().equals(SMBSYNC_TAB_NAME_MSG)) {
+		} else if (mMainTabHost.getCurrentTabTag().equals(SMBSYNC_TAB_NAME_HIST)) {
 			if (mGp.syncHistoryAdapter.isShowCheckBox()) {
 				mGp.syncHistoryAdapter.setShowCheckBox(false);
 				mGp.syncHistoryAdapter.notifyDataSetChanged();
@@ -1828,7 +1842,7 @@ public class SMBSyncMain extends ActionBarActivity {
 				String m_txt="";
 				if (!mGp.externalStorageIsMounted) m_txt=mContext.getString(R.string.msgs_astart_abort_external_storage_not_mounted);
 				else if (util.isRemoteDisable()) m_txt=mContext.getString(R.string.msgs_astart_abort_wifi_option_not_satisfied);
-				if (util.isActivityForeground()) commonDlg.showCommonDialog(false, "W", "", m_txt, null);
+				if (util.isActivityForeground()) commonDlg.showCommonDialog(false, "W", m_txt, "", null);
 				showNotificationMsg(m_txt);
 				util.addLogMsg("W",m_txt);
 				setWifiOff();
@@ -1888,7 +1902,7 @@ public class SMBSyncMain extends ActionBarActivity {
 	private void loadExtraDataParms(Intent in) {
 		Bundle bundle=in.getExtras();
 		if (bundle!=null) {
-			tabHost.setCurrentTabByTag(SMBSYNC_TAB_NAME_MSG);
+			mMainTabHost.setCurrentTabByTag(SMBSYNC_TAB_NAME_MSG);
 			String sid="External Application";
 			if (bundle.containsKey(SMBSYNC_SCHEDULER_ID)) {
 				if (bundle.get(SMBSYNC_SCHEDULER_ID).getClass().getSimpleName().equals("String")) {
@@ -2449,12 +2463,14 @@ public class SMBSyncMain extends ActionBarActivity {
 		String conf_list="";
 		boolean del_all_history=false;
 		int del_cnt=0;
+		String sep="";
 		for (int i=0;i<mGp.syncHistoryAdapter.getCount();i++) {
 			if (mGp.syncHistoryAdapter.getItem(i).isChecked) {
 				del_cnt++;
-				conf_list+="\n"+mGp.syncHistoryAdapter.getItem(i).sync_date+" "+
+				conf_list+=sep+mGp.syncHistoryAdapter.getItem(i).sync_date+" "+
 						mGp.syncHistoryAdapter.getItem(i).sync_time+" "+
 						mGp.syncHistoryAdapter.getItem(i).sync_prof+" ";
+				sep="\n";
 			}
 		}
 		if (del_cnt==mGp.syncHistoryAdapter.getCount()) del_all_history=true;
@@ -2489,16 +2505,16 @@ public class SMBSyncMain extends ActionBarActivity {
 			@Override
 			public void negativeResponse(Context c, Object[] o) {}
 		});
-		String subtitle="",msgtext="";
+		
 		if (del_all_history) {
 //			subtitle=getString(R.string.msgs_sync_history_del_conf_subtitle);
-			msgtext=getString(R.string.msgs_sync_history_del_conf_all_history);
+			commonDlg.showCommonDialog(true, "W",getString(R.string.msgs_sync_history_del_conf_all_history),
+					"", ntfy);
 		} else {
 //			subtitle=getString(R.string.msgs_sync_history_del_conf_subtitle);
-			msgtext=getString(R.string.msgs_sync_history_del_conf_selected_history)+
-					conf_list;
+			commonDlg.showCommonDialog(true, "W", getString(R.string.msgs_sync_history_del_conf_selected_history),
+					conf_list, ntfy);
 		}
-		commonDlg.showCommonDialog(true, "W",subtitle, msgtext, ntfy);
 	};
 	
 	
@@ -3026,15 +3042,18 @@ public class SMBSyncMain extends ActionBarActivity {
 			@Override
 			public void negativeResponse(Context c, Object[] o) {}
 		});
-		String msg=mContext.getString(R.string.msgs_prof_cont_to_activate_profile)+"\n";
-//		String sep="";
+		String msg="";
+		String sep="";
 		for(int i=0;i<pa.getCount();i++) {
 			if (pa.getItem(i).isChecked() && !pa.getItem(i).isProfileActive()) {
-				msg+=pa.getItem(i).getProfileName()+"\n";
+				msg+=sep+pa.getItem(i).getProfileName();
+				sep="\n";
 			}
 		}
 //		msg+="\n";
-		commonDlg.showCommonDialog(true, "W", msg, "", ntfy);
+		commonDlg.showCommonDialog(true, "W", 
+				mContext.getString(R.string.msgs_prof_cont_to_activate_profile),
+				msg, ntfy);
 	};
 
 	private void confirmInactivate(AdapterProfileList pa, final NotifyEvent p_ntfy) {
@@ -3050,15 +3069,18 @@ public class SMBSyncMain extends ActionBarActivity {
 			@Override
 			public void negativeResponse(Context c, Object[] o) {}
 		});
-		String msg=mContext.getString(R.string.msgs_prof_cont_to_inactivate_profile)+"\n";
-//		String sep="";
+		String msg="";
+		String sep="";
 		for(int i=0;i<pa.getCount();i++) {
 			if (pa.getItem(i).isChecked() && pa.getItem(i).isProfileActive()) {
-				msg+=pa.getItem(i).getProfileName()+"\n";
+				msg+=sep+pa.getItem(i).getProfileName();
+				sep="\n";
 			}
 		}
 //		msg+="\n";
-		commonDlg.showCommonDialog(true, "W", msg, "", ntfy);
+		commonDlg.showCommonDialog(true, "W", 
+				mContext.getString(R.string.msgs_prof_cont_to_inactivate_profile),
+				msg, ntfy);
 	};
 
 	private void setProfileContextButtonSelectMode() {
@@ -3072,6 +3094,8 @@ public class SMBSyncMain extends ActionBarActivity {
         if (!mGp.settingShowSyncButtonOnMenuItem) mContextProfileViewSync.setVisibility(ImageButton.VISIBLE);
         else mContextProfileViewSync.setVisibility(ImageButton.GONE);
 
+        boolean p_sync_ena=mContextProfileButtonSync.isEnabled();
+        
         if (!util.isRemoteDisable()) {
         	boolean act_sync_prof=false;
         	for(int i=0;i<tot_cnt;i++) {
@@ -3093,6 +3117,8 @@ public class SMBSyncMain extends ActionBarActivity {
         	mContextProfileButtonSync.setImageResource(mContextProfileButtonSyncIconDisabled);
         	mContextProfileButtonSync.setEnabled(false);
         }
+        if (p_sync_ena && !mContextProfileButtonSync.isEnabled() || !p_sync_ena && mContextProfileButtonSync.isEnabled())
+        	refreshOptionMenu();
         
     	boolean act_prof_selected=false, inact_prof_selected=false;
     	if (any_selected) {
@@ -3356,7 +3382,7 @@ public class SMBSyncMain extends ActionBarActivity {
 		
 		if (alp.isEmpty()) {
 			util.addLogMsg("E",mContext.getString(R.string.msgs_sync_select_prof_no_active_profile));
-			commonDlg.showCommonDialog(false, "E", "", mContext.getString(R.string.msgs_sync_select_prof_no_active_profile), null);
+			commonDlg.showCommonDialog(false, "E", mContext.getString(R.string.msgs_sync_select_prof_no_active_profile), "", null);
 		} else {
 			NotifyEvent ntfy=new NotifyEvent(mContext);
 			ntfy.setListener(new NotifyEventListener(){
@@ -3469,7 +3495,7 @@ public class SMBSyncMain extends ActionBarActivity {
 
 		if (alp.isEmpty()) {
 			util.addLogMsg("E",mContext.getString(R.string.msgs_active_sync_prof_not_found));
-			commonDlg.showCommonDialog(false, "E", "", mContext.getString(R.string.msgs_active_sync_prof_not_found), null);
+			commonDlg.showCommonDialog(false, "E", mContext.getString(R.string.msgs_active_sync_prof_not_found), "", null);
 		} else {
 			final String sync_list=sync_list_tmp;
 			NotifyEvent ntfy=new NotifyEvent(mContext);
@@ -3811,7 +3837,7 @@ public class SMBSyncMain extends ActionBarActivity {
 			else cat="W";
 		}
 		if (util.isActivityForeground()) commonDlg.showCommonDialog(false,cat,text,"",null);
-		else tabHost.setCurrentTabByTag(SMBSYNC_TAB_NAME_MSG);
+		else mMainTabHost.setCurrentTabByTag(SMBSYNC_TAB_NAME_MSG);
 	};
 
 	private ISvcCallback mSvcCallbackStub=new ISvcCallback.Stub() {
@@ -4110,7 +4136,7 @@ public class SMBSyncMain extends ActionBarActivity {
 
 		showNotificationMsg(getString(R.string.msgs_astart_started));
 		util.addLogMsg("I",getString(R.string.msgs_astart_started));
-		tabHost.setCurrentTabByTag(SMBSYNC_TAB_NAME_MSG);
+		mMainTabHost.setCurrentTabByTag(SMBSYNC_TAB_NAME_MSG);
 		if (extraValueAutoStart) {
 			mGp.progressBarView.setVisibility(LinearLayout.GONE);
 			at_ne.notifyToListener(true, null);
@@ -4501,7 +4527,7 @@ public class SMBSyncMain extends ActionBarActivity {
 		if (changed) {
 			listSMBSyncOption();
 			commonDlg.showCommonDialog(false,"W",
-					"",mContext.getString(R.string.msgs_smbsync_main_settings_jcifs_changed_restart),null);
+					mContext.getString(R.string.msgs_smbsync_main_settings_jcifs_changed_restart), "", null);
 		}
 
 		return changed;

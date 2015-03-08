@@ -329,6 +329,9 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
     final private void addProfile(boolean copy, final ProfileListItem pfli) {
 		mDialog.setContentView(R.layout.edit_profile_remote);
 
+		LinearLayout ll_dlg_view=(LinearLayout) mDialog.findViewById(R.id.remote_profile_dlg_view);
+		ll_dlg_view.setBackgroundColor(mGp.themeColorList.dialog_msg_background_color);
+
 		final LinearLayout title_view=(LinearLayout) mDialog.findViewById(R.id.remote_profile_dlg_title_view);
 		title_view.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);
 		final TextView dlg_title=(TextView) mDialog.findViewById(R.id.remote_profile_dlg_title);
@@ -355,9 +358,11 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 		final Button btnListDir = (Button) mDialog.findViewById(R.id.remote_profile_list_directory);
 
 		final CheckedTextView ctv_use_port_number = (CheckedTextView) mDialog.findViewById(R.id.remote_profile_ctv_use_port_number);
-
 		ctv_active.setChecked(true);
 		
+		final TextView dlg_title_sub=(TextView) mDialog.findViewById(R.id.remote_profile_dlg_title_sub);
+		if (pfli.getProfileName().equals("")) dlg_title_sub.setVisibility(TextView.GONE);
+
 		edithost.setVisibility(EditText.VISIBLE);
 		if (pfli.getRemoteUserID().equals("") && pfli.getRemotePassword().equals("")) {
 			ctv_use_user_pass.setChecked(false);
@@ -552,8 +557,6 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 		title.setTextColor(mGp.themeColorList.text_color_dialog_title);
 
 		title.setText(R.string.msgs_progress_spin_dlg_test_logon);
-		((TextView)dialog.findViewById(R.id.progress_spin_dlg_msg)).setText("");
-		((TextView)dialog.findViewById(R.id.progress_spin_dlg_msg)).setVisibility(TextView.GONE);
 		final Button btn_cancel = (Button) dialog.findViewById(R.id.progress_spin_dlg_btn_cancel);
 		btn_cancel.setText(R.string.msgs_progress_spin_dlg_test_logon_cancel);
 		
@@ -600,13 +603,13 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 										, err_msg, null);
 								if (p_ntfy!=null) p_ntfy.notifyToListener(false, null);
 							} else {
-								mCommonDlg.showCommonDialog(false, "I", "", 
-									mContext.getString(R.string.msgs_remote_profile_dlg_logon_success), null);
+								mCommonDlg.showCommonDialog(false, "I",  
+									mContext.getString(R.string.msgs_remote_profile_dlg_logon_success), "", null);
 								if (p_ntfy!=null) p_ntfy.notifyToListener(true, null);
 							}
 						} else {
-							mCommonDlg.showCommonDialog(false, "I", "", 
-									mContext.getString(R.string.msgs_remote_profile_dlg_logon_cancel), null);
+							mCommonDlg.showCommonDialog(false, "I",  
+									mContext.getString(R.string.msgs_remote_profile_dlg_logon_cancel), "", null);
 								if (p_ntfy!=null) p_ntfy.notifyToListener(true, null);
 						}
 					}
@@ -942,6 +945,9 @@ public class ProfileMaintRemoteFragment extends DialogFragment{
 
 	public void editProfile(final ProfileListItem pfli) {
 		mDialog.setContentView(R.layout.edit_profile_remote);
+
+		LinearLayout ll_dlg_view=(LinearLayout) mDialog.findViewById(R.id.remote_profile_dlg_view);
+		ll_dlg_view.setBackgroundColor(mGp.themeColorList.dialog_msg_background_color);
 
 		final CheckedTextView ctv_active = (CheckedTextView) mDialog.findViewById(R.id.remote_profile_ctv_active);
 		SMBSyncUtil.setCheckedTextView(ctv_active);

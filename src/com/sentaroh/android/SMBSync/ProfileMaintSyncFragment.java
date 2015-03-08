@@ -350,6 +350,9 @@ public class ProfileMaintSyncFragment extends DialogFragment{
     final private void addProfile(boolean copy, final ProfileListItem pfli) {
 		mDialog.setContentView(R.layout.edit_profile_sync);
 
+		LinearLayout ll_dlg_view=(LinearLayout) mDialog.findViewById(R.id.sync_profile_dlg_view);
+		ll_dlg_view.setBackgroundColor(mGp.themeColorList.dialog_msg_background_color);
+
 		final LinearLayout title_view=(LinearLayout) mDialog.findViewById(R.id.sync_profile_dlg_title_view);
 		title_view.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);
 		final TextView dlg_title=(TextView) mDialog.findViewById(R.id.sync_profile_dlg_title);
@@ -364,6 +367,9 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 		final EditText editname = (EditText)mDialog.findViewById(R.id.sync_profile_name);
 		editname.setText(pfli.getProfileName());
 		
+		final TextView dlg_title_sub=(TextView) mDialog.findViewById(R.id.sync_profile_dlg_title_sub);
+		if (pfli.getProfileName().equals("")) dlg_title_sub.setVisibility(TextView.GONE);
+
 		String f_fl="", d_fl="";
 		if (pfli.getFileFilter()!=null) {
 			String cn="";
@@ -770,6 +776,10 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 	
 		// カスタムダイアログの生成
 		mDialog.setContentView(R.layout.edit_profile_sync);
+		
+		LinearLayout ll_dlg_view=(LinearLayout) mDialog.findViewById(R.id.sync_profile_dlg_view);
+		ll_dlg_view.setBackgroundColor(mGp.themeColorList.dialog_msg_background_color);
+
 		final LinearLayout title_view=(LinearLayout) mDialog.findViewById(R.id.sync_profile_dlg_title_view);
 		title_view.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);
 		final TextView dlg_title=(TextView) mDialog.findViewById(R.id.sync_profile_dlg_title);

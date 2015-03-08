@@ -557,7 +557,7 @@ public class MirrorIO implements Runnable {
 			public void run() {
 				mGp.profileAdapter.notifyDataSetChanged();
 				mUtil.addHistoryList(mGp.syncHistoryAdapter, hli);
-//				mGp.syncHistoryAdapter.notifyDataSetChanged();
+				mGp.syncHistoryAdapter.notifyDataSetChanged();
 			}
 		});
 //		mAddedSyncHistoryList.add(hli);

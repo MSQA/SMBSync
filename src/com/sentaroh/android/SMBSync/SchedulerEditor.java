@@ -77,6 +77,9 @@ public class SchedulerEditor {
 		dialog.setCanceledOnTouchOutside(false);
 		dialog.setContentView(R.layout.scheduler_main_dlg);
 		
+		LinearLayout ll_dlg_view=(LinearLayout) dialog.findViewById(R.id.scheduler_main_dlg_view);
+		ll_dlg_view.setBackgroundColor(mGp.themeColorList.dialog_msg_background_color);
+
     	LinearLayout title_view=(LinearLayout)dialog.findViewById(R.id.scheduler_main_dlg_title_view);
     	title_view.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);
     	TextView dlg_title=(TextView)dialog.findViewById(R.id.scheduler_main_dlg_title);
@@ -88,6 +91,7 @@ public class SchedulerEditor {
 		final TextView tv_msg=(TextView)dialog.findViewById(R.id.scheduler_main_dlg_msg);
 		
 		final CheckedTextView ctv_sched_enabled=(CheckedTextView)dialog.findViewById(R.id.scheduler_main_dlg_ctv_enabled);
+		ctv_sched_enabled.setTextColor(mGp.themeColorList.text_color_primary);
 		SMBSyncUtil.setCheckedTextView(ctv_sched_enabled);
 		final Spinner sp_sched_type=(Spinner)dialog.findViewById(R.id.scheduler_main_dlg_date_time_type);
 		final Spinner sp_sched_hours=(Spinner)dialog.findViewById(R.id.scheduler_main_dlg_exec_hours);
@@ -100,8 +104,10 @@ public class SchedulerEditor {
 //		final CheckBox cb_sched_fri=(CheckBox)dialog.findViewById(R.id.scheduler_main_dlg_day_of_the_week_friday);
 //		final CheckBox cb_sched_sat=(CheckBox)dialog.findViewById(R.id.scheduler_main_dlg_day_of_the_week_satday);
 		final CheckedTextView ctv_auto_term=(CheckedTextView)dialog.findViewById(R.id.scheduler_main_dlg_ctv_autoterm);
+		ctv_auto_term.setTextColor(mGp.themeColorList.text_color_primary);
 		SMBSyncUtil.setCheckedTextView(ctv_auto_term);
 		final CheckedTextView ctv_bg_exec=(CheckedTextView)dialog.findViewById(R.id.scheduler_main_dlg_ctv_bgexec);
+		ctv_bg_exec.setTextColor(mGp.themeColorList.text_color_primary);
 		SMBSyncUtil.setCheckedTextView(ctv_bg_exec);
 		final TextView tv_sync_prof=(TextView)dialog.findViewById(R.id.scheduler_main_dlg_sync_prof_list);
 //		final LinearLayout ll_sched_dw=(LinearLayout)dialog.findViewById(R.id.scheduler_main_dlg_day_of_the_week);
@@ -109,9 +115,11 @@ public class SchedulerEditor {
 //		final LinearLayout ll_sched_hours=(LinearLayout)dialog.findViewById(R.id.scheduler_main_dlg_ll_exec_hour);
 //		final LinearLayout ll_sched_minutes=(LinearLayout)dialog.findViewById(R.id.scheduler_main_dlg_ll_exec_minute);
 		final CheckedTextView ctv_sync_all_prof=(CheckedTextView)dialog.findViewById(R.id.scheduler_main_dlg_ctv_sync_all_sync_profile);
+		ctv_sync_all_prof.setTextColor(mGp.themeColorList.text_color_primary);
 		SMBSyncUtil.setCheckedTextView(ctv_sync_all_prof);
 		
 		final CheckedTextView ctv_wifi_on=(CheckedTextView)dialog.findViewById(R.id.scheduler_main_dlg_ctv_wifi_on);
+		ctv_wifi_on.setTextColor(mGp.themeColorList.text_color_primary);
 		SMBSyncUtil.setCheckedTextView(ctv_wifi_on);
 //		final LinearLayout ll_wifi_on_delay_time_viewx=(LinearLayout)dialog.findViewById(R.id.scheduler_main_dlg_wifi_on_delay_time_view);
 		final TextView tv_wifi_on_delay_time=(TextView)dialog.findViewById(R.id.scheduler_main_dlg_wifi_on_delay_time_text);
@@ -120,6 +128,7 @@ public class SchedulerEditor {
 		final RadioButton rb_wifi_on_delay_2=(RadioButton)dialog.findViewById(R.id.scheduler_main_dlg_wifi_on_delay_time_rg_2);
 		final RadioButton rb_wifi_on_delay_3=(RadioButton)dialog.findViewById(R.id.scheduler_main_dlg_wifi_on_delay_time_rg_3);
 		final CheckedTextView ctv_wifi_off=(CheckedTextView)dialog.findViewById(R.id.scheduler_main_dlg_ctv_wifi_off);
+		ctv_wifi_off.setTextColor(mGp.themeColorList.text_color_primary);
 		SMBSyncUtil.setCheckedTextView(ctv_wifi_off);
 		
 		loadScheduleData();
@@ -340,6 +349,9 @@ public class SchedulerEditor {
 		dialog.setCanceledOnTouchOutside(false);
 		dialog.setContentView(R.layout.scheduler_edit_synclist_dlg);
 		
+		LinearLayout ll_dlg_view=(LinearLayout) dialog.findViewById(R.id.scheduler_edit_synclist_dlg_view);
+		ll_dlg_view.setBackgroundColor(mGp.themeColorList.dialog_msg_background_color);
+
     	LinearLayout title_view=(LinearLayout)dialog.findViewById(R.id.scheduler_edit_synclist_dlg_title_view);
     	title_view.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);
     	TextView dlg_title=(TextView)dialog.findViewById(R.id.scheduler_edit_synclist_dlg_title);

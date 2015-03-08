@@ -120,9 +120,9 @@
 	<string name="msgs_edit_remote_profile"	>リモートプロファイルの編集</string>
 	<string name="msgs_edit_sync_profile"	>同期プロファイルの編集</string>
 	<string name="msgs_export_prof_title"	>プロファイルの書き出し</string>
-	<string name="msgs_export_prof_success"	>%s にプロファイルを書き出しました。 </string>
-	<string name="msgs_export_prof_fail"	>プロファイル書き出しが失敗しました。ファイル(%s)</string>
-	<string name="msgs_import_prof_fail"	>プロファイルの取り込が失敗しました。 ファイル(%s)</string>
+	<string name="msgs_export_prof_success"	>プロファイル書き出しが成功しました。 </string>
+	<string name="msgs_export_prof_fail"	>プロファイル書き出しが失敗しました。</string>
+	<string name="msgs_import_prof_fail"	>プロファイルの取り込が失敗しました。</string>
 	<string name="msgs_import_prof_fail_no_valid_item">指定されたファイルには有効なプロファイル項目が存在しません。 ファイル(%s)</string>
 	<string name="msgs_move_to_top"			>先頭に移動</string>
 	<string name="msgs_move_to_bottom"		>最後に移動</string>

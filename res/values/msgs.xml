@@ -119,9 +119,9 @@
 	<string name="msgs_edit_remote_profile"	>Edit remote profile</string>
 	<string name="msgs_edit_sync_profile"	>Edit sync profile</string>
 	<string name="msgs_export_prof_title"	>Export profile</string>
-	<string name="msgs_export_prof_success"	>Export profile to %s was successful</string>
-	<string name="msgs_export_prof_fail"	>Export profile to %s was failed</string>
-	<string name="msgs_import_prof_fail"	>Import from %s was failed</string>
+	<string name="msgs_export_prof_success"	>Export profile was successful</string>
+	<string name="msgs_export_prof_fail"	>Export profile was failed</string>
+	<string name="msgs_import_prof_fail"	>Import profile was failed</string>
 	<string name="msgs_import_prof_fail_no_valid_item">File %s has include no valid profile items.</string>
 	<string name="msgs_move_to_top"			>Move to top</string>
 	<string name="msgs_move_to_bottom"		>Move to bottom</string>

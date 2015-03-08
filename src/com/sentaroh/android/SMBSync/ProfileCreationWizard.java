@@ -115,6 +115,9 @@ public class ProfileCreationWizard {
 		dialog.setCanceledOnTouchOutside(false);
 		dialog.setContentView(R.layout.sync_wizard_dlg);
 		
+		LinearLayout ll_dlg_view=(LinearLayout) dialog.findViewById(R.id.sync_wizard_dlg_view);
+		ll_dlg_view.setBackgroundColor(mGp.themeColorList.dialog_msg_background_color);
+		
 		final LinearLayout ll_overall=(LinearLayout)dialog.findViewById(R.id.sync_wizard_dlg_overall);
 		final LinearLayout ll_local=(LinearLayout)dialog.findViewById(R.id.sync_wizard_dlg_local);
 		final LinearLayout ll_remote=(LinearLayout)dialog.findViewById(R.id.sync_wizard_dlg_remote);
@@ -452,6 +455,9 @@ public class ProfileCreationWizard {
 		dialog.setCanceledOnTouchOutside(false);
 		dialog.setContentView(R.layout.sync_wizard_dlg);
 		
+		LinearLayout ll_dlg_view=(LinearLayout) dialog.findViewById(R.id.sync_wizard_dlg_view);
+		ll_dlg_view.setBackgroundColor(mGp.themeColorList.dialog_msg_background_color);
+
 		final LinearLayout ll_overall=(LinearLayout)dialog.findViewById(R.id.sync_wizard_dlg_overall);
 		final LinearLayout ll_local=(LinearLayout)dialog.findViewById(R.id.sync_wizard_dlg_local);
 		final LinearLayout ll_remote=(LinearLayout)dialog.findViewById(R.id.sync_wizard_dlg_remote);
@@ -772,6 +778,9 @@ public class ProfileCreationWizard {
 		dialog.setCanceledOnTouchOutside(false);
 		dialog.setContentView(R.layout.sync_wizard_dlg);
 		
+		LinearLayout ll_dlg_view=(LinearLayout) dialog.findViewById(R.id.sync_wizard_dlg_view);
+		ll_dlg_view.setBackgroundColor(mGp.themeColorList.dialog_msg_background_color);
+
 		final LinearLayout ll_overall=(LinearLayout)dialog.findViewById(R.id.sync_wizard_dlg_overall);
 		final LinearLayout ll_local=(LinearLayout)dialog.findViewById(R.id.sync_wizard_dlg_local);
 		final LinearLayout ll_remote=(LinearLayout)dialog.findViewById(R.id.sync_wizard_dlg_remote);
@@ -1345,6 +1354,9 @@ public class ProfileCreationWizard {
 		dialog.setCanceledOnTouchOutside(false);
 		dialog.setContentView(R.layout.sync_wizard_dlg);
 		
+		LinearLayout ll_dlg_view=(LinearLayout) dialog.findViewById(R.id.sync_wizard_dlg_view);
+		ll_dlg_view.setBackgroundColor(mGp.themeColorList.dialog_msg_background_color);
+
 		final LinearLayout ll_overall=(LinearLayout)dialog.findViewById(R.id.sync_wizard_dlg_overall);
 		final LinearLayout ll_local=(LinearLayout)dialog.findViewById(R.id.sync_wizard_dlg_local);
 		final LinearLayout ll_remote=(LinearLayout)dialog.findViewById(R.id.sync_wizard_dlg_remote);

@@ -58,6 +58,8 @@ import android.widget.TextView;
 import com.sentaroh.android.Utilities.LocalMountPoint;
 import com.sentaroh.android.Utilities.NotifyEvent;
 import com.sentaroh.android.Utilities.NotifyEvent.NotifyEventListener;
+import com.sentaroh.android.Utilities.ThemeColorList;
+import com.sentaroh.android.Utilities.ThemeUtil;
 import com.sentaroh.android.Utilities.ThreadCtrl;
 import com.sentaroh.android.Utilities.ZipUtil;
 import com.sentaroh.android.Utilities.Dialog.CommonDialog;
@@ -251,6 +253,10 @@ public class LogFileManagementFragment extends DialogFragment{
     	if (mGp==null) return;
     	
     	mDialog.setContentView(R.layout.log_management_dlg);
+    	
+    	ThemeColorList tcl=ThemeUtil.getThemeColorList(getActivity());
+		LinearLayout ll_dlg_view=(LinearLayout) mDialog.findViewById(R.id.log_management_dlg_view);
+		ll_dlg_view.setBackgroundColor(tcl.dialog_msg_background_color);
     	
     	LinearLayout mDialogTitleView=(LinearLayout)mDialog.findViewById(R.id.log_management_dlg_title_view);
     	mDialogTitleView.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);

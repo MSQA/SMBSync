@@ -235,6 +235,9 @@ public class ProfileUtility {
 		dialog.setCanceledOnTouchOutside(false);
 		dialog.setContentView(R.layout.password_input_dlg);
 		
+		LinearLayout ll_dlg_view=(LinearLayout) dialog.findViewById(R.id.password_input_dlg_view);
+		ll_dlg_view.setBackgroundColor(mGp.themeColorList.dialog_msg_background_color);
+
 		final LinearLayout title_view = (LinearLayout) dialog.findViewById(R.id.password_input_title_view);
 		final TextView title = (TextView) dialog.findViewById(R.id.password_input_title);
 		title_view.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);
@@ -341,6 +344,9 @@ public class ProfileUtility {
 		dialog.setCanceledOnTouchOutside(false);
 		dialog.setContentView(R.layout.password_input_dlg);
 		
+		LinearLayout ll_dlg_view=(LinearLayout) dialog.findViewById(R.id.password_input_dlg_view);
+		ll_dlg_view.setBackgroundColor(mGp.themeColorList.dialog_msg_background_color);
+
 		final LinearLayout title_view = (LinearLayout) dialog.findViewById(R.id.password_input_title_view);
 		final TextView title = (TextView) dialog.findViewById(R.id.password_input_title);
 		title_view.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);
@@ -491,6 +497,9 @@ public class ProfileUtility {
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		dialog.setContentView(R.layout.export_import_profile_dlg);
 		dialog.setCanceledOnTouchOutside(false);
+
+		LinearLayout ll_dlg_view=(LinearLayout) dialog.findViewById(R.id.export_import_profile_view);
+		ll_dlg_view.setBackgroundColor(mGp.themeColorList.dialog_msg_background_color);
 
 		ArrayList<ExportImportProfileListItem> eipl=new ArrayList<ExportImportProfileListItem>();
 
@@ -897,12 +906,12 @@ public class ProfileUtility {
 	    			String fd =profile_dir;
 	    			
 					if (saveProfileToFile(mGp, mContext, util, true,fd,fp,mGp.profileAdapter,encrypt_required)) {
-						commonDlg.showCommonDialog(false,"I",
-								String.format(msgs_export_prof_success,fp),"",null);
+						commonDlg.showCommonDialog(false,"I",msgs_export_prof_success,
+								"File="+fp, null);
 						util.addDebugLogMsg(1,"I","Profile was exported. fn="+fp);						
 					} else {
-						commonDlg.showCommonDialog(false,"E",
-								String.format(msgs_export_prof_fail,fp),"",null);
+						commonDlg.showCommonDialog(false,"E",msgs_export_prof_fail,
+								"File="+fp, null);
 					}
 				}
 	
@@ -915,12 +924,12 @@ public class ProfileUtility {
 			String fp =profile_dir+"/"+profile_filename;
 			String fd =profile_dir;
 			if (saveProfileToFile(mGp, mContext, util, true,fd,fp,mGp.profileAdapter,encrypt_required)) {
-				commonDlg.showCommonDialog(false,"I",
-						String.format(msgs_export_prof_success,fp),"",null);
+				commonDlg.showCommonDialog(false,"I",msgs_export_prof_success,
+						"File="+fp, null);
 				util.addDebugLogMsg(1,"I","Profile was exported. fn="+fp);						
 			} else {
-				commonDlg.showCommonDialog(false,"E",
-						String.format(msgs_export_prof_fail,fp),"",null);
+				commonDlg.showCommonDialog(false,"E",msgs_export_prof_fail,
+						"File="+fp, null);
 			}
 		}
 	};
@@ -1108,14 +1117,15 @@ public class ProfileUtility {
 		dialog.setCanceledOnTouchOutside(false);
 		dialog.setContentView(R.layout.progress_spin_dlg);
 		
+		LinearLayout ll_dlg_view=(LinearLayout) dialog.findViewById(R.id.progress_spin_dlg_view);
+		ll_dlg_view.setBackgroundColor(mGp.themeColorList.dialog_msg_background_color);
+
 		final LinearLayout title_view = (LinearLayout) dialog.findViewById(R.id.progress_spin_dlg_title_view);
 		final TextView title = (TextView) dialog.findViewById(R.id.progress_spin_dlg_title);
 		title_view.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);
 		title.setTextColor(mGp.themeColorList.text_color_dialog_title);
 		title.setText(R.string.msgs_progress_spin_dlg_test_logon);
 		
-		((TextView)dialog.findViewById(R.id.progress_spin_dlg_msg)).setText("");
-		((TextView)dialog.findViewById(R.id.progress_spin_dlg_msg)).setVisibility(TextView.GONE);
 		final Button btn_cancel = (Button) dialog.findViewById(R.id.progress_spin_dlg_btn_cancel);
 		btn_cancel.setText(R.string.msgs_progress_spin_dlg_test_logon_cancel);
 		
@@ -1450,6 +1460,9 @@ public class ProfileUtility {
 		dialog.setCanceledOnTouchOutside(false);
 		dialog.setContentView(R.layout.single_item_input_dlg);
 		
+		LinearLayout ll_dlg_view=(LinearLayout) dialog.findViewById(R.id.single_item_input_dlg_view);
+		ll_dlg_view.setBackgroundColor(mGp.themeColorList.dialog_msg_background_color);
+
 		final LinearLayout title_view = (LinearLayout) dialog.findViewById(R.id.single_item_input_title_view);
 		final TextView title = (TextView) dialog.findViewById(R.id.single_item_input_title);
 		title_view.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);
@@ -1895,6 +1908,9 @@ public class ProfileUtility {
 		dialog.setCanceledOnTouchOutside(false);
 		dialog.setContentView(R.layout.filter_list_dlg);
 		
+		LinearLayout ll_dlg_view=(LinearLayout) dialog.findViewById(R.id.filter_select_edit_view);
+		ll_dlg_view.setBackgroundColor(mGp.themeColorList.dialog_msg_background_color);
+		
 		final LinearLayout title_view = (LinearLayout) dialog.findViewById(R.id.filter_select_edit_title_view);
 		final TextView title = (TextView) dialog.findViewById(R.id.filter_select_edit_title);
 		title_view.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);
@@ -2037,6 +2053,9 @@ public class ProfileUtility {
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		dialog.setCanceledOnTouchOutside(false);
 		dialog.setContentView(R.layout.filter_list_dlg);
+		
+		LinearLayout ll_dlg_view=(LinearLayout) dialog.findViewById(R.id.filter_select_edit_view);
+		ll_dlg_view.setBackgroundColor(mGp.themeColorList.dialog_msg_background_color);
 		
 		final LinearLayout title_view = (LinearLayout) dialog.findViewById(R.id.filter_select_edit_title_view);
 		final TextView title = (TextView) dialog.findViewById(R.id.filter_select_edit_title);
@@ -2210,6 +2229,9 @@ public class ProfileUtility {
 		dialog.setCanceledOnTouchOutside(false);
 		dialog.setContentView(R.layout.filter_edit_dlg);
 		
+		LinearLayout ll_dlg_view=(LinearLayout) dialog.findViewById(R.id.filter_edit_dlg_view);
+		ll_dlg_view.setBackgroundColor(mGp.themeColorList.dialog_msg_background_color);
+
 		final LinearLayout title_view = (LinearLayout) dialog.findViewById(R.id.filter_edit_dlg_title_view);
 		final TextView title = (TextView) dialog.findViewById(R.id.filter_select_edit_title);
 		title_view.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);
@@ -2312,6 +2334,9 @@ public class ProfileUtility {
         dialog.setCanceledOnTouchOutside(false);
     	dialog.setContentView(R.layout.item_select_list_dlg);
     	
+		LinearLayout ll_dlg_view=(LinearLayout) dialog.findViewById(R.id.item_select_list_dlg_view);
+		ll_dlg_view.setBackgroundColor(mGp.themeColorList.dialog_msg_background_color);
+
 		final LinearLayout title_view = (LinearLayout) dialog.findViewById(R.id.item_select_list_dlg_title_view);
 		final TextView title = (TextView) dialog.findViewById(R.id.item_select_list_dlg_title);
 		final TextView subtitle = (TextView) dialog.findViewById(R.id.item_select_list_dlg_subtitle);
@@ -2493,6 +2518,9 @@ public class ProfileUtility {
 				dialog.setCanceledOnTouchOutside(false);
 				dialog.setContentView(R.layout.item_select_list_dlg);
 				
+				LinearLayout ll_dlg_view=(LinearLayout) dialog.findViewById(R.id.item_select_list_dlg_view);
+				ll_dlg_view.setBackgroundColor(mGp.themeColorList.dialog_msg_background_color);
+
 				final LinearLayout title_view = (LinearLayout) dialog.findViewById(R.id.item_select_list_dlg_title_view);
 				final TextView title = (TextView) dialog.findViewById(R.id.item_select_list_dlg_title);
 				final TextView subtitle = (TextView) dialog.findViewById(R.id.item_select_list_dlg_subtitle);
@@ -2897,6 +2925,9 @@ public class ProfileUtility {
 	    dialog.setCanceledOnTouchOutside(false);
 	    dialog.setContentView(R.layout.scan_remote_ntwk_dlg);
 	    
+		LinearLayout ll_dlg_view=(LinearLayout) dialog.findViewById(R.id.scan_remote_ntwk_dlg_view);
+		ll_dlg_view.setBackgroundColor(mGp.themeColorList.dialog_msg_background_color);
+
 		final LinearLayout title_view = (LinearLayout) dialog.findViewById(R.id.scan_remote_ntwk_title_view);
 		final TextView title = (TextView) dialog.findViewById(R.id.scan_remote_ntwk_title);
 		title_view.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);
@@ -3474,6 +3505,9 @@ public class ProfileUtility {
         dialog.setCanceledOnTouchOutside(false);
     	dialog.setContentView(R.layout.item_select_list_dlg);
     	
+		LinearLayout ll_dlg_view=(LinearLayout) dialog.findViewById(R.id.item_select_list_dlg_view);
+		ll_dlg_view.setBackgroundColor(mGp.themeColorList.dialog_msg_background_color);
+
 		final LinearLayout title_view = (LinearLayout) dialog.findViewById(R.id.item_select_list_dlg_title_view);
 		final TextView title = (TextView) dialog.findViewById(R.id.item_select_list_dlg_title);
 		final TextView subtitle = (TextView) dialog.findViewById(R.id.item_select_list_dlg_subtitle);
@@ -3636,16 +3670,15 @@ public class ProfileUtility {
 		dialog.setCanceledOnTouchOutside(false);
 		dialog.setContentView(R.layout.progress_spin_dlg);
 		
+		LinearLayout ll_dlg_view=(LinearLayout) dialog.findViewById(R.id.progress_spin_dlg_view);
+		ll_dlg_view.setBackgroundColor(mGp.themeColorList.dialog_msg_background_color);
+
 		final LinearLayout title_view = (LinearLayout) dialog.findViewById(R.id.progress_spin_dlg_title_view);
 		final TextView title = (TextView) dialog.findViewById(R.id.progress_spin_dlg_title);
 		title_view.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);
 		title.setTextColor(mGp.themeColorList.text_color_dialog_title);
 
 		title.setText(R.string.msgs_progress_spin_dlg_filelist_getting);
-		((TextView)dialog.findViewById(R.id.progress_spin_dlg_msg))
-			.setText("");
-		((TextView)dialog.findViewById(R.id.progress_spin_dlg_msg))
-			.setVisibility(TextView.GONE);
 		final Button btn_cancel = (Button) dialog.findViewById(R.id.progress_spin_dlg_btn_cancel);
 		btn_cancel.setText(R.string.msgs_progress_spin_dlg_filelist_cancel);
 		
@@ -3760,6 +3793,9 @@ public class ProfileUtility {
 				dialog.setCanceledOnTouchOutside(false);
 				dialog.setContentView(R.layout.item_select_list_dlg);
 				
+				LinearLayout ll_dlg_view=(LinearLayout) dialog.findViewById(R.id.item_select_list_dlg_view);
+				ll_dlg_view.setBackgroundColor(mGp.themeColorList.dialog_msg_background_color);
+
 				final LinearLayout title_view = (LinearLayout) dialog.findViewById(R.id.item_select_list_dlg_title_view);
 				final TextView title = (TextView) dialog.findViewById(R.id.item_select_list_dlg_title);
 				final TextView subtitle = (TextView) dialog.findViewById(R.id.item_select_list_dlg_subtitle);
@@ -3861,6 +3897,9 @@ public class ProfileUtility {
 			    dialog.setCanceledOnTouchOutside(false);
 				dialog.setContentView(R.layout.item_select_list_dlg);
 				
+				LinearLayout ll_dlg_view=(LinearLayout) dialog.findViewById(R.id.item_select_list_dlg_view);
+				ll_dlg_view.setBackgroundColor(mGp.themeColorList.dialog_msg_background_color);
+
 				final LinearLayout title_view = (LinearLayout) dialog.findViewById(R.id.item_select_list_dlg_title_view);
 				final TextView title = (TextView) dialog.findViewById(R.id.item_select_list_dlg_title);
 				final TextView subtitle = (TextView) dialog.findViewById(R.id.item_select_list_dlg_subtitle);
