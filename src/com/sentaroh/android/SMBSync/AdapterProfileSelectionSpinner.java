@@ -24,6 +24,9 @@ OTHER DEALINGS IN THE SOFTWARE.
 */ 
 
 import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROF_TYPE_REMOTE;
+
+import com.sentaroh.android.Utilities.Widget.CustomSpinnerAdapter;
+
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -37,23 +40,15 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-public class AdapterProfileSelectionSpinner extends ArrayAdapter<String> {
+public class AdapterProfileSelectionSpinner extends CustomSpinnerAdapter {//ArrayAdapter<String> {
 	
 //	private int mResourceId;
 	private Context mContext;
-	@SuppressWarnings("unused")
-	private int mTextColor=0;
-	@SuppressWarnings("unused")
-	private int mTextSize=0;
 	
 	private Drawable mRemoteDrawable=null, mMobileDrawable=null;
 
-	public void setTextColor(int color) {mTextColor=color;}
-	public void setTextSize(int size_sp) {mTextSize=size_sp;}
-	
 	public AdapterProfileSelectionSpinner(Context c, int textViewResourceId) {
 		super(c, textViewResourceId);
 //		mResourceId=textViewResourceId;

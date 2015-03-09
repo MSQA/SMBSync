@@ -24,41 +24,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 */
 
 import static com.sentaroh.android.SMBSync.Constants.*;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROFILE_FILE_NAME_V1;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROFILE_FILE_NAME_V2;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROFILE_FILE_NAME_V3;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROFILE_FILE_NAME_V4;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROFILE_FILE_NAME_V5;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROF_ACTIVE;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROF_DEC;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROF_ENC;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROF_FILTER_EXCLUDE;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROF_FILTER_INCLUDE;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROF_GROUP_DEFAULT;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROF_INACTIVE;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROF_TYPE_LOCAL;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROF_TYPE_REMOTE;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROF_TYPE_SETTINGS;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROF_TYPE_SYNC;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROF_VER1;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROF_VER2;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROF_VER3;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROF_VER4;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROF_VER5;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_SETTINGS_TYPE_BOOLEAN;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_SETTINGS_TYPE_INT;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_SETTINGS_TYPE_STRING;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_SYNC_TYPE_COPY;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_SYNC_TYPE_MIRROR;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_SYNC_TYPE_MOVE;
 import static com.sentaroh.android.SMBSync.SchedulerConstants.*;
-import static com.sentaroh.android.SMBSync.SchedulerConstants.SCHEDULER_SCHEDULE_HOURS_KEY;
-import static com.sentaroh.android.SMBSync.SchedulerConstants.SCHEDULER_SCHEDULE_MINUTES_KEY;
-import static com.sentaroh.android.SMBSync.SchedulerConstants.SCHEDULER_SCHEDULE_TYPE_KEY;
-import static com.sentaroh.android.SMBSync.SchedulerConstants.SCHEDULER_SYNC_OPTION_AUTOSTART_KEY;
-import static com.sentaroh.android.SMBSync.SchedulerConstants.SCHEDULER_SYNC_OPTION_AUTOTERM_KEY;
-import static com.sentaroh.android.SMBSync.SchedulerConstants.SCHEDULER_SYNC_OPTION_BGEXEC_KEY;
-import static com.sentaroh.android.SMBSync.SchedulerConstants.SCHEDULER_SYNC_PROFILE_KEY;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -82,7 +48,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.graphics.Color;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
@@ -541,8 +506,8 @@ public class ProfileUtility {
 //		tv_msgx.setVisibility(LinearLayout.GONE);
 		LinearLayout ll_filelist=(LinearLayout)dialog.findViewById(R.id.export_import_profile_file_list);
 		ll_filelist.setVisibility(LinearLayout.GONE);
-		final Button ok_btn=(Button)dialog.findViewById(R.id.export_import_profile_ok_btn);
-		Button cancel_btn=(Button)dialog.findViewById(R.id.export_import_profile_cancel_btn);
+		final Button ok_btn=(Button)dialog.findViewById(R.id.export_import_profile_dlg_btn_ok);
+		Button cancel_btn=(Button)dialog.findViewById(R.id.export_import_profile_dlg_btn_cancel);
 		
 		final Button rb_select_all=(Button)dialog.findViewById(R.id.export_import_profile_list_select_all);
 		final Button rb_unselect_all=(Button)dialog.findViewById(R.id.export_import_profile_list_unselect_all);
@@ -1301,7 +1266,8 @@ public class ProfileUtility {
 
 	static public void setSyncOptionSpinner(Context c, Spinner spinnerSyncOption, String prof_syncopt) {
 //		final Spinner spinnerSyncOption=(Spinner)dialog.findViewById(R.id.sync_profile_sync_option);
-		final CustomSpinnerAdapter adapterSyncOption=new CustomSpinnerAdapter(c, R.layout.custom_simple_spinner_item);
+		final CustomSpinnerAdapter adapterSyncOption=
+				new CustomSpinnerAdapter(c, R.layout.custom_simple_spinner_item);
 		adapterSyncOption.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		spinnerSyncOption.setPrompt(c.getString(R.string.msgs_sync_profile_dlg_syncopt_prompt));
 		spinnerSyncOption.setAdapter(adapterSyncOption);
@@ -1317,8 +1283,8 @@ public class ProfileUtility {
 	};
 
 	static public void setSyncMasterProfileSpinner(GlobalParameters gp, Context c, Spinner spinner_master, String prof_master) {
-		final AdapterProfileSelectionSpinner adapter_spinner=new AdapterProfileSelectionSpinner(c, R.layout.custom_simple_spinner_item);
-		adapter_spinner.setTextColor(Color.BLACK);
+		final AdapterProfileSelectionSpinner adapter_spinner=
+				new AdapterProfileSelectionSpinner(c, R.layout.custom_simple_spinner_item);
 		adapter_spinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		spinner_master.setPrompt(msgs_select_master_profile);
 		spinner_master.setAdapter(adapter_spinner);
@@ -1340,7 +1306,6 @@ public class ProfileUtility {
 
 	static public void setSyncTargetProfileSpinner(GlobalParameters gp, Context c, Spinner spinner_target, String prof_master, String prof_target) {
 		final AdapterProfileSelectionSpinner adapter_spinner=new AdapterProfileSelectionSpinner(c, R.layout.custom_simple_spinner_item);
-		adapter_spinner.setTextColor(Color.BLACK);
 		adapter_spinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		spinner_target.setPrompt(msgs_select_target_profile);
 		spinner_target.setAdapter(adapter_spinner);
@@ -1553,10 +1518,10 @@ public class ProfileUtility {
 	};
 
 	public void ipAddressScanButtonDlg(Dialog dialog) {
-		final TextView dlg_msg=(TextView) dialog.findViewById(R.id.remote_profile_dlg_msg);
-		final EditText edithost = (EditText) dialog.findViewById(R.id.remote_profile_remote_server);
-		final CheckedTextView ctv_use_port_number = (CheckedTextView) dialog.findViewById(R.id.remote_profile_ctv_use_port_number);
-		final EditText editport = (EditText) dialog.findViewById(R.id.remote_profile_port);
+		final TextView dlg_msg=(TextView) dialog.findViewById(R.id.edit_profile_remote_dlg_msg);
+		final EditText edithost = (EditText) dialog.findViewById(R.id.edit_profile_remote_dlg_remote_server);
+		final CheckedTextView ctv_use_port_number = (CheckedTextView) dialog.findViewById(R.id.edit_profile_remote_dlg_ctv_use_remote_port_number);
+		final EditText editport = (EditText) dialog.findViewById(R.id.edit_profile_remote_dlg_remote_port);
 		NotifyEvent ntfy=new NotifyEvent(mContext);
 		//Listen setRemoteShare response 
 		ntfy.setListener(new NotifyEventListener() {
@@ -1577,15 +1542,15 @@ public class ProfileUtility {
 	};
 
 	public void invokeSelectRemoteShareDlg(Dialog dialog) {
-		final TextView dlg_msg=(TextView) dialog.findViewById(R.id.remote_profile_dlg_msg);
+		final TextView dlg_msg=(TextView) dialog.findViewById(R.id.edit_profile_remote_dlg_msg);
 
-		final EditText edituser = (EditText) dialog.findViewById(R.id.remote_profile_user);
-		final EditText editpass = (EditText) dialog.findViewById(R.id.remote_profile_pass);
-		final EditText editshare = (EditText) dialog.findViewById(R.id.remote_profile_share);
-		final EditText edithost = (EditText) dialog.findViewById(R.id.remote_profile_remote_server);
-		final CheckedTextView ctv_use_userpass = (CheckedTextView) dialog.findViewById(R.id.remote_profile_ctv_use_user_pass);
-		final EditText editport = (EditText) dialog.findViewById(R.id.remote_profile_port);
-		final CheckedTextView ctv_use_port_number = (CheckedTextView) dialog.findViewById(R.id.remote_profile_ctv_use_port_number);
+		final EditText edituser = (EditText) dialog.findViewById(R.id.edit_profile_remote_dlg_remote_user);
+		final EditText editpass = (EditText) dialog.findViewById(R.id.edit_profile_remote_dlg_remote_pass);
+		final EditText editshare = (EditText) dialog.findViewById(R.id.edit_profile_remote_dlg_share_name);
+		final EditText edithost = (EditText) dialog.findViewById(R.id.edit_profile_remote_dlg_remote_server);
+		final CheckedTextView ctv_use_userpass = (CheckedTextView) dialog.findViewById(R.id.edit_profile_remote_dlg_ctv_use_user_pass);
+		final EditText editport = (EditText) dialog.findViewById(R.id.edit_profile_remote_dlg_remote_port);
+		final CheckedTextView ctv_use_port_number = (CheckedTextView) dialog.findViewById(R.id.edit_profile_remote_dlg_ctv_use_remote_port_number);
 		String remote_addr, remote_user="", remote_pass="",remote_host;
 		
 		if (ctv_use_userpass.isChecked()) {
@@ -1654,16 +1619,16 @@ public class ProfileUtility {
 	};
 	
 	public void selectRemoteDirectory(Dialog dialog) {
-		final TextView dlg_msg=(TextView) dialog.findViewById(R.id.remote_profile_dlg_msg);
+		final TextView dlg_msg=(TextView) dialog.findViewById(R.id.edit_profile_remote_dlg_msg);
 
-		final EditText edithost = (EditText) dialog.findViewById(R.id.remote_profile_remote_server);
-		final EditText edituser = (EditText) dialog.findViewById(R.id.remote_profile_user);
-		final EditText editpass = (EditText) dialog.findViewById(R.id.remote_profile_pass);
-		final EditText editshare = (EditText) dialog.findViewById(R.id.remote_profile_share);
-		final EditText editdir = (EditText) dialog.findViewById(R.id.remote_profile_dir);
-		final CheckedTextView ctv_use_userpass = (CheckedTextView) dialog.findViewById(R.id.remote_profile_ctv_use_user_pass);
-		final EditText editport = (EditText) dialog.findViewById(R.id.remote_profile_port);
-		final CheckedTextView ctv_use_port_number = (CheckedTextView) dialog.findViewById(R.id.remote_profile_ctv_use_port_number);
+		final EditText edithost = (EditText) dialog.findViewById(R.id.edit_profile_remote_dlg_remote_server);
+		final EditText edituser = (EditText) dialog.findViewById(R.id.edit_profile_remote_dlg_remote_user);
+		final EditText editpass = (EditText) dialog.findViewById(R.id.edit_profile_remote_dlg_remote_pass);
+		final EditText editshare = (EditText) dialog.findViewById(R.id.edit_profile_remote_dlg_share_name);
+		final EditText editdir = (EditText) dialog.findViewById(R.id.edit_profile_remote_dlg_dir);
+		final CheckedTextView ctv_use_userpass = (CheckedTextView) dialog.findViewById(R.id.edit_profile_remote_dlg_ctv_use_user_pass);
+		final EditText editport = (EditText) dialog.findViewById(R.id.edit_profile_remote_dlg_remote_port);
+		final CheckedTextView ctv_use_port_number = (CheckedTextView) dialog.findViewById(R.id.edit_profile_remote_dlg_ctv_use_remote_port_number);
 		String remote_addr, remote_user="", remote_pass="",remote_share,remote_host;
 		if (ctv_use_userpass.isChecked()) {
 			remote_user = edituser.getText().toString();
@@ -1809,7 +1774,7 @@ public class ProfileUtility {
 			final ArrayList<String> n_dir_filter) {
 //		final CheckedTextView cbmpd = (CheckedTextView)dialog.findViewById(R.id.sync_profile_master_dir_cb);
 		final TextView dlg_dir_filter=(TextView) dialog.findViewById(R.id.sync_profile_dir_filter);
-		final TextView dlg_msg=(TextView) dialog.findViewById(R.id.sync_profile_dlg_msg);
+		final TextView dlg_msg=(TextView) dialog.findViewById(R.id.edit_profile_sync_msg);
 
 		NotifyEvent ntfy=new NotifyEvent(mContext);
 		//Listen setRemoteShare response 
@@ -1833,7 +1798,7 @@ public class ProfileUtility {
 			public void negativeResponse(Context arg0, Object[] arg1) {}
 		});
 
-		Spinner spinner_master=(Spinner)dialog.findViewById(R.id.sync_profile_master_spinner);
+		Spinner spinner_master=(Spinner)dialog.findViewById(R.id.edit_profile_sync_dlg_master_spinner);
 //		Spinner spinner_target=(Spinner)dialog.findViewById(R.id.sync_profile_target_spinner);
 //		String m_prof_type=spinner_master.getSelectedItem().toString().substring(0,1);
 		String m_prof_name=spinner_master.getSelectedItem().toString().substring(2);

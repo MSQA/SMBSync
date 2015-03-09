@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/profile_progress_spin"
+    android:id="@+id/main_dialog_progress_spin_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:visibility="gone"
     android:orientation="vertical" >
     
     <LinearLayout
@@ -13,7 +12,7 @@
         android:orientation="horizontal" >
 
         <ProgressBar
-            android:id="@+id/profile_progress_spin_progressBar"
+            android:id="@+id/main_dialog_progress_spin_progressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -26,35 +25,34 @@
 	        android:orientation="vertical" >
         
 	        <TextView
-	            android:id="@+id/profile_progress_spin_syncprof"
+	            android:id="@+id/main_dialog_progress_spin_syncprof"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
 	            android:layout_marginLeft="5dp"
 	            android:layout_marginRight="5dp"
 	            android:ellipsize="end"
 	            android:text=""
-	            android:textAppearance="?android:attr/textAppearanceMedium" />
+	            android:textAppearance="?android:attr/textAppearanceSmall" />
 	        <TextView
-	            android:id="@+id/profile_progress_spin_filepath"
+	            android:id="@+id/main_dialog_progress_spin_filepath"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
 	            android:layout_marginLeft="5dp"
 	            android:layout_marginRight="5dp"
 	            android:text=""
-	            android:textAppearance="?android:attr/textAppearanceMedium" />
+	            android:textAppearance="?android:attr/textAppearanceSmall" />
 	        <TextView
-	            android:id="@+id/profile_progress_spin_status"
+	            android:id="@+id/main_dialog_progress_spin_status"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
 	            android:layout_marginLeft="5dp"
 	            android:layout_marginRight="5dp"
 	            android:text=""
-	            android:textAppearance="?android:attr/textAppearanceMedium" />
-	        			        			        
+	            android:textAppearance="?android:attr/textAppearanceSmall" />
 		</LinearLayout>
     </LinearLayout>
     <Button
-        android:id="@+id/profile_progress_spin_btn_cancel"
+        android:id="@+id/main_dialog_progress_spin_btn_cancel"
         android:layout_marginTop="5dp"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"

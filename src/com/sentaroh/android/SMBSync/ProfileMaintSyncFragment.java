@@ -153,7 +153,7 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 	public void onCancel(DialogInterface di) {
 		if (DEBUG_ENABLE) Log.v(APPLICATION_TAG,SUB_APPLICATION_TAG+"onCancel");
 		if (!mTerminateRequired) {
-			final Button btnCancel = (Button) mDialog.findViewById(R.id.sync_profile_cancel);
+			final Button btnCancel = (Button) mDialog.findViewById(R.id.edit_profile_sync_btn_cancel);
 			btnCancel.performClick();
 		}
 		mFragment.dismiss();
@@ -197,9 +197,9 @@ public class ProfileMaintSyncFragment extends DialogFragment{
     private SavedViewContents saveViewContents() {
     	SavedViewContents sv=new SavedViewContents();
 		
-		final EditText editname = (EditText)mDialog.findViewById(R.id.sync_profile_name);
-		final CheckedTextView ctv_active = (CheckedTextView) mDialog.findViewById(R.id.sync_profile_ctv_active);
-		final Spinner spinnerSyncOption=(Spinner)mDialog.findViewById(R.id.sync_profile_sync_option);
+		final EditText editname = (EditText)mDialog.findViewById(R.id.edit_profile_sync_dlg_profile_name);
+		final CheckedTextView ctv_active = (CheckedTextView) mDialog.findViewById(R.id.edit_profile_sync_dlg_ctv_active);
+		final Spinner spinnerSyncOption=(Spinner)mDialog.findViewById(R.id.edit_profile_sync_dlg_sync_option);
 		final CheckedTextView ctvmpd = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_sync_master_root_dir_file);
 		final CheckedTextView ctvConf = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_confirm);
 		final CheckedTextView ctvLastMod = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_last_modified);
@@ -209,8 +209,8 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 		final CheckedTextView ctvSyncHiddenDir = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_sync_hidden_directory);
 		final CheckedTextView ctvSyncHiddenFile = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_sync_hidden_file);
 		final CheckedTextView ctvSyncSubDir = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_sync_sub_dir);
-		final Spinner spinner_master=(Spinner)mDialog.findViewById(R.id.sync_profile_master_spinner);
-		final Spinner spinner_target=(Spinner)mDialog.findViewById(R.id.sync_profile_target_spinner);
+		final Spinner spinner_master=(Spinner)mDialog.findViewById(R.id.edit_profile_sync_dlg_master_spinner);
+		final Spinner spinner_target=(Spinner)mDialog.findViewById(R.id.edit_profile_sync_dlg_target_spinner);
 
 //		final ScrollView svx=(ScrollView)mDialog.findViewById(R.id.sync_profile_dlg_scroll_view);
 //		Log.v("","x="+svx.getScrollX()+", y="+svx.getScrollY());
@@ -240,9 +240,9 @@ public class ProfileMaintSyncFragment extends DialogFragment{
     };
 
     private void restoreViewContents(final SavedViewContents sv) {
-		final EditText editname = (EditText)mDialog.findViewById(R.id.sync_profile_name);
-		final CheckedTextView ctv_active = (CheckedTextView) mDialog.findViewById(R.id.sync_profile_ctv_active);
-		final Spinner spinnerSyncOption=(Spinner)mDialog.findViewById(R.id.sync_profile_sync_option);
+		final EditText editname = (EditText)mDialog.findViewById(R.id.edit_profile_sync_dlg_profile_name);
+		final CheckedTextView ctv_active = (CheckedTextView) mDialog.findViewById(R.id.edit_profile_sync_dlg_ctv_active);
+		final Spinner spinnerSyncOption=(Spinner)mDialog.findViewById(R.id.edit_profile_sync_dlg_sync_option);
 		final CheckedTextView ctvmpd = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_sync_master_root_dir_file);
 		final CheckedTextView ctvConf = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_confirm);
 		final CheckedTextView ctvLastMod = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_last_modified);
@@ -252,8 +252,8 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 		final CheckedTextView ctvSyncHiddenDir = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_sync_hidden_directory);
 		final CheckedTextView ctvSyncHiddenFile = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_sync_hidden_file);
 		final CheckedTextView ctvSyncSubDir = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_sync_sub_dir);
-		final Spinner spinner_master=(Spinner)mDialog.findViewById(R.id.sync_profile_master_spinner);
-		final Spinner spinner_target=(Spinner)mDialog.findViewById(R.id.sync_profile_target_spinner);
+		final Spinner spinner_master=(Spinner)mDialog.findViewById(R.id.edit_profile_sync_dlg_master_spinner);
+		final Spinner spinner_target=(Spinner)mDialog.findViewById(R.id.edit_profile_sync_dlg_target_spinner);
 
     	Handler hndl1=new Handler();
     	hndl1.postDelayed(new Runnable(){
@@ -350,24 +350,24 @@ public class ProfileMaintSyncFragment extends DialogFragment{
     final private void addProfile(boolean copy, final ProfileListItem pfli) {
 		mDialog.setContentView(R.layout.edit_profile_sync);
 
-		LinearLayout ll_dlg_view=(LinearLayout) mDialog.findViewById(R.id.sync_profile_dlg_view);
+		LinearLayout ll_dlg_view=(LinearLayout) mDialog.findViewById(R.id.edit_profile_sync_dlg_view);
 		ll_dlg_view.setBackgroundColor(mGp.themeColorList.dialog_msg_background_color);
 
-		final LinearLayout title_view=(LinearLayout) mDialog.findViewById(R.id.sync_profile_dlg_title_view);
+		final LinearLayout title_view=(LinearLayout) mDialog.findViewById(R.id.edit_profile_sync_title_view);
 		title_view.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);
-		final TextView dlg_title=(TextView) mDialog.findViewById(R.id.sync_profile_dlg_title);
+		final TextView dlg_title=(TextView) mDialog.findViewById(R.id.edit_profile_sync_title);
 		dlg_title.setTextColor(mGp.themeColorList.text_color_dialog_title);
 
 		if (!copy) dlg_title.setText(mContext.getString(R.string.msgs_add_sync_profile));
 		else dlg_title.setText(mContext.getString(R.string.msgs_copy_sync_profile));
 //		dlg_title.setText(mContext.getString(R.string.msgs_copy_sync_profile));
-		final TextView dlg_msg=(TextView) mDialog.findViewById(R.id.sync_profile_dlg_msg);
+		final TextView dlg_msg=(TextView) mDialog.findViewById(R.id.edit_profile_sync_msg);
 		final TextView dlg_file_filter=(TextView) mDialog.findViewById(R.id.sync_profile_file_filter);
 		final TextView dlg_dir_filter=(TextView) mDialog.findViewById(R.id.sync_profile_dir_filter);
-		final EditText editname = (EditText)mDialog.findViewById(R.id.sync_profile_name);
+		final EditText editname = (EditText)mDialog.findViewById(R.id.edit_profile_sync_dlg_profile_name);
 		editname.setText(pfli.getProfileName());
 		
-		final TextView dlg_title_sub=(TextView) mDialog.findViewById(R.id.sync_profile_dlg_title_sub);
+		final TextView dlg_title_sub=(TextView) mDialog.findViewById(R.id.edit_profile_sync_title_sub);
 		if (pfli.getProfileName().equals("")) dlg_title_sub.setVisibility(TextView.GONE);
 
 		String f_fl="", d_fl="";
@@ -390,7 +390,7 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 		dlg_file_filter.setText(f_fl);
 		dlg_dir_filter.setText(d_fl);
 
-		final Spinner spinnerSyncOption=(Spinner)mDialog.findViewById(R.id.sync_profile_sync_option);
+		final Spinner spinnerSyncOption=(Spinner)mDialog.findViewById(R.id.edit_profile_sync_dlg_sync_option);
 		ProfileUtility.setSyncOptionSpinner(mContext, spinnerSyncOption, pfli.getSyncType()); 
 
 		final CheckedTextView ctvmpd = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_sync_master_root_dir_file);
@@ -446,15 +446,15 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 		
 		CommonDialog.setDlgBoxSizeLimit(mDialog,true);
 
-		final CheckedTextView ctv_active = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_active);
+		final CheckedTextView ctv_active = (CheckedTextView)mDialog.findViewById(R.id.edit_profile_sync_dlg_ctv_active);
 		SMBSyncUtil.setCheckedTextView(ctv_active);
 		if (pfli.isProfileActive()) ctv_active.setChecked(true);
 			else ctv_active.setChecked(false);
 
 		
-		final Spinner spinner_master=(Spinner)mDialog.findViewById(R.id.sync_profile_master_spinner);
-		final Spinner spinner_target=(Spinner)mDialog.findViewById(R.id.sync_profile_target_spinner);
-		ProfileUtility.setSyncMasterProfileSpinner(mGp, mContext, spinner_master,pfli.getMasterName());
+		final Spinner spinner_master=(Spinner)mDialog.findViewById(R.id.edit_profile_sync_dlg_master_spinner);
+		final Spinner spinner_target=(Spinner)mDialog.findViewById(R.id.edit_profile_sync_dlg_target_spinner);
+		ProfileUtility.setSyncMasterProfileSpinner(mGp, getActivity(), spinner_master,pfli.getMasterName());
 		if (spinner_master.getCount()>0) {
 			if (pfli.getTargetName().equals("")) ProfileUtility.setSyncTargetProfileSpinner(mGp, mContext, spinner_target,spinner_master.getSelectedItem().toString().substring(2),"");
 			else ProfileUtility.setSyncTargetProfileSpinner(mGp, mContext, spinner_target,pfli.getMasterName(),pfli.getTargetName());
@@ -462,7 +462,7 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 			ProfileUtility.setSyncTargetProfileSpinner(mGp, mContext, spinner_target,"","");
 		}
 		
-		final Button swap_master_target = (Button)mDialog.findViewById(R.id.sync_profile_edit_change_master_and_target);
+		final Button swap_master_target = (Button)mDialog.findViewById(R.id.edit_profile_sync_dlg_change_master_and_target_btn);
 		if (spinner_master.getCount()>0 && spinner_target.getCount()>0) swap_master_target.setEnabled(true);
 		else swap_master_target.setEnabled(false);
 		swap_master_target.setOnClickListener(new OnClickListener(){
@@ -479,8 +479,8 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 
 //		Log.v("","add main sp_m="+spinner_master.getSelectedItem()+", sp_t="+spinner_target.getSelectedItem());
 		
-		final ImageButton ib_edit_master = (ImageButton)mDialog.findViewById(R.id.sync_profile_edit_master);
-		final ImageButton ib_edit_target = (ImageButton)mDialog.findViewById(R.id.sync_profile_edit_target);
+		final ImageButton ib_edit_master = (ImageButton)mDialog.findViewById(R.id.edit_profile_sync_dlg_edit_master_btn);
+		final ImageButton ib_edit_target = (ImageButton)mDialog.findViewById(R.id.edit_profile_sync_dlg_edit_target_btn);
 		
 		spinner_master.setOnItemSelectedListener(new OnItemSelectedListener(){
 			@Override
@@ -538,7 +538,7 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 			}
 		});
 
-		final Button btn_ok = (Button) mDialog.findViewById(R.id.sync_profile_ok);
+		final Button btn_ok = (Button) mDialog.findViewById(R.id.edit_profile_sync_btn_ok);
 		btn_ok.setEnabled(false);
 		dlg_msg.setText(mContext.getString(R.string.msgs_audit_msgs_profilename2));
 		editname.addTextChangedListener(new TextWatcher(){
@@ -582,7 +582,7 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 		});
 		
 		// CANCELボタンの指定
-		final Button btn_cancel = (Button) mDialog.findViewById(R.id.sync_profile_cancel);
+		final Button btn_cancel = (Button) mDialog.findViewById(R.id.edit_profile_sync_btn_cancel);
 		btn_cancel.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				mFragment.dismiss();
@@ -617,11 +617,11 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 			int prof_pos) {
 		
 //		final TextView dlg_title=(TextView) dialog.findViewById(R.id.sync_profile_dlg_title);
-		final TextView dlg_msg=(TextView) dialog.findViewById(R.id.sync_profile_dlg_msg);
+		final TextView dlg_msg=(TextView) dialog.findViewById(R.id.edit_profile_sync_msg);
 //		final TextView dlg_file_filter=(TextView) dialog.findViewById(R.id.sync_profile_file_filter);
 //		final TextView dlg_dir_filter=(TextView) dialog.findViewById(R.id.sync_profile_dir_filter);
-		final EditText editname = (EditText)dialog.findViewById(R.id.sync_profile_name);
-		final Spinner spinnerSyncOption=(Spinner)dialog.findViewById(R.id.sync_profile_sync_option);
+		final EditText editname = (EditText)dialog.findViewById(R.id.edit_profile_sync_dlg_profile_name);
+		final Spinner spinnerSyncOption=(Spinner)dialog.findViewById(R.id.edit_profile_sync_dlg_sync_option);
 		final CheckedTextView ctvmpd = (CheckedTextView)dialog.findViewById(R.id.sync_profile_ctv_sync_master_root_dir_file);
 		final CheckedTextView ctvConf = (CheckedTextView)dialog.findViewById(R.id.sync_profile_ctv_confirm);
 		final CheckedTextView ctvLastMod = (CheckedTextView)dialog.findViewById(R.id.sync_profile_ctv_last_modified);
@@ -631,9 +631,9 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 		final CheckedTextView ctvSyncHiddenDir = (CheckedTextView)dialog.findViewById(R.id.sync_profile_ctv_sync_hidden_directory);
 		final CheckedTextView ctvSyncHiddenFile = (CheckedTextView)dialog.findViewById(R.id.sync_profile_ctv_sync_hidden_file);
 		final CheckedTextView ctvSyncSubDir = (CheckedTextView)dialog.findViewById(R.id.sync_profile_ctv_sync_sub_dir);
-		final CheckedTextView ctv_active = (CheckedTextView)dialog.findViewById(R.id.sync_profile_ctv_active);
-		final Spinner spinner_master=(Spinner)dialog.findViewById(R.id.sync_profile_master_spinner);
-		final Spinner spinner_target=(Spinner)dialog.findViewById(R.id.sync_profile_target_spinner);
+		final CheckedTextView ctv_active = (CheckedTextView)dialog.findViewById(R.id.edit_profile_sync_dlg_ctv_active);
+		final Spinner spinner_master=(Spinner)dialog.findViewById(R.id.edit_profile_sync_dlg_master_spinner);
+		final Spinner spinner_target=(Spinner)dialog.findViewById(R.id.edit_profile_sync_dlg_target_spinner);
 //		final Button swap_master_target = (Button)dialog.findViewById(R.id.sync_profile_edit_change_master_and_target);
 //		final ImageButton ib_edit_master = (ImageButton)dialog.findViewById(R.id.sync_profile_edit_master);
 //		final ImageButton ib_edit_target = (ImageButton)dialog.findViewById(R.id.sync_profile_edit_target);
@@ -700,7 +700,7 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 	};
 
 	private void setMasterProfileEditButtonListener(Dialog dialog, final String prof_name) {
-		final ImageButton ib_edit_master=(ImageButton) dialog.findViewById(R.id.sync_profile_edit_master);
+		final ImageButton ib_edit_master=(ImageButton) dialog.findViewById(R.id.edit_profile_sync_dlg_edit_master_btn);
 		final ProfileListItem pli=ProfileUtility.getProfile(mGp, mContext, SMBSYNC_PROF_GROUP_DEFAULT, prof_name);
 		if (pli==null) ib_edit_master.setEnabled(false);//setVisibility(ImageButton.GONE);
 		else {
@@ -711,7 +711,7 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 	};
 
 	private void setTargetProfileEditButtonListener(Dialog dialog, final String prof_name) {
-		final ImageButton ib_edit_target=(ImageButton) dialog.findViewById(R.id.sync_profile_edit_target);
+		final ImageButton ib_edit_target=(ImageButton) dialog.findViewById(R.id.edit_profile_sync_dlg_edit_target_btn);
 		final ProfileListItem pli=ProfileUtility.getProfile(mGp, mContext, SMBSYNC_PROF_GROUP_DEFAULT, prof_name);
 		if (pli==null) ib_edit_target.setEnabled(false);//.setVisibility(ImageButton.GONE);
 		else {
@@ -777,16 +777,16 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 		// カスタムダイアログの生成
 		mDialog.setContentView(R.layout.edit_profile_sync);
 		
-		LinearLayout ll_dlg_view=(LinearLayout) mDialog.findViewById(R.id.sync_profile_dlg_view);
+		LinearLayout ll_dlg_view=(LinearLayout) mDialog.findViewById(R.id.edit_profile_sync_dlg_view);
 		ll_dlg_view.setBackgroundColor(mGp.themeColorList.dialog_msg_background_color);
 
-		final LinearLayout title_view=(LinearLayout) mDialog.findViewById(R.id.sync_profile_dlg_title_view);
+		final LinearLayout title_view=(LinearLayout) mDialog.findViewById(R.id.edit_profile_sync_title_view);
 		title_view.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);
-		final TextView dlg_title=(TextView) mDialog.findViewById(R.id.sync_profile_dlg_title);
+		final TextView dlg_title=(TextView) mDialog.findViewById(R.id.edit_profile_sync_title);
 		dlg_title.setTextColor(mGp.themeColorList.text_color_dialog_title);
 
 		dlg_title.setText(mContext.getString(R.string.msgs_edit_sync_profile));
-		final TextView dlg_title_sub=(TextView) mDialog.findViewById(R.id.sync_profile_dlg_title_sub);
+		final TextView dlg_title_sub=(TextView) mDialog.findViewById(R.id.edit_profile_sync_title_sub);
 		dlg_title_sub.setTextColor(mGp.themeColorList.text_color_dialog_title);
 		dlg_title_sub.setText(" ("+pfli.getProfileName()+")");
 
@@ -798,14 +798,14 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 		final TextView dlg_dir_filter=(TextView) mDialog.findViewById(R.id.sync_profile_dir_filter);
 		dlg_dir_filter.setText(d_fl);
 	
-		final EditText editname = (EditText) mDialog.findViewById(R.id.sync_profile_name);
+		final EditText editname = (EditText) mDialog.findViewById(R.id.edit_profile_sync_dlg_profile_name);
 		editname.setText(pfli.getProfileName());
 		editname.setTextColor(Color.LTGRAY);
 		editname.setEnabled(false);
 		editname.setVisibility(EditText.GONE);
 		
 		final CheckedTextView ctvmpd = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_sync_master_root_dir_file);
-		final CheckedTextView ctv_active = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_active);
+		final CheckedTextView ctv_active = (CheckedTextView)mDialog.findViewById(R.id.edit_profile_sync_dlg_ctv_active);
 		SMBSyncUtil.setCheckedTextView(ctv_active);
 		ctv_active.setChecked(pfli.isProfileActive());
 		final CheckedTextView ctvConf = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_confirm);
@@ -833,10 +833,10 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 		ctvConf.setChecked(pfli.isConfirmRequired());
 		ctvLastMod.setChecked(pfli.isForceLastModifiedUseSmbsync());
 		
-		final ImageButton ib_edit_master=(ImageButton) mDialog.findViewById(R.id.sync_profile_edit_master);
-		final ImageButton ib_edit_target=(ImageButton) mDialog.findViewById(R.id.sync_profile_edit_target);
+		final ImageButton ib_edit_master=(ImageButton) mDialog.findViewById(R.id.edit_profile_sync_dlg_edit_master_btn);
+		final ImageButton ib_edit_target=(ImageButton) mDialog.findViewById(R.id.edit_profile_sync_dlg_edit_target_btn);
 	
-		final Spinner spinnerSyncOption=(Spinner)mDialog.findViewById(R.id.sync_profile_sync_option);
+		final Spinner spinnerSyncOption=(Spinner)mDialog.findViewById(R.id.edit_profile_sync_dlg_sync_option);
 		mProfUtil.setSyncOptionSpinner(spinnerSyncOption, pfli.getSyncType()); 
 	
 		CommonDialog.setDlgBoxSizeLimit(mDialog,true);
@@ -861,8 +861,8 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 	//		}
 	//	});
 	
-		final Spinner spinner_master=(Spinner)mDialog.findViewById(R.id.sync_profile_master_spinner);
-		final Spinner spinner_target=(Spinner)mDialog.findViewById(R.id.sync_profile_target_spinner);
+		final Spinner spinner_master=(Spinner)mDialog.findViewById(R.id.edit_profile_sync_dlg_master_spinner);
+		final Spinner spinner_target=(Spinner)mDialog.findViewById(R.id.edit_profile_sync_dlg_target_spinner);
 		ProfileUtility.setSyncMasterProfileSpinner(mGp, mContext, spinner_master,pfli.getMasterName());
 		ProfileUtility.setSyncTargetProfileSpinner(mGp, mContext, spinner_target,pfli.getMasterName(),pfli.getTargetName());
 		
@@ -918,7 +918,7 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 			
 		});
 	
-		final Button swap_master_target = (Button)mDialog.findViewById(R.id.sync_profile_edit_change_master_and_target);
+		final Button swap_master_target = (Button)mDialog.findViewById(R.id.edit_profile_sync_dlg_change_master_and_target_btn);
 		if (spinner_master.getCount()>0 && spinner_target.getCount()>0) swap_master_target.setEnabled(true);
 		else swap_master_target.setEnabled(false);
 		swap_master_target .setOnClickListener(new OnClickListener(){
@@ -999,7 +999,7 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 		});
 
 		// CANCELボタンの指定
-		final Button btn_cancel = (Button) mDialog.findViewById(R.id.sync_profile_cancel);
+		final Button btn_cancel = (Button) mDialog.findViewById(R.id.edit_profile_sync_btn_cancel);
 		btn_cancel.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				mFragment.dismiss();
@@ -1015,7 +1015,7 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 			}
 		});
 		// OKボタンの指定
-		Button btn_ok = (Button) mDialog.findViewById(R.id.sync_profile_ok);
+		Button btn_ok = (Button) mDialog.findViewById(R.id.edit_profile_sync_btn_ok);
 		btn_ok.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				int prof_num=ProfileUtility.getProfilePos(pfli.getProfileName(), mGp.profileAdapter);
@@ -1031,10 +1031,10 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 		String prof_name, prof_master="", prof_target="";
 		boolean audit_error=false;
 		String audit_msg="";
-		Spinner spinner_master=(Spinner)dialog.findViewById(R.id.sync_profile_master_spinner);
-		Spinner spinner_target=(Spinner)dialog.findViewById(R.id.sync_profile_target_spinner);
-		EditText editname = (EditText) dialog.findViewById(R.id.sync_profile_name);
-		CheckedTextView ctv_active = (CheckedTextView)dialog.findViewById(R.id.sync_profile_ctv_active);
+		Spinner spinner_master=(Spinner)dialog.findViewById(R.id.edit_profile_sync_dlg_master_spinner);
+		Spinner spinner_target=(Spinner)dialog.findViewById(R.id.edit_profile_sync_dlg_target_spinner);
+		EditText editname = (EditText) dialog.findViewById(R.id.edit_profile_sync_dlg_profile_name);
+		CheckedTextView ctv_active = (CheckedTextView)dialog.findViewById(R.id.edit_profile_sync_dlg_ctv_active);
 		
 		if (spinner_master.getCount()>0) 
 			prof_master = spinner_master.getSelectedItem().toString().substring(2);

@@ -3,8 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    tools:ignore="ButtonStyle" >
+    android:orientation="vertical">
     
 	<LinearLayout
         android:layout_width="fill_parent"
@@ -12,13 +11,6 @@
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:layout_marginTop="10dp" >
-        <Button
-            android:id="@+id/copy_delete_confirm_no"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/msgs_mirror_confirm_no_btn"
-            android:textAppearance="?android:attr/textAppearanceMedium"/>
     	<Button
             android:id="@+id/copy_delete_confirm_yes"
             android:layout_width="0dp"
@@ -26,29 +18,39 @@
             android:layout_weight="1"
             android:text="@string/msgs_mirror_confirm_yes_btn"
             android:textAppearance="?android:attr/textAppearanceMedium"/>
-        </LinearLayout>
+
+        <Button
+            android:id="@+id/copy_delete_confirm_no"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/msgs_mirror_confirm_no_btn"
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
-        android:layout_marginTop="10dp">
+        >
+
+        <Button
+            android:id="@+id/copy_delete_confirm_yesall"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/msgs_mirror_confirm_yesall_btn"
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
+
         <Button
             android:id="@+id/copy_delete_confirm_noall"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/msgs_mirror_confirm_noall_btn"
             android:textAppearance="?android:attr/textAppearanceMedium"/>
         <!-- style="?android:attr/buttonStyleSmall" -->
-        <Button
-            android:id="@+id/copy_delete_confirm_yesall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/msgs_mirror_confirm_yesall_btn"
-            android:textAppearance="?android:attr/textAppearanceMedium"/>
 
     </LinearLayout>
 

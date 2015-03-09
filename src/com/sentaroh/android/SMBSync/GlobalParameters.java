@@ -168,7 +168,6 @@ public class GlobalParameters extends Application{
 	public boolean settingLocalFileCopyByRename=true;
 	
     public LinearLayout confirmView=null;
-    public TextView confirmTitle=null;
     public TextView confirmMsg=null;
     public Button confirmCancel=null;
     public OnClickListener confirmCancelListener=null;

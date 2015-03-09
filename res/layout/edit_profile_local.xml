@@ -2,20 +2,20 @@
 <!DOCTYPE layout>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/local_profile_dlg_view"
+    android:id="@+id/edit_profile_local_dlg_view"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
     tools:ignore="SpUsage" >
 
     <LinearLayout
-        android:id="@+id/local_profile_dlg_title_view"
+        android:id="@+id/edit_profile_local_dlg_title_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical" >
 
         <TextView
-            android:id="@+id/local_profile_dlg_title"
+            android:id="@+id/edit_profile_local_dlg_title"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
@@ -24,7 +24,7 @@
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <TextView
-            android:id="@+id/local_profile_dlg_title_sub"
+            android:id="@+id/edit_profile_local_dlg_title_sub"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
@@ -49,7 +49,7 @@
             android:orientation="vertical" >
 
             <TextView
-                android:id="@+id/local_profile_dlg_msg"
+                android:id="@+id/edit_profile_local_dlg_msg"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text=""
@@ -57,7 +57,7 @@
                 android:textColor="#ffff0000" />
 
             <CheckedTextView
-                android:id="@+id/local_profile_ctv_active"
+                android:id="@+id/edit_profile_local_dlg_ctv_active"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
@@ -69,7 +69,7 @@
             <!-- android:checkMark="?android:attr/listChoiceIndicatorMultiple" -->
 
            <EditText
-               android:id="@+id/local_profile_name"
+               android:id="@+id/edit_profile_local_dlg_profile_name"
                android:layout_width="fill_parent"
                android:layout_height="wrap_content"
                android:hint="@string/msgs_local_profile_dlg_profile"
@@ -96,7 +96,7 @@
                     android:layout_height="wrap_content" />
 
                 <Spinner
-                    android:id="@+id/local_profile_lmp_btn"
+                    android:id="@+id/edit_profile_local_dlg_lmp_btn"
                     style="@android:style/Widget.Spinner"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -116,7 +116,7 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/local_profile_get_btn1"
+                    android:id="@+id/edit_profile_local_dlg_list_dir_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="1dp"
@@ -124,7 +124,7 @@
                     android:text="@string/msgs_local_profile_dlg_dirlist" />
 
                 <EditText
-                    android:id="@+id/local_profile_dir"
+                    android:id="@+id/edit_profile_local_dlg_dir"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="2.54"

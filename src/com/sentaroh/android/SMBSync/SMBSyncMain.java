@@ -51,7 +51,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
-import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -552,7 +551,7 @@ public class SMBSyncMain extends ActionBarActivity {
 		
 		public ArrayList<SyncHistoryListItem> sync_hist_list=null;
 		
-		public String confirm_title="", confirm_msg="";
+		public String confirm_msg="";
 		public String progress_bar_msg="";
 		public int progress_bar_progress=0, progress_bar_max=0;
 		
@@ -738,7 +737,6 @@ public class SMBSyncMain extends ActionBarActivity {
 		saveButtonStatus(mGp.progressSpinCancel,vsa.prog_spin_cancel);
 		saveButtonStatus(mGp.progressBarImmed,vsa.prog_bar_immed);
 		
-		vsa.confirm_title=mGp.confirmTitle.getText().toString();
 		vsa.confirm_msg=mGp.confirmMsg.getText().toString();
 
 		vsa.progress_bar_msg=mGp.progressBarMsg.getText().toString();
@@ -755,7 +753,6 @@ public class SMBSyncMain extends ActionBarActivity {
 		mGp.msgListView.setSelectionFromTop(vsa.msg_list_view_pos_x, vsa.msg_list_view_pos_y);
 		mGp.syncHistoryListView.setSelectionFromTop(vsa.sync_list_view_pos_x, vsa.sync_list_view_pos_y);
 
-		mGp.confirmTitle.setText(vsa.confirm_title);
 		mGp.confirmMsg.setText(vsa.confirm_msg);
 
 		restoreButtonStatus(mGp.confirmCancel,vsa.confirm_cancel,mGp.confirmCancelListener);
@@ -778,18 +775,18 @@ public class SMBSyncMain extends ActionBarActivity {
 
 		if (vsa.prog_bar_view_visibility!=LinearLayout.GONE) {
 			mGp.progressBarView.bringToFront();
-			mGp.progressBarView.setBackgroundColor(mGp.themeColorList.window_background_color_content);
+			mGp.progressBarView.setBackgroundColor(mGp.themeColorList.dialog_msg_background_color);
 			mGp.progressBarView.setVisibility(LinearLayout.VISIBLE);
 		} else mGp.progressBarView.setVisibility(LinearLayout.GONE);
 
 		if (vsa.prog_spin_view_visibility!=LinearLayout.GONE) {
 			mGp.progressSpinView.bringToFront();
-			mGp.progressSpinView.setBackgroundColor(mGp.themeColorList.window_background_color_content);
+			mGp.progressSpinView.setBackgroundColor(mGp.themeColorList.dialog_msg_background_color);
 			mGp.progressSpinView.setVisibility(LinearLayout.VISIBLE);
 		} else mGp.progressSpinView.setVisibility(LinearLayout.GONE);
 		
 		if (vsa.confirm_view_visibility!=LinearLayout.GONE) {
-			mGp.confirmView.setBackgroundColor(mGp.themeColorList.window_background_color_content);
+			mGp.confirmView.setBackgroundColor(mGp.themeColorList.dialog_msg_background_color);
 			mGp.confirmView.setVisibility(LinearLayout.VISIBLE);
 			mGp.confirmView.bringToFront();
 		} else {
@@ -1045,27 +1042,26 @@ public class SMBSyncMain extends ActionBarActivity {
 		ll_main.setBackgroundColor(mGp.themeColorList.window_background_color_content);
 		
         LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		mProfileView=(LinearLayout)vi.inflate(R.layout.main_profile_view,null);
+		mProfileView=(LinearLayout)vi.inflate(R.layout.main_profile,null);
 		mProfileView.setBackgroundColor(mGp.themeColorList.window_background_color_content);
-		mHistoryView=(LinearLayout)vi.inflate(R.layout.main_history_view,null);
+		mHistoryView=(LinearLayout)vi.inflate(R.layout.main_history,null);
 		mHistoryView.setBackgroundColor(mGp.themeColorList.window_background_color_content);
-		mMessageView=(LinearLayout)vi.inflate(R.layout.main_msg_view,null);
+		mMessageView=(LinearLayout)vi.inflate(R.layout.main_msg,null);
 		mMessageView.setBackgroundColor(mGp.themeColorList.window_background_color_content);
 
-		mGp.msgListView = (ListView) mMessageView.findViewById(R.id.message_view_list);
-		mGp.profileListView =(ListView) mProfileView.findViewById(R.id.profile_view_list);
-		mGp.syncHistoryListView=(ListView)mHistoryView.findViewById(R.id.history_view_list);
+		mGp.msgListView = (ListView) mMessageView.findViewById(R.id.main_msg_view_list);
+		mGp.profileListView =(ListView) mProfileView.findViewById(R.id.main_profile_view_list);
+		mGp.syncHistoryListView=(ListView)mHistoryView.findViewById(R.id.main_history_list);
 		
-		mGp.scheduleInfoView=(TextView)findViewById(R.id.schedule_info);
+		mGp.scheduleInfoView=(TextView)findViewById(R.id.main_schedule_view_info);
 		mGp.scheduleInfoView.setTextColor(mGp.themeColorList.text_color_primary);
 		
-		mGp.confirmView=(LinearLayout)findViewById(R.id.profile_confirm);
+		mGp.confirmView=(LinearLayout)findViewById(R.id.main_dialog_confirm_view);
+		mGp.confirmView.setBackgroundColor(mGp.themeColorList.dialog_msg_background_color);
 		mGp.confirmView.setVisibility(LinearLayout.GONE);
-		mGp.confirmTitle=(TextView)findViewById(R.id.copy_delete_confirm_title);
-		mGp.confirmTitle.setTextColor(mGp.themeColorList.text_color_primary);
-		mGp.confirmMsg=(TextView)findViewById(R.id.copy_delete_confirm_msg);
+		mGp.confirmMsg=(TextView)findViewById(R.id.main_dialog_confirm_msg);
 		mGp.confirmMsg.setTextColor(mGp.themeColorList.text_color_primary);
-		mGp.confirmCancel=(Button)findViewById(R.id.copy_delete_confirm_task_cancel);
+		mGp.confirmCancel=(Button)findViewById(R.id.main_dialog_confirm_sync_cancel);
 		if (mGp.themeColorList.theme_is_light) mGp.confirmCancel.setTextColor(mGp.themeColorList.text_color_primary);
 		mGp.confirmYes=(Button)findViewById(R.id.copy_delete_confirm_yes);
 		mGp.confirmYes.setTextColor(mGp.themeColorList.text_color_primary);
@@ -1076,26 +1072,28 @@ public class SMBSyncMain extends ActionBarActivity {
 	    mGp.confirmNoAll=(Button)findViewById(R.id.copy_delete_confirm_noall);
 	    mGp.confirmNoAll.setTextColor(mGp.themeColorList.text_color_primary);
 
-	    mGp.progressBarView=(LinearLayout)findViewById(R.id.profile_progress_bar);
+	    mGp.progressBarView=(LinearLayout)findViewById(R.id.main_dialog_progress_bar_view);
+	    mGp.progressBarView.setBackgroundColor(mGp.themeColorList.dialog_msg_background_color);
 	    mGp.progressBarView.setVisibility(LinearLayout.GONE);
-	    mGp.progressBarMsg=(TextView)findViewById(R.id.profile_progress_bar_msg);
+	    mGp.progressBarMsg=(TextView)findViewById(R.id.main_dialog_progress_bar_msg);
 	    mGp.progressBarMsg.setTextColor(mGp.themeColorList.text_color_primary);
-	    mGp.progressBarPb = (ProgressBar)findViewById(R.id.profile_progress_bar_progress);
+	    mGp.progressBarPb = (ProgressBar)findViewById(R.id.main_dialog_progress_bar_progress);
 
-	    mGp.progressBarCancel=(Button)findViewById(R.id.profile_progress_bar_btn_cancel);
+	    mGp.progressBarCancel=(Button)findViewById(R.id.main_dialog_progress_bar_btn_cancel);
 	    if (mGp.themeColorList.theme_is_light) mGp.progressBarCancel.setTextColor(mGp.themeColorList.text_color_primary);
-	    mGp.progressBarImmed=(Button)findViewById(R.id.profile_progress_bar_btn_immediate);
+	    mGp.progressBarImmed=(Button)findViewById(R.id.main_dialog_progress_bar_btn_immediate);
 	    if (mGp.themeColorList.theme_is_light) mGp.progressBarImmed.setTextColor(mGp.themeColorList.text_color_primary);
 
-	    mGp.progressSpinView=(LinearLayout)findViewById(R.id.profile_progress_spin);
+	    mGp.progressSpinView=(LinearLayout)findViewById(R.id.main_dialog_progress_spin_view);
+	    mGp.progressSpinView.setBackgroundColor(mGp.themeColorList.dialog_msg_background_color);
 	    mGp.progressSpinView.setVisibility(LinearLayout.GONE);
-	    mGp.progressSpinSyncprof=(TextView)findViewById(R.id.profile_progress_spin_syncprof);
+	    mGp.progressSpinSyncprof=(TextView)findViewById(R.id.main_dialog_progress_spin_syncprof);
 	    mGp.progressSpinSyncprof.setTextColor(mGp.themeColorList.text_color_primary);
-	    mGp.progressSpinFilePath=(TextView)findViewById(R.id.profile_progress_spin_filepath);
+	    mGp.progressSpinFilePath=(TextView)findViewById(R.id.main_dialog_progress_spin_filepath);
 	    mGp.progressSpinFilePath.setTextColor(mGp.themeColorList.text_color_primary);
-	    mGp.progressSpinStatus=(TextView)findViewById(R.id.profile_progress_spin_status);
+	    mGp.progressSpinStatus=(TextView)findViewById(R.id.main_dialog_progress_spin_status);
 	    mGp.progressSpinStatus.setTextColor(mGp.themeColorList.text_color_primary);
-	    mGp.progressSpinCancel=(Button)findViewById(R.id.profile_progress_spin_btn_cancel);
+	    mGp.progressSpinCancel=(Button)findViewById(R.id.main_dialog_progress_spin_btn_cancel);
 	    if (mGp.themeColorList.theme_is_light) mGp.progressSpinCancel.setTextColor(mGp.themeColorList.text_color_primary);
 
 	    createContextView();
@@ -1480,7 +1478,7 @@ public class SMBSyncMain extends ActionBarActivity {
 			} else {
 				final Dialog dialog = new Dialog(mContext);//, android.R.style.Theme_Black);
 				dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-				dialog.setContentView(R.layout.mixed_mount_point_dialog);
+				dialog.setContentView(R.layout.mixed_mount_point_dlg);
 
 				final LinearLayout title_view = (LinearLayout) dialog.findViewById(R.id.mixed_mount_point_dialog_title_view);
 				final TextView title = (TextView) dialog.findViewById(R.id.mixed_mount_point_dialog_title);
@@ -3419,24 +3417,24 @@ public class SMBSyncMain extends ActionBarActivity {
 			if (app_specific_used) {
 				final Dialog dialog = new Dialog(mContext);//, android.R.style.Theme_Black);
 				dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-				dialog.setContentView(R.layout.confirm_app_specific_dir_dialog);
+				dialog.setContentView(R.layout.confirm_app_specific_dir_dlg);
 				
-				final LinearLayout title_view = (LinearLayout) dialog.findViewById(R.id.confirm_app_specific_dialog_title_view);
-				final TextView title = (TextView) dialog.findViewById(R.id.confirm_app_specific_dialog_title);
+				final LinearLayout title_view = (LinearLayout) dialog.findViewById(R.id.confirm_app_specific_dlg_title_view);
+				final TextView title = (TextView) dialog.findViewById(R.id.confirm_app_specific_dlg_title);
 				title_view.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);
 				title.setText(mContext.getString(R.string.msgs_common_dialog_warning));
 				title.setTextColor(mGp.themeColorList.text_color_warning);
 				
-				((TextView)dialog.findViewById(R.id.confirm_app_specific_dialog_subtitle))
+				((TextView)dialog.findViewById(R.id.confirm_app_specific_dlg_subtitle))
 				.setText(mContext.getString(R.string.msgs_local_mount_point_app_specific_dir_used_title));
 				
-				((TextView)dialog.findViewById(R.id.confirm_app_specific_dialog_msg))
+				((TextView)dialog.findViewById(R.id.confirm_app_specific_dlg_msg))
 				.setText(mContext.getString(R.string.msgs_local_mount_point_app_specific_dir_used_msg)+
 						"\n\n"+prof_list+"\n");
 				
-				final Button btnOk = (Button) dialog.findViewById(R.id.confirm_app_specific_dialog_ok);
-				final Button btnCancel = (Button) dialog.findViewById(R.id.confirm_app_specific_dialog_cancel);
-				final CheckedTextView ctvSuppr= (CheckedTextView) dialog.findViewById(R.id.confirm_app_specific_dialog_ctv_suppress);
+				final Button btnOk = (Button) dialog.findViewById(R.id.confirm_app_specific_dlg_ok);
+				final Button btnCancel = (Button) dialog.findViewById(R.id.confirm_app_specific_dlg_cancel);
+				final CheckedTextView ctvSuppr= (CheckedTextView) dialog.findViewById(R.id.confirm_app_specific_dlg_ctv_suppress);
 				SMBSyncUtil.setCheckedTextView(ctvSuppr);
 				
 				CommonDialog.setDlgBoxSizeCompact(dialog);
@@ -3577,7 +3575,7 @@ public class SMBSyncMain extends ActionBarActivity {
 
 	private void startMirrorTask(ArrayList<MirrorIoParmList> alp) {
 		mGp.progressSpinView.setVisibility(LinearLayout.VISIBLE);
-		mGp.progressSpinView.setBackgroundColor(mGp.themeColorList.window_background_color_content);
+		mGp.progressSpinView.setBackgroundColor(mGp.themeColorList.dialog_msg_background_color);
 		mGp.progressSpinView.bringToFront();
 
 		mGp.progressSpinCancel.setText(getString(R.string.msgs_progress_spin_dlg_sync_cancel));
@@ -4002,10 +4000,8 @@ public class SMBSyncMain extends ActionBarActivity {
 		});
 		
 		mGp.confirmView.setVisibility(LinearLayout.VISIBLE);
-		mGp.confirmView.setBackgroundColor(mGp.themeColorList.window_background_color_content);
+		mGp.confirmView.setBackgroundColor(mGp.themeColorList.dialog_msg_background_color);
 		mGp.confirmView.bringToFront();
-		mGp.confirmTitle.setText(mContext.getString(R.string.msgs_common_dialog_warning));
-		mGp.confirmTitle.setTextColor(Color.YELLOW);
 		String msg_text="";
 		if (method.equals(SMBSYNC_CONFIRM_REQUEST_COPY)) {
 			msg_text=String.format(getString(R.string.msgs_mirror_confirm_copy_confirm),fp);
@@ -4074,7 +4070,7 @@ public class SMBSyncMain extends ActionBarActivity {
 		mThreadCtlAutoStart.setEnabled();//enableAsyncTask();
 
 		mGp.progressBarView.setVisibility(LinearLayout.VISIBLE);
-		mGp.progressBarView.setBackgroundColor(mGp.themeColorList.window_background_color_content);
+		mGp.progressBarView.setBackgroundColor(mGp.themeColorList.dialog_msg_background_color);
 		mGp.progressBarView.bringToFront();
 
 		mGp.progressBarMsg.setText(getString(R.string.msgs_progress_bar_dlg_astart_starting));
@@ -4151,7 +4147,7 @@ public class SMBSyncMain extends ActionBarActivity {
 		threadCtl.setEnabled();//enableAsyncTask();
 
 		mGp.progressBarView.setVisibility(LinearLayout.VISIBLE);
-		mGp.progressBarView.setBackgroundColor(mGp.themeColorList.window_background_color_content);
+		mGp.progressBarView.setBackgroundColor(mGp.themeColorList.dialog_msg_background_color);
 		mGp.progressBarView.bringToFront();
 
 		mGp.progressBarMsg.setText("");

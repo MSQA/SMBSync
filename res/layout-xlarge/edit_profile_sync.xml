@@ -2,14 +2,14 @@
 <!DOCTYPE layout>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/sync_profile_dlg_view"
+    android:id="@+id/edit_profile_sync_dlg_view"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
     tools:ignore="SpUsage,ContentDescription,HardcodedText,UselessParent,InefficientWeight" >
 
     <LinearLayout
-        android:id="@+id/sync_profile_dlg_title_view"
+        android:id="@+id/edit_profile_sync_title_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical" >
@@ -20,7 +20,7 @@
             android:orientation="horizontal" >
 
             <TextView
-                android:id="@+id/sync_profile_dlg_title"
+                android:id="@+id/edit_profile_sync_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
@@ -28,7 +28,7 @@
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
             <TextView
-                android:id="@+id/sync_profile_dlg_title_sub"
+                android:id="@+id/edit_profile_sync_title_sub"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
@@ -53,7 +53,7 @@
             android:orientation="vertical" >
 
             <TextView
-                android:id="@+id/sync_profile_dlg_msg"
+                android:id="@+id/edit_profile_sync_msg"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text=""
@@ -61,7 +61,7 @@
                 android:textColor="#ffff0000" />
 
 		    <CheckedTextView
-		        android:id="@+id/sync_profile_ctv_active"
+		        android:id="@+id/edit_profile_sync_dlg_ctv_active"
 		        android:layout_width="fill_parent"
 		        android:layout_height="wrap_content"
 		        android:layout_marginLeft="5dp"
@@ -72,7 +72,7 @@
 		        />
 
             <EditText
-                android:id="@+id/sync_profile_name"
+                android:id="@+id/edit_profile_sync_dlg_profile_name"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
@@ -94,7 +94,7 @@
                     android:text="@string/msgs_sync_profile_dlg_syncopt"
                     android:textAppearance="?android:attr/textAppearanceMedium" />
                 <Spinner
-                    android:id="@+id/sync_profile_sync_option"
+                    android:id="@+id/edit_profile_sync_dlg_sync_option"
                     style="@android:style/Widget.Spinner"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -105,7 +105,7 @@
                     android:textAppearance="?android:attr/textAppearanceMedium" />
 								
                 <Button
-                    android:id="@+id/sync_profile_edit_change_master_and_target"
+                    android:id="@+id/edit_profile_sync_dlg_change_master_and_target_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -137,14 +137,14 @@
 		               android:layout_gravity="center_vertical"
 		               android:orientation="horizontal" >
 		               <ImageButton
-		                   	android:id="@+id/sync_profile_edit_master"
+		                   	android:id="@+id/edit_profile_sync_dlg_edit_master_btn"
 		                   	android:layout_width="60dp"
 		                   	android:layout_height="60dp"
 		                   	android:layout_gravity="center_vertical"
 		                   	android:scaleType="centerCrop"
 		                   	android:src="@drawable/menu_edit" />
 			        　　　　　　　<Spinner
-			           		android:id="@+id/sync_profile_master_spinner"
+			           		android:id="@+id/edit_profile_sync_dlg_master_spinner"
 			            	style="@android:style/Widget.Spinner"
 			            	android:layout_width="0dp"
 			            	android:layout_height="wrap_content"
@@ -158,7 +158,7 @@
 	           	</LinearLayout>
                 
                 <ImageView
-                    android:id="@+id/ImageView1"
+                    android:id="@+id/edit_profile_sync_dlg_image_right_arrow"
                     android:layout_width="24dp"
                     android:layout_height="32dp"
                     android:layout_gravity="center"
@@ -185,7 +185,7 @@
                         android:orientation="horizontal" >
 
                         <ImageButton
-                            android:id="@+id/sync_profile_edit_target"
+                            android:id="@+id/edit_profile_sync_dlg_edit_target_btn"
                             android:layout_width="60dp"
                             android:layout_height="60dp"
                             android:layout_gravity="center_vertical"
@@ -193,7 +193,7 @@
                             android:src="@drawable/menu_edit" />
 
                         <Spinner
-                            android:id="@+id/sync_profile_target_spinner"
+                            android:id="@+id/edit_profile_sync_dlg_target_spinner"
                             style="@android:style/Widget.Spinner"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"

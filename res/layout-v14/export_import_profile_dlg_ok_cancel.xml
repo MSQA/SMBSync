@@ -7,7 +7,7 @@
     tools:ignore="ButtonStyle" >
 
     <Button
-        android:id="@+id/export_import_profile_cancel_btn"
+        android:id="@+id/export_import_profile_dlg_btn_cancel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -15,7 +15,7 @@
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <Button
-        android:id="@+id/export_import_profile_ok_btn"
+        android:id="@+id/export_import_profile_dlg_btn_ok"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"

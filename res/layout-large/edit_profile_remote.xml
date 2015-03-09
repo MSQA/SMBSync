@@ -2,14 +2,14 @@
 <!DOCTYPE layout>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/remote_profile_dlg_view"
+    android:id="@+id/edit_profile_remote_dlg_view"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
     tools:ignore="SpUsage" >
 
     <LinearLayout
-        android:id="@+id/remote_profile_dlg_title_view"
+        android:id="@+id/edit_profile_remote_dlg_title_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical" >
@@ -20,14 +20,14 @@
             android:orientation="horizontal" >
 
             <TextView
-                android:id="@+id/remote_profile_dlg_title"
+                android:id="@+id/edit_profile_remote_dlg_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
             <TextView
-                android:id="@+id/remote_profile_dlg_title_sub"
+                android:id="@+id/edit_profile_remote_dlg_title_sub"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
@@ -52,7 +52,7 @@
             android:orientation="vertical" >
 
             <TextView
-                android:id="@+id/remote_profile_dlg_msg"
+                android:id="@+id/edit_profile_remote_dlg_msg"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text=""
@@ -60,7 +60,7 @@
                 android:textColor="#ffff0000" />
 
             <CheckedTextView
-                android:id="@+id/remote_profile_ctv_active"
+                android:id="@+id/edit_profile_remote_dlg_ctv_active"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
@@ -70,7 +70,7 @@
                 android:textAppearance="?android:attr/textAppearanceMedium" />
             
             <EditText
-                android:id="@+id/remote_profile_name"
+                android:id="@+id/edit_profile_remote_dlg_profile_name"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/msgs_remote_profile_dlg_profile"
@@ -87,7 +87,7 @@
                 android:orientation="horizontal" >
 
                 <Button
-                    android:id="@+id/remote_profile_search_remote_host"
+                    android:id="@+id/edit_profile_remote_dlg_search_remote_host"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
@@ -95,7 +95,7 @@
                     android:textAppearance="?android:attr/textAppearanceMedium" />
 
                 <EditText
-                    android:id="@+id/remote_profile_remote_server"
+                    android:id="@+id/edit_profile_remote_dlg_remote_server"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
@@ -107,34 +107,33 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/remote_profile_port_option"
+                android:id="@+id/edit_profile_remote_dlg_port_option_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="visible"
                 android:orientation="horizontal" >
 
+                <EditText
+                    android:id="@+id/edit_profile_remote_dlg_remote_port"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:hint="@string/msgs_remote_profile_dlg_port"
+                    android:inputType="number" />
+
+                <CheckedTextView
+                    android:id="@+id/edit_profile_remote_dlg_ctv_use_remote_port_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:checkMark="?android:attr/textCheckMark"
+                    android:gravity="center_vertical"
+                    android:text="@string/msgs_remote_profile_dlg_use_port_number"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
             </LinearLayout>
 
             <CheckedTextView
-                android:id="@+id/remote_profile_ctv_use_port_number"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:checkMark="?android:attr/textCheckMark"
-                android:gravity="center_vertical"
-                android:text="@string/msgs_remote_profile_dlg_use_port_number"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-            
-            <EditText
-                android:id="@+id/remote_profile_port"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:hint="@string/msgs_remote_profile_dlg_port"
-                android:inputType="number" />
-
-            <CheckedTextView
-                android:id="@+id/remote_profile_ctv_use_user_pass"
+                android:id="@+id/edit_profile_remote_dlg_ctv_use_user_pass"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
@@ -149,7 +148,7 @@
                 android:orientation="horizontal">
 
                 <EditText
-                    android:id="@+id/remote_profile_user"
+                    android:id="@+id/edit_profile_remote_dlg_remote_user"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -158,7 +157,7 @@
                     android:inputType="text"/>
 
                 <EditText
-                    android:id="@+id/remote_profile_pass"
+                    android:id="@+id/edit_profile_remote_dlg_remote_pass"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -166,7 +165,7 @@
                     android:hint="@string/msgs_remote_profile_dlg_password"
                     android:inputType="textPassword"/>
 	            <Button
-	                android:id="@+id/remote_profile_logon"
+	                android:id="@+id/edit_profile_remote_dlg_logon_btn"
 	                android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"
 	                android:layout_weight="1"
@@ -181,7 +180,7 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/remote_profile_list_share"
+                    android:id="@+id/edit_profile_remote_dlg_list_share_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="1dp"
@@ -189,7 +188,7 @@
                     android:text="@string/msgs_remote_profile_dlg_sharelist" />
 
                 <EditText
-                    android:id="@+id/remote_profile_share"
+                    android:id="@+id/edit_profile_remote_dlg_share_name"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -204,7 +203,7 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/remote_profile_list_directory"
+                    android:id="@+id/edit_profile_remote_dlg_list_directory_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="1dp"
@@ -212,7 +211,7 @@
                     android:text="@string/msgs_remote_profile_dlg_dirlist" />
 
                 <EditText
-                    android:id="@+id/remote_profile_dir"
+                    android:id="@+id/edit_profile_remote_dlg_dir"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
