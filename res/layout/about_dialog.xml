@@ -55,7 +55,7 @@
 		        android:id="@+id/about_dialog_btn_ok"
 		        android:layout_width="fill_parent"
 		        android:layout_height="wrap_content"
-		        android:text="@string/msgs_dlg_ok_btn" />
+		        android:text="@string/msgs_common_dialog_close" />
 	        	        	       		    	
 	    </LinearLayout>
 	    

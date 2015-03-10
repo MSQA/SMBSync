@@ -1389,13 +1389,13 @@ public class ProfileUtility {
 //		Log.v("","set sp_t="+spinner_target.getSelectedItem());
 	};
 
-	public void copyProfile(ProfileListItem pli) {
+	public void copyProfile(ProfileListItem pli, NotifyEvent p_ntfy) {
 		if (pli.getProfileType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
 			ProfileMaintLocalFragment pmlp=ProfileMaintLocalFragment.newInstance();
-			pmlp.showDialog(mFragMgr, pmlp, "COPY",pli, 0, this, util, commonDlg,null);
+			pmlp.showDialog(mFragMgr, pmlp, "COPY",pli, 0, this, util, commonDlg,p_ntfy);
 		} else if (pli.getProfileType().equals(SMBSYNC_PROF_TYPE_REMOTE)) {
 			ProfileMaintRemoteFragment pmrp=ProfileMaintRemoteFragment.newInstance();
-			pmrp.showDialog(mFragMgr, pmrp, "COPY",pli, 0, this, util, commonDlg,null);
+			pmrp.showDialog(mFragMgr, pmrp, "COPY",pli, 0, this, util, commonDlg,p_ntfy);
 		} else if (pli.getProfileType().equals(SMBSYNC_PROF_TYPE_SYNC)) {
 			ArrayList<String>ff=new ArrayList<String>();
 			ff.addAll(pli.getFileFilter());
@@ -1413,11 +1413,11 @@ public class ProfileUtility {
 					pli.getLastSyncTime(), pli.getLastSyncResult(),
 					false);
 			ProfileMaintSyncFragment pmsp=ProfileMaintSyncFragment.newInstance();
-			pmsp.showDialog(mFragMgr, pmsp, "COPY",npfli, this, util, commonDlg,null);
+			pmsp.showDialog(mFragMgr, pmsp, "COPY",npfli, this, util, commonDlg,p_ntfy);
 		}
 	};
 
-	public void renameProfile(final ProfileListItem pli) {
+	public void renameProfile(final ProfileListItem pli, final NotifyEvent p_ntfy) {
 		
 		// カスタムダイアログの生成
 		final Dialog dialog = new Dialog(mContext);
@@ -1492,10 +1492,8 @@ public class ProfileUtility {
 				saveProfileToFile(mGp, mContext, util, false,"","",mGp.profileAdapter,false);
 				
 				ProfileUtility.setAllProfileToUnchecked(true, mGp.profileAdapter);
-//				AdapterProfileList tfl= createProfileList(false,"");
-//				replaceglblParms.profileAdapterContent(tfl);
-//				glblParms.profileAdapter.setNotifyOnChange(true);
-//				glblParms.profileListView.setSelectionFromTop(pos,posTop);
+				
+				p_ntfy.notifyToListener(true, null);
 			}
 		});
 		// CANCELボタンの指定

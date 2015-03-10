@@ -2355,6 +2355,10 @@ public class SMBSyncMain extends ActionBarActivity {
 						 toast.show();
 						 last_show_time=System.currentTimeMillis();
 					 }
+					 mGp.syncHistoryAdapter.setAllItemChecked(false);
+					 mGp.syncHistoryAdapter.setShowCheckBox(false);
+					 mGp.syncHistoryAdapter.notifyDataSetChanged();
+					 setHistoryContextButtonNormalMode();
 				}
 				setContextButtonEnabled(mContextHistoryButtonHistiryCopyClipboard,true);
 			}
@@ -2926,7 +2930,7 @@ public class SMBSyncMain extends ActionBarActivity {
 					for(int i=0;i<mGp.profileAdapter.getCount();i++) {
 						ProfileListItem item=mGp.profileAdapter.getItem(i);
 						if (item.isChecked()) {
-							profUtil.copyProfile(item);
+							profUtil.copyProfile(item, ntfy);
 							break;
 						}
 					}
@@ -2955,7 +2959,7 @@ public class SMBSyncMain extends ActionBarActivity {
 					for(int i=0;i<mGp.profileAdapter.getCount();i++) {
 						ProfileListItem item=mGp.profileAdapter.getItem(i);
 						if (item.isChecked()) {
-							profUtil.renameProfile(item);				
+							profUtil.renameProfile(item,ntfy);				
 							break;
 						}
 					}
@@ -3115,6 +3119,9 @@ public class SMBSyncMain extends ActionBarActivity {
         	mContextProfileButtonSync.setImageResource(mContextProfileButtonSyncIconDisabled);
         	mContextProfileButtonSync.setEnabled(false);
         }
+    	if (isUiEnabled()) mContextProfileButtonSync.setVisibility(ImageButton.VISIBLE);
+    	else mContextProfileButtonSync.setVisibility(ImageButton.GONE);
+
         if (p_sync_ena && !mContextProfileButtonSync.isEnabled() || !p_sync_ena && mContextProfileButtonSync.isEnabled())
         	refreshOptionMenu();
         
@@ -3233,7 +3240,10 @@ public class SMBSyncMain extends ActionBarActivity {
         	mContextProfileButtonSync.setImageResource(mContextProfileButtonSyncIconDisabled);
         	mContextProfileButtonSync.setEnabled(false);
         }
-        
+
+    	if (isUiEnabled()) mContextProfileButtonSync.setVisibility(ImageButton.VISIBLE);
+    	else mContextProfileButtonSync.setVisibility(ImageButton.GONE);
+       
         mContextProfileViewActivete.setVisibility(ImageButton.GONE);
         mContextProfileViewInactivete.setVisibility(ImageButton.GONE);
         if (isUiEnabled()) mContextProfileViewAddLocal.setVisibility(ImageButton.VISIBLE);

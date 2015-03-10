@@ -104,7 +104,7 @@
 	<string name="settings_playback_ringtone_when_sync_ended_title">Playback notification</string>
 	<string name="settings_playback_ringtone_when_sync_ended_summary_always">To playback default notification when sync was ended</string>
 	<string name="settings_playback_ringtone_when_sync_ended_summary_error">To playback default notification when sync was ended with error</string>
-	<string name="settings_playback_ringtone_when_sync_ended_summary_suucess">To playback default notification when sync was ended without error</string>
+	<string name="settings_playback_ringtone_when_sync_ended_summary_success">To playback default notification when sync was ended successfully</string>
 	<string name="settings_playback_ringtone_when_sync_ended_summary_no">Do not playback default notification</string>
 	<string name="settings_playback_ringtone_when_sync_ended_dialog_title">Select playback condition</string>
 	<string name="settings_playback_ringtone_when_sync_ended">settings_playback_ringtone_when_sync_ended</string>
