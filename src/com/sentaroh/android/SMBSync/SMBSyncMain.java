@@ -796,7 +796,7 @@ public class SMBSyncMain extends ActionBarActivity {
 	};
 	
 	private void changeLanguageCode(final Configuration newConfig) {
-		util.addLogMsg("I",getString(R.string.msgs_smbsync_main_language_changed));
+		util.addLogMsg("I",getString(R.string.msgs_smbsync_main_language_changed_title));
 //	    refreshOptionMenu();
 //		mTabChildviewProf.setTabTitle(getString(R.string.msgs_tab_name_prof));
 //		mTabChildviewMsg.setTabTitle(getString(R.string.msgs_tab_name_msg));
@@ -805,7 +805,8 @@ public class SMBSyncMain extends ActionBarActivity {
 		mCurrentLocale=newConfig.locale;
 		
 		commonDlg.showCommonDialog(false, "W",  
-				getString(R.string.msgs_smbsync_main_language_changed), "", null);
+				getString(R.string.msgs_smbsync_main_language_changed_title), 
+				getString(R.string.msgs_smbsync_main_language_changed_msg), null);
 		
 	};
 	
@@ -1089,7 +1090,7 @@ public class SMBSyncMain extends ActionBarActivity {
 	    mGp.progressSpinView.setVisibility(LinearLayout.GONE);
 	    mGp.progressSpinSyncprof=(TextView)findViewById(R.id.main_dialog_progress_spin_syncprof);
 	    mGp.progressSpinSyncprof.setTextColor(mGp.themeColorList.text_color_primary);
-	    mGp.progressSpinFilePath=(TextView)findViewById(R.id.main_dialog_progress_spin_filepath);
+	    mGp.progressSpinFilePath=(TextView)findViewById(R.id.main_dialog_progress_spin_filename);
 	    mGp.progressSpinFilePath.setTextColor(mGp.themeColorList.text_color_primary);
 	    mGp.progressSpinStatus=(TextView)findViewById(R.id.main_dialog_progress_spin_status);
 	    mGp.progressSpinStatus.setTextColor(mGp.themeColorList.text_color_primary);
@@ -1483,11 +1484,8 @@ public class SMBSyncMain extends ActionBarActivity {
 				final LinearLayout title_view = (LinearLayout) dialog.findViewById(R.id.mixed_mount_point_dialog_title_view);
 				final TextView title = (TextView) dialog.findViewById(R.id.mixed_mount_point_dialog_title);
 				title_view.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);
-				title.setText(mContext.getString(R.string.msgs_common_dialog_warning));
+				title.setText(mContext.getString(R.string.msgs_local_file_modified_maint_mixed_old_new_title));
 				title.setTextColor(mGp.themeColorList.text_color_warning);
-				
-				((TextView)dialog.findViewById(R.id.mixed_mount_point_dialog_subtitle))
-				.setText(mContext.getString(R.string.msgs_local_file_modified_maint_mixed_old_new_title));
 				
 				((TextView)dialog.findViewById(R.id.mixed_mount_point_dialog_msg))
 				.setText(mContext.getString(R.string.msgs_local_file_modified_maint_mixed_old_new_msg));
@@ -3432,11 +3430,8 @@ public class SMBSyncMain extends ActionBarActivity {
 				final LinearLayout title_view = (LinearLayout) dialog.findViewById(R.id.confirm_app_specific_dlg_title_view);
 				final TextView title = (TextView) dialog.findViewById(R.id.confirm_app_specific_dlg_title);
 				title_view.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);
-				title.setText(mContext.getString(R.string.msgs_common_dialog_warning));
+				title.setText(mContext.getString(R.string.msgs_local_mount_point_app_specific_dir_used_title));
 				title.setTextColor(mGp.themeColorList.text_color_warning);
-				
-				((TextView)dialog.findViewById(R.id.confirm_app_specific_dlg_subtitle))
-				.setText(mContext.getString(R.string.msgs_local_mount_point_app_specific_dir_used_title));
 				
 				((TextView)dialog.findViewById(R.id.confirm_app_specific_dlg_msg))
 				.setText(mContext.getString(R.string.msgs_local_mount_point_app_specific_dir_used_msg)+
@@ -3511,8 +3506,7 @@ public class SMBSyncMain extends ActionBarActivity {
 				@Override
 				public void positiveResponse(Context c, Object[] o) {
 					util.addLogMsg("I",mContext.getString(R.string.msgs_sync_all_active_profiles));
-					util.addLogMsg("I",mContext.getString(R.string.msgs_sync_prof_name_list)+
-							"\n"+sync_list);
+					util.addLogMsg("I",mContext.getString(R.string.msgs_sync_prof_name_list)+sync_list);
 //					tabHost.setCurrentTabByTag(TAB_TAG_MSG);
 					startMirrorTask(alp);
 				}

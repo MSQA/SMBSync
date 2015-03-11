@@ -8,7 +8,7 @@
     <string name="msgs_application_already_started">同期実行中ため、スケジュールまたは外部アプリケーションからの起動要求を無視しました。</string>
     
     <string name="msgs_sync_select_prof_no_active_profile">有効な同期プロファイルが選択されていません。</string>
-    <string name="msgs_sync_prof_name_list">下記プロファイルの同期を開始しました。</string>
+    <string name="msgs_sync_prof_name_list">同期を開始したプロファイル：</string>
     
     <string name="msgs_notification_sync_active">同期処理中です。</string>
     <string name="msgs_notification_smbsync_active">SMBSyncが起動しています。</string>
@@ -60,7 +60,8 @@
     <string name="msgs_smbsync_main_restart_by_killed">アプリケーションがバックグラウンドに遷移後、強制終了しました。</string>
     <string name="msgs_smbsync_main_restart_by_destroyed">アプリケーションはアクティビティの破棄により終了しました。 設定->開発者向オプションで「アクティビティを保持しない」を有効にしているのであれば無効にしてください。</string>
     <string name="msgs_smbsync_main_end"	>正常終了します。</string>
-    <string name="msgs_smbsync_main_language_changed">システムの言語が変更されましたが、アプリケーションに動的反映されていない個所があります。(同期実行中のメッセージやプロファイル編集画面の表示など)\n変更を完全に反映するためにはアプリケーションの再起動が必要です。(同期を実行中ならば、同期が終了してから再起動してください)</string>
+    <string name="msgs_smbsync_main_language_changed_title">システムの言語変更</string>
+    <string name="msgs_smbsync_main_language_changed_msg">システムの言語が変更されましたが、アプリケーションに動的反映されていない個所があります。(同期実行中のメッセージやプロファイル編集画面の表示など)\n変更を完全に反映するためにはアプリケーションの再起動が必要です。(同期を実行中ならば、同期が終了してから再起動してください)</string>
     <string name="msgs_smbsync_main_settings_force_log_enabled"	>自動同期起動が有効なため、ログ記録を有効にしました。</string>
     
     <string name="msgs_smbsync_main_settings_jcifs_changed_restart"	>SMBパラメーターが変更されましたがアプリケーションを再起動するまでは反映されません。</string>
