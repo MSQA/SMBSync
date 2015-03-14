@@ -4,13 +4,14 @@ import android.content.Context;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 
-public class AboutViewPager extends ViewPager{
-	public AboutViewPager(Context context, AttributeSet attrs) {
+public class CustomViewPager extends ViewPager{
+
+	public CustomViewPager(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		init();
 	}
 
-	public AboutViewPager(Context context) {
+	public CustomViewPager(Context context) {
 		super(context);
 		init();
 	}

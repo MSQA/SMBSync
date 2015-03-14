@@ -14,9 +14,7 @@
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:fadeScrollbars="false"
-        android:text=""
-        android:textAppearance="?android:attr/textAppearanceMedium" >
+        android:fadeScrollbars="false">
     </ListView>
 
     <include layout="@layout/context_view_profile" />

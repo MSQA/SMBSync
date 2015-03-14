@@ -131,6 +131,7 @@ public class AdapterProfileSelectionSpinner extends CustomSpinnerAdapter {//Arra
 
         return view;
 	}
+	@SuppressWarnings("deprecation")
 	@Override
 	public View getDropDownView(int position, View convertView, ViewGroup parent) {
         TextView text;

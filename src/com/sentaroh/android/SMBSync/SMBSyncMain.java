@@ -70,7 +70,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.text.ClipboardManager;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -83,7 +82,6 @@ import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckedTextView;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -103,6 +101,7 @@ import com.sentaroh.android.Utilities.NotifyEvent.NotifyEventListener;
 import com.sentaroh.android.Utilities.ThreadCtrl;
 import com.sentaroh.android.Utilities.ContextMenu.CustomContextMenu;
 import com.sentaroh.android.Utilities.Dialog.CommonDialog;
+import com.sentaroh.android.Utilities.Widget.CustomTabContentView;
 import com.sentaroh.android.contextbutton.ContextButtonUtil;
 
 @SuppressWarnings("deprecation")
@@ -473,7 +472,7 @@ public class SMBSyncMain extends ActionBarActivity {
 				", getChangingConfigurations="+String.format("0x%08x", getChangingConfigurations())+
 				", isActivityForeground="+util.isActivityForeground());
 		util.setActivityIsForeground(false);
-		saveTaskData();
+		if (!isTaskTermination) saveTaskData();
 	};
 
 	@Override
@@ -1014,8 +1013,8 @@ public class SMBSyncMain extends ActionBarActivity {
 	private LinearLayout mHistoryView;
 	private LinearLayout mMessageView;
 
-	private MainViewPager mMainViewPager;
-	private MainViewPagerAdapter mMainViewPagerAdapter;
+	private CustomViewPager mMainViewPager;
+	private CustomViewPagerAdapter mMainViewPagerAdapter;
 	
 	private TabWidget mMainTabWidget;
 	@SuppressLint("InflateParams")
@@ -1099,9 +1098,9 @@ public class SMBSyncMain extends ActionBarActivity {
 
 	    createContextView();
 	    
-	    mMainViewPagerAdapter=new MainViewPagerAdapter(this, 
+	    mMainViewPagerAdapter=new CustomViewPagerAdapter(this, 
 	    		new View[]{mProfileView, mHistoryView, mMessageView});
-	    mMainViewPager=(MainViewPager)findViewById(R.id.main_view_pager);
+	    mMainViewPager=(CustomViewPager)findViewById(R.id.main_view_pager);
 //	    mMainViewPager.setBackgroundColor(mThemeColorList.window_color_background);
 	    mMainViewPager.setAdapter(mMainViewPagerAdapter);
 	    mMainViewPager.setOnPageChangeListener(new MainPageChangeListener()); 
@@ -1612,11 +1611,6 @@ public class SMBSyncMain extends ActionBarActivity {
 
 	};
 	
-	private AboutViewPagerAdapter mAboutViewPagerAdapter;
-	private AboutViewPager mAboutViewPager;
-	private TabHost mAboutTabHost ;
-	private TabWidget mAboutTabWidget ;
-
 	@SuppressLint({ "InlinedApi", "InflateParams" })
 	private void aboutSMBSync() {
 		final Dialog dialog = new Dialog(this);
@@ -1630,21 +1624,21 @@ public class SMBSyncMain extends ActionBarActivity {
 		title.setText(getString(R.string.msgs_dlg_title_about)+"(Ver "+packageVersionName+")");
 		
         // get our tabHost from the xml
-        mAboutTabHost = (TabHost)dialog.findViewById(R.id.about_tab_host);
-        mAboutTabHost.setup();
+		final TabHost tab_host = (TabHost)dialog.findViewById(R.id.about_tab_host);
+        tab_host.setup();
         
-        mAboutTabWidget = (TabWidget)dialog.findViewById(android.R.id.tabs);
+        final TabWidget tab_widget = (TabWidget)dialog.findViewById(android.R.id.tabs);
 		 
 		if (Build.VERSION.SDK_INT>=11) {
-		    mAboutTabWidget.setStripEnabled(false);  
-		    mAboutTabWidget.setShowDividers(LinearLayout.SHOW_DIVIDER_NONE);  
+		    tab_widget.setStripEnabled(false);  
+		    tab_widget.setShowDividers(LinearLayout.SHOW_DIVIDER_NONE);  
 		}
 
 		CustomTabContentView tabViewProf = new CustomTabContentView(this,getString(R.string.msgs_about_dlg_func_btn));
-		mAboutTabHost.addTab(mAboutTabHost.newTabSpec("func").setIndicator(tabViewProf).setContent(android.R.id.tabcontent));
+		tab_host.addTab(tab_host.newTabSpec("func").setIndicator(tabViewProf).setContent(android.R.id.tabcontent));
 		
 		CustomTabContentView tabViewHist = new CustomTabContentView(this,getString(R.string.msgs_about_dlg_change_btn));
-		mAboutTabHost.addTab(mAboutTabHost.newTabSpec("change").setIndicator(tabViewHist).setContent(android.R.id.tabcontent));
+		tab_host.addTab(tab_host.newTabSpec("change").setIndicator(tabViewHist).setContent(android.R.id.tabcontent));
 
         LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         LinearLayout ll_func=(LinearLayout)vi.inflate(R.layout.about_dialog_func,null);
@@ -1661,14 +1655,37 @@ public class SMBSyncMain extends ActionBarActivity {
 		change_view.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
 		change_view.getSettings().setBuiltInZoomControls(true);
 		
-		mAboutViewPagerAdapter=new AboutViewPagerAdapter(this, 
+		final CustomViewPagerAdapter mAboutViewPagerAdapter=new CustomViewPagerAdapter(this, 
 	    		new WebView[]{func_view, change_view});
-		mAboutViewPager=(AboutViewPager)dialog.findViewById(R.id.about_view_pager);
+		final CustomViewPager mAboutViewPager=(CustomViewPager)dialog.findViewById(R.id.about_view_pager);
 //	    mMainViewPager.setBackgroundColor(mThemeColorList.window_color_background);
 		mAboutViewPager.setAdapter(mAboutViewPagerAdapter);
-		mAboutViewPager.setOnPageChangeListener(new AboutPageChangeListener()); 
+		mAboutViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener(){
+		    @Override  
+		    public void onPageSelected(int position) {
+//		    	util.addDebugLogMsg(2,"I","onPageSelected entered, pos="+position);
+		        tab_widget.setCurrentTab(position);
+		        tab_host.setCurrentTab(position);
+		    }  
+		  
+		    @Override  
+		    public void onPageScrollStateChanged(int state) {  
+//		    	util.addDebugLogMsg(2,"I","onPageScrollStateChanged entered, state="+state);
+		    }  
+		  
+		    @Override  
+		    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+//		    	util.addDebugLogMsg(2,"I","onPageScrolled entered, pos="+position);
+		    }  
+		}); 
 
-		mAboutTabHost.setOnTabChangedListener(new AboutOnTabChange());
+		tab_host.setOnTabChangedListener(new OnTabChangeListener(){
+			@Override
+			public void onTabChanged(String tabId) {
+				util.addDebugLogMsg(2,"I","onTabchanged entered. tab="+tabId);
+				mAboutViewPager.setCurrentItem(tab_host.getCurrentTab());
+			}
+		});
 		
 		final Button btnOk = (Button) dialog.findViewById(R.id.about_dialog_btn_ok);
 
@@ -1690,34 +1707,6 @@ public class SMBSyncMain extends ActionBarActivity {
 
 		dialog.show();
 	};
-	
-	
-	private class AboutOnTabChange implements OnTabChangeListener {
-		@Override
-		public void onTabChanged(String tabId){
-			util.addDebugLogMsg(2,"I","onTabchanged entered. tab="+tabId);
-			mAboutViewPager.setCurrentItem(mAboutTabHost.getCurrentTab());
-		};
-	};
-	
-	private class AboutPageChangeListener implements ViewPager.OnPageChangeListener {  
-	    @Override  
-	    public void onPageSelected(int position) {
-//	    	util.addDebugLogMsg(2,"I","onPageSelected entered, pos="+position);
-	        mAboutTabWidget.setCurrentTab(position);
-	        mAboutTabHost.setCurrentTab(position);
-	    }  
-	  
-	    @Override  
-	    public void onPageScrollStateChanged(int state) {  
-//	    	util.addDebugLogMsg(2,"I","onPageScrollStateChanged entered, state="+state);
-	    }  
-	  
-	    @Override  
-	    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-//	    	util.addDebugLogMsg(2,"I","onPageScrolled entered, pos="+position);
-	    }  
-	};  
 	
 	@SuppressLint("SdCardPath")
 	private void checkExternalStorage() {
@@ -1791,11 +1780,7 @@ public class SMBSyncMain extends ActionBarActivity {
 		String p_opt=mGp.settingLogOption;
 		boolean p_light_theme=mGp.themeIsLight;
 		
-		Log.v("","p theme="+mGp.applicationTheme);
-		
 		mGp.loadSettingsParm(this);
-		
-		Log.v("","a theme="+mGp.applicationTheme);
 		
 		if (!mGp.settingLogMsgDir.equals(p_dir)) {// option was changed
 			LogUtil.closeLogFile();
@@ -4618,7 +4603,7 @@ public class SMBSyncMain extends ActionBarActivity {
 	};
 	
 	private void saveTaskData() {
-		util.addDebugLogMsg(2,"I", "saveRestartData entered");
+		util.addDebugLogMsg(2,"I", "saveTaskData entered");
 		
 		if (!isTaskTermination) {
 			if (!isTaskDataExisted() || mGp.msgListAdapter.resetDataChanged())  {
@@ -4632,7 +4617,7 @@ public class SMBSyncMain extends ActionBarActivity {
 				    oos.writeObject(data);
 				    oos.flush();
 				    oos.close();
-				    util.addDebugLogMsg(1,"I", "Restart data was saved.");
+				    util.addDebugLogMsg(1,"I", "Task data was saved.");
 				} catch (Exception e) {
 					e.printStackTrace();
 				    util.addLogMsg("E", "saveTaskData error, "+e.toString());
@@ -4681,7 +4666,7 @@ public class SMBSyncMain extends ActionBarActivity {
 				
 				mGp.profileAdapter.clear();
 				mGp.profileAdapter.setArrayList(data.pl);
-			    util.addDebugLogMsg(1,"I", "Restart data was restored.");
+			    util.addDebugLogMsg(1,"I", "Task data was restored.");
 			} catch (Exception e) {
 				e.printStackTrace();
 			    util.addLogMsg("E","restoreTaskData error, "+e.toString());
@@ -4704,31 +4689,31 @@ public class SMBSyncMain extends ActionBarActivity {
 	    }
 	};
 	
-	public class CustomTabContentView extends FrameLayout {  
-        LayoutInflater inflater = (LayoutInflater) getApplicationContext()  
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);  
-      
-        private View childview1=null;
-        private TextView tv1=null;
-        public CustomTabContentView(Context context) {  
-            super(context);  
-        }  
-        @SuppressLint("InflateParams")
-		public CustomTabContentView(Context context, String title) {  
-            this(context);  
-            childview1 = inflater.inflate(R.layout.tab_widget1, null);  
-            tv1 = (TextView) childview1.findViewById(R.id.tab_widget1_textview);  
-            tv1.setText(title);  
-            addView(childview1);  
-       }
-       public void setTabTitle(String title) {  
-            tv1.setText(title);  
-       }  
-       public void setViewAlpha(float alpha) {  
-           tv1.setAlpha(alpha);  
-      }  
-
-    };
+//	public class CustomTabContentView extends FrameLayout {  
+//        LayoutInflater inflater = (LayoutInflater) getApplicationContext()  
+//                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);  
+//      
+//        private View childview1=null;
+//        private TextView tv1=null;
+//        public CustomTabContentView(Context context) {  
+//            super(context);  
+//        }  
+//        @SuppressLint("InflateParams")
+//		public CustomTabContentView(Context context, String title) {  
+//            this(context);  
+//            childview1 = inflater.inflate(R.layout.tab_widget1, null);  
+//            tv1 = (TextView) childview1.findViewById(R.id.tab_widget1_textview);  
+//            tv1.setText(title);  
+//            addView(childview1);  
+//       }
+//       public void setTabTitle(String title) {  
+//            tv1.setText(title);  
+//       }  
+//       public void setViewAlpha(float alpha) {  
+//           tv1.setAlpha(alpha);  
+//      }  
+//
+//    };
 }
 class ActivityDataHolder implements Serializable  {
 	private static final long serialVersionUID = 1L;

@@ -43,7 +43,7 @@
 	            android:layout_height="0dp">
 	    	</FrameLayout>
 	    	
-	        <com.sentaroh.android.SMBSync.AboutViewPager
+	        <com.sentaroh.android.SMBSync.CustomViewPager
 	            android:id="@+id/about_view_pager"
 	            android:layout_width="fill_parent"
 	            android:layout_height="0dp"

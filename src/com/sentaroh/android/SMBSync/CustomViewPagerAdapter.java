@@ -6,13 +6,13 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class MainViewPagerAdapter extends PagerAdapter {
+public class CustomViewPagerAdapter extends PagerAdapter {
 	 
     @SuppressWarnings("unused")
 	private Context mContext;
     private View[] mViewList;
      
-    public MainViewPagerAdapter(Context context, View[] vl) {
+    public CustomViewPagerAdapter(Context context, View[] vl) {
         mContext = context;
         mViewList=vl;
     }
