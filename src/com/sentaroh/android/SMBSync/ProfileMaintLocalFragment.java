@@ -97,8 +97,9 @@ public class ProfileMaintLocalFragment extends DialogFragment{
         if (DEBUG_ENABLE) Log.v(APPLICATION_TAG,SUB_APPLICATION_TAG+"onCreate");
         mContext=this.getActivity();
     	mFragment=this;
-        if (!mTerminateRequired) {
-        	mGp=(GlobalParameters)getActivity().getApplication();
+    	mGp=(GlobalParameters)getActivity().getApplication();
+        if (mTerminateRequired) {
+        	this.dismiss();
         }
     };
 
@@ -162,7 +163,7 @@ public class ProfileMaintLocalFragment extends DialogFragment{
 	@Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
     	if (DEBUG_ENABLE) Log.v(APPLICATION_TAG,SUB_APPLICATION_TAG+"onCreateDialog");
-
+    	
 //    	mContext=getActivity().getApplicationContext();
     	mDialog=new Dialog(getActivity(), mGp.applicationTheme);
 		mDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
