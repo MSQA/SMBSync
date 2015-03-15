@@ -17,6 +17,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_marginRight="2dp"
             android:text="@string/msgs_mirror_confirm_no_btn"
             android:textAppearance="?android:attr/textAppearanceMedium"/>
     	<Button
@@ -31,6 +32,7 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         >
@@ -39,6 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_marginRight="2dp"
             android:text="@string/msgs_mirror_confirm_noall_btn"
             android:textAppearance="?android:attr/textAppearanceMedium"/>
         <!-- style="?android:attr/buttonStyleSmall" -->

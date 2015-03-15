@@ -51,6 +51,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -102,6 +103,8 @@ import com.sentaroh.android.Utilities.ThreadCtrl;
 import com.sentaroh.android.Utilities.ContextMenu.CustomContextMenu;
 import com.sentaroh.android.Utilities.Dialog.CommonDialog;
 import com.sentaroh.android.Utilities.Widget.CustomTabContentView;
+import com.sentaroh.android.Utilities.Widget.CustomViewPager;
+import com.sentaroh.android.Utilities.Widget.CustomViewPagerAdapter;
 import com.sentaroh.android.contextbutton.ContextButtonUtil;
 
 @SuppressWarnings("deprecation")
@@ -1062,14 +1065,19 @@ public class SMBSyncMain extends ActionBarActivity {
 		mGp.confirmMsg=(TextView)findViewById(R.id.main_dialog_confirm_msg);
 		mGp.confirmMsg.setTextColor(mGp.themeColorList.text_color_primary);
 		mGp.confirmCancel=(Button)findViewById(R.id.main_dialog_confirm_sync_cancel);
+		setButtonColor(mGp.confirmCancel);
 		if (mGp.themeColorList.theme_is_light) mGp.confirmCancel.setTextColor(mGp.themeColorList.text_color_primary);
 		mGp.confirmYes=(Button)findViewById(R.id.copy_delete_confirm_yes);
+		setButtonColor(mGp.confirmYes);
 		mGp.confirmYes.setTextColor(mGp.themeColorList.text_color_primary);
 	    mGp.confirmNo=(Button)findViewById(R.id.copy_delete_confirm_no);
+	    setButtonColor(mGp.confirmNo);
 	    mGp.confirmNo.setTextColor(mGp.themeColorList.text_color_primary);
 	    mGp.confirmYesAll=(Button)findViewById(R.id.copy_delete_confirm_yesall);
+	    setButtonColor(mGp.confirmYesAll);
 	    mGp.confirmYesAll.setTextColor(mGp.themeColorList.text_color_primary);
 	    mGp.confirmNoAll=(Button)findViewById(R.id.copy_delete_confirm_noall);
+	    setButtonColor(mGp.confirmNoAll);
 	    mGp.confirmNoAll.setTextColor(mGp.themeColorList.text_color_primary);
 
 	    mGp.progressBarView=(LinearLayout)findViewById(R.id.main_dialog_progress_bar_view);
@@ -1080,10 +1088,13 @@ public class SMBSyncMain extends ActionBarActivity {
 	    mGp.progressBarPb = (ProgressBar)findViewById(R.id.main_dialog_progress_bar_progress);
 
 	    mGp.progressBarCancel=(Button)findViewById(R.id.main_dialog_progress_bar_btn_cancel);
+	    setButtonColor(mGp.progressBarCancel);
 	    if (mGp.themeColorList.theme_is_light) mGp.progressBarCancel.setTextColor(mGp.themeColorList.text_color_primary);
 	    mGp.progressBarImmed=(Button)findViewById(R.id.main_dialog_progress_bar_btn_immediate);
+	    setButtonColor(mGp.progressBarImmed);
 	    if (mGp.themeColorList.theme_is_light) mGp.progressBarImmed.setTextColor(mGp.themeColorList.text_color_primary);
 
+	    
 	    mGp.progressSpinView=(LinearLayout)findViewById(R.id.main_dialog_progress_spin_view);
 	    mGp.progressSpinView.setBackgroundColor(mGp.themeColorList.dialog_msg_background_color);
 	    mGp.progressSpinView.setVisibility(LinearLayout.GONE);
@@ -1094,6 +1105,7 @@ public class SMBSyncMain extends ActionBarActivity {
 	    mGp.progressSpinStatus=(TextView)findViewById(R.id.main_dialog_progress_spin_status);
 	    mGp.progressSpinStatus.setTextColor(mGp.themeColorList.text_color_primary);
 	    mGp.progressSpinCancel=(Button)findViewById(R.id.main_dialog_progress_spin_btn_cancel);
+	    setButtonColor(mGp.progressSpinCancel);
 	    if (mGp.themeColorList.theme_is_light) mGp.progressSpinCancel.setTextColor(mGp.themeColorList.text_color_primary);
 
 	    createContextView();
@@ -1110,6 +1122,12 @@ public class SMBSyncMain extends ActionBarActivity {
 		}
 		mMainTabHost.setOnTabChangedListener(new MainOnTabChange());
 
+	};
+
+	private void setButtonColor(Button btn) {
+		if (Build.VERSION.SDK_INT<11) {
+			btn.setBackgroundColor(Color.DKGRAY);
+		}
 	};
 	
 	private class MainOnTabChange implements OnTabChangeListener {

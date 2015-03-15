@@ -28,8 +28,9 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="1dp"
         android:text="@string/msgs_mirror_confirm_task_cancel_btn"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
+    <include layout="@layout/divider_line1_turquoise" />
 </LinearLayout>

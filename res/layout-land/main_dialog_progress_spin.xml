@@ -49,15 +49,15 @@
 	            android:text=""
 	            android:textAppearance="?android:attr/textAppearanceSmall" />
 		</LinearLayout>
+
+	    <Button
+	        android:id="@+id/main_dialog_progress_spin_btn_cancel"
+	        android:layout_width="130dp"
+	        android:layout_height="wrap_content"
+	        android:text="@string/msgs_progress_spin_dlg_sync_cancel"
+	        android:textAppearance="?android:attr/textAppearanceMedium" />
+
     </LinearLayout>
-    
-    <Button
-        android:id="@+id/main_dialog_progress_spin_btn_cancel"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/msgs_progress_spin_dlg_sync_cancel" />
 				    			        				    
     <include layout="@layout/divider_line1_turquoise" />
 </LinearLayout>

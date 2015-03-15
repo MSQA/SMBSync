@@ -22,7 +22,10 @@
             <include layout="@layout/main_dialog_progress_spin" />
 
             <include layout="@layout/main_dialog_confirm" />
+            
         </FrameLayout>
+        
+        
     </ScrollView>
 
 </LinearLayout>
