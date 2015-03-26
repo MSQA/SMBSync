@@ -105,7 +105,7 @@ import com.sentaroh.android.Utilities.Dialog.CommonDialog;
 import com.sentaroh.android.Utilities.Widget.CustomTabContentView;
 import com.sentaroh.android.Utilities.Widget.CustomViewPager;
 import com.sentaroh.android.Utilities.Widget.CustomViewPagerAdapter;
-import com.sentaroh.android.contextbutton.ContextButtonUtil;
+import com.sentaroh.android.Utilities.ContextButton.ContextButtonUtil;
 
 @SuppressWarnings("deprecation")
 public class SMBSyncMain extends ActionBarActivity {
@@ -2131,6 +2131,7 @@ public class SMBSyncMain extends ActionBarActivity {
 //			} else fp=t_fd+"/"+mGp.settingLogMsgFilename;
 
 			Intent intent = new Intent(android.content.Intent.ACTION_VIEW);
+			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			intent.setDataAndType(Uri.parse("file://"+LogUtil.getLogFilePath(mGp)), "text/plain");
 			startActivityForResult(intent,1);
 		}

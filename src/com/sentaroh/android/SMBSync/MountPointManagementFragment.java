@@ -38,7 +38,7 @@ import com.sentaroh.android.Utilities.Dialog.CommonDialog;
 import com.sentaroh.android.Utilities.Dialog.FileSelectDialogFragment;
 import com.sentaroh.android.Utilities.Dialog.MessageDialogFragment;
 import com.sentaroh.android.Utilities.NotifyEvent.NotifyEventListener;
-import com.sentaroh.android.contextbutton.ContextButtonUtil;
+import com.sentaroh.android.Utilities.ContextButton.ContextButtonUtil;
 
 public class MountPointManagementFragment extends DialogFragment{
 	private final static boolean DEBUG_ENABLE=false;

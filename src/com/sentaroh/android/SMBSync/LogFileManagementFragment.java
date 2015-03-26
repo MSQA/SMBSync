@@ -62,10 +62,10 @@ import com.sentaroh.android.Utilities.ThemeColorList;
 import com.sentaroh.android.Utilities.ThemeUtil;
 import com.sentaroh.android.Utilities.ThreadCtrl;
 import com.sentaroh.android.Utilities.ZipUtil;
+import com.sentaroh.android.Utilities.ContextButton.ContextButtonUtil;
 import com.sentaroh.android.Utilities.Dialog.CommonDialog;
 import com.sentaroh.android.Utilities.Dialog.MessageDialogFragment;
 import com.sentaroh.android.Utilities.Dialog.ProgressBarDialogFragment;
-import com.sentaroh.android.contextbutton.ContextButtonUtil;
 
 public class LogFileManagementFragment extends DialogFragment{
 	private final static boolean DEBUG_ENABLE=true;
@@ -382,6 +382,7 @@ public class LogFileManagementFragment extends DialogFragment{
 
     private void showLogFile(AdapterLogFileManagementList lfm_adapter, int pos) {
 		Intent intent = new Intent(android.content.Intent.ACTION_VIEW);
+		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		intent.setDataAndType(Uri.parse("file://"+lfm_adapter.getItem(pos).log_file_path), "text/plain");
 		startActivity(intent);
     };
