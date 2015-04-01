@@ -40,7 +40,6 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.KeyguardManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -3682,7 +3681,7 @@ public class SMBSyncMain extends ActionBarActivity {
 		}
 		if (!mGp.settingScreenOnOption.equals(GlobalParameters.KEEP_SCREEN_ON_DISABLED)) {
 			if (mGp.settingScreenOnOption.equals(GlobalParameters.KEEP_SCREEN_ON_ALWAYS) ||
-					!isKeyguardEffective(mContext)) {
+					isScreenOn(mContext)) {
 				if (!mGp.mDimScreenWakelock.isHeld()) {
 					mGp.mDimScreenWakelock.acquire();
 					util.addDebugLogMsg(1,"I","Dim screen wakelock acquired");
@@ -3690,17 +3689,27 @@ public class SMBSyncMain extends ActionBarActivity {
 					util.addDebugLogMsg(1,"I","Dim screen wakelock not acquired, because Wakelock already acquired");
 				}
 			} else {
-				util.addDebugLogMsg(1,"I","Dim screen wakelock not acquired, because screen is alread locked");
+				util.addDebugLogMsg(1,"I","Dim screen wakelock not acquired, because screen is already locked");
 			}
 		}
 	};
 	
-	static final private boolean isKeyguardEffective(Context mContext) {
-        KeyguardManager keyguardMgr=
-        		(KeyguardManager)mContext.getSystemService(Context.KEYGUARD_SERVICE);
-    	boolean result=keyguardMgr.inKeyguardRestrictedInputMode();
-    	return result;
-    };
+	static private boolean isScreenOn(Context context) {
+        PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+	    if (Build.VERSION.SDK_INT >= 20) {
+	        return pm.isInteractive();
+	    } else {
+	        return pm.isScreenOn();
+	    }
+	}	
+//	static final private boolean isKeyguardEffective(Context mContext) {
+//        KeyguardManager keyguardMgr=
+//        		(KeyguardManager)mContext.getSystemService(Context.KEYGUARD_SERVICE);
+//    	boolean result=false;
+//    	if (Build.VERSION.SDK_INT>=16) result=keyguardMgr.isKeyguardLocked();
+//    	else result=keyguardMgr.inKeyguardRestrictedInputMode();
+//    	return result;
+//    };
 
 	private void clearScreenOn() {
 		try {
