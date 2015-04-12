@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="5dp"
-        android:checkMark="?android:attr/textCheckMark"
+        android:checkMark="?android:attr/listChoiceIndicatorMultiple"
         android:gravity="center_vertical"
         android:text="@string/msgs_export_import_profile_import_settings" />
     <include layout="@layout/divider_line1" />
@@ -40,7 +40,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="5dp"
-        android:checkMark="?android:attr/textCheckMark"
+        android:checkMark="?android:attr/listChoiceIndicatorMultiple"
         android:gravity="center_vertical"
         android:text="@string/msgs_export_import_profile_import_schedule" />
     
@@ -89,7 +89,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
-        android:checkMark="?android:attr/textCheckMark"
+        android:checkMark="?android:attr/listChoiceIndicatorMultiple"
         android:gravity="center_vertical"
         android:text="@string/msgs_export_import_profile_reset_current_profile" />
 

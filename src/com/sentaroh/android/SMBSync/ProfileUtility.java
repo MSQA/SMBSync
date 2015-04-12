@@ -3781,7 +3781,8 @@ public class ProfileUtility {
 				final ListView lv = (ListView) dialog.findViewById(android.R.id.list);
 				if (!list_empty) {
 					lv.setAdapter(new ArrayAdapter<String>(mContext,
-							android.R.layout.simple_list_item_checked,rows));
+							R.layout.custom_simple_list_item_checked,rows));
+					//  android.R.layout.simple_list_item_checked,rows));
 					lv.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 				} else {
 					lv.setAdapter(new ArrayAdapter<String>(mContext,

@@ -65,7 +65,7 @@
 		        android:layout_width="fill_parent"
 		        android:layout_height="wrap_content"
 		        android:layout_marginLeft="5dp"
-		        android:checkMark="?android:attr/textCheckMark"
+		        android:checkMark="?android:attr/listChoiceIndicatorMultiple"
 		        android:gravity="center_vertical"
 		        android:text="@string/msgs_sync_profile_dlg_active"
 		        android:textAppearance="?android:attr/textAppearanceMedium" 

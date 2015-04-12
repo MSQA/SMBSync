@@ -58,7 +58,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="5dp"
-                android:checkMark="?android:attr/textCheckMark"
+                android:checkMark="?android:attr/listChoiceIndicatorMultiple"
                 android:gravity="center_vertical"
                 android:text="@string/msgs_local_mount_point_app_specific_dir_used_suppress"
                 android:textAppearance="?android:attr/textAppearanceMedium" />

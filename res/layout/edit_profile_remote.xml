@@ -62,7 +62,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
-                android:checkMark="?android:attr/textCheckMark"
+                android:checkMark="?android:attr/listChoiceIndicatorMultiple"
                 android:gravity="center_vertical"
                 android:text="@string/msgs_remote_profile_dlg_active"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -106,7 +106,7 @@
                     android:id="@+id/edit_profile_remote_dlg_ctv_use_remote_port_number"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:checkMark="?android:attr/textCheckMark"
+                    android:checkMark="?android:attr/listChoiceIndicatorMultiple"
                 	android:gravity="center_vertical"
                     android:text="@string/msgs_remote_profile_dlg_use_port_number"
                     android:textAppearance="?android:attr/textAppearanceSmall" />
@@ -127,7 +127,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
-                android:checkMark="?android:attr/textCheckMark"
+                android:checkMark="?android:attr/listChoiceIndicatorMultiple"
                 android:gravity="center_vertical"
                 android:text="@string/msgs_remote_profile_dlg_use_user_pass"
                 android:textAppearance="?android:attr/textAppearanceSmall" />

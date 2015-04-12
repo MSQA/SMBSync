@@ -63,7 +63,7 @@
 		        android:id="@+id/edit_profile_sync_dlg_ctv_active"
 		        android:layout_width="fill_parent"
 		        android:layout_height="wrap_content"
-		        android:checkMark="?android:attr/textCheckMark"
+		        android:checkMark="?android:attr/listChoiceIndicatorMultiple"
 		        android:gravity="center_vertical"
 		        android:text="@string/msgs_sync_profile_dlg_active"
 		        android:textAppearance="?android:attr/textAppearanceMedium" 

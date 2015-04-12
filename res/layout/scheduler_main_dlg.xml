@@ -52,7 +52,7 @@
 		        android:layout_width="fill_parent"
 		        android:layout_height="wrap_content"
 		        android:layout_marginLeft="5dp"
-		        android:checkMark="?android:attr/textCheckMark"
+		        android:checkMark="?android:attr/listChoiceIndicatorMultiple"
 		        android:gravity="center_vertical"
 		        android:text="@string/msgs_scheduler_main_dlg_hdr_enable" 
 		        android:textAppearance="?android:attr/textAppearanceMedium"/>
@@ -102,7 +102,7 @@
 		        android:layout_height="wrap_content"
 		        android:layout_marginLeft="5dp"
 		        android:layout_marginTop="10dp"
-		        android:checkMark="?android:attr/textCheckMark"
+		        android:checkMark="?android:attr/listChoiceIndicatorMultiple"
 		        android:gravity="center_vertical"
 		        android:text="@string/settings_auto_term_summary_ena" 
 		        android:textAppearance="?android:attr/textAppearanceMedium"/>
@@ -112,7 +112,7 @@
 		        android:layout_width="fill_parent"
 		        android:layout_height="wrap_content"
 		        android:layout_marginLeft="5dp"
-		        android:checkMark="?android:attr/textCheckMark"
+		        android:checkMark="?android:attr/listChoiceIndicatorMultiple"
 		        android:gravity="center_vertical"
 		        android:text="@string/settings_backgroound_execution_summary_ena" 
 		        android:textAppearance="?android:attr/textAppearanceMedium"/>
@@ -122,7 +122,7 @@
 		        android:layout_width="fill_parent"
 		        android:layout_height="wrap_content"
 		        android:layout_marginLeft="5dp"
-		        android:checkMark="?android:attr/textCheckMark"
+		        android:checkMark="?android:attr/listChoiceIndicatorMultiple"
 		        android:gravity="center_vertical"
 		        android:text="@string/msgs_scheduler_edit_synclist_dlg_hdr_sync_all_sync_profile" 
 		        android:textAppearance="?android:attr/textAppearanceMedium"/>
@@ -153,7 +153,7 @@
 		        android:layout_width="fill_parent"
 		        android:layout_height="wrap_content"
 		        android:layout_marginLeft="5dp"
-		        android:checkMark="?android:attr/textCheckMark"
+		        android:checkMark="?android:attr/listChoiceIndicatorMultiple"
 		        android:gravity="center_vertical"
 		        android:text="@string/msgs_scheduler_main_dlg_hdr_wifi_on" 
 		        android:textAppearance="?android:attr/textAppearanceMedium"/>
@@ -211,7 +211,7 @@
 		        android:layout_width="fill_parent"
 		        android:layout_height="wrap_content"
 		        android:layout_marginLeft="5dp"
-		        android:checkMark="?android:attr/textCheckMark"
+		        android:checkMark="?android:attr/listChoiceIndicatorMultiple"
 		        android:gravity="center_vertical"
 		        android:text="@string/msgs_scheduler_main_dlg_hdr_wifi_off" 
 		        android:textAppearance="?android:attr/textAppearanceMedium"/>
