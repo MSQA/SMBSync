@@ -50,7 +50,6 @@
     </LinearLayout>
 
     <CheckBox
-        style="@style/check_box_style"
         android:id="@+id/log_management_list_item_checkbox"
         android:layout_width="40dp"
         android:layout_height="wrap_content"

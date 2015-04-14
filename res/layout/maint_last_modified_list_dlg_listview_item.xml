@@ -23,7 +23,6 @@
 
     <CheckBox
         android:id="@+id/maint_last_modified_list_dlg_listview_item_checkbox"
-        style="@style/check_box_style"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:focusable="false"

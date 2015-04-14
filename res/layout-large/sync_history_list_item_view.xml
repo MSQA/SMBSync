@@ -148,7 +148,6 @@
     
     <CheckBox
         android:id="@+id/sync_history_list_view_cb"
-        style="@style/check_box_style"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

@@ -22,7 +22,6 @@
 
         <CheckBox
             android:id="@+id/scheduler_main_dlg_day_of_the_week_sunday"
-            style="@style/check_box_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -45,7 +44,6 @@
 
         <CheckBox
             android:id="@+id/scheduler_main_dlg_day_of_the_week_monday"
-            style="@style/check_box_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -68,7 +66,6 @@
 
         <CheckBox
             android:id="@+id/scheduler_main_dlg_day_of_the_week_tuesday"
-            style="@style/check_box_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -91,7 +88,6 @@
 
         <CheckBox
             android:id="@+id/scheduler_main_dlg_day_of_the_week_wedsday"
-            style="@style/check_box_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -114,7 +110,6 @@
 
         <CheckBox
             android:id="@+id/scheduler_main_dlg_day_of_the_week_thursday"
-            style="@style/check_box_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -137,7 +132,6 @@
 
         <CheckBox
             android:id="@+id/scheduler_main_dlg_day_of_the_week_friday"
-            style="@style/check_box_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -160,7 +154,6 @@
 
         <CheckBox
             android:id="@+id/scheduler_main_dlg_day_of_the_week_satday"
-            style="@style/check_box_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
