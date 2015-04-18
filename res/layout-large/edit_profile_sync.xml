@@ -37,133 +37,85 @@
         <include layout="@layout/divider_line1_turquoise" />
     </LinearLayout>
 
-    <ScrollView
-        android:id="@+id/sync_profile_dlg_scroll_view"
-        android:layout_width="fill_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:fadeScrollbars="false" >
+    <LinearLayout
+        android:id="@+id/edit_profile_sync_content_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
 
-        <LinearLayout
+        <ScrollView
+            android:id="@+id/sync_profile_dlg_scroll_view"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:orientation="vertical" >
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:fadeScrollbars="false" >
 
-            <TextView
-                android:id="@+id/edit_profile_sync_msg"
+            <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text=""
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="#ffff0000" />
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:orientation="vertical" >
 
-		    <CheckedTextView
-		        android:id="@+id/edit_profile_sync_dlg_ctv_active"
-		        android:layout_width="fill_parent"
-		        android:layout_height="wrap_content"
-		        android:layout_marginRight="5dp"
-		        android:checkMark="?android:attr/listChoiceIndicatorMultiple"
-		        android:gravity="center_vertical"
-		        android:text="@string/msgs_sync_profile_dlg_active"
-		        android:textAppearance="?android:attr/textAppearanceMedium" 
-		        />
-            
-            <EditText
-                android:id="@+id/edit_profile_sync_dlg_profile_name"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="5dp"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:hint="@string/msgs_sync_profile_dlg_profile"
-                android:inputType="text">
+                <TextView
+                    android:id="@+id/edit_profile_sync_msg"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="#ffff0000" />
 
-                <requestFocus />
-            </EditText>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
-				<TextView
-                    android:layout_width="wrap_content"
+                <CheckedTextView
+                    android:id="@+id/edit_profile_sync_dlg_ctv_active"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:gravity="center"
-                    android:layout_marginRight="10dp"
-                    android:text="@string/msgs_sync_profile_dlg_syncopt"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
-                <Spinner
-                    android:id="@+id/edit_profile_sync_dlg_sync_option"
-                    style="@android:style/Widget.Spinner"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/spinner_color_background"
-                    android:minHeight="50dp"
-                    android:paddingLeft="5dp"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
-								
-                <Button
-                    android:id="@+id/edit_profile_sync_dlg_change_master_and_target_btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="10dp"
-                    android:text="@string/msgs_sync_profile_dlg_change_master_and_target"
+                    android:layout_marginRight="5dp"
+                    android:checkMark="?android:attr/listChoiceIndicatorMultiple"
+                    android:gravity="center_vertical"
+                    android:text="@string/msgs_sync_profile_dlg_active"
                     android:textAppearance="?android:attr/textAppearanceMedium" />
 
+                <EditText
+                    android:id="@+id/edit_profile_sync_dlg_profile_name"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:hint="@string/msgs_sync_profile_dlg_profile"
+                    android:inputType="text"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
 
-            </LinearLayout>
-            
-            <LinearLayout
-            	android:layout_width="fill_parent"
-            	android:layout_height="wrap_content"
-            	android:orientation="vertical" >
-				<TextView
-	               android:layout_width="wrap_content"
-	               android:layout_height="wrap_content"
-	               android:layout_marginLeft="5dp"
-	               android:text="@string/msgs_sync_profile_dlg_master"
-	               android:textAppearance="?android:attr/textAppearanceMedium" />
-	           <LinearLayout
-	               android:layout_width="fill_parent"
-	               android:layout_height="wrap_content"
-	               android:layout_gravity="center_vertical"
-	               android:orientation="horizontal" >
-	               <ImageButton
-	                   	android:id="@+id/edit_profile_sync_dlg_edit_master_btn"
-	                   	android:layout_width="60dp"
-	                   	android:layout_height="60dp"
-	                   	android:layout_gravity="center_vertical"
-	                   	android:scaleType="centerCrop"
-	                   	android:src="@drawable/menu_edit" />
-		        　　　　　　　<Spinner
-		           		android:id="@+id/edit_profile_sync_dlg_master_spinner"
-		            	style="@android:style/Widget.Spinner"
-		            	android:layout_width="0dp"
-		            	android:layout_height="wrap_content"
-		            	android:layout_gravity="center_vertical"
-		            	android:layout_weight="1"
-		            	android:textAppearance="?android:attr/textAppearanceMedium"
-		            	android:background="@drawable/spinner_color_background"
-		            	android:minHeight="50dp"
-		            	android:paddingLeft="5dp"/>
-             	</LinearLayout>
-           	</LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" >
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp" >
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginRight="10dp"
+                        android:gravity="center"
+                        android:text="@string/msgs_sync_profile_dlg_syncopt"
+                        android:textAppearance="?android:attr/textAppearanceMedium" />
 
-                <ImageView
-                    android:id="@+id/edit_profile_sync_dlg_image_right_arrow"
-                    android:layout_width="24dp"
-                    android:layout_height="32dp"
-                    android:layout_gravity="center"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/arrow_right_enabled" />
+                    <Spinner
+                        android:id="@+id/edit_profile_sync_dlg_sync_option"
+                        style="@android:style/Widget.Spinner"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/spinner_color_background"
+                        android:minHeight="50dp"
+                        android:paddingLeft="5dp"
+                        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                    <Button
+                        android:id="@+id/edit_profile_sync_dlg_change_master_and_target_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="10dp"
+                        android:text="@string/msgs_sync_profile_dlg_change_master_and_target"
+                        android:textAppearance="?android:attr/textAppearanceMedium" />
+                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="fill_parent"
@@ -173,7 +125,8 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/msgs_sync_profile_dlg_target"
+                        android:layout_marginLeft="5dp"
+                        android:text="@string/msgs_sync_profile_dlg_master"
                         android:textAppearance="?android:attr/textAppearanceMedium" />
 
                     <LinearLayout
@@ -183,7 +136,7 @@
                         android:orientation="horizontal" >
 
                         <ImageButton
-                            android:id="@+id/edit_profile_sync_dlg_edit_target_btn"
+                            android:id="@+id/edit_profile_sync_dlg_edit_master_btn"
                             android:layout_width="60dp"
                             android:layout_height="60dp"
                             android:layout_gravity="center_vertical"
@@ -191,7 +144,7 @@
                             android:src="@drawable/menu_edit" />
 
                         <Spinner
-                            android:id="@+id/edit_profile_sync_dlg_target_spinner"
+                            android:id="@+id/edit_profile_sync_dlg_master_spinner"
                             style="@android:style/Widget.Spinner"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -204,14 +157,67 @@
                     </LinearLayout>
                 </LinearLayout>
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp" >
+
+                    <ImageView
+                        android:id="@+id/edit_profile_sync_dlg_image_right_arrow"
+                        android:layout_width="24dp"
+                        android:layout_height="32dp"
+                        android:layout_gravity="center"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/arrow_right_enabled" />
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/msgs_sync_profile_dlg_target"
+                            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                        <LinearLayout
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:orientation="horizontal" >
+
+                            <ImageButton
+                                android:id="@+id/edit_profile_sync_dlg_edit_target_btn"
+                                android:layout_width="60dp"
+                                android:layout_height="60dp"
+                                android:layout_gravity="center_vertical"
+                                android:scaleType="centerCrop"
+                                android:src="@drawable/menu_edit" />
+
+                            <Spinner
+                                android:id="@+id/edit_profile_sync_dlg_target_spinner"
+                                style="@android:style/Widget.Spinner"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_weight="1"
+                                android:background="@drawable/spinner_color_background"
+                                android:minHeight="50dp"
+                                android:paddingLeft="5dp"
+                                android:textAppearance="?android:attr/textAppearanceMedium" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <include layout="@layout/edit_profile_sync_filter" />
+
+                <include layout="@layout/edit_profile_sync_options" />
             </LinearLayout>
+        </ScrollView>
 
-            <include layout="@layout/edit_profile_sync_filter"/>
-            <include layout="@layout/edit_profile_sync_options"/>
-            
-        </LinearLayout>
-    </ScrollView>
-
-    <include layout="@layout/edit_profile_sync_ok_cancel"/>
+        <include
+            layout="@layout/edit_profile_sync_ok_cancel" />
+    </LinearLayout>
 
 </LinearLayout>

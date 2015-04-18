@@ -332,7 +332,8 @@ public class SMBSyncUtil {
 			}
 			gp.msgListAdapter.add(mli);
 			if (!gp.freezeMessageViewScroll && gp.activityIsForeground) {
-				gp.msgListView.setSelection(gp.msgListView.getCount()-1);
+				if (gp.msgListView!=null)
+					gp.msgListView.setSelection(gp.msgListView.getCount()-1);
 			}
 //			gp.msgListAdapter.notifyDataSetChanged();
 		}
