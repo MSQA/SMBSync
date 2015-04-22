@@ -42,7 +42,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.net.wifi.WifiManager;
-import android.os.Build;
 import android.os.Handler;
 import android.os.PowerManager.WakeLock;
 import android.preference.PreferenceManager;
@@ -417,8 +416,9 @@ public class GlobalParameters extends Application{
 		
 		if (!settingAutoStart) settingAutoTerm=false;
 		
-		if (Build.VERSION.SDK_INT>=11) themeIsLight=prefs.getBoolean(c.getString(R.string.settings_use_light_theme), false);
-		else themeIsLight=false;
+//		if (Build.VERSION.SDK_INT>=11) themeIsLight=prefs.getBoolean(c.getString(R.string.settings_use_light_theme), false);
+//		else themeIsLight=false;
+		themeIsLight=prefs.getBoolean(c.getString(R.string.settings_use_light_theme), false);
 		if (themeIsLight) {
 			applicationTheme=R.style.MainLight;
 //			dialogViewBackGroundColor=Color.argb(255, 50, 50, 50);//.BLACK;

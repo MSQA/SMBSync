@@ -172,7 +172,6 @@
                         android:layout_width="24dp"
                         android:layout_height="32dp"
                         android:layout_gravity="center"
-                        android:layout_weight="1"
                         android:scaleType="fitXY"
                         android:src="@drawable/arrow_right_enabled" />
 

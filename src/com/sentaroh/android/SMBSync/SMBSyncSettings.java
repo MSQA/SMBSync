@@ -97,8 +97,8 @@ public class SMBSyncSettings extends PreferenceActivity{
     	if (Build.VERSION.SDK_INT<11) {
     		findPreference(getString(R.string.settings_media_scanner_non_media_files_scan).toString())
     			.setEnabled(false);
-    		findPreference(getString(R.string.settings_use_light_theme).toString())
-				.setEnabled(false);
+//    		findPreference(getString(R.string.settings_use_light_theme).toString())
+//				.setEnabled(false);
     	}
 
 		SharedPreferences shared_pref = PreferenceManager.getDefaultSharedPreferences(this);
