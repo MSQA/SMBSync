@@ -42,7 +42,8 @@
     <LinearLayout
         android:id="@+id/edit_profile_sync_content_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:orientation="vertical" >
 
         <ScrollView
@@ -167,7 +168,6 @@
                         android:layout_width="24dp"
                         android:layout_height="32dp"
                         android:layout_gravity="center"
-                        android:layout_weight="1"
                         android:scaleType="fitXY"
                         android:src="@drawable/arrow_right_enabled" />
 

@@ -68,7 +68,7 @@ import android.os.PowerManager.WakeLock;
 import android.preference.PreferenceManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.text.ClipboardManager;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -107,7 +107,7 @@ import com.sentaroh.android.Utilities.Widget.CustomViewPagerAdapter;
 import com.sentaroh.android.Utilities.ContextButton.ContextButtonUtil;
 
 @SuppressWarnings("deprecation")
-public class SMBSyncMain extends ActionBarActivity {
+public class SMBSyncMain extends AppCompatActivity {
 	
 	private final static int ATERM_WAIT_TIME = 30;
 	
