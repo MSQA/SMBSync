@@ -38,7 +38,6 @@ import java.util.ArrayList;
 import java.util.Locale;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.Context;
@@ -117,7 +116,7 @@ public class SMBSyncMain extends AppCompatActivity {
 
 	private TabHost mMainTabHost=null;
 	private Context mContext=null;
-	private Activity mActivity=null;
+	private AppCompatActivity mActivity=null;
 	
 	private GlobalParameters mGp=null;
 	private ProfileUtility profUtil=null;
@@ -605,12 +604,12 @@ public class SMBSyncMain extends AppCompatActivity {
 	    		changeLanguageCode(newConfig);
 	    	}
 	    }
-	    screenReload();
+	    screenReload(false);
 	};
 
-	private void screenReload() {
+	private void screenReload(boolean force_reload) {
 	    ViewSaveArea vsa=null;
-	    if (Build.VERSION.SDK_INT>10) {
+	    if (Build.VERSION.SDK_INT>10 || force_reload) {
 		    vsa=saveViewContent();
 		    releaseImageResource();
 		    setContentView(R.layout.main);
@@ -1350,7 +1349,7 @@ public class SMBSyncMain extends AppCompatActivity {
 			case R.id.menu_top_scheduler:
 				if (mScheduleEditorAvailable) {
 					mScheduleEditorAvailable=false;
-					SchedulerEditor sm=new SchedulerEditor(util, this, commonDlg, ccMenu, mGp);
+					SchedulerEditor sm=new SchedulerEditor(util, this, this, commonDlg, ccMenu, mGp);
 					sm.initDialog();
 					setContextButtonNormalMode();
 					mUiHandler.postDelayed(new Runnable(){
@@ -1812,9 +1811,8 @@ public class SMBSyncMain extends AppCompatActivity {
 		if ((p_light_theme && !mGp.themeIsLight) || (!p_light_theme && mGp.themeIsLight)) {
 		    setTheme(mGp.applicationTheme);
 		    mGp.themeColorList=ThemeUtil.getThemeColorList(mActivity);
-			screenReload();
-//			commonDlg.showCommonDialog(false,"W",
-//					"",mContext.getString(R.string.msgs_smbsync_main_settings_theme_changed_restart),null);
+			if (Build.VERSION.SDK_INT<=10) screenReload(true);
+			else screenReload(false);
 		}
 		
 		checkJcifsOptionChanged();

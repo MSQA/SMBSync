@@ -16,6 +16,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -56,14 +57,16 @@ public class SchedulerEditor {
 	private GlobalParameters mGp=null;
 
 	private Context mContext=null;
+	private AppCompatActivity mActivity=null;
 	
 	private SMBSyncUtil util=null;
 	
 	private SchedulerParms mSched=null;
 	
-	SchedulerEditor (SMBSyncUtil mu, Context c,  
+	SchedulerEditor (SMBSyncUtil mu, AppCompatActivity a, Context c,  
 			CommonDialog cd, CustomContextMenu ccm, GlobalParameters gp) {
 		mContext=c;
+		mActivity=a;
 		mGp=gp;
 		util=mu;
 		commonDlg=cd;
@@ -72,7 +75,7 @@ public class SchedulerEditor {
 	
 	public void initDialog() {
 		// カスタムダイアログの生成
-		final Dialog dialog = new Dialog(mContext);
+		final Dialog dialog = new Dialog(mActivity, mGp.applicationTheme);
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		dialog.setCanceledOnTouchOutside(false);
 		dialog.setContentView(R.layout.scheduler_main_dlg);
@@ -133,8 +136,8 @@ public class SchedulerEditor {
 		
 		loadScheduleData();
 		
-//		CommonDialog.setDlgBoxSizeLimit(dialog, false);
-		CommonDialog.setDlgBoxSizeHeightMax(dialog);
+		CommonDialog.setDlgBoxSizeLimit(dialog, true);
+//		CommonDialog.setDlgBoxSizeHeightMax(dialog);
 		
 		setScheduleTypeSpinner(dialog, mSched.scheduleType);
 		setScheduleHoursSpinner(dialog, mSched.scheduleHours);
@@ -344,7 +347,7 @@ public class SchedulerEditor {
 
 	private void editSyncProfileList(final String prof_list, final NotifyEvent p_ntfy) {
 		// カスタムダイアログの生成
-		final Dialog dialog = new Dialog(mContext);
+		final Dialog dialog = new Dialog(mActivity, mGp.applicationTheme);
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		dialog.setCanceledOnTouchOutside(false);
 		dialog.setContentView(R.layout.scheduler_edit_synclist_dlg);
@@ -364,7 +367,7 @@ public class SchedulerEditor {
 		final ListView lv_sync_list=(ListView)dialog.findViewById(R.id.scheduler_edit_synclist_dlg_sync_prof_list);
 	
 		final SchedulerAdapterSyncList adapter=
-				new SchedulerAdapterSyncList(mContext,android.R.layout.simple_list_item_checked);
+				new SchedulerAdapterSyncList(mActivity,android.R.layout.simple_list_item_checked);
 		
 		btn_ok.setEnabled(setSyncProfListView(true, prof_list, lv_sync_list, adapter));
 		
@@ -578,7 +581,7 @@ public class SchedulerEditor {
 	private void setScheduleTypeSpinner(Dialog dialog, String type) {
 		final Spinner sp_sched_type=(Spinner)dialog.findViewById(R.id.scheduler_main_dlg_date_time_type);
 		
-		final CustomSpinnerAdapter adapter=new CustomSpinnerAdapter(mContext, R.layout.custom_simple_spinner_item);
+		final CustomSpinnerAdapter adapter=new CustomSpinnerAdapter(mActivity, R.layout.custom_simple_spinner_item);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		sp_sched_type.setPrompt(mContext.getString(R.string.msgs_scheduler_main_spinner_sched_type_prompt));
 		sp_sched_type.setAdapter(adapter);
@@ -613,7 +616,7 @@ public class SchedulerEditor {
 
 	private void setScheduleHoursSpinner(Dialog dialog, String hh) {
 		final Spinner sp_sched_hours=(Spinner)dialog.findViewById(R.id.scheduler_main_dlg_exec_hours);
-		final CustomSpinnerAdapter adapter=new CustomSpinnerAdapter(mContext, R.layout.custom_simple_spinner_item);
+		final CustomSpinnerAdapter adapter=new CustomSpinnerAdapter(mActivity, R.layout.custom_simple_spinner_item);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		sp_sched_hours.setPrompt(mContext.getString(R.string.msgs_scheduler_main_spinner_sched_hours_prompt));
 		sp_sched_hours.setAdapter(adapter);
@@ -630,7 +633,7 @@ public class SchedulerEditor {
 
 	private void setScheduleMinutesSpinner(Dialog dialog, String sched_type, String mm) {
 		final Spinner sp_sched_minutes=(Spinner)dialog.findViewById(R.id.scheduler_main_dlg_exec_minutes);
-		final CustomSpinnerAdapter adapter=new CustomSpinnerAdapter(mContext, R.layout.custom_simple_spinner_item);
+		final CustomSpinnerAdapter adapter=new CustomSpinnerAdapter(mActivity, R.layout.custom_simple_spinner_item);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		sp_sched_minutes.setPrompt(mContext.getString(R.string.msgs_scheduler_main_spinner_sched_hours_prompt));
 		sp_sched_minutes.setAdapter(adapter);
