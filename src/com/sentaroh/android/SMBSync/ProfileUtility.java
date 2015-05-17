@@ -2196,7 +2196,7 @@ public class ProfileUtility {
 		ll_dlg_view.setBackgroundColor(mGp.themeColorList.dialog_msg_background_color);
 
 		final LinearLayout title_view = (LinearLayout) dialog.findViewById(R.id.filter_edit_dlg_title_view);
-		final TextView title = (TextView) dialog.findViewById(R.id.filter_select_edit_title);
+		final TextView title = (TextView) dialog.findViewById(R.id.filter_edit_dlg_title);
 		title_view.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);
 		title.setTextColor(mGp.themeColorList.text_color_dialog_title);
 
