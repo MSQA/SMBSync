@@ -3588,14 +3588,25 @@ public class SMBSyncMain extends AppCompatActivity {
 		// CANCELボタンの指定
 		mGp.progressSpinCancelListener=new View.OnClickListener() {
 			public void onClick(View v) {
-				try {
-					mSvcClient.aidlCancelThread();
-				} catch (RemoteException e) {
-					e.printStackTrace();
-				}
-				mGp.progressSpinCancel.setText(getString(R.string.msgs_progress_dlg_canceling));
-				mGp.progressSpinCancel.setEnabled(false);
-				mGp.settingAutoTerm=false;
+				NotifyEvent ntfy=new NotifyEvent(mContext);
+				ntfy.setListener(new NotifyEventListener(){
+					@Override
+					public void positiveResponse(Context c, Object[] o) {
+						try {
+							mSvcClient.aidlCancelThread();
+						} catch (RemoteException e) {
+							e.printStackTrace();
+						}
+						mGp.progressSpinCancel.setText(getString(R.string.msgs_progress_dlg_canceling));
+						mGp.progressSpinCancel.setEnabled(false);
+						mGp.settingAutoTerm=false;
+					}
+					@Override
+					public void negativeResponse(Context c, Object[] o) {}
+				});
+				commonDlg.showCommonDialog(true, "W", 
+						getString(R.string.msgs_sync_cancel_confirm), 
+						"", ntfy);
 			}
 		};
 		mGp.progressSpinCancel.setOnClickListener(mGp.progressSpinCancelListener);

@@ -10,6 +10,8 @@
 	<string name="msgs_sync_select_prof_no_active_profile">Active sync profile was not found.</string>
 	<string name="msgs_sync_prof_name_list">The name of the profile that started the sync:</string>
 	
+	<string name="msgs_sync_cancel_confirm">Do you want to cancel sync?</string>
+	
     <string name="msgs_notification_sync_active">Synchronization is active.</string>
     <string name="msgs_notification_smbsync_active">SMBSync was started.</string>
     
