@@ -199,4 +199,9 @@
 	<string name="msgs_set_profile_confirm_delete">Below the sync profile to enable &#8220;confirm before override copy or delete&#8221; due to upgrade of application. Please disable the &#8220;confirm before override copy or delete&#8221; to the sync profile if there is no problem to sync.</string>
 	<string name="msgs_set_profile_2_confirm_delete">Below the sync profile to enable &#8220;confirm before override copy or delete&#8221; due to upgrade of application. Please disable the &#8220;confirm before override copy or delete&#8221; to the sync profile if there is no problem to sync.</string>
 	<string name="msgs_main_auto_start_ignored_by_other_msg">Ignore the sync start request because the important message is being displayed.</string>
+	
+	<string name="msgs_main_external_sdcard_select_required_title">Select external SDCARD</string>
+	<string name="msgs_main_external_sdcard_select_required_select_msg">In order to access the external SDCARD, please tap the &#8220;SDCARD&#8221; and &#8220;SELECT SD Card&#8221;.</string>
+	<string name="msgs_main_external_sdcard_select_required_invalid_msg">External SDCARD was not selected, please tap the &#8220;SDCARD&#8221; and &#8220;SELECT SD Card&#8221;.</string>
+	<string name="msgs_main_external_sdcard_select_required_cancel_msg">External SD card was not selected, it will stop the synchronization.</string>
 </resources>

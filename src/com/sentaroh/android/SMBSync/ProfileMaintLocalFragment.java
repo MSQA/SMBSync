@@ -10,12 +10,15 @@ import com.sentaroh.android.Utilities.NotifyEvent;
 import com.sentaroh.android.Utilities.Dialog.CommonDialog;
 import com.sentaroh.android.Utilities.NotifyEvent.NotifyEventListener;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.DialogFragment;
@@ -52,6 +55,8 @@ public class ProfileMaintLocalFragment extends DialogFragment{
 	private ProfileUtility mProfUtil=null;
 	private CommonDialog mCommonDlg=null;
 
+	private SafWorkArea mSafUtil=new SafWorkArea();
+	
 	public static ProfileMaintLocalFragment newInstance() {
 		if (DEBUG_ENABLE) Log.v(APPLICATION_TAG,SUB_APPLICATION_TAG+"newInstance");
 		ProfileMaintLocalFragment frag = new ProfileMaintLocalFragment();
@@ -98,6 +103,7 @@ public class ProfileMaintLocalFragment extends DialogFragment{
         mContext=this.getActivity();
     	mFragment=this;
     	mGp=(GlobalParameters)getActivity().getApplication();
+    	SafUtil.initWorkArea(mContext, mSafUtil);
         if (mTerminateRequired) {
         	this.dismiss();
         }
@@ -486,6 +492,7 @@ public class ProfileMaintLocalFragment extends DialogFragment{
 								false,0);
 						mGp.profileAdapter.sort();
 						ProfileUtility.saveProfileToFile(mGp, mContext, mUtil, false,"","",mGp.profileAdapter,false);
+						if (SafUtil.isSafExternalSdcardPath(mContext, mSafUtil, prof_lmp)) checkSafExternalSdcardTreeUri();
 //						AdapterProfileList tfl= createProfileList(false,"");
 //						replaceglblParms.profileAdapterContent(tfl);
 //						glblParms.profileListView.setSelectionFromTop(pos,posTop);
@@ -503,6 +510,52 @@ public class ProfileMaintLocalFragment extends DialogFragment{
 
     };
     
+	private final int REQUEST_CODE_STORAGE_ACCESS=40;
+	@SuppressLint("InlinedApi")
+	private void checkSafExternalSdcardTreeUri() {
+		if (Build.VERSION.SDK_INT>=21) {
+			if (isExternalSdcardUsedByOutput()) {
+				if (SafUtil.hasSafExternalSdcard(mContext) && !SafUtil.isValidSafExternalSdcardRootTreeUri(mContext)) {
+					final Activity actv=getActivity();
+	        		NotifyEvent ntfy=new NotifyEvent(mContext);
+	        		ntfy.setListener(new NotifyEventListener(){
+						@Override
+						public void positiveResponse(Context c, Object[] o) {
+							Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+						    actv.startActivityForResult(intent, REQUEST_CODE_STORAGE_ACCESS);
+						}
+						@Override
+						public void negativeResponse(Context c, Object[] o) {}
+	        		});
+	        		mCommonDlg.showCommonDialog(false, "W", 
+	        				mContext.getString(R.string.msgs_main_external_sdcard_select_required_title), 
+	        				mContext.getString(R.string.msgs_main_external_sdcard_select_required_select_msg), 
+	        				ntfy);
+				} 
+			}
+		}
+	};
+
+	private boolean isExternalSdcardUsedByOutput() {
+		boolean result=false;
+		for(ProfileListItem pli:mGp.profileAdapter.getArrayList()) {
+//			Log.v("","name="+pli.getProfileName()+", type="+pli.getProfileType()+", act="+pli.isProfileActive());
+			if (pli.isProfileActive() && pli.getProfileType().equals(SMBSYNC_PROF_TYPE_SYNC)) {
+				ProfileListItem target=ProfileUtility.getProfile(pli.getTargetName(),mGp.profileAdapter);
+//				Log.v("","name="+pli.getProfileName()+", target="+target);
+				if (target!=null) {
+					if (target.getProfileType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
+						if (SafUtil.isSafExternalSdcardPath(mContext, mSafUtil, target.getLocalMountPoint())) {
+							result=true;
+							break;
+						}
+					}
+				}
+			}
+		}
+		return result;
+	};
+
     private void checkAppSpecificDir(String lmp, String dir) {
     	if (LocalMountPoint.isAppSpecificDirectory(mContext, lmp, dir)) {
     		mCommonDlg.showCommonDialog(false, "W", 
@@ -683,6 +736,8 @@ public class ProfileMaintLocalFragment extends DialogFragment{
 								if (mNotifyComplete!=null) mNotifyComplete.notifyToListener(true, null);
 //								AdapterProfileList tfl= createProfileList(false,"");
 //								replaceglblParms.profileAdapterContent(tfl);
+								if (SafUtil.isSafExternalSdcardPath(mContext, mSafUtil, t_prof_lmp)) 
+									checkSafExternalSdcardTreeUri();
 							}
 							@Override
 							public void negativeResponse(Context c, Object[] o) {}

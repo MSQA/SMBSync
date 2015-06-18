@@ -196,4 +196,10 @@
 	<string name="msgs_set_profile_confirm_delete">アプリケーションのバージョンアップに伴い下記同期プロファイルの「上書きコピーまたは削除の前に確認する」を有効にしました。同期を行い問題が無ければ同期プロファイルを編集し確認を無効にしてください。</string>
 	<string name="msgs_set_profile_2_confirm_delete">アプリケーションのバージョンアップに伴い下記同期プロファイルの「上書きコピーまたは削除の前に確認する」を有効にしました。同期を行い問題が無ければ同期プロファイルを編集し確認を無効にしてください。</string>
 	<string name="msgs_main_auto_start_ignored_by_other_msg">確認が必要なメッセージが表示されているため同期開始を無視しました。</string>
+	
+	<string name="msgs_main_external_sdcard_select_required_title">外部SDCARDの選択</string>
+	<string name="msgs_main_external_sdcard_select_required_select_msg">外部SDCARDにアクセスするために、「SDCARD」をタップ後に「ＳＤＣＡＲＤを選択」をタップしてください。</string>
+	<string name="msgs_main_external_sdcard_select_required_invalid_msg">外部SDCARDが選択されませんでした、「SDCARD」をタップ後に「ＳＤＣＡＲＤを選択」をタップしてください。</string>
+	<string name="msgs_main_external_sdcard_select_required_cancel_msg">外部SDCARDが選択されませんでした、同期を中止します。</string>
+	
 </resources>

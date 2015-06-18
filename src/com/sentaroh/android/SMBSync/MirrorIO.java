@@ -41,6 +41,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.math.BigDecimal;
@@ -69,6 +70,7 @@ import android.os.Build;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.support.v4.provider.DocumentFile;
 import android.webkit.MimeTypeMap;
 
 import com.sentaroh.android.Utilities.StringUtil;
@@ -183,6 +185,8 @@ public class MirrorIO implements Runnable {
 	
 //	private ArrayList<SyncHistoryListItem> mAddedSyncHistoryList=null;
 	
+	private SafWorkArea mSafUtil=new SafWorkArea();
+	
 	public MirrorIO(GlobalParameters gwa, NotifyEvent ne, ThreadCtrl ac, ThreadCtrl tw,
 			ISvcCallback cb) {
 		mGp=gwa;
@@ -196,6 +200,8 @@ public class MirrorIO implements Runnable {
 		
 		mUtil=new SMBSyncUtil(mGp.appContext, settingsMediaStoreUseLastModTime, gwa);
 		mUtil.setLogIdentifier("MirrorIO");
+		
+		SafUtil.initWorkArea(mGp.appContext, mSafUtil);
 		
 //		SMBSync_External_Root_Dir = LocalMountPoint.getExternalStorageDir();
 		
@@ -696,11 +702,10 @@ public class MirrorIO implements Runnable {
 				isSyncParmError=true;
 			} 
 			try {
-				File t_out=new File(tlmp+"/SMBSyncWk.tmp");
-				if (t_out.exists()) t_out.delete();
-				if (t_out.createNewFile()) {
+				if (SafUtil.isSafExternalSdcardPath(mGp.appContext, mSafUtil, tlmp+"/SMBSyncWk.tmp")) {
+					DocumentFile df=SafUtil.getSafDocumentFileByPath(mGp.appContext, mSafUtil, tlmp+"/SMBSyncWk.tmp", false);
 					File m_out=new File(mlmp+"/SMBSyncWk.tmp");
-					if (m_out.lastModified()==t_out.lastModified()) {
+					if (m_out.exists() && m_out.lastModified()==df.lastModified()) {
 						//Same physical dir
 						if (mipl.getMasterLocalDir().equals(mipl.getTargetLocalDir())) {
 							String msg=String.format(msgs_mirror_physcal_access_to_same_dir, mipl.getMasterLocalMountPoint(),
@@ -712,15 +717,33 @@ public class MirrorIO implements Runnable {
 							isSyncParmError=true;
 						}
 					}
-					t_out.delete();
 				} else {
-					//Create error
-					String msg=String.format(msgs_mirror_physcal_access_check_create_error,tlmp+"/SMBSyncWk.tmp");
-					addLogMsg("E",mipl.getLocalMountPoint(),msg);
-/*debug*/			addLogMsg("E",mipl.getLocalMountPoint(),"tlmp="+tlmp+", mlmp="+mlmp+", ex="+ex+", cw="+cw);
-					printMpList();
-					tcMirror.setThreadMessage(msg);
-					isSyncParmError=true;
+					File t_out=new File(tlmp+"/SMBSyncWk.tmp");
+					if (t_out.exists()) t_out.delete();
+					if (t_out.createNewFile()) {
+						File m_out=new File(mlmp+"/SMBSyncWk.tmp");
+						if (m_out.lastModified()==t_out.lastModified()) {
+							//Same physical dir
+							if (mipl.getMasterLocalDir().equals(mipl.getTargetLocalDir())) {
+								String msg=String.format(msgs_mirror_physcal_access_to_same_dir, mipl.getMasterLocalMountPoint(),
+										mipl.getTargetLocalMountPoint());
+								addLogMsg("E",mipl.getLocalMountPoint(),msg);
+	/*debug*/					addLogMsg("E",mipl.getLocalMountPoint(),"tlmp="+tlmp+", mlmp="+mlmp+", ex="+ex+", cw="+cw);
+								printMpList();
+								tcMirror.setThreadMessage(msg);
+								isSyncParmError=true;
+							}
+						}
+						t_out.delete();
+					} else {
+						//Create error
+						String msg=String.format(msgs_mirror_physcal_access_check_create_error,tlmp+"/SMBSyncWk.tmp");
+						addLogMsg("E",mipl.getLocalMountPoint(),msg);
+	/*debug*/			addLogMsg("E",mipl.getLocalMountPoint(),"tlmp="+tlmp+", mlmp="+mlmp+", ex="+ex+", cw="+cw);
+						printMpList();
+						tcMirror.setThreadMessage(msg);
+						isSyncParmError=true;
+					}
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -2847,9 +2870,15 @@ public class MirrorIO implements Runnable {
 
 	final private boolean createLocalDirByDir(String target_dir) {
 		boolean result=false;
+		
 		File lf = new File(target_dir);
 		if (!lf.exists()) {
-			result=lf.mkdirs();
+			if (SafUtil.isSafExternalSdcardPath(mGp.appContext, mSafUtil, target_dir)) {
+				SafUtil.getSafDocumentFileByPath(mGp.appContext, mSafUtil, target_dir, true);
+				result=true;
+			} else {
+				result=lf.mkdirs();
+			}
 			if (result) {
 				if (mGp.settingShowSyncDetailMessage)  
 					addLogMsg("I",target_dir,msgs_mirror_prof_dir_create);
@@ -2924,6 +2953,77 @@ public class MirrorIO implements Runnable {
 
 	final private int copyFileLocalToLocal(File in_file, File out_file,
 			long file_byte, String t_fn, String t_fp, String tmp_target) throws IOException {
+		int result=0;
+		if (SafUtil.isSafExternalSdcardPath(mGp.appContext, mSafUtil, out_file.getPath())) {
+			result=copySafFileLocalToLocal(in_file, out_file,
+					file_byte, t_fn, t_fp, tmp_target);
+		} else {
+			result=copyFileLocalToLocalByApi(in_file, out_file,
+					file_byte, t_fn, t_fp, tmp_target);
+		}
+		return result;
+	}
+
+	final private int copySafFileLocalToLocal(File in_file, File out_file,
+			long file_byte, String t_fn, String t_fp, String tmp_target) throws IOException {
+		long fileReadBytes = 0;
+		long readBeginTime = System.currentTimeMillis();
+		int bufferReadBytes=0;
+		boolean out_file_exits=out_file.exists();
+		FileInputStream in=new FileInputStream(in_file);
+		OutputStream out=null;
+		DocumentFile t_df=null, o_df=null;
+		if (!tmp_target.equals("")) {
+			t_df=SafUtil.getSafDocumentFileByPath(mGp.appContext, mSafUtil, tmp_target, false);
+			out=mGp.appContext.getContentResolver().openOutputStream(t_df.getUri());
+		} else {
+			o_df=SafUtil.getSafDocumentFileByPath(mGp.appContext, mSafUtil, out_file.getPath(), false);
+			out=mGp.appContext.getContentResolver().openOutputStream(o_df.getUri());
+		}
+		
+//		BufferedInputStream in=new BufferedInputStream(fis,4096*512);
+//		BufferedOutputStream out=new BufferedOutputStream(fos,4096*512);
+		while ((bufferReadBytes = in.read(mirrorIoBuffer)) > 0) {
+			out.write(mirrorIoBuffer, 0, bufferReadBytes);
+			fileReadBytes += bufferReadBytes;
+			if (file_byte>fileReadBytes) {
+				addMsgToProgDlg(false,"I",0, t_fn,
+					String.format(msgs_mirror_prof_file_copying,(fileReadBytes*100)/file_byte));
+			}
+			if (!tcMirror.isEnabled()) {
+				in.close();
+				out.flush();
+				out.close();
+				if (!tmp_target.equals("")) deleteLocalTempFile(tmp_target);
+				return -10;
+			}
+		}
+		long readElapsedTime = System.currentTimeMillis() - readBeginTime;
+		if (readElapsedTime==0) readElapsedTime=1;
+		in.close();
+		out.flush();
+		out.close();
+		
+		if (t_df!=null) {
+			if (o_df.exists()) o_df.delete();
+			t_df.renameTo(t_fn);
+		}
+
+		String tmsg="";
+		if (out_file_exits) tmsg=msgs_mirror_prof_file_replaced;
+		else tmsg=msgs_mirror_prof_file_copied;
+		addMsgToProgDlg(false,"I",0, t_fn,tmsg);
+		if (mGp.settingShowSyncDetailMessage) addLogMsg("I",t_fp,tmsg);
+		totalTransferByte+=fileReadBytes;
+		totalTransferTime+=readElapsedTime;
+		if (mGp.debugLevel>=1) 
+			addDebugLogMsg(1,"I",t_fp+" "+fileReadBytes + " bytes transfered in ",
+				readElapsedTime+" mili seconds at "+calTransferRate(fileReadBytes,readElapsedTime));
+		return 0;
+	};
+
+	final private int copyFileLocalToLocalByApi(File in_file, File out_file,
+			long file_byte, String t_fn, String t_fp, String tmp_target) throws IOException {
 		long fileReadBytes = 0;
 		long readBeginTime = System.currentTimeMillis();
 		int bufferReadBytes=0;
@@ -2981,6 +3081,79 @@ public class MirrorIO implements Runnable {
 	};
 
 	final private int copyFileRemoteToLocal(SmbFile in_file, File out_file, 
+			long file_byte, String t_fn, String t_fp, String tmp_target) throws IOException {
+		int result=0;
+		if (SafUtil.isSafExternalSdcardPath(mGp.appContext, mSafUtil, out_file.getPath())) {
+			result=copySafFileRemoteToLocal(in_file, out_file, 
+					file_byte, t_fn, t_fp, tmp_target);
+		} else {
+			result=copyFileRemoteToLocalByApi(in_file, out_file, 
+					file_byte, t_fn, t_fp, tmp_target);
+		}
+		return result;
+	};
+
+	final private int copySafFileRemoteToLocal(SmbFile in_file, File out_file, 
+			long file_byte, String t_fn, String t_fp, String tmp_target) throws IOException {
+		long readBeginTime = System.currentTimeMillis();
+		long fileReadBytes = 0;
+		int bufferReadBytes=0;
+		boolean out_file_exits=out_file.exists();
+		SmbFileInputStream in=new SmbFileInputStream(in_file);
+		OutputStream out=null;
+		DocumentFile t_df=null, o_df=null;
+		if (!tmp_target.equals("")) {
+			t_df=SafUtil.getSafDocumentFileByPath(mGp.appContext, mSafUtil, tmp_target, false);
+			out=mGp.appContext.getContentResolver().openOutputStream(t_df.getUri());
+		} else {
+			o_df=SafUtil.getSafDocumentFileByPath(mGp.appContext, mSafUtil, out_file.getPath(), false);
+			out=mGp.appContext.getContentResolver().openOutputStream(o_df.getUri());
+		}
+
+//		BufferedInputStream in=new BufferedInputStream(fis,4096*512);
+//		BufferedOutputStream out=new BufferedOutputStream(fos,4096*512);
+		while ((bufferReadBytes = in.read(mirrorIoBuffer)) > 0) {
+			out.write(mirrorIoBuffer, 0, bufferReadBytes);
+			fileReadBytes += bufferReadBytes;
+			if (file_byte>fileReadBytes) {
+				addMsgToProgDlg(false,"I",0,t_fn,
+					String.format(msgs_mirror_prof_file_copying,(fileReadBytes*100)/file_byte));
+			}
+			if (!tcMirror.isEnabled()) {
+				in.close();
+				out.flush();
+				out.close();
+				if (!tmp_target.equals("")) deleteLocalTempFile(tmp_target);
+				return -10;
+			}
+		}
+		long readElapsedTime = System.currentTimeMillis() - readBeginTime;
+		in.close();
+		out.flush();
+		out.close();
+		
+		if (t_df!=null) {
+			if (out_file.exists()) o_df.delete();
+			t_df.renameTo(t_fn);
+		}
+
+		String tmsg="";
+		if (out_file_exits) tmsg=msgs_mirror_prof_file_replaced;
+		else tmsg=msgs_mirror_prof_file_copied;
+		addMsgToProgDlg(false,"I",0,t_fn,tmsg);
+		if (mGp.settingShowSyncDetailMessage) addLogMsg("I",t_fp,tmsg);
+
+		if (mGp.debugLevel>=1) 
+			addDebugLogMsg(1,"I",t_fp+" "+fileReadBytes + " bytes transfered in "
+					+ readElapsedTime + " mili seconds at "+ 
+					calTransferRate(fileReadBytes,readElapsedTime));
+		totalTransferByte+=fileReadBytes;
+		totalTransferTime+=readElapsedTime;
+
+		return 0;
+	};
+
+	final private int copyFileRemoteToLocalByApi(SmbFile in_file, File out_file, 
 			long file_byte, String t_fn, String t_fp, String tmp_target) throws IOException {
 		long readBeginTime = System.currentTimeMillis();
 		long fileReadBytes = 0;
@@ -3725,30 +3898,80 @@ public class MirrorIO implements Runnable {
 	};
 
 	final private int deleteLocalItem(boolean deldir, String url) {
-		File sf;
-
-		if (mGp.debugLevel>=1) 
-			addDebugLogMsg(2,"I","deleteLocalItem=" + url);
-
-		try {
-			sf = new File(url);
-			if (deldir) 
-				deleteLocalFile("", sf); // delete specified dir
-			else 
-				deleteLocalFile(sf.getPath(), sf); //not delete specified dir
-
-		} catch (Exception e) {
-			addLogMsg("E","","deleteLocalItem EXCEP url="+url);
-			addLogMsg("E","",e.getMessage());//e.toString());
-			addLogMsg("E","","url="+url);
-			printStackTraceElement(e.getStackTrace());
-			isExceptionOccured=true;
-			tcMirror.setThreadMessage(e.getMessage());
-			return -1;
+		if (mGp.debugLevel>=1) addDebugLogMsg(2,"I","deleteLocalItem=" + url);
+		File sf = new File(url);
+		if (SafUtil.isSafExternalSdcardPath(mGp.appContext, mSafUtil, url)) {
+			int result=0;
+			if (deldir) result=deleteSafLocalFile("", sf); // delete specified dir
+			else result=deleteSafLocalFile(sf.getPath(), sf); //not delete specified dir
+			return result;
+		} else {
+			try {
+				if (deldir) deleteLocalFile("", sf); // delete specified dir
+				else deleteLocalFile(sf.getPath(), sf); //not delete specified dir
+			} catch (Exception e) {
+				addLogMsg("E","","deleteLocalItem EXCEP url="+url);
+				addLogMsg("E","",e.getMessage());//e.toString());
+				addLogMsg("E","","url="+url);
+				printStackTraceElement(e.getStackTrace());
+				isExceptionOccured=true;
+				tcMirror.setThreadMessage(e.getMessage());
+				return -1;
+			}
 		}
 		return 0;
 	};
 
+	final private int deleteSafLocalFile(String rootpath, File lf) {
+		int result=-1;
+		if (lf.isDirectory()) {// ディレクトリの場合
+			String[] children = lf.list();// ディレクトリにあるすべてのファイルを処理する
+			for (int i = 0; i < children.length; i++) {
+				deleteSafLocalFile(rootpath,(new File(lf, children[i])));
+				if (checkErrorStatus()!=0) return checkErrorStatus();
+			}
+		}
+		// 削除
+		String url=lf.getPath();
+		if (rootpath.equals(url)) {
+			//root dirなので削除しない
+			result=0;
+		} else {
+			DocumentFile df=SafUtil.getSafDocumentFileByPath(mGp.appContext, mSafUtil, url, lf.isDirectory());
+			if (df!=null) {
+				boolean td=lf.isDirectory();
+				if (df.delete()) result=0;
+				deleteLocalFileLastModifiedEntry(
+						currentFileLastModifiedList,newFileLastModifiedList,lf.getPath());
+				deleteCount++;
+				if (td) {
+					addMsgToProgDlg(false,"I",0,lf.getName(),msgs_mirror_prof_dir_deleted);
+					if (mGp.settingShowSyncDetailMessage)  
+						addLogMsg("I",lf.getPath().replace(localUrl,""),msgs_mirror_prof_dir_deleted);
+//									lf.getPath().replace(SMBSync_External_Root_Dir,"")));
+					if (mGp.debugLevel>=1) 
+						addDebugLogMsg(1,"I",
+							"Local directory was deleted:"+lf.getPath());
+
+				} else {
+//					Log.v("","Dir="+lf.getParent()+", path="+lf.getPath());
+					deleteMediaStoreItem(lf.getPath());
+					addMsgToProgDlg(false,"I",0,lf.getName(),msgs_mirror_prof_file_deleted);
+					if (mGp.settingShowSyncDetailMessage)  
+						addLogMsg("I",lf.getPath().replace(localUrl,""),msgs_mirror_prof_file_deleted);
+//									lf.getPath().replace(SMBSync_External_Root_Dir,"")));
+					if (mGp.debugLevel>=1) 
+						addDebugLogMsg(1,"I",
+							"Local file was deleted:"+lf.getPath());
+
+				}
+				if (checkErrorStatus()!=0) return checkErrorStatus();
+				return 0;
+			}
+		}
+		return result;
+	};
+	
 	final private int deleteLocalFile(String rootpath, File lf) {
 		if (lf.isDirectory()) {// ディレクトリの場合
 			String[] children = lf.list();// ディレクトリにあるすべてのファイルを処理する

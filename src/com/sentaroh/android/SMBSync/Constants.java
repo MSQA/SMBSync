@@ -26,6 +26,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 public class Constants {
 
 	public final static String APPLICATION_TAG="SMBSync";
+	public static final String PACKAGE_NAME="com.sentaroh.android.SMBSync";
 	
 //	final public static int MAX_DLG_BOX_SIZE_WIDTH=600; 
 //	final public static int MAX_DLG_BOX_SIZE_HEIGHT=800;

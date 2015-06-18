@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.Context;
@@ -151,6 +152,8 @@ public class SMBSyncMain extends AppCompatActivity {
 	
 	private ArrayList<Intent> mPendingRequestIntent=new ArrayList<Intent>();
 	
+	private SafWorkArea mSafUtil=new SafWorkArea();
+	
 	@Override  
 	protected void onSaveInstanceState(Bundle out) {  
 		super.onSaveInstanceState(out);
@@ -202,6 +205,8 @@ public class SMBSyncMain extends AppCompatActivity {
 		util.addDebugLogMsg(1,"I","onCreate entered, "+"resartStatus="+restartType+
 				", isActivityForeground="+util.isActivityForeground());
 
+		SafUtil.initWorkArea(mContext, mSafUtil);
+		
         startService(new Intent(mContext, SMBSyncService.class));
         
 //		tcService=new ThreadCtrl();
@@ -257,17 +262,8 @@ public class SMBSyncMain extends AppCompatActivity {
 			}
 		};
 		th.start();
-//		File[] fl=getExternalMediaDirs();
-//		for (int i=0;i<fl.length;i++) Log.v("","dl="+fl[i].getPath());
-		
-//		AlertDialog.Builder adb=new AlertDialog.Builder(this);
-//		adb.setMessage("test msg");
-//		adb.setTitle("test title");
-//		adb.show();
-//		File lf=new File("/storage/sdcard");
-//		DocumentFile df=DocumentFile.fromFile(lf);
-//		df.createDirectory("dir");
-//		df.createFile("text/plain", "file");
+
+		checkSafExternalSdcardTreeUri(null);
 		
 	};
 	
@@ -1478,8 +1474,11 @@ public class SMBSyncMain extends AppCompatActivity {
 						if (mp_name!=null) {
 //							Log.v("","mp_name="+o_pli.getLocalMountPoint());
 							if (!o_pli.getLocalMountPoint().equals(mp_name)) {
-								mixed_mp=true;
-								break;
+								if (!o_pli.getLocalMountPoint().startsWith("/storage/sdcard1") && 
+										!o_pli.getLocalMountPoint().startsWith("/sdcard1")) {
+									mixed_mp=true;
+									break;
+								}
 							}
 						} else {
 //							Log.v("","mp_name init ="+mp_name);
@@ -2147,6 +2146,63 @@ public class SMBSyncMain extends AppCompatActivity {
 		startActivityForResult(intent,0);
 	};
 	
+	private final int REQUEST_CODE_STORAGE_ACCESS=40;
+	@SuppressLint("InlinedApi")
+	private void checkSafExternalSdcardTreeUri(final NotifyEvent p_ntfy) {
+		if (Build.VERSION.SDK_INT>=21) {
+			if (isExternalSdcardUsedByOutput()) {
+				if (SafUtil.hasSafExternalSdcard(mContext) && 
+						!SafUtil.isValidSafExternalSdcardRootTreeUri(mContext)) {
+	        		NotifyEvent ntfy=new NotifyEvent(mContext);
+	        		ntfy.setListener(new NotifyEventListener(){
+						@Override
+						public void positiveResponse(Context c, Object[] o) {
+							Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+						    startActivityForResult(intent, REQUEST_CODE_STORAGE_ACCESS);
+						    if (p_ntfy!=null) p_ntfy.notifyToListener(true, null);
+						}
+						@Override
+						public void negativeResponse(Context c, Object[] o) {
+							if (p_ntfy!=null) p_ntfy.notifyToListener(false, null);
+						}
+	        		});
+	        		commonDlg.showCommonDialog(false, "W", 
+	        				mContext.getString(R.string.msgs_main_external_sdcard_select_required_title), 
+	        				mContext.getString(R.string.msgs_main_external_sdcard_select_required_select_msg), 
+	        				ntfy);
+				} else {
+					if (p_ntfy!=null) p_ntfy.notifyToListener(false, null);
+				}
+			} else {
+				if (p_ntfy!=null) p_ntfy.notifyToListener(false, null);
+			}
+		} else {
+			if (p_ntfy!=null) p_ntfy.notifyToListener(false, null);
+		}
+	};
+
+	private boolean isExternalSdcardUsedByOutput() {
+		boolean result=false;
+		for(ProfileListItem pli:mGp.profileAdapter.getArrayList()) {
+//			Log.v("","name="+pli.getProfileName()+", type="+pli.getProfileType()+", act="+pli.isProfileActive());
+			if (pli.isProfileActive() && pli.getProfileType().equals(SMBSYNC_PROF_TYPE_SYNC)) {
+				ProfileListItem target=ProfileUtility.getProfile(pli.getTargetName(),mGp.profileAdapter);
+//				Log.v("","name="+pli.getProfileName()+", target="+target);
+				if (target!=null) {
+					if (target.getProfileType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
+						if (SafUtil.isSafExternalSdcardPath(mContext, mSafUtil, target.getLocalMountPoint())) {
+							result=true;
+							break;
+						}
+					}
+				}
+			}
+		}
+		return result;
+	};
+	
+	private NotifyEvent mSafSelectActivityNotify=null;
+	@SuppressLint("InlinedApi")
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode==0) {
 			util.addDebugLogMsg(1,"I","Return from Settings.");
@@ -2158,6 +2214,44 @@ public class SMBSyncMain extends AppCompatActivity {
 		} else if (requestCode==1) {
 			util.addDebugLogMsg(1,"I","Return from browse log file.");
 			util.setActivityIsForeground(true);
+		} else if (requestCode == REQUEST_CODE_STORAGE_ACCESS) {
+	        if (resultCode == Activity.RESULT_OK) {
+	        	if (SafUtil.isSafExternalSdcardTreeUri(mContext,data.getData())) {
+	        		SafUtil.saveSafExternalSdcardRootTreeUri(mContext, data.getData().toString());
+	        		if (mSafSelectActivityNotify!=null) mSafSelectActivityNotify.notifyToListener(true, null);
+	        	} else {
+	        		NotifyEvent ntfy=new NotifyEvent(mContext);
+	        		ntfy.setListener(new NotifyEventListener(){
+						@Override
+						public void positiveResponse(Context c, Object[] o) {
+							Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+						    startActivityForResult(intent, REQUEST_CODE_STORAGE_ACCESS);
+						}
+						@Override
+						public void negativeResponse(Context c, Object[] o) {}
+	        		});
+	        		commonDlg.showCommonDialog(false, "W", 
+	        				mContext.getString(R.string.msgs_main_external_sdcard_select_required_title), 
+	        				mContext.getString(R.string.msgs_main_external_sdcard_select_required_invalid_msg), 
+	        				ntfy);
+	        	}
+	        } else {
+//	        	if (mSafSelectActivityNotify!=null) mSafSelectActivityNotify.notifyToListener(false, null);
+        		NotifyEvent ntfy=new NotifyEvent(mContext);
+        		ntfy.setListener(new NotifyEventListener(){
+					@Override
+					public void positiveResponse(Context c, Object[] o) {
+						Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+					    startActivityForResult(intent, REQUEST_CODE_STORAGE_ACCESS);
+					}
+					@Override
+					public void negativeResponse(Context c, Object[] o) {}
+        		});
+        		commonDlg.showCommonDialog(false, "W", 
+        				mContext.getString(R.string.msgs_main_external_sdcard_select_required_title), 
+        				mContext.getString(R.string.msgs_main_external_sdcard_select_required_invalid_msg), 
+        				ntfy);
+	        }
 		}
 	};
 
@@ -3399,7 +3493,7 @@ public class SMBSyncMain extends AppCompatActivity {
 					util.addLogMsg("I",mContext.getString(R.string.msgs_sync_prof_name_list)+
 							"\n"+sync_list);
 //					tabHost.setCurrentTabByTag(TAB_TAG_MSG);
-					startMirrorTask(alp);
+					prepareStartMirrorTask(alp);
 				}
 				@Override
 				public void negativeResponse(Context c, Object[] o) {
@@ -3509,7 +3603,7 @@ public class SMBSyncMain extends AppCompatActivity {
 					util.addLogMsg("I",mContext.getString(R.string.msgs_sync_all_active_profiles));
 					util.addLogMsg("I",mContext.getString(R.string.msgs_sync_prof_name_list)+sync_list);
 //					tabHost.setCurrentTabByTag(TAB_TAG_MSG);
-					startMirrorTask(alp);
+					prepareStartMirrorTask(alp);
 				}
 				@Override
 				public void negativeResponse(Context c, Object[] o) {
@@ -3578,6 +3672,37 @@ public class SMBSyncMain extends AppCompatActivity {
 		supportInvalidateOptionsMenu();
 	};
 
+	private void prepareStartMirrorTask(final ArrayList<MirrorIoParmList> alp) {
+		mSafSelectActivityNotify=new NotifyEvent(mContext);
+		mSafSelectActivityNotify.setListener(new NotifyEventListener(){
+			@Override
+			public void positiveResponse(Context c, Object[] o) {
+				startMirrorTask(alp);
+			}
+			@Override
+			public void negativeResponse(Context c, Object[] o) {
+				//Cancel message
+				commonDlg.showCommonDialog(false, "W", 
+						mContext.getString(R.string.msgs_main_external_sdcard_select_required_title),
+						mContext.getString(R.string.msgs_main_external_sdcard_select_required_cancel_msg),
+						null);
+			}
+		});
+		NotifyEvent ntfy=new NotifyEvent(mContext);
+		ntfy.setListener(new NotifyEventListener(){
+			@Override
+			public void positiveResponse(Context c, Object[] o) {
+				
+			}
+			@Override
+			public void negativeResponse(Context c, Object[] o) {
+				mSafSelectActivityNotify.notifyToListener(true, null);
+			}
+		});
+		checkSafExternalSdcardTreeUri(ntfy);
+		
+	};
+
 	private void startMirrorTask(ArrayList<MirrorIoParmList> alp) {
 		mGp.progressSpinView.setVisibility(LinearLayout.VISIBLE);
 		mGp.progressSpinView.setBackgroundColor(mGp.themeColorList.dialog_msg_background_color);
@@ -3624,7 +3749,6 @@ public class SMBSyncMain extends AppCompatActivity {
 		}
 		setScreenOn();
 		acqWifiLock();
-
 	};
 
 //	private void setScreenOn(int timeout) {
