@@ -1,6 +1,6 @@
 package com.sentaroh.android.SMBSync;
 
-//下記サイトでの情報を参考にし作成
+//下記サイトの情報を参考にし作成
 //How to use the new SD-Card access API presented for Lollipop?
 //http://stackoverflow.com/questions/26744842/how-to-use-the-new-sd-card-access-api-presented-for-lollipop
 
@@ -32,19 +32,24 @@ public class SafUtil {
 		String uri_string=getSafExternalSdcardRootTreeUri(c);
 		if (!uri_string.equals(""))
 			swa.rootDocumentFile=DocumentFile.fromTreeUri(c, Uri.parse(uri_string));
-		
+		buildSafExternalSdcardDirList(c, swa.external_sdcard_dir_list);
+	};
+
+	private static void buildSafExternalSdcardDirList(Context c, ArrayList<String> al) {
 		File[] fl=ContextCompat.getExternalFilesDirs(c, null);
 		String ld=LocalMountPoint.getExternalStorageDir();
-		swa.external_sdcard_dir_list.clear();
-		for(File f:fl) {
-			if (!f.getPath().startsWith(ld)) {
-				String esd=f.getPath().substring(0, f.getPath().indexOf("/Android/data"));
-				Log.v("SafUtil","name="+esd);
-				swa.external_sdcard_dir_list.add(esd);
+		al.clear();
+		if (fl!=null) {
+			for(File f:fl) {
+				if (f.getPath()!=null && !f.getPath().startsWith(ld)) {
+					String esd=f.getPath().substring(0, f.getPath().indexOf("/Android/data"));
+					if (DEBUG_ENABLED) Log.v("SafUtil","buildSafExternalSdcardDirList dir="+esd);
+					al.add(esd);
+				}
 			}
 		}
-	}
-
+	};
+	
 	public static String getSafExternalSdcardRootTreeUri(Context c) {
 		long b_time=System.currentTimeMillis();
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
@@ -55,12 +60,16 @@ public class SafUtil {
 	
 	public static boolean hasSafExternalSdcard(Context c) {
 		boolean result=false;
-		File lf=new File("/storage/sdcard1");
-		if (lf.exists() && lf.canWrite()) result=true;
-		else {
-			lf=new File("/sdcard1");
-			if (lf.exists() && lf.canWrite()) result=true;
-		}
+//		File lf=new File("/storage/sdcard1");
+//		if (lf.exists() && lf.canWrite()) result=true;
+//		else {
+//			lf=new File("/sdcard1");
+//			if (lf.exists() && lf.canWrite()) result=true;
+//		}
+		ArrayList<String>al=new ArrayList<String>();
+		buildSafExternalSdcardDirList(c, al);
+		if (al.size()>0) result=true;
+		if (DEBUG_ENABLED) Log.v("SafUtil","hasSafExternalSdcard result="+result);		
 		return result;
 	};
 
