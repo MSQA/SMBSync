@@ -39,12 +39,14 @@ public class SafUtil {
 		File[] fl=ContextCompat.getExternalFilesDirs(c, null);
 		String ld=LocalMountPoint.getExternalStorageDir();
 		al.clear();
-		if (fl!=null) {
-			for(File f:fl) {
-				if (f.getPath()!=null && !f.getPath().startsWith(ld)) {
-					String esd=f.getPath().substring(0, f.getPath().indexOf("/Android/data"));
-					if (DEBUG_ENABLED) Log.v("SafUtil","buildSafExternalSdcardDirList dir="+esd);
-					al.add(esd);
+		if (Build.VERSION.SDK_INT>=21) {
+			if (fl!=null) {
+				for(File f:fl) {
+					if (f!=null && f.getPath()!=null && !f.getPath().startsWith(ld)) {
+						String esd=f.getPath().substring(0, f.getPath().indexOf("/Android/data"));
+						if (DEBUG_ENABLED) Log.v("SafUtil","buildSafExternalSdcardDirList dir="+esd);
+						al.add(esd);
+					}
 				}
 			}
 		}
