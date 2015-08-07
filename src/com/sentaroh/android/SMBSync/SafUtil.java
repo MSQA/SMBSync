@@ -24,7 +24,7 @@ import android.util.Log;
 @SuppressLint("SdCardPath")
 public class SafUtil {
 	private static final String SAF_EXTERNAL_SDCARD_TREE_URI_KEY="external_sdcard_tree_uri_key";
-	private static final boolean DEBUG_ENABLED=false;
+	private static final boolean DEBUG_ENABLED=true;
 	public static void initWorkArea(Context c, SafWorkArea swa) {
 //		prefs = PreferenceManager.getDefaultSharedPreferences(c);
 		swa.pkg_name=c.getPackageName();
@@ -156,17 +156,21 @@ public class SafUtil {
     	
     	relativePath=target_path.replace(baseFolder, "");
     	
+    	
+    	
+    	if (DEBUG_ENABLED) Log.v("SafUtil","relativePath="+relativePath);
         String[] parts = relativePath.split("\\/");
         for (int i = 0; i < parts.length; i++) {
-//        	Log.v("","parts="+parts[i]);
+        	if (DEBUG_ENABLED) Log.v("SafUtil","parts="+parts[i]);
         	if (!parts[i].equals("")) {
-                DocumentFile nextDocument = document.findFile(parts[i]);
+//                DocumentFile nextDocument = document.findFile(parts[i]);
+                DocumentFile nextDocument = findFile(document, parts[i]);
                 if (nextDocument == null) {
                     if ((i < parts.length - 1) || isDirectory) {
-//                    	Log.v("","dir created name="+parts[i]);
+                    	if (DEBUG_ENABLED) Log.v("SafUtil","dir created name="+parts[i]);
                    		nextDocument = document.createDirectory(parts[i]);
                     } else {
-//                    	Log.v("","file created name="+parts[i]);
+                    	if (DEBUG_ENABLED) Log.v("SafUtil","file created name="+parts[i]);
                         nextDocument = document.createFile("", parts[i]);
                     }
                 }
@@ -179,6 +183,26 @@ public class SafUtil {
         if (DEBUG_ENABLED) Log.v("SafUtil","getSafDocumentFileByPath elapsed="+(System.currentTimeMillis()-b_time));
         return document;
 	};
+	
+	private static DocumentFile findFile(DocumentFile df, String name) {
+		DocumentFile result=null;
+		
+		DocumentFile[]lf=df.listFiles();
+		if (lf!=null) {
+			for(DocumentFile sdf:lf) {
+				if (sdf.canRead()) {
+					if (sdf.getName()!=null) {
+						if (sdf.getName().equals(name)) {
+							result=sdf;
+							break;
+						}
+					}
+				}
+			}
+		}
+		return result;
+	}
+
 }
 
 class SafWorkArea {

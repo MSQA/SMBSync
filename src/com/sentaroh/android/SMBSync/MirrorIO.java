@@ -2973,6 +2973,7 @@ public class MirrorIO implements Runnable {
 		FileInputStream in=new FileInputStream(in_file);
 		OutputStream out=null;
 		DocumentFile t_df=null, o_df=null;
+		
 		if (!tmp_target.equals("")) {
 			t_df=SafUtil.getSafDocumentFileByPath(mGp.appContext, mSafUtil, tmp_target, false);
 			out=mGp.appContext.getContentResolver().openOutputStream(t_df.getUri());
@@ -3008,7 +3009,6 @@ public class MirrorIO implements Runnable {
 			if (o_df.exists()) o_df.delete();
 			t_df.renameTo(t_fn);
 		}
-
 		String tmsg="";
 		if (out_file_exits) tmsg=msgs_mirror_prof_file_replaced;
 		else tmsg=msgs_mirror_prof_file_copied;
