@@ -201,7 +201,8 @@
 	<string name="msgs_main_auto_start_ignored_by_other_msg">Ignore the sync start request because the important message is being displayed.</string>
 	
 	<string name="msgs_main_external_sdcard_select_required_title">Select external SDCARD</string>
-	<string name="msgs_main_external_sdcard_select_required_select_msg">In order to access the external SDCARD, please tap the &#8220;SDCARD&#8221; and &#8220;SELECT SD Card&#8221;.</string>
-	<string name="msgs_main_external_sdcard_select_required_invalid_msg">External SDCARD was not selected, please tap the &#8220;SDCARD&#8221; and &#8220;SELECT SD Card&#8221;.</string>
-	<string name="msgs_main_external_sdcard_select_required_cancel_msg">External SD card was not selected, it will stop the synchronization.</string>
+	<string name="msgs_main_external_sdcard_select_required_select_msg">In order to access the external SDCARD, Step 1 please tap the &#8220;SDCARD&#8221;, Step2 then　Please tap the &#8220;Select the SDCARD&#8221; in the displayed screen.\n
+(Please tap the &#8220;Select the SDCARD&#8221; when the screen of &#8220;Select the SDCARD&#8221; in step 2 is displayed directly)</string>
+	<string name="msgs_main_external_sdcard_select_required_select_msg_file">SMBSync_SD_CARD_EN.png</string>
+	<string name="msgs_main_external_sdcard_select_required_cancel_msg">You can not perform sync until external SD card is selected. Profile=%s</string>
 </resources>

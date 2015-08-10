@@ -17,21 +17,20 @@ import android.net.Uri;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.provider.DocumentFile;
 import android.util.Log;
 
 
 @SuppressLint("SdCardPath")
 public class SafUtil {
 	private static final String SAF_EXTERNAL_SDCARD_TREE_URI_KEY="external_sdcard_tree_uri_key";
-	private static final boolean DEBUG_ENABLED=true;
+	private static final boolean DEBUG_ENABLED=false;
 	public static void initWorkArea(Context c, SafWorkArea swa) {
 //		prefs = PreferenceManager.getDefaultSharedPreferences(c);
 		swa.pkg_name=c.getPackageName();
 		swa.app_spec_dir="/android/data/"+swa.pkg_name;
 		String uri_string=getSafExternalSdcardRootTreeUri(c);
 		if (!uri_string.equals(""))
-			swa.rootDocumentFile=DocumentFile.fromTreeUri(c, Uri.parse(uri_string));
+			swa.rootDocumentFile=DCFile.fromTreeUri(c, Uri.parse(uri_string));
 		buildSafExternalSdcardDirList(c, swa.external_sdcard_dir_list);
 	};
 
@@ -78,7 +77,7 @@ public class SafUtil {
 	public static boolean isSafExternalSdcardTreeUri(Context c, Uri tree_uri) {
 		long b_time=System.currentTimeMillis();
 		boolean result=false;
-		DocumentFile document=DocumentFile.fromTreeUri(c, tree_uri);
+		DCFile document=DCFile.fromTreeUri(c, tree_uri);
 		if (document.getName().startsWith("sdcard1")) result=true;
 		if (DEBUG_ENABLED) Log.v("SafUtil","isSafExternalSdcardTreeUri elapsed="+(System.currentTimeMillis()-b_time));
 		return result;
@@ -109,7 +108,7 @@ public class SafUtil {
 		boolean result=true; 
 		if (uri_string.equals("")) result=false;
 		else {
-			DocumentFile docf=DocumentFile.fromTreeUri(c, Uri.parse(uri_string));
+			DCFile docf=DCFile.fromTreeUri(c, Uri.parse(uri_string));
 			if (docf.getName()==null) result=false;
 		}
 		if (DEBUG_ENABLED) Log.v("SafUtil","isValidSafExternalSdcardRootTreeUri elapsed="+(System.currentTimeMillis()-b_time));
@@ -143,10 +142,10 @@ public class SafUtil {
 		return result;
 	}
 
-	public static DocumentFile getSafDocumentFileByPath(Context c, SafWorkArea swa,  
+	public static DCFile getSafDocumentFileByPath(Context c, SafWorkArea swa,  
 			String target_path, boolean isDirectory) {
 		long b_time=System.currentTimeMillis();
-    	DocumentFile document=swa.rootDocumentFile;
+    	DCFile document=swa.rootDocumentFile;
     	
     	String relativePath = null;
     	String baseFolder="";
@@ -163,8 +162,8 @@ public class SafUtil {
         for (int i = 0; i < parts.length; i++) {
         	if (DEBUG_ENABLED) Log.v("SafUtil","parts="+parts[i]);
         	if (!parts[i].equals("")) {
-//                DocumentFile nextDocument = document.findFile(parts[i]);
-                DocumentFile nextDocument = findFile(document, parts[i]);
+                DCFile nextDocument = document.findFile(parts[i]);
+//                DCFile nextDocument = findFile(document, parts[i]);
                 if (nextDocument == null) {
                     if ((i < parts.length - 1) || isDirectory) {
                     	if (DEBUG_ENABLED) Log.v("SafUtil","dir created name="+parts[i]);
@@ -184,24 +183,24 @@ public class SafUtil {
         return document;
 	};
 	
-	private static DocumentFile findFile(DocumentFile df, String name) {
-		DocumentFile result=null;
-		
-		DocumentFile[]lf=df.listFiles();
-		if (lf!=null) {
-			for(DocumentFile sdf:lf) {
-				if (sdf.canRead()) {
-					if (sdf.getName()!=null) {
-						if (sdf.getName().equals(name)) {
-							result=sdf;
-							break;
-						}
-					}
-				}
-			}
-		}
-		return result;
-	}
+//	private static DCFile findFile(DCFile df, String name) {
+//		DCFile result=null;
+//		
+//		DCFile[]lf=df.listFiles();
+//		if (lf!=null) {
+//			for(DCFile sdf:lf) {
+//				if (sdf.canRead()) {
+//					if (sdf.getName()!=null) {
+//						if (sdf.getName().equals(name)) {
+//							result=sdf;
+//							break;
+//						}
+//					}
+//				}
+//			}
+//		}
+//		return result;
+//	}
 
 }
 
@@ -209,6 +208,6 @@ class SafWorkArea {
 //	private SharedPreferences prefs=null;
 	public String pkg_name="";
 	public String app_spec_dir="";
-	public DocumentFile rootDocumentFile=null;
+	public DCFile rootDocumentFile=null;
 	public ArrayList<String> external_sdcard_dir_list=new ArrayList<String>();
 }

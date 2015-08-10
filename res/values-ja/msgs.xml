@@ -198,8 +198,9 @@
 	<string name="msgs_main_auto_start_ignored_by_other_msg">確認が必要なメッセージが表示されているため同期開始を無視しました。</string>
 	
 	<string name="msgs_main_external_sdcard_select_required_title">外部SDCARDの選択</string>
-	<string name="msgs_main_external_sdcard_select_required_select_msg">外部SDCARDにアクセスするために、「SDCARD」をタップ後に「ＳＤＣＡＲＤを選択」をタップしてください。</string>
-	<string name="msgs_main_external_sdcard_select_required_invalid_msg">外部SDCARDが選択されませんでした、「SDCARD」をタップ後に「ＳＤＣＡＲＤを選択」をタップしてください。</string>
-	<string name="msgs_main_external_sdcard_select_required_cancel_msg">外部SDCARDが選択されませんでした、同期を中止します。</string>
+	<string name="msgs_main_external_sdcard_select_required_select_msg">外部SDCARDにアクセスするために、ステップ１.「SDCARD」をタップしてください、ステップ２.その後表示された画面で「ＳＤＣＡＲＤを選択」をタップしてください。\n
+(ステップ２の「ＳＤＣＡＲＤを選択」の画面が直接表示された時は「ＳＤＣＡＲＤを選択」をタップしてください)</string>
+	<string name="msgs_main_external_sdcard_select_required_select_msg_file">SMBSync_SD_CARD_JA.png</string>
+	<string name="msgs_main_external_sdcard_select_required_cancel_msg">外部SDCARDが選択されるまで同期は実行できません。 プロファイル=%s</string>
 	
 </resources>

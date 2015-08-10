@@ -1,13 +1,6 @@
 package com.sentaroh.android.SMBSync;
 
 import static com.sentaroh.android.SMBSync.Constants.*;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROF_GROUP_DEFAULT;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROF_TYPE_LOCAL;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROF_TYPE_REMOTE;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROF_TYPE_SYNC;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_SYNC_TYPE_COPY;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_SYNC_TYPE_MIRROR;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_SYNC_TYPE_MOVE;
 
 import java.io.File;
 import java.io.IOException;
@@ -1610,10 +1603,18 @@ public class ProfileCreationWizard {
 						profileAdapter.notifyDataSetChanged();
 						ProfileUtility.saveProfileToFile(mGp, mContext, util, false,"","",profileAdapter,false);
 						
+						NotifyEvent ntfy_sdcard=new NotifyEvent(mContext);
+						ntfy_sdcard.setListener(new NotifyEventListener(){
+							@Override
+							public void positiveResponse(Context c, Object[] o) {
+								if (mNotifyComplete!=null) 
+									mNotifyComplete.notifyToListener(true, new Object[]{mWizData.sync_name});
+							}
+							@Override
+							public void negativeResponse(Context c, Object[] o) {}
+						});
 						mCommonDlg.showCommonDialog(false, "I", 
-								mContext.getString(R.string.msgs_sync_wizard_confirm_profile_created), "", null);
-						
-						if (mNotifyComplete!=null) mNotifyComplete.notifyToListener(true, null);
+								mContext.getString(R.string.msgs_sync_wizard_confirm_profile_created), "", ntfy_sdcard);
 					}
 
 					@Override

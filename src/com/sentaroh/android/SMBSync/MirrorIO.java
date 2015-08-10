@@ -70,7 +70,6 @@ import android.os.Build;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
-import android.support.v4.provider.DocumentFile;
 import android.webkit.MimeTypeMap;
 
 import com.sentaroh.android.Utilities.StringUtil;
@@ -703,7 +702,7 @@ public class MirrorIO implements Runnable {
 			} 
 			try {
 				if (SafUtil.isSafExternalSdcardPath(mGp.appContext, mSafUtil, tlmp+"/SMBSyncWk.tmp")) {
-					DocumentFile df=SafUtil.getSafDocumentFileByPath(mGp.appContext, mSafUtil, tlmp+"/SMBSyncWk.tmp", false);
+					DCFile df=SafUtil.getSafDocumentFileByPath(mGp.appContext, mSafUtil, tlmp+"/SMBSyncWk.tmp", false);
 					File m_out=new File(mlmp+"/SMBSyncWk.tmp");
 					if (m_out.exists() && m_out.lastModified()==df.lastModified()) {
 						//Same physical dir
@@ -2972,7 +2971,7 @@ public class MirrorIO implements Runnable {
 		boolean out_file_exits=out_file.exists();
 		FileInputStream in=new FileInputStream(in_file);
 		OutputStream out=null;
-		DocumentFile t_df=null, o_df=null;
+		DCFile t_df=null, o_df=null;
 		
 		if (!tmp_target.equals("")) {
 			t_df=SafUtil.getSafDocumentFileByPath(mGp.appContext, mSafUtil, tmp_target, false);
@@ -3101,7 +3100,7 @@ public class MirrorIO implements Runnable {
 		boolean out_file_exits=out_file.exists();
 		SmbFileInputStream in=new SmbFileInputStream(in_file);
 		OutputStream out=null;
-		DocumentFile t_df=null, o_df=null;
+		DCFile t_df=null, o_df=null;
 		if (!tmp_target.equals("")) {
 			t_df=SafUtil.getSafDocumentFileByPath(mGp.appContext, mSafUtil, tmp_target, false);
 			out=mGp.appContext.getContentResolver().openOutputStream(t_df.getUri());
@@ -3937,7 +3936,7 @@ public class MirrorIO implements Runnable {
 			//root dirなので削除しない
 			result=0;
 		} else {
-			DocumentFile df=SafUtil.getSafDocumentFileByPath(mGp.appContext, mSafUtil, url, lf.isDirectory());
+			DCFile df=SafUtil.getSafDocumentFileByPath(mGp.appContext, mSafUtil, url, lf.isDirectory());
 			if (df!=null) {
 				boolean td=lf.isDirectory();
 				if (df.delete()) result=0;

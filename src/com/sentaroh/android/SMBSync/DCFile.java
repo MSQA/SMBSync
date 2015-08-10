@@ -1,6 +1,7 @@
 package com.sentaroh.android.SMBSync;
 
 import java.util.ArrayList;
+
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -16,14 +17,27 @@ import android.util.Log;
 class DCFile {
     private Context mContext;
     private Uri mUri;
+    private String mDocName;
 
-    DCFile(DCFile parent, Context context, Uri uri) {
+//    DCFile(Context context, Uri uri) {
+//        mContext = context;
+//        mUri = uri;
+//    }
+
+    DCFile(Context context, Uri uri) {
         mContext = context;
         mUri = uri;
+        mDocName=queryForString(mContext, mUri, DocumentsContract.Document.COLUMN_DISPLAY_NAME, null);
+    }
+
+    DCFile(Context context, Uri uri, String name) {
+        mContext = context;
+        mUri = uri;
+        mDocName=name;
     }
 
     public static DCFile fromTreeUri(Context context, Uri treeUri) {
-    	return new DCFile(null, context, prepareTreeUri(treeUri));
+    	return new DCFile(context, prepareTreeUri(treeUri));
     }
     
     public static Uri prepareTreeUri(Uri treeUri) {
@@ -35,13 +49,13 @@ class DCFile {
     public DCFile createFile(String mimeType, String displayName) {
         final Uri result = DocumentsContract.createDocument(mContext.getContentResolver(), mUri, mimeType,
                 displayName);
-        return (result != null) ? new DCFile(this, mContext, result) : null;
+        return (result != null) ? new DCFile(mContext, result) : null;
     }
 
     public DCFile createDirectory(String displayName) {
         final Uri result = DocumentsContract.createDocument(mContext.getContentResolver(), mUri, 
         		DocumentsContract.Document.MIME_TYPE_DIR, displayName);
-        return (result != null) ? new DCFile(this, mContext, result) : null;
+        return (result != null) ? new DCFile(mContext, result) : null;
     }
 
     public Uri getUri() {
@@ -49,7 +63,9 @@ class DCFile {
     }
 
     public String getName() {
-        return queryForString(mContext, mUri, DocumentsContract.Document.COLUMN_DISPLAY_NAME, null);
+    	return mDocName;
+//    	String result=queryForString(mContext, mUri, DocumentsContract.Document.COLUMN_DISPLAY_NAME, null);
+//        return result;
     }
 
     public String getType() {
@@ -89,22 +105,24 @@ class DCFile {
 
     public boolean canRead() {
         // Ignore if grant doesn't allow read
+//    	Log.v("SafUtil","canRead entered");
+    	if (mUri.getEncodedPath().endsWith(".android_secure")) return false;
         if (mContext.checkCallingOrSelfUriPermission(mUri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 != PackageManager.PERMISSION_GRANTED) {
             return false;
         }
-
+//        Log.v("SafUtil","canRead checkCallingOrSelfUriPermission ended");
         // Ignore documents without MIME
         if (TextUtils.isEmpty(getRawType(mContext, mUri))) {
             return false;
         }
-
+//        Log.v("SafUtil","canRead ended");
         return true;
-
     }
 
     public boolean canWrite() {
         // Ignore if grant doesn't allow write
+    	if (mUri.getEncodedPath().endsWith(".android_secure")) return false;
         if (mContext.checkCallingOrSelfUriPermission(mUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
                 != PackageManager.PERMISSION_GRANTED) {
             return false;
@@ -157,30 +175,71 @@ class DCFile {
     }
 
     public DCFile[] listFiles() {
-        final Uri[] result = listDocUris();
+        final  ArrayList<DCFileListInfo> result = listDocUris(mContext, mUri);
         
-        final DCFile[] resultFiles = new DCFile[result.length];
-        for (int i = 0; i < result.length; i++) {
-            resultFiles[i] = new DCFile(this, mContext, result[i]);
+        final DCFile[] resultFiles = new DCFile[result.size()];
+        for (int i = 0; i < result.size(); i++) {
+            resultFiles[i] = new DCFile(mContext, result.get(i).doc_uri, result.get(i).doc_name);
+//            Log.v("SafUtil","name="+nl.get(i));
         }
         return resultFiles;
     }
-    
-    private Uri[] listDocUris() {
+
+    public DCFile findFile(String name) {
         final ContentResolver resolver = mContext.getContentResolver();
         final Uri childrenUri = DocumentsContract.buildChildDocumentsUriUsingTree(mUri,
                 DocumentsContract.getDocumentId(mUri));
-        final ArrayList<Uri> results = new ArrayList<Uri>();
+
+        DCFile result=null;
+        
+        Cursor c = null;
+        try {
+            c = resolver.query(childrenUri, new String[] {
+            		DocumentsContract.Document.COLUMN_DOCUMENT_ID,
+                    DocumentsContract.Document.COLUMN_DISPLAY_NAME
+                    },
+                    null,//"_display_name = ?", 
+                    null,//new String[]{name},
+                    null);
+            
+            while (c.moveToNext()) {
+            	String doc_name=c.getString(1);
+            	if (doc_name.equals(name)) {
+                	String doc_id=c.getString(0);
+                	Uri documentUri = DocumentsContract.buildDocumentUriUsingTree(mUri, doc_id);
+                	result=new DCFile(mContext,  documentUri, doc_name);
+                	break;
+            	}
+            }
+        } catch (Exception e) {
+            Log.w("DCFile", "Failed query: " + e);
+        } finally {
+            closeQuietly(c);
+        }
+        return result;
+    }
+    
+    private static ArrayList<DCFileListInfo> listDocUris(Context context, Uri uri) {
+        final ContentResolver resolver = context.getContentResolver();
+        final Uri childrenUri = DocumentsContract.buildChildDocumentsUriUsingTree(uri,
+                DocumentsContract.getDocumentId(uri));
+        final ArrayList<DCFileListInfo> results = new ArrayList<DCFileListInfo>();
 
         Cursor c = null;
         try {
             c = resolver.query(childrenUri, new String[] {
-                    DocumentsContract.Document.COLUMN_DOCUMENT_ID }, null, null, null);
+                    DocumentsContract.Document.COLUMN_DOCUMENT_ID,
+                    DocumentsContract.Document.COLUMN_DISPLAY_NAME
+                    }, null, null, null);
             while (c.moveToNext()) {
                 final String documentId = c.getString(0);
-                final Uri documentUri = DocumentsContract.buildDocumentUriUsingTree(mUri,
+                final String documentName = c.getString(1);
+                final Uri documentUri = DocumentsContract.buildDocumentUriUsingTree(uri,
                         documentId);
-                results.add(documentUri);
+                DCFileListInfo info=new DCFileListInfo();
+                info.doc_name=documentName;
+                info.doc_uri=documentUri;
+                results.add(info);
             }
         } catch (Exception e) {
             Log.w("DCFile", "Failed query: " + e);
@@ -188,7 +247,7 @@ class DCFile {
             closeQuietly(c);
         }
 
-        return results.toArray(new Uri[results.size()]);
+        return results;
     }
 
     public boolean renameTo(String displayName) {
@@ -257,4 +316,11 @@ class DCFile {
         }
     }
 
+}
+class DCFileListInfo {
+	public Uri doc_uri;
+	public String doc_name, doc_type;
+	public boolean can_read, can_write;
+	public long doc_last_modified;
+	public long doc_length;
 }

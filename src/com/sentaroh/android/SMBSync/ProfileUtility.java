@@ -33,12 +33,14 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+
 import jcifs.smb.NtlmPasswordAuthentication;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
@@ -48,6 +50,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
@@ -103,6 +107,8 @@ public class ProfileUtility {
 	private GlobalParameters mGp=null;
 	private FragmentManager mFragMgr=null;
 
+	private SafWorkArea mSafUtil=new SafWorkArea();
+
 	ProfileUtility (SMBSyncUtil mu, Context c,  
 			CommonDialog cd, CustomContextMenu ccm, GlobalParameters gp, FragmentManager fm) {
 		mContext=c;
@@ -112,6 +118,7 @@ public class ProfileUtility {
 		commonDlg=cd;
 		ccMenu=ccm;
 		mFragMgr=fm;
+    	SafUtil.initWorkArea(mContext, mSafUtil);
 	};
 
 	public void importProfileDlg(final String lurl, final String ldir, 
@@ -1070,6 +1077,102 @@ public class ProfileUtility {
 		return result;
 	};
 	
+	public void showSelectSdcardMsg(final NotifyEvent ntfy, String msg) {
+		final Dialog dialog = new Dialog(mContext);
+		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+	    dialog.setContentView(R.layout.show_select_sdcard_dlg);
+
+		final LinearLayout title_view = (LinearLayout) dialog.findViewById(R.id.show_select_sdcard_dlg_title_view);
+		final TextView title = (TextView) dialog.findViewById(R.id.show_select_sdcard_dlg_title);
+		title_view.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);
+		title.setTextColor(mGp.themeColorList.text_color_dialog_title);
+		
+		final TextView dlg_msg=(TextView)dialog.findViewById(R.id.show_select_sdcard_dlg_msg);
+		dlg_msg.setText(msg);;
+		
+		final ImageView func_view=(ImageView)dialog.findViewById(R.id.show_select_sdcard_dlg_image);
+		
+		
+		try {
+		    InputStream is = 
+		    	mContext.getResources().getAssets().open(mContext.getString(R.string.msgs_main_external_sdcard_select_required_select_msg_file));
+		    Bitmap bm = BitmapFactory.decodeStream(is);
+		    func_view.setImageBitmap(bm);
+		} catch (IOException e) {
+		    /* 例外処理 */
+		}
+		
+		final Button btnOk = (Button) dialog.findViewById(R.id.show_select_sdcard_dlg_btn_ok);
+		final Button btnCancel = (Button) dialog.findViewById(R.id.show_select_sdcard_dlg_btn_cancel);
+
+		CommonDialog.setDlgBoxSizeLimit(dialog,true);
+
+		// OKボタンの指定
+		btnOk.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				dialog.dismiss();
+				ntfy.notifyToListener(true, null);
+			}
+		});
+		// Cancelボタンの指定
+		btnCancel.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				dialog.dismiss();
+				ntfy.notifyToListener(false, null);
+			}
+		});
+		// Cancelリスナーの指定
+		dialog.setOnCancelListener(new Dialog.OnCancelListener() {
+			@Override
+			public void onCancel(DialogInterface arg0) {
+				btnCancel.performClick();
+			}
+		});
+
+		dialog.show();
+
+	}
+
+	public boolean isExternalSdcardUsedByOutput() {
+		boolean result=false;
+		for(ProfileListItem pli:mGp.profileAdapter.getArrayList()) {
+//			Log.v("","name="+pli.getProfileName()+", type="+pli.getProfileType()+", act="+pli.isProfileActive());
+			if (pli.isProfileActive() && pli.getProfileType().equals(SMBSYNC_PROF_TYPE_SYNC)) {
+				ProfileListItem target=ProfileUtility.getProfile(pli.getTargetName(),mGp.profileAdapter);
+//				Log.v("","name="+pli.getProfileName()+", target="+target);
+				if (target!=null) {
+					if (target.getProfileType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
+						if (SafUtil.isSafExternalSdcardPath(mContext, mSafUtil, target.getLocalMountPoint())) {
+							result=true;
+							break;
+						}
+					}
+				}
+			}
+		}
+		return result;
+	};
+
+	public ProfileListItem getExternalSdcardUsedSyncProfile() {
+		ProfileListItem result=null;
+		for(ProfileListItem pli:mGp.profileAdapter.getArrayList()) {
+//			Log.v("","name="+pli.getProfileName()+", type="+pli.getProfileType()+", act="+pli.isProfileActive());
+			if (pli.isProfileActive() && pli.getProfileType().equals(SMBSYNC_PROF_TYPE_SYNC)) {
+				ProfileListItem target=ProfileUtility.getProfile(pli.getTargetName(),mGp.profileAdapter);
+//				Log.v("","name="+pli.getProfileName()+", target="+target);
+				if (target!=null) {
+					if (target.getProfileType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
+						if (SafUtil.isSafExternalSdcardPath(mContext, mSafUtil, target.getLocalMountPoint())) {
+							result=pli;
+							break;
+						}
+					}
+				}
+			}
+		}
+		return result;
+	};
+
 	public void logonToRemoteDlg(final String host, final String addr, final String port, 
 			final String user, final String pass, final NotifyEvent p_ntfy) {
 		final ThreadCtrl tc=new ThreadCtrl();

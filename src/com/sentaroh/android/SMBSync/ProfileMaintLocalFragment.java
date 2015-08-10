@@ -1,9 +1,6 @@
 package com.sentaroh.android.SMBSync;
 
 import static com.sentaroh.android.SMBSync.Constants.*;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROF_GROUP_DEFAULT;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROF_INACTIVE;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROF_TYPE_LOCAL;
 
 import com.sentaroh.android.Utilities.LocalMountPoint;
 import com.sentaroh.android.Utilities.NotifyEvent;
@@ -514,7 +511,7 @@ public class ProfileMaintLocalFragment extends DialogFragment{
 	@SuppressLint("InlinedApi")
 	private void checkSafExternalSdcardTreeUri() {
 		if (Build.VERSION.SDK_INT>=21) {
-			if (isExternalSdcardUsedByOutput()) {
+			if (mProfUtil.isExternalSdcardUsedByOutput()) {
 				if (SafUtil.hasSafExternalSdcard(mContext) && !SafUtil.isValidSafExternalSdcardRootTreeUri(mContext)) {
 					final Activity actv=getActivity();
 	        		NotifyEvent ntfy=new NotifyEvent(mContext);
@@ -525,35 +522,24 @@ public class ProfileMaintLocalFragment extends DialogFragment{
 						    actv.startActivityForResult(intent, REQUEST_CODE_STORAGE_ACCESS);
 						}
 						@Override
-						public void negativeResponse(Context c, Object[] o) {}
-	        		});
-	        		mCommonDlg.showCommonDialog(false, "W", 
+						public void negativeResponse(Context c, Object[] o) {
+							ProfileListItem pli=mProfUtil.getExternalSdcardUsedSyncProfile();
+							String msg=String.format(mContext.getString(R.string.msgs_main_external_sdcard_select_required_cancel_msg),pli.getProfileName());
+			        		mCommonDlg.showCommonDialog(false, "W", 
 	        				mContext.getString(R.string.msgs_main_external_sdcard_select_required_title), 
-	        				mContext.getString(R.string.msgs_main_external_sdcard_select_required_select_msg), 
-	        				ntfy);
+	        				msg, 
+	        				null);
+						}
+	        		});
+//	        		mCommonDlg.showCommonDialog(false, "W", 
+//	        				mContext.getString(R.string.msgs_main_external_sdcard_select_required_title), 
+//	        				mContext.getString(R.string.msgs_main_external_sdcard_select_required_select_msg), 
+//	        				ntfy);
+	        		mProfUtil.showSelectSdcardMsg(ntfy,
+	        				mContext.getString(R.string.msgs_main_external_sdcard_select_required_select_msg));
 				} 
 			}
 		}
-	};
-
-	private boolean isExternalSdcardUsedByOutput() {
-		boolean result=false;
-		for(ProfileListItem pli:mGp.profileAdapter.getArrayList()) {
-//			Log.v("","name="+pli.getProfileName()+", type="+pli.getProfileType()+", act="+pli.isProfileActive());
-			if (pli.isProfileActive() && pli.getProfileType().equals(SMBSYNC_PROF_TYPE_SYNC)) {
-				ProfileListItem target=ProfileUtility.getProfile(pli.getTargetName(),mGp.profileAdapter);
-//				Log.v("","name="+pli.getProfileName()+", target="+target);
-				if (target!=null) {
-					if (target.getProfileType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
-						if (SafUtil.isSafExternalSdcardPath(mContext, mSafUtil, target.getLocalMountPoint())) {
-							result=true;
-							break;
-						}
-					}
-				}
-			}
-		}
-		return result;
 	};
 
     private void checkAppSpecificDir(String lmp, String dir) {
