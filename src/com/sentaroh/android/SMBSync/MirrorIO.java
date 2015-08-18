@@ -24,15 +24,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 */
 
 import static com.sentaroh.android.SMBSync.Constants.*;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_CONFIRM_REQUEST_DELETE;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_CONFIRM_RESP_NOALL;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_CONFIRM_RESP_YESALL;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROF_TYPE_LOCAL;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROF_TYPE_REMOTE;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_SYNC_TYPE_COPY;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_SYNC_TYPE_MIRROR;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_SYNC_TYPE_MOVE;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_SYNC_TYPE_SYNC;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -72,6 +63,9 @@ import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.webkit.MimeTypeMap;
 
+import com.sentaroh.android.Utilities.SafCommonArea;
+import com.sentaroh.android.Utilities.SafFile;
+import com.sentaroh.android.Utilities.SafUtil;
 import com.sentaroh.android.Utilities.StringUtil;
 import com.sentaroh.android.Utilities.LocalMountPoint;
 import com.sentaroh.android.Utilities.MiscUtil;
@@ -184,7 +178,7 @@ public class MirrorIO implements Runnable {
 	
 //	private ArrayList<SyncHistoryListItem> mAddedSyncHistoryList=null;
 	
-	private SafWorkArea mSafUtil=new SafWorkArea();
+	private SafCommonArea mSafCA=new SafCommonArea();
 	
 	public MirrorIO(GlobalParameters gwa, NotifyEvent ne, ThreadCtrl ac, ThreadCtrl tw,
 			ISvcCallback cb) {
@@ -200,7 +194,7 @@ public class MirrorIO implements Runnable {
 		mUtil=new SMBSyncUtil(mGp.appContext, settingsMediaStoreUseLastModTime, gwa);
 		mUtil.setLogIdentifier("MirrorIO");
 		
-		SafUtil.initWorkArea(mGp.appContext, mSafUtil);
+		SafUtil.initWorkArea(mGp.appContext, mSafCA);
 		
 //		SMBSync_External_Root_Dir = LocalMountPoint.getExternalStorageDir();
 		
@@ -701,8 +695,8 @@ public class MirrorIO implements Runnable {
 				isSyncParmError=true;
 			} 
 			try {
-				if (SafUtil.isSafExternalSdcardPath(mGp.appContext, mSafUtil, tlmp+"/SMBSyncWk.tmp")) {
-					DCFile df=SafUtil.getSafDocumentFileByPath(mGp.appContext, mSafUtil, tlmp+"/SMBSyncWk.tmp", false);
+				if (SafUtil.isSafExternalSdcardPath(mGp.appContext, mSafCA, tlmp+"/SMBSyncWk.tmp")) {
+					SafFile df=SafUtil.getSafDocumentFileByPath(mGp.appContext, mSafCA, tlmp+"/SMBSyncWk.tmp", false);
 					File m_out=new File(mlmp+"/SMBSyncWk.tmp");
 					if (m_out.exists() && m_out.lastModified()==df.lastModified()) {
 						//Same physical dir
@@ -2872,8 +2866,8 @@ public class MirrorIO implements Runnable {
 		
 		File lf = new File(target_dir);
 		if (!lf.exists()) {
-			if (SafUtil.isSafExternalSdcardPath(mGp.appContext, mSafUtil, target_dir)) {
-				SafUtil.getSafDocumentFileByPath(mGp.appContext, mSafUtil, target_dir, true);
+			if (SafUtil.isSafExternalSdcardPath(mGp.appContext, mSafCA, target_dir)) {
+				SafUtil.getSafDocumentFileByPath(mGp.appContext, mSafCA, target_dir, true);
 				result=true;
 			} else {
 				result=lf.mkdirs();
@@ -2953,7 +2947,7 @@ public class MirrorIO implements Runnable {
 	final private int copyFileLocalToLocal(File in_file, File out_file,
 			long file_byte, String t_fn, String t_fp, String tmp_target) throws IOException {
 		int result=0;
-		if (SafUtil.isSafExternalSdcardPath(mGp.appContext, mSafUtil, out_file.getPath())) {
+		if (SafUtil.isSafExternalSdcardPath(mGp.appContext, mSafCA, out_file.getPath())) {
 			result=copySafFileLocalToLocal(in_file, out_file,
 					file_byte, t_fn, t_fp, tmp_target);
 		} else {
@@ -2971,13 +2965,13 @@ public class MirrorIO implements Runnable {
 		boolean out_file_exits=out_file.exists();
 		FileInputStream in=new FileInputStream(in_file);
 		OutputStream out=null;
-		DCFile t_df=null, o_df=null;
+		SafFile t_df=null, o_df=null;
 		
 		if (!tmp_target.equals("")) {
-			t_df=SafUtil.getSafDocumentFileByPath(mGp.appContext, mSafUtil, tmp_target, false);
+			t_df=SafUtil.getSafDocumentFileByPath(mGp.appContext, mSafCA, tmp_target, false);
 			out=mGp.appContext.getContentResolver().openOutputStream(t_df.getUri());
 		} else {
-			o_df=SafUtil.getSafDocumentFileByPath(mGp.appContext, mSafUtil, out_file.getPath(), false);
+			o_df=SafUtil.getSafDocumentFileByPath(mGp.appContext, mSafCA, out_file.getPath(), false);
 			out=mGp.appContext.getContentResolver().openOutputStream(o_df.getUri());
 		}
 		
@@ -3082,7 +3076,7 @@ public class MirrorIO implements Runnable {
 	final private int copyFileRemoteToLocal(SmbFile in_file, File out_file, 
 			long file_byte, String t_fn, String t_fp, String tmp_target) throws IOException {
 		int result=0;
-		if (SafUtil.isSafExternalSdcardPath(mGp.appContext, mSafUtil, out_file.getPath())) {
+		if (SafUtil.isSafExternalSdcardPath(mGp.appContext, mSafCA, out_file.getPath())) {
 			result=copySafFileRemoteToLocal(in_file, out_file, 
 					file_byte, t_fn, t_fp, tmp_target);
 		} else {
@@ -3100,12 +3094,12 @@ public class MirrorIO implements Runnable {
 		boolean out_file_exits=out_file.exists();
 		SmbFileInputStream in=new SmbFileInputStream(in_file);
 		OutputStream out=null;
-		DCFile t_df=null, o_df=null;
+		SafFile t_df=null, o_df=null;
 		if (!tmp_target.equals("")) {
-			t_df=SafUtil.getSafDocumentFileByPath(mGp.appContext, mSafUtil, tmp_target, false);
+			t_df=SafUtil.getSafDocumentFileByPath(mGp.appContext, mSafCA, tmp_target, false);
 			out=mGp.appContext.getContentResolver().openOutputStream(t_df.getUri());
 		} else {
-			o_df=SafUtil.getSafDocumentFileByPath(mGp.appContext, mSafUtil, out_file.getPath(), false);
+			o_df=SafUtil.getSafDocumentFileByPath(mGp.appContext, mSafCA, out_file.getPath(), false);
 			out=mGp.appContext.getContentResolver().openOutputStream(o_df.getUri());
 		}
 
@@ -3899,7 +3893,7 @@ public class MirrorIO implements Runnable {
 	final private int deleteLocalItem(boolean deldir, String url) {
 		if (mGp.debugLevel>=1) addDebugLogMsg(2,"I","deleteLocalItem=" + url);
 		File sf = new File(url);
-		if (SafUtil.isSafExternalSdcardPath(mGp.appContext, mSafUtil, url)) {
+		if (SafUtil.isSafExternalSdcardPath(mGp.appContext, mSafCA, url)) {
 			int result=0;
 			if (deldir) result=deleteSafLocalFile("", sf); // delete specified dir
 			else result=deleteSafLocalFile(sf.getPath(), sf); //not delete specified dir
@@ -3936,7 +3930,7 @@ public class MirrorIO implements Runnable {
 			//root dirなので削除しない
 			result=0;
 		} else {
-			DCFile df=SafUtil.getSafDocumentFileByPath(mGp.appContext, mSafUtil, url, lf.isDirectory());
+			SafFile df=SafUtil.getSafDocumentFileByPath(mGp.appContext, mSafCA, url, lf.isDirectory());
 			if (df!=null) {
 				boolean td=lf.isDirectory();
 				if (df.delete()) result=0;

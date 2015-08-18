@@ -95,6 +95,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sentaroh.android.Utilities.CallBackListener;
+import com.sentaroh.android.Utilities.SafUtil;
+import com.sentaroh.android.Utilities.SafCommonArea;
 import com.sentaroh.android.Utilities.ThemeUtil;
 import com.sentaroh.android.Utilities.StringUtil;
 import com.sentaroh.android.Utilities.LocalMountPoint;
@@ -154,7 +156,7 @@ public class SMBSyncMain extends AppCompatActivity {
 	
 	private ArrayList<Intent> mPendingRequestIntent=new ArrayList<Intent>();
 	
-	private SafWorkArea mSafUtil=new SafWorkArea();
+	private SafCommonArea mSafCA=new SafCommonArea();
 	
 	@Override  
 	protected void onSaveInstanceState(Bundle out) {  
@@ -207,7 +209,7 @@ public class SMBSyncMain extends AppCompatActivity {
 		util.addDebugLogMsg(1,"I","onCreate entered, "+"resartStatus="+restartType+
 				", isActivityForeground="+util.isActivityForeground());
 
-		SafUtil.initWorkArea(mContext, mSafUtil);
+		SafUtil.initWorkArea(mContext, mSafCA);
 		
         startService(new Intent(mContext, SMBSyncService.class));
         
@@ -1491,10 +1493,18 @@ public class SMBSyncMain extends AppCompatActivity {
 						if (mp_name!=null) {
 //							Log.v("","mp_name="+o_pli.getLocalMountPoint());
 							if (!o_pli.getLocalMountPoint().equals(mp_name)) {
-								if (!o_pli.getLocalMountPoint().startsWith("/storage/sdcard1") && 
-										!o_pli.getLocalMountPoint().startsWith("/sdcard1")) {
-									mixed_mp=true;
-									break;
+								if (!o_pli.getLocalMountPoint().startsWith("/sdcard1")) {
+									boolean found=false;
+									for(String esd:mSafCA.external_sdcard_dir_list) {
+										if (o_pli.getLocalMountPoint().startsWith(esd)) {
+											found=true;
+											break;
+										}
+									}
+									if (found) {
+										mixed_mp=true;
+										break;
+									}
 								}
 							}
 						} else {
@@ -2953,7 +2963,7 @@ public class SMBSyncMain extends AppCompatActivity {
 //						Log.v("","name="+pli.getProfileName()+", target="+target);
 						if (target!=null) {
 							if (target.getProfileType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
-								if (SafUtil.isSafExternalSdcardPath(mContext, mSafUtil, target.getLocalMountPoint())) {
+								if (SafUtil.isSafExternalSdcardPath(mContext, mSafCA, target.getLocalMountPoint())) {
 									checkSafExternalSdcardTreeUri(null);
 								}
 							}

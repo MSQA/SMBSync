@@ -82,6 +82,8 @@ import com.sentaroh.android.Utilities.EncryptUtil.CipherParms;
 import com.sentaroh.android.Utilities.NetworkUtil;
 import com.sentaroh.android.Utilities.NotifyEvent;
 import com.sentaroh.android.Utilities.NotifyEvent.NotifyEventListener;
+import com.sentaroh.android.Utilities.SafUtil;
+import com.sentaroh.android.Utilities.SafCommonArea;
 import com.sentaroh.android.Utilities.ThreadCtrl;
 import com.sentaroh.android.Utilities.ContextMenu.CustomContextMenu;
 import com.sentaroh.android.Utilities.ContextMenu.CustomContextMenuItem.CustomContextMenuOnClickListener;
@@ -107,7 +109,7 @@ public class ProfileUtility {
 	private GlobalParameters mGp=null;
 	private FragmentManager mFragMgr=null;
 
-	private SafWorkArea mSafUtil=new SafWorkArea();
+	private SafCommonArea mSafCA=new SafCommonArea();
 
 	ProfileUtility (SMBSyncUtil mu, Context c,  
 			CommonDialog cd, CustomContextMenu ccm, GlobalParameters gp, FragmentManager fm) {
@@ -118,7 +120,7 @@ public class ProfileUtility {
 		commonDlg=cd;
 		ccMenu=ccm;
 		mFragMgr=fm;
-    	SafUtil.initWorkArea(mContext, mSafUtil);
+    	SafUtil.initWorkArea(mContext, mSafCA);
 	};
 
 	public void importProfileDlg(final String lurl, final String ldir, 
@@ -1142,7 +1144,7 @@ public class ProfileUtility {
 //				Log.v("","name="+pli.getProfileName()+", target="+target);
 				if (target!=null) {
 					if (target.getProfileType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
-						if (SafUtil.isSafExternalSdcardPath(mContext, mSafUtil, target.getLocalMountPoint())) {
+						if (SafUtil.isSafExternalSdcardPath(mContext, mSafCA, target.getLocalMountPoint())) {
 							result=true;
 							break;
 						}
@@ -1162,7 +1164,7 @@ public class ProfileUtility {
 //				Log.v("","name="+pli.getProfileName()+", target="+target);
 				if (target!=null) {
 					if (target.getProfileType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
-						if (SafUtil.isSafExternalSdcardPath(mContext, mSafUtil, target.getLocalMountPoint())) {
+						if (SafUtil.isSafExternalSdcardPath(mContext, mSafCA, target.getLocalMountPoint())) {
 							result=pli;
 							break;
 						}

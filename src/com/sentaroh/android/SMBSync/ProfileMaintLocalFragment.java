@@ -4,6 +4,8 @@ import static com.sentaroh.android.SMBSync.Constants.*;
 
 import com.sentaroh.android.Utilities.LocalMountPoint;
 import com.sentaroh.android.Utilities.NotifyEvent;
+import com.sentaroh.android.Utilities.SafUtil;
+import com.sentaroh.android.Utilities.SafCommonArea;
 import com.sentaroh.android.Utilities.Dialog.CommonDialog;
 import com.sentaroh.android.Utilities.NotifyEvent.NotifyEventListener;
 
@@ -52,7 +54,7 @@ public class ProfileMaintLocalFragment extends DialogFragment{
 	private ProfileUtility mProfUtil=null;
 	private CommonDialog mCommonDlg=null;
 
-	private SafWorkArea mSafUtil=new SafWorkArea();
+	private SafCommonArea mSafCA=new SafCommonArea();
 	
 	public static ProfileMaintLocalFragment newInstance() {
 		if (DEBUG_ENABLE) Log.v(APPLICATION_TAG,SUB_APPLICATION_TAG+"newInstance");
@@ -100,7 +102,7 @@ public class ProfileMaintLocalFragment extends DialogFragment{
         mContext=this.getActivity();
     	mFragment=this;
     	mGp=(GlobalParameters)getActivity().getApplication();
-    	SafUtil.initWorkArea(mContext, mSafUtil);
+    	SafUtil.initWorkArea(mContext, mSafCA);
         if (mTerminateRequired) {
         	this.dismiss();
         }
@@ -489,7 +491,7 @@ public class ProfileMaintLocalFragment extends DialogFragment{
 								false,0);
 						mGp.profileAdapter.sort();
 						ProfileUtility.saveProfileToFile(mGp, mContext, mUtil, false,"","",mGp.profileAdapter,false);
-						if (SafUtil.isSafExternalSdcardPath(mContext, mSafUtil, prof_lmp)) checkSafExternalSdcardTreeUri();
+						if (SafUtil.isSafExternalSdcardPath(mContext, mSafCA, prof_lmp)) checkSafExternalSdcardTreeUri();
 //						AdapterProfileList tfl= createProfileList(false,"");
 //						replaceglblParms.profileAdapterContent(tfl);
 //						glblParms.profileListView.setSelectionFromTop(pos,posTop);
@@ -722,7 +724,7 @@ public class ProfileMaintLocalFragment extends DialogFragment{
 								if (mNotifyComplete!=null) mNotifyComplete.notifyToListener(true, null);
 //								AdapterProfileList tfl= createProfileList(false,"");
 //								replaceglblParms.profileAdapterContent(tfl);
-								if (SafUtil.isSafExternalSdcardPath(mContext, mSafUtil, t_prof_lmp)) 
+								if (SafUtil.isSafExternalSdcardPath(mContext, mSafCA, t_prof_lmp)) 
 									checkSafExternalSdcardTreeUri();
 							}
 							@Override
