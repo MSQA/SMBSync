@@ -40,7 +40,8 @@
     <LinearLayout
         android:id="@+id/edit_profile_sync_content_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:orientation="vertical" >
 
         <ScrollView
@@ -215,9 +216,9 @@
                 <include layout="@layout/edit_profile_sync_options" />
             </LinearLayout>
         </ScrollView>
-
-        <include
-            layout="@layout/edit_profile_sync_ok_cancel" />
+        <include layout="@layout/edit_profile_sync_ok_cancel" />
     </LinearLayout>
+
+    
 
 </LinearLayout>

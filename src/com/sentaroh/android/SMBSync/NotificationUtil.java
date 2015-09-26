@@ -115,6 +115,7 @@ public class NotificationUtil {
 		return showOngoingMsg(gwa,when,prof,"",msg);
 	};
 	
+	@SuppressWarnings("deprecation")
 	final static public Notification showOngoingMsg(GlobalParameters gwa, long when,
 			String prof, String fp, String msg ) {
 		setNotificationMessage(gwa,prof,fp,msg);
