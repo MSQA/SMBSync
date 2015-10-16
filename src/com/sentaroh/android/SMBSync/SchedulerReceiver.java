@@ -11,6 +11,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.util.Log;
@@ -90,7 +91,8 @@ public class SchedulerReceiver extends BroadcastReceiver{
 				);
 	};
 
-    static private void setTimer() {
+    @SuppressLint("NewApi")
+	static private void setTimer() {
     	if (mSched.debugLevel>0) addDebugMsg(1,"I", "setTimer entered");
     	cancelTimer();
 		if (mSched.scheduleEnabled) {
@@ -101,7 +103,8 @@ public class SchedulerReceiver extends BroadcastReceiver{
 			in.setAction(SCHEDULER_INTENT_TIMER_EXPIRED);
 			PendingIntent pi = PendingIntent.getBroadcast(mContext, 0, in, PendingIntent.FLAG_UPDATE_CURRENT);
 		    AlarmManager am = (AlarmManager)mContext.getSystemService(Context.ALARM_SERVICE);
-		    am.set(AlarmManager.RTC_WAKEUP, time, pi);
+		    if (Build.VERSION.SDK_INT>=23) am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, time, pi);
+		    else am.set(AlarmManager.RTC_WAKEUP, time, pi);
 		}
     };
     

@@ -114,11 +114,11 @@ public class SMBSyncService extends Service {
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		super.onStartCommand(intent, flags, startId);
-//		WakeLock wl=((PowerManager)getSystemService(Context.POWER_SERVICE))
-//    			.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK
-//	    				| PowerManager.ACQUIRE_CAUSES_WAKEUP
-//	    				, "SMBSync-Service-1");
-//		wl.acquire();
+		WakeLock wl=((PowerManager)getSystemService(Context.POWER_SERVICE))
+    			.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK
+	    				| PowerManager.ACQUIRE_CAUSES_WAKEUP
+	    				, "SMBSync-Service-1");
+		wl.acquire();
 		String action="";
 		if (intent!=null) if (intent.getAction()!=null) action=intent.getAction();
 		if (action.equals(SCHEDULER_INTENT_TIMER_EXPIRED)) {
@@ -130,7 +130,7 @@ public class SMBSyncService extends Service {
 		} else {
 			mUtil.addDebugLogMsg(1,"I","onStartCommand entered, action="+action);
 		}
-//		wl.release();
+		wl.release();
 		return START_NOT_STICKY;
 	};
 	
