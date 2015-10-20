@@ -283,8 +283,15 @@ public class SMBSyncMain extends AppCompatActivity {
 			}
 		});
 		checkSafExternalSdcardTreeUri(ntfy);
-		
 	};
+	
+//	private void checkPermissions() {
+//		int rc=mContext.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE);
+//		Log.v("","rc="+rc);
+//		rc=mContext.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+//		Log.v("","rc="+rc);
+//		//!= PackageManager.PERMISSION_GRANTED
+//	}
 	
 	@Override
 	protected void onStart() {
