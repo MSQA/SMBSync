@@ -59,7 +59,8 @@
     <string name="msgs_sync_profile_sync_hidden_directory">隠しディレクトリを同期する</string>
     <string name="msgs_sync_profile_sync_hidden_file">隠しファイルを同期する</string>
     <string name="msgs_sync_profile_sync_sub_dir">サブディレクトリーを同期する</string>
-
+    <string name="msgs_sync_profile_sync_use_small_ioarea">リモートファイル書き込み時のIOバッファーを16KBに制限する</string>
+    
     <string name="msgs_filter_list_dlg_add">追加</string>
     <string name="msgs_filter_list_dlg_delete">削除</string>
     <string name="msgs_filter_list_dlg_include">選択</string>

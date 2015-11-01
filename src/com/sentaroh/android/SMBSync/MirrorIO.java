@@ -49,7 +49,6 @@ import jcifs.smb.NtlmPasswordAuthentication;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 import jcifs.smb.SmbFileInputStream;
-import jcifs.smb.SmbFileOutputStream;
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.SharedPreferences;
@@ -137,7 +136,8 @@ public class MirrorIO implements Runnable {
 	private boolean syncProfileSyncEmptyDirectory=false,
 			syncProfileSyncHiddenDirectory=false,
 			syncProfileSyncHiddenFile=false,
-			syncProfileSyncSubDir=true
+			syncProfileSyncSubDir=true,
+			syncProfileSyncUseRemoteSmallIoArea=false
 			;
 	
 	private boolean isExceptionRetryRequired=false;
@@ -622,6 +622,7 @@ public class MirrorIO implements Runnable {
 		syncProfileSyncHiddenDirectory=mipl.isSyncHiddenDirectory();
 		syncProfileSyncHiddenFile=mipl.isSyncHiddenFile();
 		syncProfileSyncSubDir=mipl.isSyncSubDirectory();
+		syncProfileSyncUseRemoteSmallIoArea=mipl.isSyncUseRemoteSmallIoArea();
 
 		syncRemotePort="";
 		String sep="";
@@ -853,9 +854,11 @@ public class MirrorIO implements Runnable {
 				+ ", syncProfileConfirmRequired="+syncProfileConfirmRequired
 				+ ", syncProfileUseJavaLastModified="+syncProfileUseJavaLastModified
 				+ ", syncProfileNotUseLastModifiedForRemote="+syncProfileNotUseLastModifiedForRemote
+				+ ", syncProfileSyncSubDir="+syncProfileSyncSubDir
 				+ ", syncProfileSyncEmptyDirectory="+syncProfileSyncEmptyDirectory
 				+ ", syncProfileSyncHiddenDirectory="+syncProfileSyncHiddenDirectory
 				+ ", syncProfileSyncHiddenFile="+syncProfileSyncHiddenFile
+				+ ", syncProfileSyncUseRemoteSmallIoArea="+syncProfileSyncUseRemoteSmallIoArea
 				+ ", fileFilter=" + mipl.getFileFilter()
 				+ ", dirFilter=" + mipl.getDirFilter());
  			addDebugLogMsg(9,"I","syncRemoteUserid=" + syncRemoteUserid+", syncRemotePassword=" + syncRemotePassword);
@@ -1413,13 +1416,22 @@ public class MirrorIO implements Runnable {
 		mirrorIoBuffer = new byte[mirrorIoBufferSize];
 	};
 	
-	final private void setJcifsAuthParm() {
+	final private void setJcifsAuthParm() { 
 
 		String tuser=null,tpass=null;
 		if (syncRemoteUserid.length()!=0) tuser=syncRemoteUserid;
 		if (syncRemotePassword.length()!=0) tpass=syncRemotePassword;
 		ntlmPasswordAuth = 
 				new NtlmPasswordAuthentication(null, tuser, tpass);
+//		UniAddress dc;
+//		try {
+//			dc = UniAddress.getByName("WIN-SRV-2008");
+//			SmbSession.logon(dc, ntlmPasswordAuth);
+//		} catch (UnknownHostException e) {
+//			e.printStackTrace();
+//		} catch (SmbException e) {
+//			e.printStackTrace();
+//		}
 	};
 
 	
@@ -2890,23 +2902,32 @@ public class MirrorIO implements Runnable {
 	
 	final private int copyFileLocalToRemote(File in_file, SmbFile out_file, 
 			long file_byte, String t_fn, String t_fp, String tmp_target) throws IOException {
+		
+		
 		long fileReadBytes = 0;
 		long readBeginTime = System.currentTimeMillis();
 		int bufferReadBytes=0;
 		boolean out_file_exits=out_file.exists();
 		SmbFile tmp_out=null;
-		SmbFileOutputStream out=null;
+		OutputStream out=null;
 		if (!tmp_target.equals("")) {
 			tmp_out=new SmbFile(tmp_target, ntlmPasswordAuth);
-			out=new SmbFileOutputStream(tmp_out);
+			out=tmp_out.getOutputStream();
 		} else {
-			out=new SmbFileOutputStream(out_file);
+			out=out_file.getOutputStream();
 		}
 		FileInputStream in=new FileInputStream(in_file);
 //		BufferedInputStream in=new BufferedInputStream(fis,4096*512);
-//		BufferedOutputStream out=new BufferedOutputStream(fos,4096*512);
-		while ((bufferReadBytes = in.read(mirrorIoBuffer)) > 0) {
-			out.write(mirrorIoBuffer, 0, bufferReadBytes);
+//		BufferedOutputStream out=new BufferedOutputStream(out_str,4096*16*32);
+		byte[] io_buffer;
+		if (syncProfileSyncUseRemoteSmallIoArea) {
+			io_buffer=new byte[1024*16];
+		} else {
+			io_buffer=mirrorIoBuffer;
+		}
+//		Log.v("","io size="+io_buffer.length);
+		while ((bufferReadBytes = in.read(io_buffer)) > 0) {
+			out.write(io_buffer, 0, bufferReadBytes);
 			fileReadBytes += bufferReadBytes;
 			if (file_byte>fileReadBytes) {
 				addMsgToProgDlg(false,"I",0, t_fn,
@@ -4208,6 +4229,8 @@ class MirrorIoParmList {
 	private boolean mp_sync_hidden_file=false;
 	private boolean mp_sync_sub_dir=false;
 	
+	private boolean mp_sync_use_remote_small_io_area=false;
+	
 	private boolean mp_sync_target_dir_app_specific=false;
 	
 	private String mp_sync_zip_file_name="";
@@ -4237,7 +4260,7 @@ class MirrorIoParmList {
 			boolean nulm_remote,
 			int rc,
 			boolean sync_empty_dir, boolean sync_hidden_dir, boolean sync_hidden_file,
-			boolean sync_sub_dir) {
+			boolean sync_sub_dir, boolean sync_use_remote_small_io_area) {
 
 		mp_profname=profname;
 		mp_master_type=master_type;
@@ -4264,6 +4287,7 @@ class MirrorIoParmList {
 		mp_sync_hidden_dir=sync_hidden_dir;
 		mp_sync_hidden_file=sync_hidden_file;
 		mp_sync_sub_dir=sync_sub_dir;
+		mp_sync_use_remote_small_io_area=sync_use_remote_small_io_area;
 	}
 
 	public String getProfname() { return mp_profname;}
@@ -4333,6 +4357,10 @@ class MirrorIoParmList {
 
 	public boolean isSyncSubDirectory() {return mp_sync_sub_dir;}
 	public void setSyncSubDir(boolean p) {mp_sync_sub_dir=p;};
+
+	
+	public boolean isSyncUseRemoteSmallIoArea() {return mp_sync_use_remote_small_io_area;}
+	public void setSyncUseRemoteSmallIoArea(boolean p) {mp_sync_use_remote_small_io_area=p;};
 	
 	public void setSyncZipFileName(String p) {mp_sync_zip_file_name=p;}
 	public void setSyncZipEncMethod(int enc_method) {mp_sync_zip_enc_method=enc_method;}

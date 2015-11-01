@@ -58,7 +58,7 @@
     <string name="msgs_sync_profile_sync_hidden_directory">Sync a hidden directory</string>
     <string name="msgs_sync_profile_sync_hidden_file">Sync a hidden file</string>
     <string name="msgs_sync_profile_sync_sub_dir">Sync a subdirectory</string>
-		
+	<string name="msgs_sync_profile_sync_use_small_ioarea">It limits the IO buffer at the time of remote file writing to 16KB.</string>			
 	
     <string name="msgs_filter_list_dlg_add">Add</string>
     <string name="msgs_filter_list_dlg_delete">Delete</string>

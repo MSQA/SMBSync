@@ -1842,6 +1842,7 @@ public class ProfileCreationWizard {
 				mWizData.sync_hidden_directory,
 				mWizData.sync_hidden_file,
 				mWizData.sync_sub_dir,
+				false, //UseRemoteSmallIoArea=false
 				"",0,0,"",0,
 				false);
 		t_prof.add(s_pli);

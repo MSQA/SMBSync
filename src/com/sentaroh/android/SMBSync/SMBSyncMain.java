@@ -283,6 +283,43 @@ public class SMBSyncMain extends AppCompatActivity {
 			}
 		});
 		checkSafExternalSdcardTreeUri(ntfy);
+		
+//		Thread thx=new Thread(){
+//			@Override
+//			public void run() {
+//				
+//				System.setProperty("jcifs.util.loglevel", "0");
+//				System.setProperty("jcifs.smb.lmCompatibility", "0");
+//				System.setProperty("jcifs.smb.client.useExtendedSecurity", "false");
+//
+//				NtlmPasswordAuthentication auth=new NtlmPasswordAuthentication("SENTAROH","share_user","fh-146746");
+//				UniAddress dc;
+//				try {
+//					dc = UniAddress.getByName("WIN-SRV-2008");
+//					SmbSession.logon(dc, auth);;
+//					
+//					SmbFile hf=new SmbFile("smb://192.168.200.200/share/test/",auth);
+//					hf.mkdir();
+//					SmbFile hf2=new SmbFile("smb://192.168.200.200/share/test/test.txt/",auth);
+//					try {
+//						OutputStream ois=hf2.getOutputStream();
+//						ois.write("test".getBytes());
+//						ois.close();
+//					} catch (IOException e) {
+//						e.printStackTrace();
+//					}
+//
+//				} catch (UnknownHostException e) {
+//					e.printStackTrace();
+//				} catch (SmbException e) {
+//					e.printStackTrace();
+//				} catch (MalformedURLException e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		};
+//		thx.start();
+
 	};
 	
 //	private void checkPermissions() {
@@ -4652,7 +4689,8 @@ public class SMBSyncMain extends AppCompatActivity {
 					item.isSyncEmptyDirectory(),
 					item.isSyncHiddenDirectory(),
 					item.isSyncHiddenFile(),
-					item.isSyncSubDirectory());
+					item.isSyncSubDirectory(),
+					item.isSyncUseRemoteSmallIoArea());
 					alp.setSyncTargetDirIsAppSpecific(app_specific);
 					if (mirror_prof_master_type.equals("L") && mirror_prof_target_type.equals("L")) {
 						alp.setMasterLocalDir(master_local_dir);

@@ -442,6 +442,7 @@ class ProfileListItem implements Serializable,Comparable<ProfileListItem>{
 	private boolean profileSyncHiddenFile=true;
 	private boolean profileSyncHiddenDir=true;
 	private boolean profileSyncSubDir=true;
+	private boolean profileSyncUseRemoteSmallIoArea=false;
 	
 	private String profileLastSyncTime="";
 	private int profileLastSyncResult=0;
@@ -506,7 +507,7 @@ class ProfileListItem implements Serializable,Comparable<ProfileListItem>{
 			String pf_target_type,String pf_target_name,
 			ArrayList<String> ff, ArrayList<String> df, boolean master_dir_file_process, boolean confirm, 
 			boolean jlm, boolean nulm_remote, String retry_count, boolean sync_empty_dir, 
-			boolean sync_hidden_dir, boolean sync_hidden_file, boolean sync_sub_dir,
+			boolean sync_hidden_dir, boolean sync_hidden_file, boolean sync_sub_dir, boolean sync_remote_small_ioarea,
 			String zip_file_name, int zip_enc_method, int zip_enc_key_length,
 			String last_sync_time, int last_sync_result,
 			boolean ic)
@@ -532,6 +533,8 @@ class ProfileListItem implements Serializable,Comparable<ProfileListItem>{
 		profileSyncHiddenFile=sync_hidden_file;
 		profileSyncHiddenDir=sync_hidden_dir;
 		profileSyncSubDir=sync_sub_dir;
+		profileSyncUseRemoteSmallIoArea=sync_remote_small_ioarea;
+		
 		profileSyncZipFileName=zip_file_name;
 		profileSyncZipEncMethod=zip_enc_method;
 		profileSyncZipAesStrength=zip_enc_key_length;
@@ -607,6 +610,9 @@ class ProfileListItem implements Serializable,Comparable<ProfileListItem>{
 	
 	public boolean isSyncSubDirectory() {return profileSyncSubDir;}
 	public void setSyncSubDirectory(boolean p) {profileSyncSubDir=p;}
+
+	public boolean isSyncUseRemoteSmallIoArea() {return profileSyncUseRemoteSmallIoArea;}
+	public void setSyncRemoteSmallIoArea(boolean p) {profileSyncUseRemoteSmallIoArea=p;}
 	
 	public void setLastSyncTime(String p) {profileLastSyncTime=p;} 
 	public void setLastSyncResult(int p) {profileLastSyncResult=p;}

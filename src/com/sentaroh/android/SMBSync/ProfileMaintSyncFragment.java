@@ -192,6 +192,7 @@ public class ProfileMaintSyncFragment extends DialogFragment{
         public int sync_opt=-1;
         public boolean sync_mpd, sync_conf, sync_last_mod_java, sync_last_mod_remote,
         	sync_retry, sync_empty_dir, sync_hidden_dir, sync_hidden_file, sync_sub_dir;
+        public boolean sync_UseRemoteSmallIoArea;
         public int sync_master_pos=-1, sync_target_pos=-1;
     };
 
@@ -210,6 +211,7 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 		final CheckedTextView ctvSyncHiddenDir = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_sync_hidden_directory);
 		final CheckedTextView ctvSyncHiddenFile = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_sync_hidden_file);
 		final CheckedTextView ctvSyncSubDir = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_sync_sub_dir);
+		final CheckedTextView ctvSyncUseRemoteSmallIoArea = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_sync_use_remote_small_io_area);
 		final Spinner spinner_master=(Spinner)mDialog.findViewById(R.id.edit_profile_sync_dlg_master_spinner);
 		final Spinner spinner_target=(Spinner)mDialog.findViewById(R.id.edit_profile_sync_dlg_target_spinner);
 
@@ -231,6 +233,7 @@ public class ProfileMaintSyncFragment extends DialogFragment{
         sv.sync_hidden_dir=ctvSyncHiddenDir.isChecked();
         sv.sync_hidden_file=ctvSyncHiddenFile.isChecked();
         sv.sync_sub_dir=ctvSyncSubDir.isChecked();
+        sv.sync_UseRemoteSmallIoArea = ctvSyncUseRemoteSmallIoArea.isChecked();
         sv.sync_master_pos=spinner_master.getSelectedItemPosition();
         sv.sync_target_pos=spinner_target.getSelectedItemPosition();
 
@@ -253,6 +256,7 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 		final CheckedTextView ctvSyncHiddenDir = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_sync_hidden_directory);
 		final CheckedTextView ctvSyncHiddenFile = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_sync_hidden_file);
 		final CheckedTextView ctvSyncSubDir = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_sync_sub_dir);
+		final CheckedTextView ctvSyncUseRemoteSmallIoArea = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_sync_use_remote_small_io_area);
 		final Spinner spinner_master=(Spinner)mDialog.findViewById(R.id.edit_profile_sync_dlg_master_spinner);
 		final Spinner spinner_target=(Spinner)mDialog.findViewById(R.id.edit_profile_sync_dlg_target_spinner);
 
@@ -276,6 +280,8 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 		        ctvSyncHiddenDir.setChecked(sv.sync_hidden_dir);
 		        ctvSyncHiddenFile.setChecked(sv.sync_hidden_file);
 		        ctvSyncSubDir.setChecked(sv.sync_sub_dir);
+		        ctvSyncUseRemoteSmallIoArea.setChecked(sv.sync_UseRemoteSmallIoArea);
+		        
 		        spinner_master.setEnabled(false);
 		        spinner_master.setSelection(sv.sync_master_pos);
 		        spinner_target.setEnabled(false);
@@ -415,6 +421,9 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 		SMBSyncUtil.setCheckedTextView(ctvSyncHiddenFile);
 		final CheckedTextView ctvSyncSubDir = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_sync_sub_dir);
 		SMBSyncUtil.setCheckedTextView(ctvSyncSubDir);
+		
+		final CheckedTextView ctvSyncUseRemoteSmallIoArea = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_sync_use_remote_small_io_area);
+		SMBSyncUtil.setCheckedTextView(ctvSyncUseRemoteSmallIoArea);
 
 		if (pfli.getRetryCount()==null || pfli.getRetryCount().equals("0")) ctvRetry.setChecked(false);
 		else ctvRetry.setChecked(true);
@@ -444,6 +453,17 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 				}
 			}
 		});
+		
+		ctvSyncUseRemoteSmallIoArea.setChecked(pfli.isSyncUseRemoteSmallIoArea());
+		ctvSyncUseRemoteSmallIoArea.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				ctvmpd.toggle();
+				boolean isChecked=!ctvSyncUseRemoteSmallIoArea.isChecked();
+				ctvSyncUseRemoteSmallIoArea.setChecked(isChecked);
+			}
+		});
+		
 		
 		CommonDialog.setDlgBoxSizeLimit(mDialog,true);
 
@@ -632,6 +652,7 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 		final CheckedTextView ctvSyncHiddenDir = (CheckedTextView)dialog.findViewById(R.id.sync_profile_ctv_sync_hidden_directory);
 		final CheckedTextView ctvSyncHiddenFile = (CheckedTextView)dialog.findViewById(R.id.sync_profile_ctv_sync_hidden_file);
 		final CheckedTextView ctvSyncSubDir = (CheckedTextView)dialog.findViewById(R.id.sync_profile_ctv_sync_sub_dir);
+		final CheckedTextView ctvSyncUseRemoteSmallIoArea = (CheckedTextView)dialog.findViewById(R.id.sync_profile_ctv_sync_use_remote_small_io_area);
 		final CheckedTextView ctv_active = (CheckedTextView)dialog.findViewById(R.id.edit_profile_sync_dlg_ctv_active);
 		final Spinner spinner_master=(Spinner)dialog.findViewById(R.id.edit_profile_sync_dlg_master_spinner);
 		final Spinner spinner_target=(Spinner)dialog.findViewById(R.id.edit_profile_sync_dlg_target_spinner);
@@ -689,7 +710,7 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 					ctvConf.isChecked(),ctvLastMod.isChecked(),
 					ctvNotUseLastModRem.isChecked(),retry_count,
 					ctvSyncEmptyDir.isChecked(),
-					ctvSyncHiddenDir.isChecked(),ctvSyncHiddenFile.isChecked(),ctvSyncSubDir.isChecked(),
+					ctvSyncHiddenDir.isChecked(),ctvSyncHiddenFile.isChecked(),ctvSyncSubDir.isChecked(),ctvSyncUseRemoteSmallIoArea.isChecked(),
 					prev_pfli.getSyncZipFileName(), prev_pfli.getSyncZipEncMethod(), prev_pfli.getSyncZipAesKeyLength(),
 					prev_pfli.getLastSyncTime(), prev_pfli.getLastSyncResult(),
 					false,prof_pos);
@@ -823,6 +844,9 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 		SMBSyncUtil.setCheckedTextView(ctvSyncHiddenFile);
 		final CheckedTextView ctvSyncSubDir = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_sync_sub_dir);
 		SMBSyncUtil.setCheckedTextView(ctvSyncSubDir);
+		
+		final CheckedTextView ctvSyncUseRemoteSmallIoArea = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_sync_use_remote_small_io_area);
+		SMBSyncUtil.setCheckedTextView(ctvSyncUseRemoteSmallIoArea);
 		
 		if (pfli.getRetryCount().equals("0")) ctvRetry.setChecked(false);
 		else ctvRetry.setChecked(true);
@@ -996,6 +1020,15 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 				} else {
 					ctvSyncSubDir.setEnabled(true);
 				}
+			}
+		});
+
+		ctvSyncUseRemoteSmallIoArea.setChecked(pfli.isSyncUseRemoteSmallIoArea());
+		ctvSyncUseRemoteSmallIoArea.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				boolean isChecked=!ctvSyncUseRemoteSmallIoArea.isChecked();
+				ctvSyncUseRemoteSmallIoArea.setChecked(isChecked);
 			}
 		});
 

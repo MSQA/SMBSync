@@ -1513,7 +1513,7 @@ public class ProfileUtility {
 					ff, df, pli.isMasterDirFileProcess(), pli.isConfirmRequired(), 
 					pli.isForceLastModifiedUseSmbsync(), pli.isNotUseLastModifiedForRemote(), 
 					pli.getRetryCount(), pli.isSyncEmptyDirectory(), 
-					pli.isSyncSubDirectory(), pli.isSyncHiddenFile(), pli.isSyncSubDirectory(),
+					pli.isSyncSubDirectory(), pli.isSyncHiddenFile(), pli.isSyncSubDirectory(), pli.isSyncUseRemoteSmallIoArea(),
 					pli.getSyncZipFileName(),pli.getSyncZipEncMethod(), pli.getSyncZipAesKeyLength(),
 					pli.getLastSyncTime(), pli.getLastSyncResult(),
 					false);
@@ -4208,6 +4208,7 @@ public class ProfileUtility {
 							else if (pl.startsWith(SMBSYNC_PROF_VER5)) prof_pre=SMBSYNC_PROF_VER5;
 							else if (pl.startsWith(SMBSYNC_PROF_VER6)) prof_pre=SMBSYNC_PROF_VER6;
 							else if (pl.startsWith(SMBSYNC_PROF_VER7)) prof_pre=SMBSYNC_PROF_VER7;
+							else if (pl.startsWith(SMBSYNC_PROF_VER8)) prof_pre=SMBSYNC_PROF_VER8;
 							if (!pl.startsWith(prof_pre+SMBSYNC_PROF_ENC) &&
 									!pl.startsWith(prof_pre+SMBSYNC_PROF_DEC)) {
 								if (prof_encrypted) {
@@ -4256,7 +4257,10 @@ public class ProfileUtility {
 						SMBSYNC_PROFILE_FILE_NAME_V6);
 				File lf7= new File(mGp.internalRootDirectory+"/"+
 						SMBSYNC_PROFILE_FILE_NAME_V7);
-				if (lf7.exists()) pf=SMBSYNC_PROFILE_FILE_NAME_V7;
+				File lf8= new File(mGp.internalRootDirectory+"/"+
+						SMBSYNC_PROFILE_FILE_NAME_V8);
+				if (lf8.exists()) pf=SMBSYNC_PROFILE_FILE_NAME_V8;
+				else if (lf7.exists()) pf=SMBSYNC_PROFILE_FILE_NAME_V7;
 				else if (lf6.exists()) pf=SMBSYNC_PROFILE_FILE_NAME_V6;
 				else if (lf5.exists()) pf=SMBSYNC_PROFILE_FILE_NAME_V5;
 				else if (lf4.exists()) pf=SMBSYNC_PROFILE_FILE_NAME_V4;
@@ -4333,7 +4337,7 @@ public class ProfileUtility {
 				SMBSYNC_PROF_TYPE_SYNC,"S-DOWNLOAD-MY-PICTURE", SMBSYNC_PROF_ACTIVE,
 				SMBSYNC_SYNC_TYPE_MIRROR,"R","R-SAMP-DOWNLOAD",
 				"L","L-SAMP-DOWNLOAD",new ArrayList<String>(), 
-				new ArrayList<String>(), true, true,false,false,"0",false,true,true,true,"",0,0,"",0,false));
+				new ArrayList<String>(), true, true,false,false,"0",false,true,true,true,false,"",0,0,"",0,false));
 		pfl.add(new ProfileListItem(SMBSYNC_PROF_GROUP_DEFAULT, 
 				SMBSYNC_PROF_TYPE_LOCAL,"L-SAMP-DOWNLOAD", SMBSYNC_PROF_ACTIVE, 
 				mGp.externalRootDirectory,"Pictures", "",0,0,false));
@@ -4351,7 +4355,7 @@ public class ProfileUtility {
 		pfl.add(new ProfileListItem(SMBSYNC_PROF_GROUP_DEFAULT, 
 				SMBSYNC_PROF_TYPE_SYNC,"S-BACKUP-MY-PICTURE", SMBSYNC_PROF_ACTIVE,
 				SMBSYNC_SYNC_TYPE_MIRROR,"L","L-SAMP-UPLOAD",
-				"R","R-SAMP-UPLOAD",ff1,df1, true, true,false,false,"0",false,true,true,true,
+				"R","R-SAMP-UPLOAD",ff1,df1, true, true,false,false,"0",false,true,true,true,false,
 				"",0,0,"",0,false));
 		pfl.add(new ProfileListItem(SMBSYNC_PROF_GROUP_DEFAULT, 
 				SMBSYNC_PROF_TYPE_LOCAL,"L-SAMP-UPLOAD", SMBSYNC_PROF_ACTIVE, 
@@ -4366,7 +4370,7 @@ public class ProfileUtility {
 		pfl.add(new ProfileListItem(SMBSYNC_PROF_GROUP_DEFAULT, 
 				SMBSYNC_PROF_TYPE_SYNC,"S-BACKUP-TO-USB-MEMORY", SMBSYNC_PROF_ACTIVE,
 				SMBSYNC_SYNC_TYPE_MIRROR,"L","L-SAMP-LOCAL",
-				"L","L-SAMP-USBDISK",ff2,df2, true, true,false,false,"0",false,true,true,true,
+				"L","L-SAMP-USBDISK",ff2,df2, true, true,false,false,"0",false,true,true,true,false,
 				"",0,0,"",0,false));
 		pfl.add(new ProfileListItem(SMBSYNC_PROF_GROUP_DEFAULT, 
 				SMBSYNC_PROF_TYPE_LOCAL,"L-SAMP-LOCAL", SMBSYNC_PROF_ACTIVE, 
@@ -4417,6 +4421,11 @@ public class ProfileUtility {
 		} else if (profVer.equals(SMBSYNC_PROF_VER7)) {
 			if (pl.length()>10){
 				addProfileListVer7(pl.substring(6,pl.length()),sync,rem,lcl);
+				addImportSettingsParm(pl,ispl);
+			}
+		} else if (profVer.equals(SMBSYNC_PROF_VER8)) {
+			if (pl.length()>10){
+				addProfileListVer8(pl.substring(6,pl.length()),sync,rem,lcl);
 				addImportSettingsParm(pl,ispl);
 			}
 		} else addProfileListVer0(pl, sync, rem, lcl);
@@ -4482,7 +4491,7 @@ public class ProfileUtility {
 						false,
 						true,
 						false,
-						"0",false,true,true,true,
+						"0",false,true,true,true,false,
 						"",0,0,
 						"",0,
 						false));
@@ -4574,7 +4583,7 @@ public class ProfileUtility {
 						conf,
 						ujlm,
 						false,
-						"0",false,true,true,true,
+						"0",false,true,true,true,false,
 						"",0,0,
 						"",0,
 						false));
@@ -4666,7 +4675,7 @@ public class ProfileUtility {
 						conf,
 						ujlm,
 						false,
-						"0",false,true,true,true,
+						"0",false,true,true,true,false,
 						"",0,0,
 						"",0,
 						false));
@@ -4771,7 +4780,7 @@ public class ProfileUtility {
 						conf,
 						ujlm,
 						false,
-						"0",false,true,true,true,
+						"0",false,true,true,true,false,
 						"",0,0,
 						"",0,
 						false));
@@ -4877,7 +4886,7 @@ public class ProfileUtility {
 						conf,
 						ujlm,
 						nulm_remote,
-						"0",false,true,true,true,
+						"0",false,true,true,true,false,
 						"",0,0,
 						"",0,
 						false));
@@ -4985,7 +4994,7 @@ public class ProfileUtility {
 						conf,
 						ujlm,
 						nulm_remote,
-						"0",false,true,true,true,
+						"0",false,true,true,true,false,
 						"",0,0,
 						"",0,
 						false));
@@ -5104,7 +5113,7 @@ public class ProfileUtility {
 						nulm_remote,
 						parm[13],//Retry count
 						sync_empty_dir,
-						sync_hidden_dir, sync_hidden_file, sync_sub_dir,
+						sync_hidden_dir, sync_hidden_file, sync_sub_dir,false,
 						"",0,0,
 						"",0,
 						false));
@@ -5227,7 +5236,7 @@ public class ProfileUtility {
 						nulm_remote,
 						parm[13],//Retry count
 						sync_empty_dir,
-						sync_hidden_dir, sync_hidden_file, sync_sub_dir,
+						sync_hidden_dir, sync_hidden_file, sync_sub_dir, false,
 						parm[18],//Zip file name
 						Integer.parseInt(parm[19]),//Zip enc method
 						Integer.parseInt(parm[20]),//Zip enc key length
@@ -5237,7 +5246,137 @@ public class ProfileUtility {
 			}
 		}
 	};
-	
+
+	private void addProfileListVer8(String pl, ArrayList<ProfileListItem> sync,
+			ArrayList<ProfileListItem> rem, ArrayList<ProfileListItem> lcl) {
+		//Extract ArrayList<String> field
+		String list1="",list2="", npl="";
+		if (pl.indexOf("[")>=0) {
+			// found first List
+			list1=pl.substring(pl.indexOf("[")+1, pl.indexOf("]"));
+			npl=pl.replace("["+list1+"]\t", "");
+			if (npl.indexOf("[")>=0) {
+				// found second List
+				list2=npl.substring(npl.indexOf("[")+1, npl.indexOf("]"));
+				npl=npl.replace("["+list2+"]\t", "");
+			}
+		} else npl=pl;
+//		Log.v("","pl="+pl);
+//		String prof_group = npl.substring(0,11).trim();
+//		String tmp_ps=npl.substring(12,npl.length());
+
+		String[] tmp_pl=npl.split("\t");// {"type","name","active",options...};
+		String[] parm= new String[30];
+		for (int i=0;i<30;i++) parm[i]="";
+		for (int i=0;i<tmp_pl.length;i++) {
+			if (tmp_pl[i]==null) parm[i]="";
+			else {
+				if (tmp_pl[i]==null) parm[i]="";
+				else parm[i]=convertToSpecChar(tmp_pl[i].trim());
+			}
+//			Log.v("","i="+i+", "+parm[i]);
+		}
+		if (parm[1].equals("SETTINGS")) return; //ignore settings entry
+		
+		if (parm[1].equals(SMBSYNC_PROF_TYPE_REMOTE)) {//Remote
+			String h_addr="", h_name="";
+			if (parm[6].length()>0) {
+				if (parm[6].substring(0,1).compareTo("0")>=0 && parm[6].substring(0,1).compareTo("9")<=0) {
+					h_addr=parm[6];
+				} else {
+					h_name=parm[6];
+				}
+			} else {
+				h_addr="";
+				h_name=parm[9];
+			}
+//			Log.v("","h_addr="+h_addr+", h_name="+h_name);
+			rem.add(createRemoteProfilelistItem(mGp,
+					parm[0],//group
+					parm[2],//Name
+					parm[3],//Active
+					parm[8],//directory
+					parm[4],//user
+					parm[5],//pass
+					parm[7],//share
+					h_addr,//address
+					h_name,//hostname
+					parm[10],//port
+					parm[11],//Zip file name
+					Integer.parseInt(parm[12]),//Zip enc method
+					Integer.parseInt(parm[13]),//Zip enc key length
+					false));
+
+		} else {
+			if (parm[1].equals(SMBSYNC_PROF_TYPE_LOCAL)) {//Local
+				if (parm[5].equals("")) parm[5]=mGp.externalRootDirectory;
+				lcl.add(createLocalProfilelistItem(mGp,
+						parm[0],//group
+						parm[2],//Name
+						parm[3],//Active
+						parm[4],//Directory
+						parm[5],//Local mount point
+						parm[6],//Zip file name
+						Integer.parseInt(parm[7]),//Zip enc method
+						Integer.parseInt(parm[8]),//Zip enc key length
+						false));
+			} else if (parm[1].equals(SMBSYNC_PROF_TYPE_SYNC)) {//Sync
+				ArrayList<String> ff=new ArrayList<String>();
+				ArrayList<String> df=new ArrayList<String>();
+				if (list1.length()!=0) {
+					String[] fp=list1.split("\t");
+					for (int i=0;i<fp.length;i++) ff.add(convertToSpecChar(fp[i]));					
+				} else ff.clear();
+				if (list2.length()!=0) {
+					String[] dp=list2.split("\t");
+					for (int i=0;i<dp.length;i++) df.add(convertToSpecChar(dp[i]));
+				} else df.clear();
+				boolean mpd=true, conf=false, ujlm=false, nulm_remote=false;
+				if (parm[9].equals("0")) mpd=false;
+				if (parm[10].equals("1")) conf=true;
+				if (parm[11].equals("1")) ujlm=true;
+				if (parm[12].equals("1")) nulm_remote=true;
+				boolean sync_empty_dir=false;
+				if (parm[14].equals("1")) sync_empty_dir=true;
+				boolean sync_hidden_dir=false;
+				if (parm[15].equals("1")) sync_hidden_dir=true;
+				boolean sync_hidden_file=false;
+				if (parm[16].equals("1")) sync_hidden_file=true;
+				boolean sync_sub_dir=false;
+				if (parm[17].equals("1")) sync_sub_dir=true;
+				
+				boolean sync_use_remote_small_io_area=false;
+				if (parm[18].equals("1")) sync_use_remote_small_io_area=true;
+
+//				Log.v("","17="+parm[17]);
+				sync.add(createSyncProfilelistItem(mGp, 
+						parm[0],//group
+						parm[ 2],//Name
+						parm[ 3],//Active
+						parm[ 4],//Sync type
+						parm[ 5],//Master type
+						parm[ 6],//Master name
+						parm[ 7],//Target type
+						parm[ 8],//Target name
+						ff,//File Filter
+						df,//Dir Filter
+						mpd,
+						conf,
+						ujlm,
+						nulm_remote,
+						parm[13],//Retry count
+						sync_empty_dir,
+						sync_hidden_dir, sync_hidden_file, sync_sub_dir, sync_use_remote_small_io_area,
+						parm[19],//Zip file name
+						Integer.parseInt(parm[20]),//Zip enc method
+						Integer.parseInt(parm[21]),//Zip enc key length
+						parm[22],//Last sync time
+						Integer.parseInt(parm[23]),//Last sync result
+						false));
+			}
+		}
+	};
+
 	private String convertToSpecChar(String in) {
 		if (in==null || in.length()==0) return "";
 		boolean cont=true;
@@ -5279,7 +5418,7 @@ public class ProfileUtility {
 			ArrayList<String> file_filter, ArrayList<String> dir_filter,
 			boolean prof_mpd, boolean prof_conf, boolean prof_ujlm, boolean nulm_remote,
 			String retry_count, boolean sync_empty_dir, boolean sync_hidden_file, 
-			boolean sync_hidden_dir, boolean sync_sub_dir,
+			boolean sync_hidden_dir, boolean sync_sub_dir, boolean sync_use_remote_small_io_area,
 			String zip_file_name, int zip_enc_method, int zip_enc_key_length,
 			String last_sync_time, int last_sync_result,
 			boolean isChk, int pos) {
@@ -5291,7 +5430,7 @@ public class ProfileUtility {
 					prof_syncopt,prof_master_typ,prof_master,prof_target_typ,prof_target,
 					file_filter, dir_filter,prof_mpd,prof_conf,prof_ujlm,nulm_remote,
 					retry_count, sync_empty_dir, sync_hidden_file, sync_hidden_dir, 
-					sync_sub_dir,
+					sync_sub_dir,sync_use_remote_small_io_area,
 					zip_file_name, zip_enc_method, zip_enc_key_length,
 					last_sync_time, last_sync_result,
 					isChk);
@@ -5302,7 +5441,7 @@ public class ProfileUtility {
 					prof_syncopt,prof_master_typ,prof_master,prof_target_typ,prof_target,
 					file_filter, dir_filter, prof_mpd,prof_conf,prof_ujlm,nulm_remote,
 					retry_count, sync_empty_dir, sync_hidden_file, sync_hidden_dir,
-					sync_sub_dir,
+					sync_sub_dir,sync_use_remote_small_io_area,
 					zip_file_name, zip_enc_method, zip_enc_key_length,
 					last_sync_time, last_sync_result,
 					isChk);
@@ -5317,7 +5456,7 @@ public class ProfileUtility {
 			ArrayList<String> ff, ArrayList<String> df,boolean prof_mpd, 
 			boolean prof_conf, boolean prof_ujlm, boolean nulm_remote, 
 			String retry_count, boolean sync_empty_dir, boolean sync_hidden_file, 
-			boolean sync_hidden_dir, boolean sync_sub_dir,
+			boolean sync_hidden_dir, boolean sync_sub_dir, boolean sync_use_remote_small_io_area,
 			String zip_file_name, int zip_enc_method, int zip_enc_key_length,
 			String last_sync_time, int last_sync_result,
 			boolean isChk) {
@@ -5338,6 +5477,7 @@ public class ProfileUtility {
 				sync_hidden_file,
 				sync_hidden_dir,
 				sync_sub_dir,
+				sync_use_remote_small_io_area,
 				zip_file_name, zip_enc_method, zip_enc_key_length,
 				last_sync_time, last_sync_result,
 				isChk);
@@ -5560,6 +5700,8 @@ public class ProfileUtility {
 							if (item.isSyncHiddenFile()) sync_hidden_file="1";
 							String sync_sub_dir="0";
 							if (item.isSyncSubDirectory()) sync_sub_dir="1";
+							String sync_use_remote_small_io_area="0";
+							if (item.isSyncSubDirectory()) sync_use_remote_small_io_area="1";
 							pl =item.getProfileGroup()+"\t"+
 									SMBSYNC_PROF_TYPE_SYNC+ "\t" + pl_name + "\t"+
 									pl_active + "\t" +
@@ -5579,6 +5721,7 @@ public class ProfileUtility {
 									sync_hidden_dir+"\t"+
 									sync_hidden_file+"\t"+
 									sync_sub_dir+"\t"+
+									sync_use_remote_small_io_area+"\t"+
 									item.getSyncZipFileName()+"\t"+
 									item.getSyncZipEncMethod()+"\t"+
 									item.getSyncZipAesKeyLength()+"\t"+
