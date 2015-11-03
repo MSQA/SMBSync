@@ -4200,7 +4200,8 @@ public class ProfileUtility {
 								pl.startsWith(SMBSYNC_PROF_VER4) ||
 								pl.startsWith(SMBSYNC_PROF_VER5) ||
 								pl.startsWith(SMBSYNC_PROF_VER6) ||
-								pl.startsWith(SMBSYNC_PROF_VER7)
+								pl.startsWith(SMBSYNC_PROF_VER7) ||
+								pl.startsWith(SMBSYNC_PROF_VER8)
 								) {
 							String prof_pre="";
 							if (pl.startsWith(SMBSYNC_PROF_VER3)) prof_pre=SMBSYNC_PROF_VER3;
