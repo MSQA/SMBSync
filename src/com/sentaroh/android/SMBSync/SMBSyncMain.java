@@ -2268,8 +2268,10 @@ public class SMBSyncMain extends AppCompatActivity {
 			util.addDebugLogMsg(1,"I","Return from browse log file.");
 			util.setActivityIsForeground(true);
 		} else if (requestCode == REQUEST_CODE_STORAGE_ACCESS) {
+			util.addDebugLogMsg(1,"I","Return from Storage Picker.");
 	        if (resultCode == Activity.RESULT_OK) {
-	        	if (SafUtil.isSafExternalSdcardTreeUri(mContext,data.getData())) {
+	        	util.addDebugLogMsg(1,"I","Intent="+data.getData().toString());
+	        	if (SafUtil.isSafExternalSdcardRootTreeUri(mContext,data.getData())) {
 	        		SafUtil.saveSafExternalSdcardRootTreeUri(mContext, data.getData().toString());
 	        		if (mSafSelectActivityNotify!=null) mSafSelectActivityNotify.notifyToListener(true, null);
 	        	} else {
