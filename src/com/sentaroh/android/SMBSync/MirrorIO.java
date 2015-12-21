@@ -1118,12 +1118,14 @@ public class MirrorIO implements Runnable {
         if (ci!=null) {
             while( ci.moveToNext() ){
             	String data=ci.getString( ci.getColumnIndex(MediaStore.MediaColumns.DATA ));
-            	if (data.lastIndexOf("/")>=1) {
-    	        	String t_dir=data.substring(0,data.lastIndexOf("/"));
-    	        	if  (!c_m_d.equals(t_dir)) {
-    	        		mediaStoreImageList.add(t_dir);
-    	        		c_m_d=t_dir;
-    	        	}
+            	if (data!=null) {
+                	if (data.lastIndexOf("/")>=1) {
+        	        	String t_dir=data.substring(0,data.lastIndexOf("/"));
+        	        	if  (!c_m_d.equals(t_dir)) {
+        	        		mediaStoreImageList.add(t_dir);
+        	        		c_m_d=t_dir;
+        	        	}
+                	}
             	}
             }
             ci.close();
@@ -1135,12 +1137,14 @@ public class MirrorIO implements Runnable {
         if (ca!=null) {
             while( ca.moveToNext() ){
             	String data=ca.getString( ca.getColumnIndex(MediaStore.MediaColumns.DATA ));
-            	if (data.lastIndexOf("/")>=1) {
-    	        	String t_dir=data.substring(0,data.lastIndexOf("/"));
-    	        	if  (!c_m_d.equals(t_dir)) {
-    	        		mediaStoreAudioList.add(t_dir);
-    	        		c_m_d=t_dir;
-    	        	}
+            	if (data!=null) {
+                	if (data.lastIndexOf("/")>=1) {
+        	        	String t_dir=data.substring(0,data.lastIndexOf("/"));
+        	        	if  (!c_m_d.equals(t_dir)) {
+        	        		mediaStoreAudioList.add(t_dir);
+        	        		c_m_d=t_dir;
+        	        	}
+                	}
             	}
             }
             ca.close();
@@ -1152,12 +1156,14 @@ public class MirrorIO implements Runnable {
         if (cv!=null) {
             while( cv.moveToNext() ){
             	String data=cv.getString( cv.getColumnIndex(MediaStore.MediaColumns.DATA ));
-            	if (data.lastIndexOf("/")>=1) {
-    	        	String t_dir=data.substring(0,data.lastIndexOf("/"));
-    	        	if  (!c_m_d.equals(t_dir)) {
-    	        		mediaStoreVideoList.add(t_dir);
-    	        		c_m_d=t_dir;
-    	        	}
+            	if (data!=null) {
+                	if (data.lastIndexOf("/")>=1) {
+        	        	String t_dir=data.substring(0,data.lastIndexOf("/"));
+        	        	if  (!c_m_d.equals(t_dir)) {
+        	        		mediaStoreVideoList.add(t_dir);
+        	        		c_m_d=t_dir;
+        	        	}
+                	}
             	}
             }
             cv.close();
