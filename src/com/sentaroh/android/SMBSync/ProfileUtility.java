@@ -3317,19 +3317,19 @@ public class ProfileUtility {
 	
 	private boolean isIpAddrSmbHost(String address, String scan_port) {
 		boolean smbhost=false;
-		boolean reachable=NetworkUtil.ping(address);
-		if (reachable) {
-			if (scan_port.equals("")) {
-				if (!NetworkUtil.isIpAddressAndPortConnected(address,139,3000)) {
-					smbhost=NetworkUtil.isIpAddressAndPortConnected(address,445,3000);
-				} else smbhost=true;
-			} else {
-				smbhost=NetworkUtil.isIpAddressAndPortConnected(address,
-						Integer.parseInt(scan_port),3000);
-			}
+//		boolean reachable=NetworkUtil.ping(address);
+//		if (reachable) {
+//		}
+		if (scan_port.equals("")) {
+			if (!NetworkUtil.isIpAddressAndPortConnected(address,139,3000)) {
+				smbhost=NetworkUtil.isIpAddressAndPortConnected(address,445,3000);
+			} else smbhost=true;
+		} else {
+			smbhost=NetworkUtil.isIpAddressAndPortConnected(address,
+					Integer.parseInt(scan_port),3000);
 		}
 		util.addDebugLogMsg(2,"I","isIpAddrSmbHost Address="+address+
-				", port="+scan_port+", reachable="+reachable+", smbhost="+smbhost);
+				", port="+scan_port+", smbhost="+smbhost);
 		return smbhost;
 	};
 
