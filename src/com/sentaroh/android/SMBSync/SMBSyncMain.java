@@ -320,7 +320,58 @@ public class SMBSyncMain extends AppCompatActivity {
 //		};
 //		thx.start();
 
+//		Thread thx=new Thread(){
+//			@Override
+//			public void run() {
+//				checkSmbHost("192.168.200.10");
+//				checkSmbHost("192.168.200.60");
+//				checkSmbHost("192.168.200.128");
+//			}
+//		};
+//		thx.start();
+		
 	};
+	
+//	private void checkSmbHost(String address) {
+//		String srv_name="";
+//	   	try {
+//	   		
+//	   			NbtAddress[] uax = NbtAddress.getAllByAddress(address);
+//	   			for(int i=0;i<uax.length;i++) {
+//					NbtAddress ua = uax[i];
+//					String cn;
+//			        cn = ua.firstCalledName();
+//			        int j=0;
+//	            	Log.v("","getSmbHostName Address="+address+
+//		            		", cn="+cn+", name="+srv_name+", host="+ua.getHostName()+", t="+ua.getNameType()+
+//		            		", nt="+ua.getNodeType()+", j="+j);
+//
+////					String cn;
+////			        cn = ua.firstCalledName();
+////			        int j=0;
+////			        while(cn!=null && !cn.equals("")) {
+////			            if (!cn.startsWith("*")) srv_name=cn; 
+////		            	Log.v("","getSmbHostName Address="+address+
+////			            		", cn="+cn+", name="+srv_name+", host="+ua.getHostName()+", t="+ua.getNameType()+
+////			            		", nt="+ua.getNodeType()+", j="+j);
+////		            	cn = ua.nextCalledName();
+////		            	if (j>100) break;
+////		            	j++;
+////			        } 
+//	   			}
+//	   		
+////				NbtAddress ua = NbtAddress.getByName(address);
+////				String cn;
+////		        cn = ua.firstCalledName();
+////		        while(cn!=null) {
+////		            if (!cn.startsWith("*")) srv_name=cn; 
+////	            	Log.v("","getSmbHostName Address="+address+
+////		            		", cn="+cn+", name="+srv_name+", host="+ua.getHostName());
+////	            	cn = ua.nextCalledName();
+////		        } 
+//			} catch (UnknownHostException e) {
+//			}
+//	}
 	
 //	private void checkPermissions() {
 //		int rc=mContext.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE);

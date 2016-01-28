@@ -5702,7 +5702,8 @@ public class ProfileUtility {
 							String sync_sub_dir="0";
 							if (item.isSyncSubDirectory()) sync_sub_dir="1";
 							String sync_use_remote_small_io_area="0";
-							if (item.isSyncSubDirectory()) sync_use_remote_small_io_area="1";
+							if (item.isSyncUseRemoteSmallIoArea()) sync_use_remote_small_io_area="1";
+//							Log.v("","io="+sync_use_remote_small_io_area);
 							pl =item.getProfileGroup()+"\t"+
 									SMBSYNC_PROF_TYPE_SYNC+ "\t" + pl_name + "\t"+
 									pl_active + "\t" +
