@@ -58,6 +58,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -3283,7 +3284,43 @@ public class ProfileUtility {
 									@Override
 									public int compare(ScanAddressResultListItem lhs,
 											ScanAddressResultListItem rhs) {
-										return lhs.server_address.compareTo(rhs.server_address);
+										String lhs_o0="", lhs_o1="", lhs_o2="", lhs_o3="";
+										String[] lhs_o=lhs.server_address.split("\\.");
+//										Log.v("","lhs_addr="+lhs.server_address+", l="+lhs_o.length);
+										if (lhs_o[0].length()==3) lhs_o0=lhs_o[0];
+										else if (lhs_o[0].length()==2) lhs_o0="0"+lhs_o[0];
+										else if (lhs_o[0].length()==1) lhs_o0="00"+lhs_o[0];
+										if (lhs_o[1].length()==3) lhs_o1=lhs_o[1];
+										else if (lhs_o[1].length()==2) lhs_o1="0"+lhs_o[1];
+										else if (lhs_o[1].length()==1) lhs_o1="00"+lhs_o[1];
+										if (lhs_o[2].length()==3) lhs_o2=lhs_o[1];
+										else if (lhs_o[2].length()==2) lhs_o2="0"+lhs_o[2];
+										else if (lhs_o[2].length()==1) lhs_o2="00"+lhs_o[2];
+										if (lhs_o[3].length()==3) lhs_o3=lhs_o[3];
+										else if (lhs_o[3].length()==2) lhs_o3="0"+lhs_o[3];
+										else if (lhs_o[3].length()==1) lhs_o3="00"+lhs_o[3];
+
+										String rhs_o0="", rhs_o1="", rhs_o2="", rhs_o3="";
+										String[] rhs_o=rhs.server_address.split("\\.");
+										if (rhs_o[0].length()==3) rhs_o0=lhs_o[0];
+										else if (rhs_o[0].length()==2) rhs_o0="0"+rhs_o[0];
+										else if (rhs_o[0].length()==1) rhs_o0="00"+rhs_o[0];
+										if (rhs_o[1].length()==3) rhs_o1=rhs_o[1];
+										else if (rhs_o[1].length()==2) rhs_o1="0"+rhs_o[1];
+										else if (rhs_o[1].length()==1) rhs_o1="00"+rhs_o[1];
+										if (rhs_o[2].length()==3) rhs_o2=rhs_o[1];
+										else if (rhs_o[2].length()==2) rhs_o2="0"+rhs_o[2];
+										else if (rhs_o[2].length()==1) rhs_o2="00"+rhs_o[2];
+										if (rhs_o[3].length()==3) rhs_o3=rhs_o[3];
+										else if (rhs_o[3].length()==2) rhs_o3="0"+rhs_o[3];
+										else if (rhs_o[3].length()==1) rhs_o3="00"+rhs_o[3];
+
+										String lhs_addr=lhs_o0+"."+lhs_o1+"."+lhs_o2+"."+lhs_o3;
+										String rhs_addr=rhs_o0+"."+rhs_o1+"."+rhs_o2+"."+rhs_o3;
+										
+										Log.v("","lhs="+lhs_addr+", rhs="+rhs_addr);
+										
+										return lhs_addr.compareTo(rhs_addr);
 									}
 								});
 							}

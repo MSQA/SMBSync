@@ -175,6 +175,7 @@ public class SMBSyncMain extends AppCompatActivity {
 	};
  
 	/** Called when the activity is first created. */
+	@SuppressLint("InlinedApi")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		mGp=(GlobalParameters) getApplication();
@@ -284,6 +285,9 @@ public class SMBSyncMain extends AppCompatActivity {
 		});
 		checkSafExternalSdcardTreeUri(ntfy);
 		
+//		Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+//	    startActivityForResult(intent, REQUEST_CODE_STORAGE_ACCESS);
+
 //		Thread thx=new Thread(){
 //			@Override
 //			public void run() {
