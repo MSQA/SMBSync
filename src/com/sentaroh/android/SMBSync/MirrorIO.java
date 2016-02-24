@@ -196,6 +196,15 @@ public class MirrorIO implements Runnable {
 		
 		SafUtil.initWorkArea(mGp.appContext, mSafCA);
 		
+		if (mGp.debugLevel>=1 && mSafCA.rootDocumentFile!=null) {
+			String uri_string=SafUtil.getSafExternalSdcardRootTreeUri(mGp.appContext);
+			addDebugLogMsg(1,"I","","SafUri="+uri_string+", SafRoot="+mSafCA.rootDocumentFile.getName());
+			for(String esd:mSafCA.external_sdcard_dir_list) {
+				addDebugLogMsg(1,"I","","esd="+esd);
+			}
+		}
+
+		
 //		SMBSync_External_Root_Dir = LocalMountPoint.getExternalStorageDir();
 		
 		initIoBuffer();
@@ -2993,12 +3002,15 @@ public class MirrorIO implements Runnable {
 		FileInputStream in=new FileInputStream(in_file);
 		OutputStream out=null;
 		SafFile t_df=null, o_df=null;
-		
+
 		if (!tmp_target.equals("")) {
 			t_df=SafUtil.getSafDocumentFileByPath(mGp.appContext, mSafCA, tmp_target, false);
+			o_df=SafUtil.getSafDocumentFileByPath(mGp.appContext, mSafCA, out_file.getPath(), false);
+			if (mGp.debugLevel>=1) addDebugLogMsg(1,"I","","t_df="+t_df+", o_df="+o_df+", temp="+tmp_target+", o_path="+out_file.getPath());
 			out=mGp.appContext.getContentResolver().openOutputStream(t_df.getUri());
 		} else {
 			o_df=SafUtil.getSafDocumentFileByPath(mGp.appContext, mSafCA, out_file.getPath(), false);
+			if (mGp.debugLevel>=1) addDebugLogMsg(1,"I","","o_df="+o_df+", o_path="+out_file.getPath());
 			out=mGp.appContext.getContentResolver().openOutputStream(o_df.getUri());
 		}
 		
