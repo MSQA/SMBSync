@@ -102,7 +102,7 @@ public class ProfileMaintLocalFragment extends DialogFragment{
         mContext=this.getActivity();
     	mFragment=this;
     	mGp=(GlobalParameters)getActivity().getApplication();
-    	SafUtil.initWorkArea(mContext, mSafCA);
+    	SafUtil.initWorkArea(mContext, mSafCA, mGp.debugLevel>0);
         if (mTerminateRequired) {
         	this.dismiss();
         }
@@ -492,7 +492,7 @@ public class ProfileMaintLocalFragment extends DialogFragment{
 								false,0);
 						mGp.profileAdapter.sort();
 						ProfileUtility.saveProfileToFile(mGp, mContext, mUtil, false,"","",mGp.profileAdapter,false);
-						if (SafUtil.isSafExternalSdcardPath(mContext, mSafCA, prof_lmp)) checkSafExternalSdcardTreeUri();
+						if (SafUtil.isSafExternalSdcardPath(mSafCA, prof_lmp)) checkSafExternalSdcardTreeUri();
 //						AdapterProfileList tfl= createProfileList(false,"");
 //						replaceglblParms.profileAdapterContent(tfl);
 //						glblParms.profileListView.setSelectionFromTop(pos,posTop);
@@ -515,7 +515,7 @@ public class ProfileMaintLocalFragment extends DialogFragment{
 	private void checkSafExternalSdcardTreeUri() {
 		if (Build.VERSION.SDK_INT>=21) {
 			if (mProfUtil.isExternalSdcardUsedByOutput()) {
-				if (SafUtil.hasSafExternalSdcard(mContext) && !SafUtil.isValidSafExternalSdcardRootTreeUri(mContext)) {
+				if (SafUtil.hasSafExternalSdcard(mSafCA) && !SafUtil.isValidSafExternalSdcardRootTreeUri(mSafCA)) {
 					final Activity actv=getActivity();
 	        		NotifyEvent ntfy=new NotifyEvent(mContext);
 	        		ntfy.setListener(new NotifyEventListener(){
@@ -725,7 +725,7 @@ public class ProfileMaintLocalFragment extends DialogFragment{
 								if (mNotifyComplete!=null) mNotifyComplete.notifyToListener(true, null);
 //								AdapterProfileList tfl= createProfileList(false,"");
 //								replaceglblParms.profileAdapterContent(tfl);
-								if (SafUtil.isSafExternalSdcardPath(mContext, mSafCA, t_prof_lmp)) 
+								if (SafUtil.isSafExternalSdcardPath(mSafCA, t_prof_lmp)) 
 									checkSafExternalSdcardTreeUri();
 							}
 							@Override

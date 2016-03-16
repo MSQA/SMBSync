@@ -203,4 +203,7 @@
 	<string name="msgs_main_external_sdcard_select_required_select_msg_file">SMBSync_SD_CARD_JA.png</string>
 	<string name="msgs_main_external_sdcard_select_required_cancel_msg">外部SDCARDが選択されるまで同期は実行できません。 プロファイル=%s</string>
 	
+	<string name="msgs_main_external_sdcard_mp_changed_title">外部SDCARD</string>
+	<string name="msgs_main_external_sdcard_mp_changed_msg">外部SDCARDのマウントポイントが変更されています、外部SDCARDを使用しているローカルプロファイルのマウントポイントを確認してください。</string>
+	
 </resources>

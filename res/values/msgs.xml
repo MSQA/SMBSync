@@ -205,4 +205,8 @@
 (Please tap the &#8220;Select the SDCARD&#8221; when the screen of &#8220;Select the SDCARD&#8221; in step 2 is displayed directly)</string>
 	<string name="msgs_main_external_sdcard_select_required_select_msg_file">SMBSync_SD_CARD_EN.png</string>
 	<string name="msgs_main_external_sdcard_select_required_cancel_msg">You can not perform sync until external SD card is selected. Profile=%s</string>
+	
+	<string name="msgs_main_external_sdcard_mp_changed_title">External SDCARD</string>
+	<string name="msgs_main_external_sdcard_mp_changed_msg">Mount point of external SDCARD has been changed, please check the mount point of the local profile that you are using an external SDCARD.</string>
+		
 </resources>

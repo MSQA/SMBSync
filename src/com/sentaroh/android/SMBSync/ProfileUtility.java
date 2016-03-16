@@ -121,7 +121,7 @@ public class ProfileUtility {
 		commonDlg=cd;
 		ccMenu=ccm;
 		mFragMgr=fm;
-    	SafUtil.initWorkArea(mContext, mSafCA);
+    	SafUtil.initWorkArea(mContext, mSafCA, gp.debugLevel>0);
 	};
 
 	public void importProfileDlg(final String lurl, final String ldir, 
@@ -1145,7 +1145,7 @@ public class ProfileUtility {
 //				Log.v("","name="+pli.getProfileName()+", target="+target);
 				if (target!=null) {
 					if (target.getProfileType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
-						if (SafUtil.isSafExternalSdcardPath(mContext, mSafCA, target.getLocalMountPoint())) {
+						if (SafUtil.isSafExternalSdcardPath(mSafCA, target.getLocalMountPoint())) {
 							result=true;
 							break;
 						}
@@ -1165,7 +1165,7 @@ public class ProfileUtility {
 //				Log.v("","name="+pli.getProfileName()+", target="+target);
 				if (target!=null) {
 					if (target.getProfileType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
-						if (SafUtil.isSafExternalSdcardPath(mContext, mSafCA, target.getLocalMountPoint())) {
+						if (SafUtil.isSafExternalSdcardPath(mSafCA, target.getLocalMountPoint())) {
 							result=pli;
 							break;
 						}
@@ -5801,7 +5801,7 @@ public class ProfileUtility {
 	static private void addImportSettingsParm(String pl, ArrayList<PreferenceParmListIItem>ispl) {
 		String tmp_ps=pl.substring(7,pl.length());
 		String[] tmp_pl=tmp_ps.split("\t");// {"type","name","active",options...};
-		if (tmp_pl[1]!=null && tmp_pl.length>=5 && tmp_pl[1].equals(SMBSYNC_PROF_TYPE_SETTINGS)) {
+		if (tmp_pl!=null && tmp_pl.length>=5 && tmp_pl[1]!=null && tmp_pl[1].equals(SMBSYNC_PROF_TYPE_SETTINGS)) {
 //			String[] val = new String[]{parm[2],parm[3],parm[4]};
 			PreferenceParmListIItem ppli=new PreferenceParmListIItem();
 			if (tmp_pl[2]!=null) ppli.parms_key=tmp_pl[2];

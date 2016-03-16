@@ -210,7 +210,7 @@ public class SMBSyncMain extends AppCompatActivity {
 		util.addDebugLogMsg(1,"I","onCreate entered, "+"resartStatus="+restartType+
 				", isActivityForeground="+util.isActivityForeground());
 
-		SafUtil.initWorkArea(mContext, mSafCA);
+		SafUtil.initWorkArea(mContext, mSafCA, mGp.debugLevel>0);
 		
         startService(new Intent(mContext, SMBSyncService.class));
         
@@ -2277,8 +2277,8 @@ public class SMBSyncMain extends AppCompatActivity {
 	private void checkSafExternalSdcardTreeUri(final NotifyEvent p_ntfy) {
 		if (Build.VERSION.SDK_INT>=21) {
 			if (profUtil.isExternalSdcardUsedByOutput()) {
-				if (SafUtil.hasSafExternalSdcard(mContext) && 
-						!SafUtil.isValidSafExternalSdcardRootTreeUri(mContext)) {
+				if (SafUtil.hasSafExternalSdcard(mSafCA) && 
+						!SafUtil.isValidSafExternalSdcardRootTreeUri(mSafCA)) {
 	        		NotifyEvent ntfy=new NotifyEvent(mContext);
 	        		ntfy.setListener(new NotifyEventListener(){
 						@Override
@@ -2326,9 +2326,16 @@ public class SMBSyncMain extends AppCompatActivity {
 			util.addDebugLogMsg(1,"I","Return from Storage Picker.");
 	        if (resultCode == Activity.RESULT_OK) {
 	        	util.addDebugLogMsg(1,"I","Intent="+data.getData().toString());
-	        	if (SafUtil.isSafExternalSdcardRootTreeUri(mContext,data.getData())) {
-	        		SafUtil.saveSafExternalSdcardRootTreeUri(mContext, data.getData().toString());
+	        	if (SafUtil.isSafExternalSdcardRootTreeUri(mSafCA,data.getData())) {
+	        		String prev_uri_string=SafUtil.getSafExternalSdcardRootTreeUri(mSafCA);
+	        		SafUtil.saveSafExternalSdcardRootTreeUri(mSafCA, data.getData().toString());
 	        		if (mSafSelectActivityNotify!=null) mSafSelectActivityNotify.notifyToListener(true, null);
+	        		if (Build.VERSION.SDK_INT>=23 && !prev_uri_string.equals("")) {
+	        			commonDlg.showCommonDialog(false, "W", 
+	        					mContext.getString(R.string.msgs_main_external_sdcard_mp_changed_title), 
+	        					mContext.getString(R.string.msgs_main_external_sdcard_mp_changed_msg), null);
+	        			util.addDebugLogMsg(1,"W",mContext.getString(R.string.msgs_main_external_sdcard_mp_changed_title));
+	        		}
 	        	} else {
 	        		NotifyEvent ntfy=new NotifyEvent(mContext);
 	        		ntfy.setListener(new NotifyEventListener(){
@@ -3064,7 +3071,7 @@ public class SMBSyncMain extends AppCompatActivity {
 //						Log.v("","name="+pli.getProfileName()+", target="+target);
 						if (target!=null) {
 							if (target.getProfileType().equals(SMBSYNC_PROF_TYPE_LOCAL)) {
-								if (SafUtil.isSafExternalSdcardPath(mContext, mSafCA, target.getLocalMountPoint())) {
+								if (SafUtil.isSafExternalSdcardPath(mSafCA, target.getLocalMountPoint())) {
 									checkSafExternalSdcardTreeUri(null);
 								}
 							}
