@@ -531,7 +531,7 @@ public class MountPointManagementFragment extends DialogFragment{
 					
 				});
 				FileSelectDialogFragment fsdf=
-						FileSelectDialogFragment.newInstance(false,false, false, true, true, "/", "", 
+						FileSelectDialogFragment.newInstance(false,false, false, false, true, true, "/", "", 
 							"", mContext.getString(R.string.msgs_edit_mp_select_dir_for_lmp));
 				fsdf.showDialog(getFragmentManager(), fsdf, ntfy);
 			}
