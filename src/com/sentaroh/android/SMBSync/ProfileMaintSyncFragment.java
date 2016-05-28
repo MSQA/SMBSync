@@ -1,15 +1,6 @@
 package com.sentaroh.android.SMBSync;
 
 import static com.sentaroh.android.SMBSync.Constants.*;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROF_ACTIVE;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROF_GROUP_DEFAULT;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROF_INACTIVE;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROF_TYPE_LOCAL;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROF_TYPE_REMOTE;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_PROF_TYPE_SYNC;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_SYNC_TYPE_COPY;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_SYNC_TYPE_MIRROR;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_SYNC_TYPE_MOVE;
 
 import java.util.ArrayList;
 
@@ -398,6 +389,7 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 		dlg_dir_filter.setText(d_fl);
 
 		final Spinner spinnerSyncOption=(Spinner)mDialog.findViewById(R.id.edit_profile_sync_dlg_sync_option);
+		SMBSyncUtil.setSpinnerBackground(mContext, spinnerSyncOption, mGp.themeIsLight);
 		ProfileUtility.setSyncOptionSpinner(mContext, spinnerSyncOption, pfli.getSyncType()); 
 
 		final CheckedTextView ctvmpd = (CheckedTextView)mDialog.findViewById(R.id.sync_profile_ctv_sync_master_root_dir_file);
@@ -474,7 +466,9 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 
 		
 		final Spinner spinner_master=(Spinner)mDialog.findViewById(R.id.edit_profile_sync_dlg_master_spinner);
+		SMBSyncUtil.setSpinnerBackground(mContext, spinner_master, mGp.themeIsLight);
 		final Spinner spinner_target=(Spinner)mDialog.findViewById(R.id.edit_profile_sync_dlg_target_spinner);
+		SMBSyncUtil.setSpinnerBackground(mContext, spinner_target, mGp.themeIsLight);
 		ProfileUtility.setSyncMasterProfileSpinner(mGp, getActivity(), spinner_master,pfli.getMasterName());
 		if (spinner_master.getCount()>0) {
 			if (pfli.getTargetName().equals("")) ProfileUtility.setSyncTargetProfileSpinner(mGp, mContext, spinner_target,spinner_master.getSelectedItem().toString().substring(2),"");
@@ -862,6 +856,7 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 		final ImageButton ib_edit_target=(ImageButton) mDialog.findViewById(R.id.edit_profile_sync_dlg_edit_target_btn);
 	
 		final Spinner spinnerSyncOption=(Spinner)mDialog.findViewById(R.id.edit_profile_sync_dlg_sync_option);
+		SMBSyncUtil.setSpinnerBackground(mContext, spinnerSyncOption, mGp.themeIsLight);
 		mProfUtil.setSyncOptionSpinner(spinnerSyncOption, pfli.getSyncType()); 
 	
 		CommonDialog.setDlgBoxSizeLimit(mDialog,true);
@@ -887,7 +882,9 @@ public class ProfileMaintSyncFragment extends DialogFragment{
 	//	});
 	
 		final Spinner spinner_master=(Spinner)mDialog.findViewById(R.id.edit_profile_sync_dlg_master_spinner);
+		SMBSyncUtil.setSpinnerBackground(mContext, spinner_master, mGp.themeIsLight);
 		final Spinner spinner_target=(Spinner)mDialog.findViewById(R.id.edit_profile_sync_dlg_target_spinner);
+		SMBSyncUtil.setSpinnerBackground(mContext, spinner_target, mGp.themeIsLight);
 		ProfileUtility.setSyncMasterProfileSpinner(mGp, mContext, spinner_master,pfli.getMasterName());
 		ProfileUtility.setSyncTargetProfileSpinner(mGp, mContext, spinner_target,pfli.getMasterName(),pfli.getTargetName());
 		

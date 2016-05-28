@@ -87,7 +87,6 @@ import com.sentaroh.android.Utilities.SafUtil;
 import com.sentaroh.android.Utilities.SafCommonArea;
 import com.sentaroh.android.Utilities.ThreadCtrl;
 import com.sentaroh.android.Utilities.ContextMenu.CustomContextMenu;
-import com.sentaroh.android.Utilities.ContextMenu.CustomContextMenuItem.CustomContextMenuOnClickListener;
 import com.sentaroh.android.Utilities.Dialog.CommonDialog;
 import com.sentaroh.android.Utilities.Dialog.DialogBackKeyListener;
 import com.sentaroh.android.Utilities.TreeFilelist.TreeFilelistAdapter;
@@ -96,7 +95,7 @@ import com.sentaroh.android.Utilities.Widget.CustomSpinnerAdapter;
 
 public class ProfileUtility {
 
-	private CustomContextMenu ccMenu=null;
+//	private CustomContextMenu ccMenu=null;
 	private String smbUser,smbPass;
 	
 	private Context mContext;
@@ -119,7 +118,7 @@ public class ProfileUtility {
 		util=mu;
 		loadMsgString();
 		commonDlg=cd;
-		ccMenu=ccm;
+//		ccMenu=ccm;
 		mFragMgr=fm;
     	SafUtil.initWorkArea(mContext, mSafCA, gp.debugLevel>0);
 	};
@@ -1992,8 +1991,7 @@ public class ProfileUtility {
 		Button dirbtn=(Button) dialog.findViewById(R.id.filter_select_edit_dir_btn);
 		dirbtn.setVisibility(Button.GONE);
 
-		filterAdapter = new AdapterFilterList(mContext,
-				R.layout.filter_list_item_view,filterList);
+		filterAdapter = new AdapterFilterList(mContext, R.layout.filter_list_item_view, filterList);
 		ListView lv=(ListView) dialog.findViewById(R.id.filter_select_edit_listview);
 		
 		for (int i=0; i<file_filter.size();i++) {
@@ -2439,12 +2437,44 @@ public class ProfileUtility {
         final TreeFilelistAdapter tfa= 
         		new TreeFilelistAdapter(mContext, false,false);
         lv.setAdapter(tfa);
-        ArrayList<TreeFilelistItem> tfl =
-        		createLocalFilelist(true,item.getLocalMountPoint(),"/"+cdir);
+        ArrayList<TreeFilelistItem> tfl=createLocalFilelist(true,item.getLocalMountPoint(),"/"+cdir);
         if (tfl.size()<1) tfl.add(new TreeFilelistItem(msgs_dir_empty));
         tfa.setDataList(tfl);
         lv.setScrollingCacheEnabled(false);
         lv.setScrollbarFadingEnabled(false);
+        
+        NotifyEvent ntfy_expand_close=new NotifyEvent(mContext);
+        ntfy_expand_close.setListener(new NotifyEventListener(){
+			@Override
+			public void positiveResponse(Context c, Object[] o) {
+				int idx=(Integer)o[0];
+	    		final int pos=tfa.getItem(idx);
+	    		final TreeFilelistItem tfi=tfa.getDataItem(pos);
+				if (tfi.getName().startsWith("---")) return;
+				expandHideLocalDirTree(true,item.getLocalMountPoint(), pos,tfi,tfa);
+			}
+			@Override
+			public void negativeResponse(Context c, Object[] o) {
+			}
+        });
+        tfa.setExpandCloseListener(ntfy_expand_close);
+        lv.setOnItemClickListener(new OnItemClickListener(){
+        	public void onItemClick(AdapterView<?> items, View view, int idx, long id) {
+	    		final int pos=tfa.getItem(idx);
+	    		final TreeFilelistItem tfi=tfa.getDataItem(pos);
+				if (tfi.getName().startsWith("---")) return;
+				expandHideLocalDirTree(true,item.getLocalMountPoint(), pos,tfi,tfa);
+//				tfa.setDataItemIsSelected(pos);
+			}
+        });
+        
+		lv.setOnItemLongClickListener(new OnItemLongClickListener(){
+			@Override
+			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+					final int position, long arg3) {
+				return true;
+			}
+		});
 
 	    ib_select_all.setOnClickListener(new OnClickListener(){
 			@Override
@@ -2468,28 +2498,6 @@ public class ProfileUtility {
 				btn_ok.setEnabled(false);
 			}
 	    });
-
-        lv.setOnItemClickListener(new OnItemClickListener(){
-        	public void onItemClick(AdapterView<?> items, View view, int idx, long id) {
-	    		final int pos=tfa.getItem(idx);
-	    		final TreeFilelistItem tfi=tfa.getDataItem(pos);
-				if (tfi.getName().startsWith("---")) return;
-				expandHideLocalDirTree(true,item.getLocalMountPoint(), pos,tfi,tfa);
-            }
-        });
-		lv.setOnItemLongClickListener(new OnItemLongClickListener(){
-			@Override
-			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
-					final int position, long arg3) {
-	  			final int t_pos=tfa.getItem(position);
-	    		final TreeFilelistItem tfi=tfa.getDataItem(t_pos);
-				if (tfi.getName().startsWith("---")) return true;
-	  			if (!tfa.getDataItem(t_pos).isChecked()) {
-	  				tfa.setDataItemIsSelected(t_pos);
-	  			}
-				return true;
-			}
-		});
 
 	    //OKボタンの指定
 	    btn_ok.setEnabled(false);
@@ -2618,14 +2626,45 @@ public class ProfileUtility {
 				CommonDialog.setDlgBoxSizeLimit(dialog, true);
 				
 				final ListView lv = (ListView) dialog.findViewById(android.R.id.list);
-			    final TreeFilelistAdapter tfa= 
-			    		new TreeFilelistAdapter(mContext,false,false);
+			    final TreeFilelistAdapter tfa=new TreeFilelistAdapter(mContext,false,false);
 				tfa.setDataList(rows);
 			    lv.setAdapter(tfa);
 			    lv.setScrollingCacheEnabled(false);
 			    lv.setScrollbarFadingEnabled(false);
 //			    lv.setFastScrollEnabled(true);
-				
+		        NotifyEvent ntfy_expand_close=new NotifyEvent(mContext);
+		        ntfy_expand_close.setListener(new NotifyEventListener(){
+					@Override
+					public void positiveResponse(Context c, Object[] o) {
+						int idx=(Integer)o[0];
+			    		final int pos=tfa.getItem(idx);
+			    		final TreeFilelistItem tfi=tfa.getDataItem(pos);
+						if (tfi.getName().startsWith("---")) return;
+						expandHideRemoteDirTree(remurl, pos,tfi,tfa);
+					}
+					@Override
+					public void negativeResponse(Context c, Object[] o) {
+					}
+		        });
+		        tfa.setExpandCloseListener(ntfy_expand_close);
+		        lv.setOnItemClickListener(new OnItemClickListener(){
+		        	public void onItemClick(AdapterView<?> items, View view, int idx, long id) {
+			    		final int pos=tfa.getItem(idx);
+			    		final TreeFilelistItem tfi=tfa.getDataItem(pos);
+						if (tfi.getName().startsWith("---")) return;
+//						tfa.setDataItemIsSelected(pos);
+						expandHideRemoteDirTree(remurl, pos,tfi,tfa);
+					}
+		        });
+		        
+				lv.setOnItemLongClickListener(new OnItemLongClickListener(){
+					@Override
+					public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+							final int position, long arg3) {
+						return true;
+					}
+				});
+
 			    ib_select_all.setOnClickListener(new OnClickListener(){
 					@Override
 					public void onClick(View v) {
@@ -2648,30 +2687,6 @@ public class ProfileUtility {
 						btn_ok.setEnabled(false);
 					}
 			    });
-
-				lv.setOnItemClickListener(new OnItemClickListener(){
-					public void onItemClick(AdapterView<?> items, View view, int idx, long id) {
-			            // リストアイテムを選択したときの処理
-			    		final int pos=tfa.getItem(idx);
-			    		final TreeFilelistItem tfi=tfa.getDataItem(pos);
-						if (tfi.getName().startsWith("---")) return;
-						expandHideRemoteDirTree(remurl, pos,tfi,tfa);
-					}
-				});
-				
-				lv.setOnItemLongClickListener(new OnItemLongClickListener(){
-					@Override
-					public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
-							final int position, long arg3) {
-			  			final int t_pos=tfa.getItem(position);
-			    		final TreeFilelistItem tfi=tfa.getDataItem(t_pos);
-						if (tfi.getName().startsWith("---")) return true;
-			  			if (!tfa.getDataItem(t_pos).isChecked()) {
-			  				tfa.setDataItemIsSelected(t_pos);
-			  			}
-						return true;
-					}
-				});
 
 				//OKボタンの指定
 			    btn_ok.setEnabled(false);
@@ -3636,8 +3651,7 @@ public class ProfileUtility {
         CommonDialog.setDlgBoxSizeLimit(dialog, true);
 		
         ListView lv = (ListView) dialog.findViewById(android.R.id.list);
-        final TreeFilelistAdapter tfa= 
-        		new TreeFilelistAdapter(mContext,true,false);
+        final TreeFilelistAdapter tfa=new TreeFilelistAdapter(mContext,true,false);
         lv.setAdapter(tfa);
         ArrayList<TreeFilelistItem> tfl =createLocalFilelist(true,url,dir);
         if (tfl.size()<1) tfl.add(new TreeFilelistItem(msgs_dir_empty));
@@ -3651,51 +3665,42 @@ public class ProfileUtility {
         		if (tfa.getDataItem(i).getName().equals(p_dir)) 
         			lv.setSelection(i);
         	}
-        lv.setOnItemClickListener(new OnItemClickListener(){
-        	public void onItemClick(AdapterView<?> items, View view, int idx, long id) {
+        
+        NotifyEvent ntfy_expand_close=new NotifyEvent(mContext);
+        ntfy_expand_close.setListener(new NotifyEventListener(){
+			@Override
+			public void positiveResponse(Context c, Object[] o) {
+				int idx=(Integer)o[0];
 	    		final int pos=tfa.getItem(idx);
 	    		final TreeFilelistItem tfi=tfa.getDataItem(pos);
 				if (tfi.getName().startsWith("---")) return;
 				expandHideLocalDirTree(true,url, pos,tfi,tfa);
 			}
+			@Override
+			public void negativeResponse(Context c, Object[] o) {
+			}
         });
+        tfa.setExpandCloseListener(ntfy_expand_close);
+        lv.setOnItemClickListener(new OnItemClickListener(){
+        	public void onItemClick(AdapterView<?> items, View view, int idx, long id) {
+	    		final int pos=tfa.getItem(idx);
+	    		final TreeFilelistItem tfi=tfa.getDataItem(pos);
+				if (tfi.getName().startsWith("---")) return;
+//				tfa.setDataItemIsSelected(pos);
+//				if (tfa.isDataItemIsSelected()) btn_ok.setEnabled(true);
+//				else btn_ok.setEnabled(false);
+				expandHideLocalDirTree(true,url, pos,tfi,tfa);
+			}
+        });
+        
 		lv.setOnItemLongClickListener(new OnItemLongClickListener(){
 			@Override
 			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
 					final int position, long arg3) {
-	  			final int t_pos=tfa.getItem(position);
-	  			if (tfa.getDataItem(t_pos).isChecked()) {
-		  			ccMenu.addMenuItem(mContext.getString(R.string.msgs_file_select_select_this_entry)
-							+" "+tfa.getDataItem(t_pos).getPath()+
-							tfa.getDataItem(t_pos).getName())
-					.setOnClickListener(new CustomContextMenuOnClickListener() {
-				  		@Override
-						public void onClick(CharSequence menuTitle) {
-				    		final TreeFilelistItem tfi=tfa.getDataItem(t_pos);
-							if (tfi.getName().startsWith("---")) return;
-							tfa.setDataItemIsUnselected(t_pos);
-							if (tfa.isDataItemIsSelected()) btn_ok.setEnabled(true);
-							else btn_ok.setEnabled(false);
-						}
-				  	});
-	  			} else {
-		  			ccMenu.addMenuItem(mContext.getString(R.string.msgs_file_select_select_this_entry)
-							+" "+tfa.getDataItem(t_pos).getPath()+
-							tfa.getDataItem(t_pos).getName())
-					.setOnClickListener(new CustomContextMenuOnClickListener() {
-				  		@Override
-						public void onClick(CharSequence menuTitle) {
-				    		final TreeFilelistItem tfi=tfa.getDataItem(t_pos);
-							if (tfi.getName().startsWith("---")) return;
-							tfa.setDataItemIsSelected(t_pos);
-							btn_ok.setEnabled(true);
-						}
-				  	});
-	  			}
-				ccMenu.createMenu();
-				return false;
+				return true;
 			}
 		});
+
 		NotifyEvent ctv_ntfy=new NotifyEvent(mContext);
 		ctv_ntfy.setListener(new NotifyEventListener() {
 			@Override
@@ -4032,8 +4037,7 @@ public class ProfileUtility {
 			    CommonDialog.setDlgBoxSizeLimit(dialog, true);
 				
 			    final ListView lv = (ListView) dialog.findViewById(android.R.id.list);
-			    final TreeFilelistAdapter tfa= 
-			    		new TreeFilelistAdapter(mContext,true,false);
+			    final TreeFilelistAdapter tfa=new TreeFilelistAdapter(mContext,true,false);
 //				tfa.setNotifyOnChange(true);
 				tfa.setDataList(rows);
 			    lv.setAdapter(tfa);
@@ -4046,52 +4050,41 @@ public class ProfileUtility {
 		        		if (tfa.getDataItem(i).getName().equals(p_dir)) 
 		        			lv.setSelection(i);
 		        	}
-			    
-			    lv.setOnItemClickListener(new OnItemClickListener(){
-			    	public void onItemClick(AdapterView<?> items, View view, int idx, long id) {
-			            // リストアイテムを選択したときの処理
+		        NotifyEvent ntfy_expand_close=new NotifyEvent(mContext);
+		        ntfy_expand_close.setListener(new NotifyEventListener(){
+					@Override
+					public void positiveResponse(Context c, Object[] o) {
+						int idx=(Integer)o[0];
 			    		final int pos=tfa.getItem(idx);
 			    		final TreeFilelistItem tfi=tfa.getDataItem(pos);
 						if (tfi.getName().startsWith("---")) return;
 						expandHideRemoteDirTree(remurl, pos,tfi,tfa);
-			        }
-			    });	
+					}
+					@Override
+					public void negativeResponse(Context c, Object[] o) {
+					}
+		        });
+		        tfa.setExpandCloseListener(ntfy_expand_close);
+		        lv.setOnItemClickListener(new OnItemClickListener(){
+		        	public void onItemClick(AdapterView<?> items, View view, int idx, long id) {
+			    		final int pos=tfa.getItem(idx);
+			    		final TreeFilelistItem tfi=tfa.getDataItem(pos);
+						if (tfi.getName().startsWith("---")) return;
+//						tfa.setDataItemIsSelected(pos);
+//						if (tfa.isDataItemIsSelected()) btn_ok.setEnabled(true);
+//						else btn_ok.setEnabled(false);
+						expandHideRemoteDirTree(remurl, pos,tfi,tfa);
+					}
+		        });
+		        
 				lv.setOnItemLongClickListener(new OnItemLongClickListener(){
 					@Override
 					public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
 							final int position, long arg3) {
-			  			final int t_pos=tfa.getItem(position);
-			  			if (tfa.getDataItem(t_pos).isChecked()) {
-				  			ccMenu.addMenuItem(mContext.getString(R.string.msgs_file_select_unselect_this_entry)
-									+" "+tfa.getDataItem(t_pos).getPath()+
-									tfa.getDataItem(t_pos).getName())
-							.setOnClickListener(new CustomContextMenuOnClickListener() {
-						  		@Override
-								public void onClick(CharSequence menuTitle) {
-						    		final TreeFilelistItem tfi=tfa.getDataItem(t_pos);
-									if (tfi.getName().startsWith("---")) return;
-									tfa.setDataItemIsUnselected(t_pos);
-									btn_ok.setEnabled(false);
-								}
-						  	});
-			  			} else {
-				  			ccMenu.addMenuItem(mContext.getString(R.string.msgs_file_select_select_this_entry)
-									+" "+tfa.getDataItem(t_pos).getPath()+
-									tfa.getDataItem(t_pos).getName())
-							.setOnClickListener(new CustomContextMenuOnClickListener() {
-						  		@Override
-								public void onClick(CharSequence menuTitle) {
-						    		final TreeFilelistItem tfi=tfa.getDataItem(t_pos);
-									if (tfi.getName().startsWith("---")) return;
-									tfa.setDataItemIsSelected(t_pos);
-									btn_ok.setEnabled(true);
-								}
-						  	});
-			  			}
-						ccMenu.createMenu();
-						return false;
+						return true;
 					}
 				});
+
 				NotifyEvent ctv_ntfy=new NotifyEvent(mContext);
 				// set file list thread response listener 
 				ctv_ntfy.setListener(new NotifyEventListener() {

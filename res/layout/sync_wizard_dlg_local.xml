@@ -52,13 +52,11 @@
 
         <Spinner
             android:id="@+id/sync_wizard_dlg_local_spinner_lmp"
-            style="@android:style/Widget.Spinner"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginRight="5dp"
             android:layout_marginTop="1dp"
             android:layout_weight="1"
-            android:background="@drawable/spinner_color_background"
             android:minHeight="30dp"
             android:paddingLeft="5dp"
             android:text="@string/msgs_local_profile_dlg_local_mount_point" />

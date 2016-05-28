@@ -71,7 +71,9 @@ public class SMBSyncSettings extends PreferenceActivity{
 	@Override
     public void onCreate(Bundle savedInstanceState) {
     	if (mGp==null) mGp=(GlobalParameters) getApplication();
-    	if (mGp.themeIsLight) setTheme(mGp.applicationTheme);
+    	if (Build.VERSION.SDK_INT>13){
+        	if (mGp.themeIsLight) setTheme(mGp.applicationTheme);
+    	}
         super.onCreate(savedInstanceState);
         if (DEBUG_ENABLE) Log.v(APPLICATION_TAG,"SettingsActivity onCreate entered");
         if (Build.VERSION.SDK_INT>=11) return;

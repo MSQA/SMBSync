@@ -24,9 +24,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 */
 
 import static com.sentaroh.android.SMBSync.Constants.*;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_SYNC_WIFI_OPTION_ADAPTER_ON;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_SYNC_WIFI_OPTION_CONNECTED_ANY_AP;
-import static com.sentaroh.android.SMBSync.Constants.SMBSYNC_SYNC_WIFI_OPTION_CONNECTED_SPEC_AP;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -53,6 +50,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.CheckedTextView;
+import android.widget.Spinner;
 
 import com.sentaroh.android.Utilities.StringUtil;
 import com.sentaroh.android.Utilities.NetworkUtil;
@@ -69,6 +67,14 @@ public class SMBSyncUtil {
 		setLogIdentifier(lid);
 	};
 	
+	public static void setSpinnerBackground(Context c, Spinner spinner, boolean theme_is_light) {
+		Log.v("","light="+theme_is_light);
+//		if (theme_is_light) spinner.setBackgroundDrawable(c.getResources().getDrawable(R.drawable.spinner_color_background));
+//		else spinner.setBackgroundDrawable(c.getResources().getDrawable(R.drawable.spinner_color_background_light));
+		if (theme_is_light) spinner.setBackgroundColor(0xffdddddd);
+		else spinner.setBackgroundColor(0xff555555);
+	};
+
 	public boolean setActivityIsForeground(boolean d) {
 		mGp.activityIsForeground=d;
 		return d;

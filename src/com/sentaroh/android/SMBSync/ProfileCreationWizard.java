@@ -485,6 +485,7 @@ public class ProfileCreationWizard {
 		et_local_dir.setText("");
 		
 		final Spinner spinnerLmp=(Spinner) dialog.findViewById(R.id.sync_wizard_dlg_local_spinner_lmp);
+		SMBSyncUtil.setSpinnerBackground(mContext, spinnerLmp, mGp.themeIsLight);
 		
 		btn_ok.setVisibility(Button.GONE);
 
@@ -1407,6 +1408,7 @@ public class ProfileCreationWizard {
 		ctv_SyncSubDir.setChecked(true);
 		
 		ctv_retry.setChecked(false);
+		SMBSyncUtil.setSpinnerBackground(mContext, spinner_sync, mGp.themeIsLight);
 		profUtil.setSyncOptionSpinner(spinner_sync, "");
 		
 		final EditText et_sync_prof=(EditText) dialog.findViewById(R.id.sync_wizard_dlg_sync_prof_name);
@@ -1850,6 +1852,7 @@ public class ProfileCreationWizard {
 
 	private void setSyncDirectionSpinner(Spinner spinnerSyncDirection, String prof_syncopt) {
 //		final Spinner spinnerSyncDirection=(Spinner)dialog.findViewById(R.id.sync_profile_sync_option);
+		SMBSyncUtil.setSpinnerBackground(mContext, spinnerSyncDirection, mGp.themeIsLight);
 		final CustomSpinnerAdapter adapterSyncDirection=new CustomSpinnerAdapter(mContext, R.layout.custom_simple_spinner_item);
 		adapterSyncDirection.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		spinnerSyncDirection.setPrompt(mContext.getString(R.string.msgs_sync_profile_dlg_syncopt_prompt));

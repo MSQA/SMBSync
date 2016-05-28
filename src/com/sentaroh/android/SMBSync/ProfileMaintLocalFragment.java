@@ -324,6 +324,7 @@ public class ProfileMaintLocalFragment extends DialogFragment{
 		if (pfli.getProfileName().equals("")) dlg_title_sub.setVisibility(TextView.GONE);
 
 		final Spinner spinner=(Spinner) mDialog.findViewById(R.id.edit_profile_local_dlg_lmp_btn);
+		SMBSyncUtil.setSpinnerBackground(mContext, spinner, mGp.themeIsLight);
 		spinner.setVisibility(Spinner.VISIBLE);
 
 		ProfileUtility.setLocalMountPointSpinner(mGp, mContext, spinner, pfli.getLocalMountPoint());
@@ -586,7 +587,7 @@ public class ProfileMaintLocalFragment extends DialogFragment{
 		
 		final Spinner spinner=(Spinner) mDialog.findViewById(R.id.edit_profile_local_dlg_lmp_btn);
 		spinner.setVisibility(Spinner.VISIBLE);
-		
+		SMBSyncUtil.setSpinnerBackground(mContext, spinner, mGp.themeIsLight);
 		ProfileUtility.setLocalMountPointSpinner(mGp, mContext, spinner, pfli.getLocalMountPoint());
 
 		spinner.setOnItemSelectedListener(new OnItemSelectedListener(){

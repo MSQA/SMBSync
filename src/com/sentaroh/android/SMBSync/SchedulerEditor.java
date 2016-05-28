@@ -97,8 +97,11 @@ public class SchedulerEditor {
 		ctv_sched_enabled.setTextColor(mGp.themeColorList.text_color_primary);
 		SMBSyncUtil.setCheckedTextView(ctv_sched_enabled);
 		final Spinner sp_sched_type=(Spinner)dialog.findViewById(R.id.scheduler_main_dlg_date_time_type);
+		SMBSyncUtil.setSpinnerBackground(mContext, sp_sched_type, mGp.themeIsLight);
 		final Spinner sp_sched_hours=(Spinner)dialog.findViewById(R.id.scheduler_main_dlg_exec_hours);
+		SMBSyncUtil.setSpinnerBackground(mContext, sp_sched_hours, mGp.themeIsLight);
 		final Spinner sp_sched_minutes=(Spinner)dialog.findViewById(R.id.scheduler_main_dlg_exec_minutes);
+		SMBSyncUtil.setSpinnerBackground(mContext, sp_sched_minutes, mGp.themeIsLight);
 //		final CheckBox cb_sched_sun=(CheckBox)dialog.findViewById(R.id.scheduler_main_dlg_day_of_the_week_sunday);
 //		final CheckBox cb_sched_mon=(CheckBox)dialog.findViewById(R.id.scheduler_main_dlg_day_of_the_week_monday);
 //		final CheckBox cb_sched_tue=(CheckBox)dialog.findViewById(R.id.scheduler_main_dlg_day_of_the_week_tuesday);

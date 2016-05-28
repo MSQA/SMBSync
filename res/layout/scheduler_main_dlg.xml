@@ -77,10 +77,8 @@
 
                     <Spinner
                         android:id="@+id/scheduler_main_dlg_date_time_type"
-                        style="@android:style/Widget.Spinner"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/spinner_color_background"
                         android:minHeight="40dp"
                         android:paddingLeft="5dp"
                         android:textAppearance="?android:attr/textAppearanceSmall" />

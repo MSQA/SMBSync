@@ -96,13 +96,11 @@
 
                    <Spinner
                        android:id="@+id/edit_profile_sync_dlg_sync_option"
-                       style="@android:style/Widget.Spinner"
                        android:layout_width="0dp"
                        android:layout_height="wrap_content"
                        android:layout_gravity="center_vertical"
                        android:layout_marginLeft="5dp"
                        android:layout_weight="1"
-                       android:background="@drawable/spinner_color_background"
                        android:minHeight="36dp"
                        android:paddingLeft="5dp"
                        android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -136,13 +134,11 @@
 
                    <Spinner
                        android:id="@+id/edit_profile_sync_dlg_master_spinner"
-                       style="@android:style/Widget.Spinner"
                        android:layout_width="0dp"
                        android:layout_height="50dp"
                        android:layout_gravity="center_vertical"
                        android:layout_marginLeft="1dp"
                        android:layout_weight="1"
-                       android:background="@drawable/spinner_color_background"
                        android:paddingLeft="5dp"
                        android:textAppearance="?android:attr/textAppearanceMedium" />
                </LinearLayout>
@@ -169,12 +165,10 @@
 
                    <Spinner
                        android:id="@+id/edit_profile_sync_dlg_target_spinner"
-                       style="@android:style/Widget.Spinner"
                        android:layout_width="0dp"
                        android:layout_height="50dp"
                        android:layout_marginLeft="1dp"
                        android:layout_weight="1"
-                       android:background="@drawable/spinner_color_background"
                        android:paddingLeft="5dp"
                        android:textAppearance="?android:attr/textAppearanceMedium" />
                </LinearLayout>

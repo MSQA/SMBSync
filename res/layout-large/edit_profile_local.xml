@@ -96,13 +96,11 @@
 
                 <Spinner
                     android:id="@+id/edit_profile_local_dlg_lmp_btn"
-                    style="@android:style/Widget.Spinner"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
                     android:layout_marginTop="1dp"
                     android:layout_weight="1"
-                    android:background="@drawable/spinner_color_background"
                     android:minHeight="38dp"
                     android:paddingLeft="5dp"
                     android:layout_gravity="center_vertical"
