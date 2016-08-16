@@ -3637,7 +3637,8 @@ public class ProfileUtility {
 		final TextView subtitle = (TextView) dialog.findViewById(R.id.item_select_list_dlg_subtitle);
 		title_view.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);
 		title.setTextColor(mGp.themeColorList.text_color_dialog_title);
-		subtitle.setTextColor(mGp.themeColorList.text_color_dialog_title);
+//		subtitle.setTextColor(mGp.themeColorList.text_color_dialog_title);
+		subtitle.setTextColor(mGp.themeColorList.text_color_primary);//.text_color_dialog_title);
 
         title.setText(msgs_select_local_dir);
         subtitle.setText(msgs_current_dir+url+dir);
@@ -3658,7 +3659,6 @@ public class ProfileUtility {
         tfa.setDataList(tfl);
         lv.setScrollingCacheEnabled(false);
         lv.setScrollbarFadingEnabled(false);
-        lv.setFastScrollEnabled(true);
 
         if (p_dir.length()!=0)
         	for (int i=0;i<tfa.getDataItemCount();i++) {
@@ -4020,7 +4020,8 @@ public class ProfileUtility {
 				final TextView subtitle = (TextView) dialog.findViewById(R.id.item_select_list_dlg_subtitle);
 				title_view.setBackgroundColor(mGp.themeColorList.dialog_title_background_color);
 				title.setTextColor(mGp.themeColorList.text_color_dialog_title);
-				subtitle.setTextColor(mGp.themeColorList.text_color_dialog_title);
+//				subtitle.setTextColor(mGp.themeColorList.text_color_dialog_title);
+				subtitle.setTextColor(mGp.themeColorList.text_color_primary);//.text_color_dialog_title);
 
 			    title.setText(msgs_select_remote_dir);
 			    subtitle.setText(msgs_current_dir+"/"+remurl);
@@ -4043,7 +4044,6 @@ public class ProfileUtility {
 			    lv.setAdapter(tfa);
 			    lv.setScrollingCacheEnabled(false);
 			    lv.setScrollbarFadingEnabled(false);
-			    lv.setFastScrollEnabled(true);
 			    
 		        if (p_dir.length()!=0)
 		        	for (int i=0;i<tfa.getDataItemCount();i++) {
