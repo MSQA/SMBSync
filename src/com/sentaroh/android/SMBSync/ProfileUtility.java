@@ -3160,6 +3160,7 @@ public class ProfileUtility {
 	};
 
 	private int mScanCompleteCount=0, mScanAddrCount=0;
+	private ArrayList<String> mScanRequestedAddrList=new ArrayList<String>();
 	private String mLockScanCompleteCount="";
 	private void scanRemoteNetwork(
 			final Dialog dialog,
@@ -3201,6 +3202,8 @@ public class ProfileUtility {
 		});
 		if (util.isActivityForeground()) dialog.show();
 		
+		mScanRequestedAddrList.clear();
+		
 		util.addDebugLogMsg(1,"I","Scan IP address ransge is "+subnet+ "."+begin_addr+" - "+end_addr);
 		
 		final String scan_prog=mContext.getString(R.string.msgs_ip_address_scan_progress);
@@ -3234,6 +3237,13 @@ public class ProfileUtility {
 					}
 				}
 				if (!tc.isEnabled()) {
+					for(int i=0;i<1000;i++) {
+						SystemClock.sleep(100);
+						synchronized(mScanRequestedAddrList) {
+							if (mScanRequestedAddrList.size()==0) break;
+						}
+					}
+
 					handler.post(new Runnable() {// UI thread
 						@Override
 						public void run() {
@@ -3241,12 +3251,22 @@ public class ProfileUtility {
 						}
 					});
 				} else {
-					handler.postDelayed(new Runnable() {// UI thread
+					for(int i=0;i<1000;i++) {
+						SystemClock.sleep(100);
+						synchronized(mScanRequestedAddrList) {
+							if (mScanRequestedAddrList.size()==0) break;
+						}
+					}
+					handler.post(new Runnable() {// UI thread
 						@Override
 						public void run() {
-							closeScanRemoteNetworkProgressDlg(dialog, p_ntfy, lv_ipaddr, adap, tvmsg);
+							synchronized(mLockScanCompleteCount) {
+								lv_ipaddr.setSelection(lv_ipaddr.getCount());
+								adap.notifyDataSetChanged();
+								closeScanRemoteNetworkProgressDlg(dialog, p_ntfy, lv_ipaddr, adap, tvmsg);
+							}
 						}
-					},10000);
+					});
 				}
 			}
 		})
@@ -3288,13 +3308,17 @@ public class ProfileUtility {
 		Thread th=new Thread(new Runnable() {
 			@Override
 			public void run() {
+				synchronized(mScanRequestedAddrList) {
+					mScanRequestedAddrList.add(addr);
+				}
 				if (isIpAddrSmbHost(addr,scan_port)) {
 					final String srv_name=getSmbHostName(addr);
 					handler.post(new Runnable() {// UI thread
 						@Override
 						public void run() {
-							synchronized(mLockScanCompleteCount) {
-								mScanCompleteCount++;
+							synchronized(mScanRequestedAddrList) {
+//								Log.v("","addr="+addr+", contained="+mScanRequestedAddrList.contains(addr));
+								mScanRequestedAddrList.remove(addr);
 								ScanAddressResultListItem li=new ScanAddressResultListItem();
 								li.server_address=addr;
 								li.server_name=srv_name;
@@ -3337,15 +3361,23 @@ public class ProfileUtility {
 										String lhs_addr=lhs_o0+"."+lhs_o1+"."+lhs_o2+"."+lhs_o3;
 										String rhs_addr=rhs_o0+"."+rhs_o1+"."+rhs_o2+"."+rhs_o3;
 										
-										Log.v("","lhs="+lhs_addr+", rhs="+rhs_addr);
+//										Log.v("","lhs="+lhs_addr+", rhs="+rhs_addr);
 										
 										return lhs_addr.compareTo(rhs_addr);
 									}
 								});
+								adap.notifyDataSetChanged();
+							}
+							synchronized(mLockScanCompleteCount) {
+								mScanCompleteCount++;
 							}
 						}
 					});
 				} else {
+					synchronized(mScanRequestedAddrList) {
+//						Log.v("","addr="+addr+", contained="+mScanRequestedAddrList.contains(addr));
+						mScanRequestedAddrList.remove(addr);
+					}
 					synchronized(mLockScanCompleteCount) {
 						mScanCompleteCount++;
 					}
@@ -3359,10 +3391,6 @@ public class ProfileUtility {
 							String p_txt=String.format(scan_prog, 
 									(mScanCompleteCount*100)/mScanAddrCount);
 							tvmsg.setText(p_txt);
-							
-							if (mScanCompleteCount>=mScanAddrCount) {
-								closeScanRemoteNetworkProgressDlg(dialog, p_ntfy, lv_ipaddr, adap, tvmsg);
-							}
 						}
 					}
 				});
